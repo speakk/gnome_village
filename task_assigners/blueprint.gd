@@ -1,19 +1,21 @@
 extends BeehaveTree
 
-var TASK_ASSIGNER := preload("res://TaskAssigner.tscn")
+class_name BluePrintTaskAssigner
+
+var TASK_ASSIGNER := preload("res://task_assigners/TaskAssigner.tscn")
+
 var BRING_RESOURCE_TASK := preload("res://tasks/bring_resource_task.tscn")
 var BUILD_TASK := preload("res://tasks/build_task.tscn")
 
-@onready var build: TaskAssigner = $"%Build"
-
-func initialize(tile_target: Vector2i, building_type: BuildingTypes.BuildingType) -> void:
+func initialize(tile_target: Vector2i, building_type: BuildingTypes.BuildingType) -> BluePrintTaskAssigner:
 	var material_requirements := BuildingTypes.get_building_requirements(building_type)
 	for material_requirement in material_requirements:
-		var bring_material_task_assigner := TASK_ASSIGNER.instantiate() as TaskAssigner
-		bring_material_task_assigner.task = (BRING_RESOURCE_TASK.instantiate() as BringResourceTask).initialize(tile_target, material_requirement)
-		$BringResources.add_child(bring_material_task_assigner)
+		var bring_resource_task := (BRING_RESOURCE_TASK.instantiate() as BringResourceTask).initialize(tile_target, material_requirement)
+		var bring_material_task_assigner := (TASK_ASSIGNER.instantiate() as TaskAssigner).initialize(bring_resource_task)
+		%BringResources.add_child(bring_material_task_assigner)
 
 	var build_task := (BUILD_TASK.instantiate() as BuildTask).initialize(tile_target)
-	build.task = build_task
+	%Build.initialize(build_task)
 
+	return self
 	#blackboard.set_value()

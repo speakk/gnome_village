@@ -9,3 +9,7 @@ func initialize(_target_tile: Vector2i, _material_requirement: Materials.Materia
 	target_tile = _target_tile
 	material_requirement = _material_requirement
 	return self
+
+func tick() -> int:
+	print("BRING RESOURCE TICKING")
+	return super.tick()

@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=4 format=3 uid="uid://b1no50g6cjkhd"]
 
+[ext_resource type="Script" path="res://settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="Texture2D" uid="uid://bgdpno3b05m2g" path="res://assets/settler.png" id="1_ryuwt"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5eduo"]
@@ -7,6 +8,7 @@ radius = 3.0
 
 [node name="Settler" type="CharacterBody2D" groups=["settler"]]
 motion_mode = 1
+script = ExtResource("1_ghp1u")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_5eduo")
