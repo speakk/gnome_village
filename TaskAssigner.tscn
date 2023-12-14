@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://bkfwyl442n6pl"]
+
+[ext_resource type="Script" path="res://TaskAssigner.gd" id="1_d71it"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/leaves/action.gd" id="2_rdiau"]
+[ext_resource type="Script" path="res://GetAvailableSettler.gd" id="2_twgs3"]
+
+[node name="TaskAssigner" type="Node"]
+script = ExtResource("1_d71it")
+
+[node name="GetAvailableSettler" type="Node" parent="."]
+script = ExtResource("2_twgs3")
+
+[node name="DoTask" type="Node" parent="."]
+script = ExtResource("2_rdiau")

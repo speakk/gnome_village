@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://b3prihj8ow3q5"]
+
+[ext_resource type="Script" path="res://task_assigners/blueprint.gd" id="1_rag2q"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector_random.gd" id="2_fs38e"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_k6r5l"]
+[ext_resource type="Script" path="res://TaskAssigner.gd" id="3_moayf"]
+
+[node name="Blueprint" type="Node"]
+script = ExtResource("1_rag2q")
+
+[node name="SequenceComposite" type="Node" parent="."]
+script = ExtResource("2_k6r5l")
+
+[node name="BringResources" type="Node" parent="SequenceComposite"]
+script = ExtResource("2_fs38e")
+
+[node name="Build" type="Node" parent="SequenceComposite"]
+unique_name_in_owner = true
+script = ExtResource("3_moayf")

@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://dh81vo68ekn1p"]
+
+[ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://tasks/Task.tscn" id="1_fm161"]
+[ext_resource type="Script" path="res://tasks/bring_resource_task.gd" id="2_2s8wd"]
+
+[node name="BringResourceTask" instance=ExtResource("1_fm161")]
+script = ExtResource("2_2s8wd")

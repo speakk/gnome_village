@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://nxxky7tb51hf"]
+
+[ext_resource type="Script" path="res://TaskHandler.gd" id="1_5bvtf"]
+
+[node name="TaskHandler" type="Node"]
+script = ExtResource("1_5bvtf")
