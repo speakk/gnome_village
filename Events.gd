@@ -1,5 +1,6 @@
 extends Node
 
-signal BlueprintPlaced(tile_position: Vector2i, building_type: BuildingTypes.BuildingType)
+signal blueprint_placed(tile_position: Vector2i, blueprint: Blueprint)
+signal blueprint_finished(blueprint: Blueprint)
 
 signal map_ready(map: MainMap)

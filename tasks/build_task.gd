@@ -2,10 +2,14 @@ extends Task
 
 class_name BuildTask
 
-var target_tile: Vector2i
+var blueprint: Blueprint
 
-func initialize(_target_tile: Vector2i) -> BuildTask:
-	target_tile = _target_tile
+func initialize(_blueprint: Blueprint) -> BuildTask:
+	blueprint = _blueprint
+	
+	%GoToBlueprint.target = blueprint.position
+	%BuildAction.target = blueprint
+	
 	return self
 
 func tick() -> int:

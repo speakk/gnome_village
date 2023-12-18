@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://task_assigners/blueprint.gd" id="1_rag2q"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector_random.gd" id="2_fs38e"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_k6r5l"]
-[ext_resource type="Script" path="res://task_assigners/TaskAssigner.gd" id="4_mnrgs"]
+[ext_resource type="PackedScene" uid="uid://bkfwyl442n6pl" path="res://task_assigners/TaskAssigner.tscn" id="4_oj25e"]
 
 [node name="Blueprint" type="Node"]
 script = ExtResource("1_rag2q")
@@ -16,6 +16,5 @@ script = ExtResource("2_k6r5l")
 unique_name_in_owner = true
 script = ExtResource("2_fs38e")
 
-[node name="BuildAssigner" type="Node" parent="SequenceComposite"]
+[node name="BuildAssigner" parent="SequenceComposite" instance=ExtResource("4_oj25e")]
 unique_name_in_owner = true
-script = ExtResource("4_mnrgs")

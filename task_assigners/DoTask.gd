@@ -9,6 +9,7 @@ func tick(actor: Object, blackboard: Blackboard):
 	var task = get_parent().task
 	
 	if settler.get_current_task() != task:
+		task.actor_node_path = settler.get_path()
 		add_child(task)
 		settler.start_task(task)
 	
