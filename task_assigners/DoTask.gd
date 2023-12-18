@@ -9,6 +9,9 @@ func tick(actor: Object, blackboard: Blackboard):
 	var task = get_parent().task
 	
 	if settler.get_current_task() != task:
+		add_child(task)
 		settler.start_task(task)
 	
-	return settler.tick_current_task()
+	#return settler.tick_current_task()
+	#print("CURR STATUS: ", settler.get_task_status())
+	return settler.get_task_status()

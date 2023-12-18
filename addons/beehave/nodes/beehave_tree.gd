@@ -177,9 +177,15 @@ func _process_internally() -> void:
 	# Check the cost for this frame and save it for metric report
 	_process_time_metric_value = Time.get_ticks_usec() - start_time
 
+var last_tick_status: int
+
+# speak's custom addition
+func get_last_tick_status() -> int:
+	return last_tick_status
 
 func tick() -> int:
 	if actor == null or get_child_count() == 0:
+		last_tick_status = FAILURE
 		return FAILURE
 	var child := self.get_child(0)
 	if status != RUNNING:
@@ -195,6 +201,7 @@ func tick() -> int:
 		blackboard.set_value("running_action", null, str(actor.get_instance_id()))
 		child.after_run(actor, blackboard)
 
+	last_tick_status = status
 	return status
 
 

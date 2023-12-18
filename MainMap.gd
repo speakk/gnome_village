@@ -1,5 +1,7 @@
 extends TileMap
 
+class_name MainMap
+
 const MAP_SIZE_X: int = 120
 const MAP_SIZE_Y: int = 90
 
@@ -13,6 +15,8 @@ func _ready() -> void:
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
 			set_cell(GROUND_PLAYER, Vector2i(x, y), tile_set.get_source_id(0), Vector2i(0, 0))
+	
+	Events.map_ready.emit(self)
 
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("map_interact_a"):

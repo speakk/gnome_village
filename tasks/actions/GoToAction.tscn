@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bevd0ykcp7npk"]
+
+[ext_resource type="Script" path="res://tasks/actions/GoToAction.gd" id="1_e08yj"]
+
+[node name="GoToAction" type="Node"]
+script = ExtResource("1_e08yj")

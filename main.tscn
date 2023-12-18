@@ -1,11 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://ubgvap601f4j"]
+[gd_scene load_steps=6 format=3 uid="uid://ubgvap601f4j"]
 
+[ext_resource type="Script" path="res://main.gd" id="1_j8rqp"]
 [ext_resource type="PackedScene" uid="uid://b4nj0xntglt07" path="res://main_map.tscn" id="1_lsh5n"]
 [ext_resource type="Script" path="res://MainCamera.gd" id="2_bak4i"]
 [ext_resource type="PackedScene" uid="uid://nxxky7tb51hf" path="res://TaskHandler.tscn" id="3_opgdi"]
 [ext_resource type="PackedScene" uid="uid://b1no50g6cjkhd" path="res://settler/settler.tscn" id="4_sofrl"]
 
 [node name="Main" type="Node2D"]
+script = ExtResource("1_j8rqp")
 
 [node name="MainMap" parent="." instance=ExtResource("1_lsh5n")]
 
