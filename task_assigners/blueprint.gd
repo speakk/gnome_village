@@ -15,7 +15,7 @@ func initialize(tile_target: Vector2i, building_type: BuildingTypes.BuildingType
 		%BringResources.add_child(bring_material_task_assigner)
 
 	var build_task := (BUILD_TASK.instantiate() as BuildTask).initialize(tile_target)
-	%Build.initialize(build_task)
+	%BuildAssigner.initialize(build_task)
 
 	return self
 	#blackboard.set_value()

@@ -16,6 +16,6 @@ script = ExtResource("2_k6r5l")
 unique_name_in_owner = true
 script = ExtResource("2_fs38e")
 
-[node name="Build" type="Node" parent="SequenceComposite"]
+[node name="BuildAssigner" type="Node" parent="SequenceComposite"]
 unique_name_in_owner = true
 script = ExtResource("4_mnrgs")

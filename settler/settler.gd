@@ -2,6 +2,8 @@ extends CharacterBody2D
 
 class_name Settler
 
+const TARGET_DISTANCE_TRESHOLD := 10.0
+
 var walk_speed := 100.0
 
 var current_task: Task
@@ -44,3 +46,6 @@ func get_task_status() -> int:
 
 func set_target(_target: Vector2) -> void:
 	target = _target
+
+func is_next_to_target(_target: Vector2) -> bool:
+	return global_position.distance_to(_target) <= TARGET_DISTANCE_TRESHOLD
