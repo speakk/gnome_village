@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://b3prihj8ow3q5"]
+[gd_scene load_steps=6 format=3 uid="uid://b3prihj8ow3q5"]
 
 [ext_resource type="Script" path="res://task_assigners/blueprint.gd" id="1_rag2q"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector_random.gd" id="2_fs38e"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_k6r5l"]
 [ext_resource type="PackedScene" uid="uid://bkfwyl442n6pl" path="res://task_assigners/TaskAssigner.tscn" id="4_oj25e"]
+[ext_resource type="Script" path="res://task_assigners/FinishAssigner.gd" id="5_rk2xc"]
 
 [node name="Blueprint" type="Node"]
 script = ExtResource("1_rag2q")
@@ -18,3 +19,7 @@ script = ExtResource("2_fs38e")
 
 [node name="BuildAssigner" parent="SequenceComposite" instance=ExtResource("4_oj25e")]
 unique_name_in_owner = true
+
+[node name="FinishAssigner" type="Node" parent="SequenceComposite"]
+unique_name_in_owner = true
+script = ExtResource("5_rk2xc")

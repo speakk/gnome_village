@@ -20,6 +20,13 @@ enum TaskResult {
 	RUNNING
 }
 
+func _ready() -> void:
+	Events.task_finished.connect(_task_finished)
+
+func _task_finished(task: Task) -> void:
+	if current_task == task:
+		current_task = null
+
 func _physics_process(delta: float) -> void:
 	if target:
 		global_position += global_position.direction_to(target) * delta * walk_speed
@@ -34,16 +41,19 @@ func start_task(task: Task) -> void:
 	# TODO: Do something with current task?	
 	current_task = task
 	await get_tree().process_frame
+	if current_task == null:
+		return
 	#current_task.actor = self
-	print("Path", get_path())
-	print("Path self", get_path_to(self))
 	current_task.actor_node_path = get_path()
 	
 #func tick_current_task() -> int:
 	#return current_task.tick()
 
+func is_available_for_work() -> bool:
+	# TODO: Some better way to determine this
+	return !(target is Vector2i) and build_target == null
+
 func get_task_status() -> int:
-	print("Status ", current_task.get_last_tick_status())
 	return current_task.get_last_tick_status()
 
 func set_target(_target: Variant) -> void:

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bkfwyl442n6pl"]
+[gd_scene load_steps=5 format=3 uid="uid://bkfwyl442n6pl"]
 
 [ext_resource type="Script" path="res://task_assigners/TaskAssigner.gd" id="1_1sjse"]
 [ext_resource type="Script" path="res://task_assigners/GetAvailableSettler.gd" id="2_yi5pc"]
 [ext_resource type="Script" path="res://task_assigners/DoTask.gd" id="3_chbis"]
+[ext_resource type="Script" path="res://task_assigners/FinishTask.gd" id="4_h18qe"]
 
 [node name="TaskAssigner" type="Node"]
 script = ExtResource("1_1sjse")
@@ -12,3 +13,6 @@ script = ExtResource("2_yi5pc")
 
 [node name="DoTask" type="Node" parent="."]
 script = ExtResource("3_chbis")
+
+[node name="FinishTask" type="Node" parent="."]
+script = ExtResource("4_h18qe")

@@ -8,6 +8,7 @@ var BRING_RESOURCE_TASK := preload("res://tasks/bring_resource_task.tscn")
 var BUILD_TASK := preload("res://tasks/build_task.tscn")
 
 func initialize(tile_target: Vector2i, blueprint: Blueprint) -> BluePrintTaskAssigner:
+	%FinishAssigner.assigner = self
 	var building_type := blueprint.building_type
 	var material_requirements := BuildingTypes.get_building_requirements(building_type)
 	for material_requirement in material_requirements:
@@ -17,6 +18,6 @@ func initialize(tile_target: Vector2i, blueprint: Blueprint) -> BluePrintTaskAss
 
 	var build_task := (BUILD_TASK.instantiate() as BuildTask).initialize(blueprint)
 	%BuildAssigner.initialize(build_task)
-
+	
 	return self
 	#blackboard.set_value()

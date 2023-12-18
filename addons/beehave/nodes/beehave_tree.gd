@@ -44,7 +44,6 @@ signal tree_disabled
 @export_node_path var actor_node_path : NodePath:
 	set(anp):
 		actor_node_path = anp
-		print("Setting path", anp)
 		if actor_node_path != null and str(actor_node_path) != ".." and str(actor_node_path) != "":
 			actor = get_node(actor_node_path)
 		else:
@@ -178,7 +177,7 @@ func _process_internally() -> void:
 	# Check the cost for this frame and save it for metric report
 	_process_time_metric_value = Time.get_ticks_usec() - start_time
 
-var last_tick_status: int
+var last_tick_status: int = FAILURE
 
 # speak's custom addition
 func get_last_tick_status() -> int:

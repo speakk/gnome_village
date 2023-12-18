@@ -13,5 +13,4 @@ func initialize(_blueprint: Blueprint) -> BuildTask:
 	return self
 
 func tick() -> int:
-	print("BUILD TICKING")
 	return super.tick()
