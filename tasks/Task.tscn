@@ -1,6 +1,20 @@
 [gd_scene load_steps=2 format=3 uid="uid://dllkku4j86v6u"]
 
-[ext_resource type="Script" path="res://tasks/Task.gd" id="1_hamtx"]
+[sub_resource type="GDScript" id="GDScript_m4v7k"]
+script/source = "extends BeehaveTree
+
+#class_name Task
+
+var is_being_worked_on := false
+var is_finished := false
+
+func _ready() -> void:
+	Events.task_finished.connect(_task_finished)
+	
+func _task_finished(task: Task) -> void:
+	if task == self:
+		is_finished = true
+"
 
 [node name="Task" type="Node"]
-script = ExtResource("1_hamtx")
+script = SubResource("GDScript_m4v7k")
