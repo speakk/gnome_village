@@ -51,6 +51,7 @@ func start_task(task: Task) -> void:
 
 func finish_current_task() -> void:
 	current_task.is_finished = true
+	current_task.is_being_worked_on = false
 	remove_child(current_task)
 	current_task = null
 	Events.task_finished.emit(current_task)
