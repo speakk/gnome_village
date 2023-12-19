@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b4nj0xntglt07" path="res://main_map.tscn" id="1_lsh5n"]
 [ext_resource type="Script" path="res://MainCamera.gd" id="2_bak4i"]
 [ext_resource type="PackedScene" uid="uid://b1no50g6cjkhd" path="res://settler/settler.tscn" id="4_sofrl"]
-[ext_resource type="Script" path="res://NewTaskHandler.gd" id="6_pe6uu"]
+[ext_resource type="Script" path="res://TaskHandler.gd" id="6_pe6uu"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_j8rqp")
@@ -18,7 +18,7 @@ script = ExtResource("2_bak4i")
 
 [node name="Settler" parent="." instance=ExtResource("4_sofrl")]
 
-[node name="NewTaskHandler" type="Node" parent="."]
+[node name="TaskHandler" type="Node" parent="."]
 script = ExtResource("6_pe6uu")
 
 [node name="Settler2" parent="." instance=ExtResource("4_sofrl")]
