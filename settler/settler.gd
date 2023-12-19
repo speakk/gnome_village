@@ -27,6 +27,11 @@ func _task_finished(task: Task) -> void:
 	if current_task == task:
 		current_task = null
 
+#func _process(delta: float) -> void:
+	#if current_task:
+		##print("Ticking?")
+		#current_task.tick()
+
 func _physics_process(delta: float) -> void:
 	if target:
 		global_position += global_position.direction_to(target) * delta * walk_speed
@@ -38,20 +43,24 @@ func get_current_task() -> Task:
 	return current_task
 
 func start_task(task: Task) -> void:
-	# TODO: Do something with current task?	
 	current_task = task
-	await get_tree().process_frame
-	if current_task == null:
-		return
-	#current_task.actor = self
-	current_task.actor_node_path = get_path()
-	
+	current_task.is_being_worked_on = true
+	current_task.enable()
+	current_task.actor = self
+	add_child(current_task)
+
+func finish_current_task() -> void:
+	current_task.is_finished = true
+	remove_child(current_task)
+	current_task = null
+	Events.task_finished.emit(current_task)
+	# TODO: Queue free task at some point maybe... Not now though
+
 #func tick_current_task() -> int:
 	#return current_task.tick()
 
 func is_available_for_work() -> bool:
-	# TODO: Some better way to determine this
-	return !(target is Vector2i) and build_target == null
+	return current_task == null
 
 func get_task_status() -> int:
 	return current_task.get_last_tick_status()
