@@ -14,14 +14,35 @@ func _blueprint_placed(tile_position: Vector2i, blueprint: Blueprint) -> void:
 	task_trees.append(task_tree)
 	print("Got task tree", task_tree)
 
-func get_available_settler() -> Settler:
+func get_available_settler(task: Variant) -> Settler:
 	var settlers := get_tree().get_nodes_in_group("settler") as Array[Node]
 	
-	# TODO: Make it so that this Node gets an optional heuristic on how to pick which settler
-	# does this job - for now just pick first settler that is available for work
-	for settler in settlers:
-		if settler.is_available_for_work():
-			return settler
+	var target: Vector2
+	
+	if "target_tile" in task:
+		var target_tile := task.target_tile as Vector2i
+		target = Globals.map.map_to_local(target_tile)
+	
+	if "target" in task:
+		target = task.target.global_position
+	
+	if target:
+		var settlers_clone := settlers.duplicate()
+		var available := settlers_clone.filter(func(settler: Settler) -> bool:
+			return settler.is_available_for_work()
+		)
+		
+		available.sort_custom(func(a: Settler, b: Settler) -> bool:
+			return a.global_position.distance_to(target) < b.global_position.distance_to(target)
+		)
+		
+		print("Returning in hubabab")
+		return available.front()
+		
+	else:
+		for settler in settlers:
+			if settler.is_available_for_work():
+				return settler
 	
 	return null
 
@@ -34,11 +55,12 @@ func _process(delta: float) -> void:
 		for task_tree in task_trees:
 			print("Trying to get next available task")
 			var next_available_task: Variant = get_next_available_task(task_tree)
-			var available_settler := get_available_settler()
-			if next_available_task and available_settler:
-				available_settler.start_task(next_available_task)
-				#print("Started task: ", next_available_task)
-				print("GOT AND STARTED TASK: ", next_available_task)
+			if next_available_task:
+				var available_settler := get_available_settler(next_available_task)
+				if available_settler:
+					available_settler.start_task(next_available_task)
+					#print("Started task: ", next_available_task)
+					print("GOT AND STARTED TASK: ", next_available_task)
 		
 		task_process_timer = 0
 
