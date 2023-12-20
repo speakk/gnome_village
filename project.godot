@@ -30,9 +30,10 @@ gdscript/warnings/untyped_declaration=2
 
 [display]
 
-window/size/viewport_width=1024
-window/size/viewport_height=576
+window/size/viewport_width=1776
+window/size/viewport_height=1000
 window/stretch/mode="canvas_items"
+window/stretch/scale_mode="integer"
 
 [editor_plugins]
 

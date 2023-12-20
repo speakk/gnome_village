@@ -22,6 +22,7 @@ enum TaskResult {
 
 func _ready() -> void:
 	Events.task_finished.connect(_task_finished)
+	#process_mode = Node.PROCESS_MODE_DISABLED
 
 func _task_finished(task: Task) -> void:
 	if current_task == task:
@@ -33,11 +34,26 @@ func _task_finished(task: Task) -> void:
 		#current_task.tick()
 
 func _physics_process(delta: float) -> void:
+	velocity = Vector2.ZERO
 	if target:
-		global_position += global_position.direction_to(target) * delta * walk_speed
+		#global_position += global_position.direction_to(target) * delta * walk_speed
+		velocity = global_position.direction_to(target) * walk_speed
 	
 	if build_target:
 		build_target.increase_build_progress(build_speed * delta)
+	
+	if velocity.length() > 0.1:
+		$AnimationPlayer.play("walk")
+		
+		if velocity.x > 0:
+			$Sprite.flip_h = false
+		else:
+			$Sprite.flip_h = true
+		
+	else:
+		$AnimationPlayer.play("idle")
+	
+	move_and_slide()
 
 func get_current_task() -> Task:
 	return current_task
