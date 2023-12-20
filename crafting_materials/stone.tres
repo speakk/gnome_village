@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CraftingMaterial" load_steps=3 format=3 uid="uid://doarwt6s06tas"]
+
+[ext_resource type="Script" path="res://crafting_materials/CraftingMaterial.gd" id="1_wghth"]
+[ext_resource type="Texture2D" uid="uid://8s6yv2xyevt5" path="res://assets/materials.png" id="2_i3xwj"]
+
+[resource]
+script = ExtResource("1_wghth")
+texture = ExtResource("2_i3xwj")
+sheet_coordinate = Vector2i(0, 0)
+id = "wood"

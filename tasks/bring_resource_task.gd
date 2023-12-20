@@ -10,9 +10,9 @@ class_name BringResourceTask
 # - Deposit Material (not sure where to, yet... the blueprint itself, which is not a node yet)
 
 var target_tile: Vector2i
-var material_requirement: Materials.MaterialRequirement 
+var material_requirement: MaterialRequirement 
 
-func initialize(_target_tile: Vector2i, _material_requirement: Materials.MaterialRequirement) -> BringResourceTask:
+func initialize(_target_tile: Vector2i, _material_requirement: MaterialRequirement) -> BringResourceTask:
 	target_tile = _target_tile
 	material_requirement = _material_requirement
 

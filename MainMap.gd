@@ -7,34 +7,41 @@ class_name MainMap
 const MAP_SIZE_X: int = 120
 const MAP_SIZE_Y: int = 90
 
-const GROUND_PLAYER = 0
-const BUILDING_LAYER = 1
+enum Layers {
+	Ground, Building, Materials
+}
+#
+#const Layers.Ground = 0
+#const Layers.Building = 1
+#const MATERIALS_LAYER = 2
 
 var map_entities := {
-	BUILDING_LAYER: [] as Array[Node2D]
+	Layers.Building: [] as Array[Node2D],
+	Layers.Materials: [] as Array[Node2D]
 }
 
 func _ready() -> void:
-	add_layer(GROUND_PLAYER)
-	add_layer(BUILDING_LAYER)
+	add_layer(Layers.Ground)
+	add_layer(Layers.Building)
+	add_layer(Layers.Materials)
 	
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
-			set_cell(GROUND_PLAYER, Vector2i(x, y), tile_set.get_source_id(0), Vector2i(0, 0))
+			set_cell(Layers.Ground, Vector2i(x, y), tile_set.get_source_id(0), Vector2i(0, 0))
 	
 	# TODO: Instead of this, keep a proper x-y map of entities so you don't have to rely on tile_data
-	set_layer_modulate(BUILDING_LAYER, Color.TRANSPARENT)
+	set_layer_modulate(Layers.Building, Color.TRANSPARENT)
 	
 	Events.map_ready.emit(self)
 
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("map_interact_a"):
 		var tile_position: Vector2i = local_to_map(get_local_mouse_position())
-		var tile_data: TileData = get_cell_tile_data(BUILDING_LAYER, tile_position)
+		var tile_data: TileData = get_cell_tile_data(Layers.Building, tile_position)
 		
 	# 	TODO: Instead of this, keep a proper x-y map of entities so you don't have to rely on tile_data
 		if not tile_data:
-			set_cell(BUILDING_LAYER, tile_position, tile_set.get_source_id(0), Vector2i(1, 0))
+			set_cell(Layers.Building, tile_position, tile_set.get_source_id(0), Vector2i(1, 0))
 			
 						
 			#var blueprint := Blueprint.new().initialize(BuildingTypes.BuildingType.Wall)

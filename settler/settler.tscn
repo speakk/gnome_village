@@ -6,8 +6,8 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_5eduo"]
 radius = 3.0
 
-[sub_resource type="Animation" id="Animation_j4frm"]
-resource_name = "idle"
+[sub_resource type="Animation" id="Animation_tnvni"]
+length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -21,8 +21,8 @@ tracks/0/keys = {
 "values": [0]
 }
 
-[sub_resource type="Animation" id="Animation_tnvni"]
-length = 0.001
+[sub_resource type="Animation" id="Animation_j4frm"]
+resource_name = "idle"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
