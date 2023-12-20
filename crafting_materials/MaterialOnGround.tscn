@@ -1,9 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://cde3rf84rjigj"]
+[gd_scene load_steps=3 format=3 uid="uid://cde3rf84rjigj"]
 
 [ext_resource type="Script" path="res://crafting_materials/MaterialOnGround.gd" id="1_cp4rv"]
+[ext_resource type="Script" path="res://components/Item.gd" id="2_pgsq6"]
 
 [node name="MaterialOnGround" type="Node2D" groups=["material_on_ground"]]
 script = ExtResource("1_cp4rv")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = 3
+
+[node name="Item" type="Node" parent="."]
+script = ExtResource("2_pgsq6")

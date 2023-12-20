@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://dh81vo68ekn1p"]
+[gd_scene load_steps=8 format=3 uid="uid://dh81vo68ekn1p"]
 
 [ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://tasks/Task.tscn" id="1_fm161"]
 [ext_resource type="Script" path="res://tasks/bring_resource_task.gd" id="2_2s8wd"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_06fow"]
 [ext_resource type="PackedScene" uid="uid://bevd0ykcp7npk" path="res://tasks/actions/GoToAction.tscn" id="4_7mp0k"]
 [ext_resource type="Script" path="res://tasks/actions/FinishTask.gd" id="5_78qgj"]
+[ext_resource type="Script" path="res://tasks/actions/GetItemAmount.gd" id="5_d8kge"]
+[ext_resource type="Script" path="res://tasks/actions/PutItemToInventory.gd" id="6_rapg4"]
 
 [node name="BringResourceTask" instance=ExtResource("1_fm161")]
 script = ExtResource("2_2s8wd")
@@ -12,10 +14,19 @@ script = ExtResource("2_2s8wd")
 [node name="SequenceComposite" type="Node" parent="." index="0"]
 script = ExtResource("3_06fow")
 
-[node name="FetchResource" parent="SequenceComposite" index="0" instance=ExtResource("4_7mp0k")]
+[node name="GoToResource" parent="SequenceComposite" index="0" instance=ExtResource("4_7mp0k")]
 unique_name_in_owner = true
 
-[node name="GoToAction2" parent="SequenceComposite" index="1" instance=ExtResource("4_7mp0k")]
+[node name="GetItemFromGround" type="Node" parent="SequenceComposite" index="1"]
+unique_name_in_owner = true
+script = ExtResource("5_d8kge")
 
-[node name="FinishTask" type="Node" parent="SequenceComposite" index="2"]
+[node name="GoToBlueprint" parent="SequenceComposite" index="2" instance=ExtResource("4_7mp0k")]
+unique_name_in_owner = true
+
+[node name="PutItemToBlueprint" type="Node" parent="SequenceComposite" index="3"]
+unique_name_in_owner = true
+script = ExtResource("6_rapg4")
+
+[node name="FinishTask" type="Node" parent="SequenceComposite" index="4"]
 script = ExtResource("5_78qgj")

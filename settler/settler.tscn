@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=9 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="Texture2D" uid="uid://bgdpno3b05m2g" path="res://assets/settler.png" id="1_ryuwt"]
+[ext_resource type="Script" path="res://components/Inventory.gd" id="3_h7kst"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5eduo"]
 radius = 3.0
@@ -76,3 +77,6 @@ hframes = 6
 libraries = {
 "": SubResource("AnimationLibrary_fp115")
 }
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("3_h7kst")

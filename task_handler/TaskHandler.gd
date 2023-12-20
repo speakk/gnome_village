@@ -10,7 +10,7 @@ func _ready() -> void:
 var task_trees: Array[TaskTreeBranch] = []
 
 func _blueprint_placed(tile_position: Vector2i, blueprint: Blueprint) -> void:
-	var task_tree := blueprint_tree_creator.create_blueprint_task_tree(tile_position, blueprint) as TaskTreeBranch
+	var task_tree := blueprint_tree_creator.create_blueprint_task_tree(tile_position, blueprint, get_tree()) as TaskTreeBranch
 	task_trees.append(task_tree)
 	print("Got task tree", task_tree)
 

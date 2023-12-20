@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dbsef2dyv453"]
+[gd_scene load_steps=4 format=3 uid="uid://dbsef2dyv453"]
 
 [ext_resource type="Script" path="res://blueprint/Blueprint.gd" id="1_rypgn"]
 [ext_resource type="Texture2D" uid="uid://bntknuw5pjfhw" path="res://assets/tilesheet.png" id="2_2rs4v"]
+[ext_resource type="Script" path="res://components/Inventory.gd" id="3_bequ3"]
 
 [node name="Blueprint" type="Node2D"]
 script = ExtResource("1_rypgn")
@@ -10,3 +11,6 @@ script = ExtResource("1_rypgn")
 texture = ExtResource("2_2rs4v")
 hframes = 4
 frame = 1
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("3_bequ3")

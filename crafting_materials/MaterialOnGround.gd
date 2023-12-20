@@ -9,11 +9,18 @@ class_name MaterialOnGround
 var material_type: CraftingMaterials.CraftingMaterialId
 var crafting_material: CraftingMaterial
 
-func initialize(_material_type: CraftingMaterials.CraftingMaterialId) -> MaterialOnGround:
+func initialize(_material_type: CraftingMaterials.CraftingMaterialId, amount: int = 1) -> MaterialOnGround:
 	material_type = _material_type
+	$Item.amount = 1
+	$Item.id = _material_type
+	$Item.amount_changed.connect(_amount_changed)
 	
 	return self
 	
+func _amount_changed(new_amount: int) -> void:
+	if new_amount <= 0:
+		queue_free()
+
 func _ready() -> void:
 	crafting_material = crafting_materials.get_by_id(material_type)
 	sprite.texture = crafting_material.texture

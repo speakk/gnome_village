@@ -18,3 +18,11 @@ func increase_build_progress(amount: float) -> void:
 
 func is_finished() -> bool:
 	return build_progress >= 1.0
+
+func has_materials() -> bool:
+	var material_requirements := BuildingTypes.get_building_requirements(building_type)
+	
+	for deposited_item in $Inventory.get_items() as Array[Item]:
+		pass
+	
+	return true

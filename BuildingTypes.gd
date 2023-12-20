@@ -5,7 +5,7 @@ enum BuildingType {
 }
 
 var building_requirements := {
-	BuildingType.Wall: [MaterialRequirement.new(CraftingMaterials.CraftingMaterialId.Wood, 5)] as Array[MaterialRequirement]
+	BuildingType.Wall: [MaterialRequirement.new(CraftingMaterials.CraftingMaterialId.Wood, 1)] as Array[MaterialRequirement]
 }
 
 func get_building_requirements(building_type: BuildingType) -> Array[MaterialRequirement]:
