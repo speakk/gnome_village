@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://components/Inventory.gd" id="3_h7kst"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5eduo"]
-radius = 3.0
+radius = 1.0
 
 [sub_resource type="Animation" id="Animation_tnvni"]
 length = 0.001
@@ -66,6 +66,7 @@ motion_mode = 1
 script = ExtResource("1_ghp1u")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 8)
 shape = SubResource("CircleShape2D_5eduo")
 
 [node name="Sprite" type="Sprite2D" parent="."]

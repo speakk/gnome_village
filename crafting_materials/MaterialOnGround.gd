@@ -9,6 +9,8 @@ class_name MaterialOnGround
 var material_type: CraftingMaterials.CraftingMaterialId
 var crafting_material: CraftingMaterial
 
+var reserved_for_picking := false
+
 func initialize(_material_type: CraftingMaterials.CraftingMaterialId, amount: int = 1) -> MaterialOnGround:
 	material_type = _material_type
 	$Item.amount = 1

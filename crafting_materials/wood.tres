@@ -6,5 +6,6 @@
 [resource]
 script = ExtResource("1_jslwb")
 texture = ExtResource("2_cv8rt")
-sheet_coordinate = Vector2i(1, 0)
-id = "stone"
+hframes = 2
+vframes = 1
+frame = 0

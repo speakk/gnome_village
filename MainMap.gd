@@ -4,8 +4,8 @@ class_name MainMap
 
 @onready var BLUEPRINT := preload("res://blueprint/Blueprint.tscn")
 
-const MAP_SIZE_X: int = 120
-const MAP_SIZE_Y: int = 90
+const MAP_SIZE_X: int = 60
+const MAP_SIZE_Y: int = 40
 
 enum Layers {
 	Ground, Building, Materials
@@ -31,6 +31,7 @@ func _ready() -> void:
 	
 	# TODO: Instead of this, keep a proper x-y map of entities so you don't have to rely on tile_data
 	set_layer_modulate(Layers.Building, Color.TRANSPARENT)
+	set_layer_modulate(Layers.Ground, Color(0.7, 0.7, 0.7))
 	
 	Events.map_ready.emit(self)
 

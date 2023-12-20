@@ -12,7 +12,6 @@ var task_trees: Array[TaskTreeBranch] = []
 func _blueprint_placed(tile_position: Vector2i, blueprint: Blueprint) -> void:
 	var task_tree := blueprint_tree_creator.create_blueprint_task_tree(tile_position, blueprint, get_tree()) as TaskTreeBranch
 	task_trees.append(task_tree)
-	print("Got task tree", task_tree)
 
 func get_available_settler(task: Variant) -> Settler:
 	var settlers := get_tree().get_nodes_in_group("settler") as Array[Node]
@@ -36,7 +35,6 @@ func get_available_settler(task: Variant) -> Settler:
 			return a.global_position.distance_to(target) < b.global_position.distance_to(target)
 		)
 		
-		print("Returning in hubabab")
 		return available.front()
 		
 	else:
@@ -53,14 +51,11 @@ func _process(delta: float) -> void:
 	task_process_timer += delta
 	if task_process_timer >= task_process_delay:
 		for task_tree in task_trees:
-			print("Trying to get next available task")
 			var next_available_task: Variant = get_next_available_task(task_tree)
 			if next_available_task:
 				var available_settler := get_available_settler(next_available_task)
 				if available_settler:
 					available_settler.start_task(next_available_task)
-					#print("Started task: ", next_available_task)
-					print("GOT AND STARTED TASK: ", next_available_task)
 		
 		task_process_timer = 0
 
