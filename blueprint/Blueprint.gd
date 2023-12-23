@@ -7,15 +7,18 @@ var building_type: BuildingTypes.BuildingType
 
 func initialize(_building_type: BuildingTypes.BuildingType) -> Blueprint:
 	building_type = _building_type
-	modulate = Color(0.2, 0.2, 1.0, 0.2)
+	$Sprite2D.modulate = Color(0.2, 0.2, 1.0, 0.2)
+	$ProgressBar.value = build_progress
 	return self
 
 func increase_build_progress(amount: float) -> void:
 	build_progress += amount
+	$ProgressBar.value = build_progress
 	if is_finished():
 		Events.blueprint_finished.emit(self)
 		Events.solid_cell_placed.emit(Globals.get_map().local_to_map(global_position))
-		modulate = Color.WHITE
+		$Sprite2D.modulate = Color.WHITE
+		$ProgressBar.hide()
 
 func is_finished() -> bool:
 	return build_progress >= 1.0

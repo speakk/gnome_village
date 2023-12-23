@@ -1,8 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://dbsef2dyv453"]
+[gd_scene load_steps=6 format=3 uid="uid://dbsef2dyv453"]
 
 [ext_resource type="Script" path="res://blueprint/Blueprint.gd" id="1_rypgn"]
 [ext_resource type="Texture2D" uid="uid://bntknuw5pjfhw" path="res://assets/tilesheet.png" id="2_2rs4v"]
 [ext_resource type="Script" path="res://components/Inventory.gd" id="3_bequ3"]
+
+[sub_resource type="Gradient" id="Gradient_fm3l8"]
+colors = PackedColorArray(0.492029, 0.550781, 0.333705, 1, 1, 0.936739, 0.577836, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_kfmrl"]
+gradient = SubResource("Gradient_fm3l8")
 
 [node name="Blueprint" type="Node2D"]
 script = ExtResource("1_rypgn")
@@ -14,3 +20,14 @@ frame = 1
 
 [node name="Inventory" type="Node" parent="."]
 script = ExtResource("3_bequ3")
+
+[node name="ProgressBar" type="TextureProgressBar" parent="."]
+offset_left = -12.0
+offset_top = 7.0
+offset_right = 11.0
+offset_bottom = 11.0
+max_value = 1.0
+step = 0.01
+value = 0.2
+nine_patch_stretch = true
+texture_progress = SubResource("GradientTexture2D_kfmrl")

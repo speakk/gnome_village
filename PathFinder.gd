@@ -22,6 +22,7 @@ func get_point_path(from: Vector2i, to: Vector2i) -> PackedVector2Array:
 	return astar_grid.get_point_path(from, to)
 
 func get_id_path(from: Vector2i, to: Vector2i) -> PackedVector2Array:
+	print("Getting id path")
 	return astar_grid.get_id_path(from, to)
 
 func get_point_position(id: Vector2i) -> Vector2:
