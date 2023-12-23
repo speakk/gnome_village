@@ -6,6 +6,8 @@ class_name MainMap
 
 const MAP_SIZE_X: int = 60
 const MAP_SIZE_Y: int = 40
+const CELL_SIZE := Vector2i(24, 24)
+
 
 enum Layers {
 	Ground, Building, Materials

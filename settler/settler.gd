@@ -12,6 +12,9 @@ var current_task: Task
 var target: Variant # Vector2 | Null
 var build_target: Blueprint
 
+var path: Variant # PackedVector2Array | Null
+var current_path_index: int = 0
+
 # TODO: If we end up needing this elsewhere, stick it somewhere global
 # This is copied from Beehive which doesn't expose a name for the enum
 enum TaskResult {
@@ -33,11 +36,34 @@ func _task_finished(task: Task) -> void:
 		##print("Ticking?")
 		#current_task.tick()
 
+func get_direction_to_next_path_point() -> Vector2:
+	#print("Next path point: ", PathFinder.get_point_position(path[current_path_index]))
+	#var point_position := PathFinder.get_point_position(path[current_path_index])
+	var point_position := path[current_path_index] as Vector2
+	return global_position.direction_to(Globals.get_map().map_to_local(point_position))
+
+func advance_path_index() -> void:
+	if path:
+		if global_position.distance_to(Globals.get_map().map_to_local(path[current_path_index])) < TARGET_DISTANCE_TRESHOLD / 3:
+			current_path_index += 1
+			if current_path_index > path.size() - 1:
+				# TODO: Emit path finished event if needed?
+				#_finished_path()
+				path = null
+				current_path_index = 0
+
+func _finished_path() -> void:
+	pass
+
 func _physics_process(delta: float) -> void:
 	velocity = Vector2.ZERO
-	if target:
-		#global_position += global_position.direction_to(target) * delta * walk_speed
-		velocity = global_position.direction_to(target) * walk_speed
+	advance_path_index()
+	
+	#if target:
+		#velocity = global_position.direction_to(target) * walk_speed
+	
+	if path:
+		velocity = get_direction_to_next_path_point() * walk_speed
 	
 	if build_target:
 		build_target.increase_build_progress(build_speed * delta)
@@ -83,10 +109,16 @@ func get_task_status() -> int:
 	return current_task.get_last_tick_status()
 
 func set_target(_target: Variant) -> void:
+	if !target or (_target and not (_target as Vector2).is_equal_approx(target)):
+		var map_position_from := Globals.get_map().local_to_map(global_position)
+		var map_position_to := Globals.get_map().local_to_map(_target)
+		path = PathFinder.get_id_path(map_position_from, map_position_to)
+		current_path_index = 0
 	target = _target
+	
 	
 func set_build_target(_build_target: Variant) -> void:
 	build_target = _build_target
 
 func is_next_to_target(_target: Vector2) -> bool:
-	return global_position.distance_to(_target) <= TARGET_DISTANCE_TRESHOLD
+	return global_position.distance_to(_target) <= TARGET_DISTANCE_TRESHOLD * 2

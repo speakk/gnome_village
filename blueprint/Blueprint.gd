@@ -14,6 +14,7 @@ func increase_build_progress(amount: float) -> void:
 	build_progress += amount
 	if is_finished():
 		Events.blueprint_finished.emit(self)
+		Events.solid_cell_placed.emit(Globals.get_map().local_to_map(global_position))
 		modulate = Color.WHITE
 
 func is_finished() -> bool:
