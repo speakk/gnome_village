@@ -22,8 +22,10 @@ func get_available_settler(task: Variant) -> Settler:
 		var target_tile := task.target_tile as Vector2i
 		target = Globals.map.map_to_local(target_tile)
 	
-	if "target" in task:
-		target = task.target.global_position
+	# TODO: Make "settler picker heuristic" function or whatever
+	# for each task type that defines how settlers are prioritized
+	if "blueprint" in task:
+		target = task.blueprint.global_position
 	
 	if target:
 		var settlers_clone := settlers.duplicate()

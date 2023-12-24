@@ -1,11 +1,13 @@
-extends CharacterBody2D
+extends Node2D
 
 class_name Settler
 
-const TARGET_DISTANCE_TRESHOLD := 10.0
+const TARGET_DISTANCE_TRESHOLD := MainMap.CELL_SIZE.x * 1.2
 
 var walk_speed := 100.0
 var build_speed := 0.3
+
+var velocity := Vector2(0, 0)
 
 var current_task: Task
 
@@ -55,6 +57,9 @@ func advance_path_index() -> void:
 func _finished_path() -> void:
 	pass
 
+func move_and_slide(delta: float) -> void:
+	global_position += velocity * delta
+
 func _physics_process(delta: float) -> void:
 	velocity = Vector2.ZERO
 	advance_path_index()
@@ -79,7 +84,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		$AnimationPlayer.play("idle")
 	
-	move_and_slide()
+	move_and_slide(delta)
 
 func get_current_task() -> Task:
 	return current_task
@@ -99,9 +104,6 @@ func finish_current_task() -> void:
 	Events.task_finished.emit(current_task)
 	# TODO: Queue free task at some point maybe... Not now though
 
-#func tick_current_task() -> int:
-	#return current_task.tick()
-
 func is_available_for_work() -> bool:
 	return current_task == null
 
@@ -115,7 +117,9 @@ func set_target(_target: Variant) -> void:
 		path = PathFinder.get_id_path(map_position_from, map_position_to)
 		current_path_index = 0
 	target = _target
-	
+
+func check_if_in_valid_position() -> void:
+	pass
 	
 func set_build_target(_build_target: Variant) -> void:
 	build_target = _build_target

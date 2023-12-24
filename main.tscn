@@ -10,6 +10,7 @@ background_mode = 1
 background_color = Color(0.2, 0.337255, 0.576471, 1)
 
 [node name="Main" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("1_j8rqp")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
