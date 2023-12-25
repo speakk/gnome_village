@@ -18,12 +18,11 @@ config/icon="res://icon.svg"
 [autoload]
 
 Events="*res://Events.gd"
-Materials="*res://crafting_materials/MaterialRequirement.gd"
-BuildingTypes="*res://BuildingTypes.gd"
 BeehaveGlobalMetrics="*res://addons/beehave/metrics/beehave_global_metrics.gd"
 BeehaveGlobalDebugger="*res://addons/beehave/debug/global_debugger.gd"
 Globals="*res://Globals.gd"
 PathFinder="*res://PathFinder.gd"
+Items="*res://items/Items.gd"
 
 [debug]
 
@@ -38,6 +37,10 @@ window/stretch/scale_mode="integer"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/beehave/plugin.cfg")
+
+[global_group]
+
+item_on_ground="Items On Ground"
 
 [input]
 

@@ -54,7 +54,7 @@ func get_closest_free_point(coordinate: Vector2i) -> Variant:
 	return null
 
 func get_id_path(from: Vector2i, to: Vector2i) -> PackedVector2Array:
-	print("Getting id path")
+	#print("Getting id path: ", from, to)
 	var found_path := astar_grid.get_id_path(from, to)
 	#if found_path:
 	#	found_path.pop_back()

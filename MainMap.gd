@@ -54,7 +54,7 @@ func _process(delta: float) -> void:
 			set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
 			
 			#var blueprint := Blueprint.new().initialize(BuildingTypes.BuildingType.Wall)
-			var blueprint := (BLUEPRINT.instantiate() as Blueprint).initialize(BuildingTypes.BuildingType.Wall)
+			var blueprint := (BLUEPRINT.instantiate() as Blueprint).initialize(Items.Id.WoodenWall)
 			blueprint.global_position = map_to_local(tile_position)
 			#%Entities.add_child(blueprint)
 			get_tree().root.get_node("Main").add_child(blueprint)

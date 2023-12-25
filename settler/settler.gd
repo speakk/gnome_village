@@ -126,6 +126,7 @@ func set_target(_target: Variant) -> void:
 		path = PathFinder.get_id_path(map_position_from, map_position_to)
 		current_path_index = 0
 	target = _target
+	print("Set the target as: ", target)
 
 func ensure_valid_position() -> void:
 	if not is_in_valid_position():

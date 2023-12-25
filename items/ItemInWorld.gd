@@ -1,6 +1,8 @@
 extends Node
 
-class_name Item
+class_name ItemInWorld
+
+var item_type: Item
 
 signal amount_changed(new_amount: int)
 
@@ -9,4 +11,4 @@ var amount: int = 1:
 		amount = new_amount
 		amount_changed.emit(new_amount)
 		
-var id: Variant
+#var id: Variant

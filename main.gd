@@ -1,7 +1,7 @@
 extends Node2D
 
 @onready var SETTLER := preload("res://settler/settler.tscn")
-@onready var MATERIAL_ON_GROUND := preload("res://crafting_materials/MaterialOnGround.tscn")
+@onready var ITEM_ON_GROUND := preload("res://items/ItemOnGround.tscn")
 
 func _ready() -> void:
 	var test_divider := 1
@@ -13,10 +13,9 @@ func _ready() -> void:
 		settler.global_position = Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
 		add_child(settler)
 
-	#var material_types: Array[CraftingMaterials.CraftingMaterialId] = [CraftingMaterials.CraftingMaterialId.Wood, CraftingMaterials.CraftingMaterialId.Stone]
-	var material_types: Array[CraftingMaterials.CraftingMaterialId] = [CraftingMaterials.CraftingMaterialId.Wood]
+	var item_types: Array[Items.Id] = [Items.Id.Wood]
 
 	for i in 30:
-		var material_on_ground := (MATERIAL_ON_GROUND.instantiate() as MaterialOnGround).initialize(material_types.pick_random())
-		material_on_ground.global_position = Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
-		add_child(material_on_ground)
+		var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(item_types.pick_random())
+		item_on_ground.global_position = Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
+		add_child(item_on_ground)

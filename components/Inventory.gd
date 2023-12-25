@@ -2,43 +2,31 @@ extends Node
 
 class_name Inventory
 
+class InventoryItemAmount:
+	var amount: int
+	var item_id: Items.Id
+	
+	func _init(_amount: int = 0, _item_id: Items.Id = Items.Id.Wood) -> void:
+		amount = _amount
+		item_id = item_id
+
 var item_amounts: Dictionary = {}
 
 signal item_added(item_id: Variant, amount: int)
 signal item_removed(item_id: Variant, amount: int)
 
-func add_item(item: Item) -> void:
-	var id: Variant = item.id
-	if not item_amounts.has(id):
-		item_amounts[id] = 0
-	
-	item_amounts[id] += item.amount
-	item_added.emit(item.id, item.amount)
-
-func remove_item(item: Item) -> void:
-	item_amounts[item.id] -= item.amount
-	if item_amounts[item.id] <= 0:
-		item_amounts.erase(item.id)
-	
-	item_removed.emit(item.id, item.amount)
-
 func add_item_amount(item_id: Variant, amount: int) -> void:
 	if not item_amounts.has(item_id):
-		item_amounts[item_id] = 0
+		item_amounts[item_id] = InventoryItemAmount.new(0, item_id)
 		
-	item_amounts[item_id] += amount
+	item_amounts[item_id].amount += amount
 	item_added.emit(item_id, amount)
 
 func remove_item_amount(item_id: Variant, amount: int) -> void:
 	if not item_amounts.has(item_id):
-		item_amounts[item_id] = 0
-	item_amounts[item_id] -= amount
+		item_amounts[item_id] = InventoryItemAmount.new(0, item_id)
+	item_amounts[item_id].amount -= amount
 	item_removed.emit(item_id, amount)
 
 func get_items() -> Array[Item]:
-	return item_amounts.keys().map(func(key: Variant) -> Item:
-		var item := Item.new()
-		item.id = key
-		item.amount = item_amounts[key]
-		return item
-	)
+	return item_amounts.values()

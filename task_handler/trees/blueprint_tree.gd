@@ -8,14 +8,14 @@ func create_blueprint_task_tree(tile_target: Vector2i, blueprint: Blueprint, sce
 	blueprint_tree.order_type = TaskTreeBranch.OrderType.Sequence
 	blueprint_tree.name = "Blueprint_Tree"
 	
-	var building_type := blueprint.building_type
-	var material_requirements := BuildingTypes.get_building_requirements(building_type)
+	var item_id := blueprint.item_id
+	var material_requirements := Items.get_crafting_requirements(item_id)
 	
 	var bring_resources := TaskTreeBranch.new()
 	bring_resources.order_type = TaskTreeBranch.OrderType.Parallel
 	bring_resources.name = "Bring_Resources_Parallel"
 	
-	for material_requirement in material_requirements as Array[MaterialRequirement]:
+	for material_requirement in material_requirements as Array[ItemRequirement]:
 		#var bring_resource_task := 
 		var bring_resource_leaf := TaskTreeLeaf.new()
 		bring_resource_leaf.name = "Bring_Resource_Leaf"

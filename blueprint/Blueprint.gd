@@ -3,10 +3,10 @@ extends Node2D
 class_name Blueprint
 
 var build_progress := 0.0
-var building_type: BuildingTypes.BuildingType
+var item_id: Items.Id
 
-func initialize(_building_type: BuildingTypes.BuildingType) -> Blueprint:
-	building_type = _building_type
+func initialize(_item_id: Items.Id) -> Blueprint:
+	item_id = _item_id
 	$Sprite2D.modulate = Color(0.2, 0.2, 1.0, 0.2)
 	$ProgressBar.value = build_progress
 	return self
@@ -24,9 +24,13 @@ func is_finished() -> bool:
 	return build_progress >= 1.0
 
 func has_materials() -> bool:
-	var material_requirements := BuildingTypes.get_building_requirements(building_type)
+	var material_requirements := Items.get_crafting_requirements(item_id)
 	
-	for deposited_item in $Inventory.get_items() as Array[Item]:
-		pass
+	for requirement in material_requirements:
+		var deposited := $Inventory.get_items().find(func(depo: Inventory.InventoryItemAmount) -> bool: return depo.id == requirement.item_id) as Inventory.InventoryItemAmount
+		if deposited.amount < requirement.amount:
+			return false
+	#for deposited_item in $Inventory.get_items() as Array[Item]:
+		
 	
 	return true
