@@ -113,5 +113,3 @@ script = ExtResource("2_c6gph")
 unique_name_in_owner = true
 z_index = 6
 z_as_relative = false
-
-[node name="Area2D" type="Area2D" parent="."]
