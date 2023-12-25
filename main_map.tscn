@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://b4nj0xntglt07"]
 
 [ext_resource type="Texture2D" uid="uid://bntknuw5pjfhw" path="res://assets/tilesheet.png" id="1_fv3c2"]
-[ext_resource type="Texture2D" uid="uid://dtg4ryorbpwuw" path="res://assets/wall_autotiles.png" id="2_0nr5e"]
 [ext_resource type="Script" path="res://MainMap.gd" id="2_c6gph"]
+[ext_resource type="Texture2D" uid="uid://coxwefohcoj31" path="res://assets/wall_autotiles2.png" id="2_djkpl"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xylra"]
 texture = ExtResource("1_fv3c2")
@@ -11,7 +11,7 @@ texture_region_size = Vector2i(24, 24)
 1:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6kq6j"]
-texture = ExtResource("2_0nr5e")
+texture = ExtResource("2_djkpl")
 texture_region_size = Vector2i(24, 24)
 0:0/0 = 0
 0:0/0/terrain_set = 0
