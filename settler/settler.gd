@@ -2,7 +2,7 @@ extends Node2D
 
 class_name Settler
 
-const TARGET_DISTANCE_TRESHOLD := MainMap.CELL_SIZE.x * 1.2
+const TARGET_DISTANCE_TRESHOLD := MainMap.CELL_SIZE.x * 1.1
 
 var walk_speed := 100.0
 var build_speed := 0.3
@@ -16,6 +16,9 @@ var build_target: Blueprint
 
 var path: Variant # PackedVector2Array | Null
 var current_path_index: int = 0
+
+var valid_position_timer := 0.0
+var valid_position_interval := 1.0
 
 # TODO: If we end up needing this elsewhere, stick it somewhere global
 # This is copied from Beehive which doesn't expose a name for the enum
@@ -85,6 +88,12 @@ func _physics_process(delta: float) -> void:
 		$AnimationPlayer.play("idle")
 	
 	move_and_slide(delta)
+	
+	# TODO: Handle this betterer at some point
+	valid_position_timer += delta
+	if valid_position_timer >= valid_position_interval:
+		ensure_valid_position()
+		valid_position_timer = 0
 
 func get_current_task() -> Task:
 	return current_task
@@ -118,11 +127,18 @@ func set_target(_target: Variant) -> void:
 		current_path_index = 0
 	target = _target
 
-func check_if_in_valid_position() -> void:
-	pass
+func ensure_valid_position() -> void:
+	if not is_in_valid_position():
+		var free_coordinate := PathFinder.get_closest_free_point(Globals.get_map().local_to_map(global_position)) as Vector2i
+		if free_coordinate:
+			var new_position := Globals.get_map().map_to_local(free_coordinate)
+			global_position = new_position
+
+func is_in_valid_position() -> bool:
+	return not PathFinder.is_position_solid(Globals.get_map().local_to_map(global_position))
 	
 func set_build_target(_build_target: Variant) -> void:
 	build_target = _build_target
 
 func is_next_to_target(_target: Vector2) -> bool:
-	return global_position.distance_to(_target) <= TARGET_DISTANCE_TRESHOLD * 2
+	return global_position.distance_to(_target) <= TARGET_DISTANCE_TRESHOLD

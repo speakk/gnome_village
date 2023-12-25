@@ -14,6 +14,7 @@ gradient = SubResource("Gradient_fm3l8")
 script = ExtResource("1_rypgn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 texture = ExtResource("2_2rs4v")
 hframes = 4
 frame = 1

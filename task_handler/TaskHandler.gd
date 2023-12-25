@@ -37,7 +37,8 @@ func get_available_settler(task: Variant) -> Settler:
 			return a.global_position.distance_to(target) < b.global_position.distance_to(target)
 		)
 		
-		return available.front()
+		if available.size() > 0:
+			return available.front()
 		
 	else:
 		for settler in settlers:
