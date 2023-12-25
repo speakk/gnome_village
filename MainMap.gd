@@ -43,7 +43,7 @@ func _ready() -> void:
 	Events.map_ready.emit(self)
 
 func _process(delta: float) -> void:
-	if Input.is_action_pressed("map_interact_a"):
+	if is_mouse_pressed:
 		var tile_position: Vector2i = local_to_map(get_local_mouse_position())
 		var source_id := get_cell_source_id(Layers.Building, tile_position)
 		var source_id2 := get_cell_source_id(Layers.Blueprint, tile_position)
@@ -60,6 +60,19 @@ func _process(delta: float) -> void:
 			get_tree().root.get_node("Main").add_child(blueprint)
 			
 			Events.blueprint_placed.emit(tile_position, blueprint)
+			#get_tree().root.get_viewport().set_input_as_handled()
+
+var is_mouse_pressed := false
+
+# TODO: You could use an Area2D and the input_event in that to handle this instead
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.is_pressed():
+			is_mouse_pressed = true
+		else:
+			is_mouse_pressed = false
+		
+			
 
 func _blueprint_finished(blueprint: Blueprint) -> void:
 	var tile_position := local_to_map(blueprint.global_position)

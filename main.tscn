@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://ubgvap601f4j"]
+[gd_scene load_steps=7 format=3 uid="uid://ubgvap601f4j"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j8rqp"]
 [ext_resource type="PackedScene" uid="uid://b4nj0xntglt07" path="res://main_map.tscn" id="1_lsh5n"]
 [ext_resource type="Script" path="res://MainCamera.gd" id="2_bak4i"]
+[ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://gui/gui.tscn" id="5_4nnuu"]
 [ext_resource type="Script" path="res://task_handler/TaskHandler.gd" id="6_pe6uu"]
 
 [sub_resource type="Environment" id="Environment_uqvws"]
@@ -15,6 +16,10 @@ script = ExtResource("1_j8rqp")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_uqvws")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GUI" parent="CanvasLayer" instance=ExtResource("5_4nnuu")]
 
 [node name="MainMap" parent="." instance=ExtResource("1_lsh5n")]
 

@@ -1,0 +1,74 @@
+[gd_scene load_steps=2 format=3 uid="uid://cynniosvk7y2r"]
+
+[ext_resource type="Script" path="res://gui/gui.gd" id="1_jqq6f"]
+
+[node name="GUI" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1_jqq6f")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="BuildButton" type="Button" parent="PanelContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Build"
+
+[node name="PlantButton" type="Button" parent="PanelContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Plant
+"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_bottom = 35
+
+[node name="SubMenuContainer" type="PanelContainer" parent="MarginContainer"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(200, 400)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="BuildMenu" type="PanelContainer" parent="MarginContainer/SubMenuContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="BuildOptions" type="VBoxContainer" parent="MarginContainer/SubMenuContainer/BuildMenu"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Button" type="Button" parent="MarginContainer/SubMenuContainer/BuildMenu/BuildOptions"]
+layout_mode = 2
+text = "Wall"
+
+[node name="PlantMenu" type="PanelContainer" parent="MarginContainer/SubMenuContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="PlantOptions" type="VBoxContainer" parent="MarginContainer/SubMenuContainer/PlantMenu"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Button" type="Button" parent="MarginContainer/SubMenuContainer/PlantMenu/PlantOptions"]
+layout_mode = 2
+text = "Tree"
+
+[connection signal="pressed" from="PanelContainer/HBoxContainer/BuildButton" to="." method="_on_build_button_pressed"]
+[connection signal="pressed" from="PanelContainer/HBoxContainer/PlantButton" to="." method="_on_plant_button_pressed"]

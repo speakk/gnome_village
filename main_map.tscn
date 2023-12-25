@@ -99,7 +99,7 @@ texture_region_size = Vector2i(24, 24)
 [sub_resource type="TileSet" id="TileSet_17sb5"]
 tile_size = Vector2i(24, 24)
 terrain_set_0/mode = 0
-terrain_set_0/terrain_0/name = "Terrain 0"
+terrain_set_0/terrain_0/name = "walls"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
 sources/0 = SubResource("TileSetAtlasSource_xylra")
 sources/1 = SubResource("TileSetAtlasSource_6kq6j")
@@ -113,3 +113,5 @@ script = ExtResource("2_c6gph")
 unique_name_in_owner = true
 z_index = 6
 z_as_relative = false
+
+[node name="Area2D" type="Area2D" parent="."]
