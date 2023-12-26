@@ -9,3 +9,6 @@ signal task_assigner_finished(task_assigner: Variant)
 signal map_ready(map: MainMap)
 signal solid_cell_placed(coordinate: Vector2i)
 signal solid_cell_removed(coordinate: Vector2i)
+
+signal terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
+						terrain_set_id: int, terrain_id: int, is_solid: bool)

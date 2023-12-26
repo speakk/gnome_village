@@ -39,6 +39,7 @@ func _ready() -> void:
 	set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
 	
 	Events.blueprint_finished.connect(_blueprint_finished)
+	Events.terrain_placed.connect(_terrain_placed)
 	
 	Events.map_ready.emit(self)
 
@@ -74,9 +75,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 			
 
+func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
+						terrain_set_id: int, terrain_id: int, is_solid: bool) -> void:
+	set_cells_terrain_connect(target_layer, [coordinate], terrain_set_id, terrain_id)
+
+# TODO: Also _blueprint_removed
 func _blueprint_finished(blueprint: Blueprint) -> void:
 	var tile_position := local_to_map(blueprint.global_position)
-	#set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
 	set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
-	set_cells_terrain_connect(Layers.Building, [tile_position], 0, 0)
-	#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(1, 0))
+	##set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
+	#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
+	#set_cells_terrain_connect(Layers.Building, [tile_position], 0, 0)
+	##set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(1, 0))

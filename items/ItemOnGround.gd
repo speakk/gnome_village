@@ -23,8 +23,16 @@ func _amount_changed(new_amount: int) -> void:
 		queue_free()
 
 func _ready() -> void:
-	item = Items.get_by_id(item_id)
-	sprite.texture = item.texture
-	sprite.hframes = item.hframes
-	sprite.vframes = item.vframes
-	sprite.frame = item.frame
+	item = Items.get_by_id(item_id) as Item
+
+	sprite.visible = false
+	
+	if item.rendering_type == Item.RenderingType.Sprite:
+		sprite.visible = true
+		sprite.texture = item.texture
+		sprite.hframes = item.hframes
+		sprite.vframes = item.vframes
+		sprite.frame = item.frame
+	elif item.rendering_type == Item.RenderingType.Terrain:
+		var coordinates := Globals.get_map().local_to_map(global_position)
+		Events.terrain_placed.emit(coordinates, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid)

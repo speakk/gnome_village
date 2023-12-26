@@ -5,13 +5,13 @@ enum Id {
 }
 
 var list := {
-	Id.Stone: preload("res://items/item_data/stone.tres"),
-	Id.Wood: preload("res://items/item_data/wood.tres"),
-	Id.WoodenWall: preload("res://items/item_data/wooden_wall.tres"),
+	Id.Stone: load("res://items/item_data/stone.tres"),
+	Id.Wood: load("res://items/item_data/wood.tres"),
+	Id.WoodenWall: load("res://items/item_data/wooden_wall.tres"),
 }
 
 func get_by_id(id: Id) -> Item:
-	return list[id]
+	return list[id] as Item
 
 func get_constructable_item_ids() -> Array[Id]:
 	var result: Array[Id] = []

@@ -2,6 +2,8 @@ extends Node2D
 
 class_name Blueprint
 
+@onready var ITEM_ON_GROUND := preload("res://items/ItemOnGround.tscn")
+
 var build_progress := 0.0
 var item_id: Items.Id
 
@@ -11,14 +13,24 @@ func initialize(_item_id: Items.Id) -> Blueprint:
 	$ProgressBar.value = build_progress
 	return self
 
+func finish_construction() -> void:
+	Events.blueprint_finished.emit(self)
+	Events.solid_cell_placed.emit(Globals.get_map().local_to_map(global_position))
+	$Sprite2D.modulate = Color.WHITE
+	$ProgressBar.hide()
+	
+	await get_tree().process_frame
+	
+	var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(item_id, 1)
+	item_on_ground.global_position = global_position
+	get_parent().add_child(item_on_ground)
+	queue_free()
+
 func increase_build_progress(amount: float) -> void:
 	build_progress += amount
 	$ProgressBar.value = build_progress
 	if is_finished():
-		Events.blueprint_finished.emit(self)
-		Events.solid_cell_placed.emit(Globals.get_map().local_to_map(global_position))
-		$Sprite2D.modulate = Color.WHITE
-		$ProgressBar.hide()
+		finish_construction()
 
 func is_finished() -> bool:
 	return build_progress >= 1.0

@@ -27,4 +27,5 @@ enum RenderingType {
 @export_category("Behaviour")
 @export var can_be_picked: bool = true
 @export var can_be_constructed: bool = false
+@export var is_solid: bool = false
 @export var crafting_requirements: Array[ItemRequirement] = []

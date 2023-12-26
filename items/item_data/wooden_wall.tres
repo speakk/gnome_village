@@ -23,4 +23,5 @@ terrain_id = 0
 target_layer = 1
 can_be_picked = false
 can_be_constructed = true
+is_solid = true
 crafting_requirements = Array[ExtResource("1_3k661")]([SubResource("Resource_8qi6u")])
