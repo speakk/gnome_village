@@ -4,10 +4,10 @@ enum Id {
 	Stone, Wood, WoodenWall
 }
 
-var list := {
-	Id.Stone: load("res://items/item_data/stone.tres"),
-	Id.Wood: load("res://items/item_data/wood.tres"),
-	Id.WoodenWall: load("res://items/item_data/wooden_wall.tres"),
+var list: Dictionary = {
+	Id.Stone: load("res://items/item_data/stone.tres") as Item,
+	Id.Wood: load("res://items/item_data/wood.tres") as Item,
+	Id.WoodenWall: load("res://items/item_data/wooden_wall.tres") as Item,
 }
 
 func get_by_id(id: Id) -> Item:
