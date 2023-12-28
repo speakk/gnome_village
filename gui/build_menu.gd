@@ -10,4 +10,8 @@ func _ready() -> void:
 		var item := Items.get_by_id(item_id)
 		var button := Button.new()
 		button.text = item.display_name
+		button.pressed.connect(_construction_button_pressed.bind(item))
 		%BuildOptions.add_child(button)
+
+func _construction_button_pressed(item: Item) -> void:
+	Events.construction_selected.emit(item)

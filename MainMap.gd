@@ -8,6 +8,7 @@ const MAP_SIZE_X: int = 15
 const MAP_SIZE_Y: int = 15
 const CELL_SIZE := Vector2i(24, 24)
 
+var construction_item: Variant # Item | null
 
 enum Layers {
 	Ground, Building, Materials, Blueprint
@@ -28,6 +29,9 @@ func _ready() -> void:
 	add_layer(Layers.Materials)
 	add_layer(Layers.Blueprint)
 	
+	%HoverRect.size.x = CELL_SIZE.x
+	%HoverRect.size.y = CELL_SIZE.y
+	%HoverRect.visible = false
 	
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
@@ -41,27 +45,35 @@ func _ready() -> void:
 	Events.blueprint_finished.connect(_blueprint_finished)
 	Events.terrain_placed.connect(_terrain_placed)
 	
+	Events.construction_selected.connect(_construction_selected)
+	
 	Events.map_ready.emit(self)
 
 func _process(delta: float) -> void:
-	if is_mouse_pressed:
+	%HoverRect.visible = false
+	if construction_item:
 		var tile_position: Vector2i = local_to_map(get_local_mouse_position())
-		var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
-		
-	# 	TODO: Instead of this, keep a proper x-y map of entities so you don't have to rely on tile_data
-		#if source_id < 0 and source_id2 < 0:
-		if not PathFinder.is_position_solid(tile_position) and source_id < 0:
-			#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(1, 0))
-			set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
+		if PathFinder.is_valid_position(tile_position):
+			%HoverRect.position = map_to_local(tile_position) - Vector2(CELL_SIZE / 2)
+			%HoverRect.visible = true
 			
-			#var blueprint := Blueprint.new().initialize(BuildingTypes.BuildingType.Wall)
-			var blueprint := (BLUEPRINT.instantiate() as Blueprint).initialize(Items.Id.WoodenWall)
-			blueprint.global_position = coordinate_to_global_position(tile_position)
-			#%Entities.add_child(blueprint)
-			get_tree().root.get_node("Main").add_child(blueprint)
-			
-			Events.blueprint_placed.emit(tile_position, blueprint)
-			#get_tree().root.get_viewport().set_input_as_handled()
+			if is_mouse_pressed:
+				var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
+				
+			# 	TODO: Instead of this, keep a proper x-y map of entities so you don't have to rely on tile_data
+				#if source_id < 0 and source_id2 < 0:
+				if not PathFinder.is_position_solid(tile_position) and source_id < 0:
+					#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(1, 0))
+					set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
+					
+					#var blueprint := Blueprint.new().initialize(BuildingTypes.BuildingType.Wall)
+					var blueprint := (BLUEPRINT.instantiate() as Blueprint).initialize(Items.Id.WoodenWall)
+					blueprint.global_position = coordinate_to_global_position(tile_position)
+					#%Entities.add_child(blueprint)
+					get_tree().root.get_node("Main").add_child(blueprint)
+					
+					Events.blueprint_placed.emit(tile_position, blueprint)
+					#get_tree().root.get_viewport().set_input_as_handled()
 
 var is_mouse_pressed := false
 
@@ -93,3 +105,6 @@ func _blueprint_finished(blueprint: Blueprint) -> void:
 	#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
 	#set_cells_terrain_connect(Layers.Building, [tile_position], 0, 0)
 	##set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(1, 0))
+
+func _construction_selected(item: Item) -> void:
+	construction_item = item
