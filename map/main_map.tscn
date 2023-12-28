@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bntknuw5pjfhw" path="res://assets/tilesheet.png" id="1_fv3c2"]
 [ext_resource type="Script" path="res://map/MainMap.gd" id="2_c6gph"]
 [ext_resource type="Texture2D" uid="uid://coxwefohcoj31" path="res://assets/wall_autotiles2.png" id="2_djkpl"]
-[ext_resource type="PackedScene" uid="uid://dne87g24k5sqp" path="res://map/hover_rect.tscn" id="4_4dj8g"]
+[ext_resource type="Script" path="res://map/HoverRectDraw.gd" id="5_scvtq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xylra"]
 texture = ExtResource("1_fv3c2")
@@ -115,7 +115,7 @@ unique_name_in_owner = true
 z_index = 6
 z_as_relative = false
 
-[node name="HoverRect" parent="." instance=ExtResource("4_4dj8g")]
-unique_name_in_owner = true
-
 [node name="LineHoverRects" type="Node" parent="."]
+
+[node name="HoverRectDraw" type="Node2D" parent="."]
+script = ExtResource("5_scvtq")

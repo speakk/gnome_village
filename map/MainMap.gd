@@ -30,8 +30,6 @@ func _ready() -> void:
 	add_layer(Layers.Materials)
 	add_layer(Layers.Blueprint)
 
-	%HoverRect.visible = false
-	
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
 			set_cell(Layers.Ground, Vector2i(x, y), tile_set.get_source_id(0), Vector2i(0, 0))
@@ -72,6 +70,7 @@ func get_tile_line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 
 var line_start: Variant # Vector2i | null
 var line_end: Variant # Vector2i | null
+var line_coords: Array[Vector2i]
 
 func set_line_start(coordinate: Vector2i) -> void:
 	line_start = coordinate
@@ -80,21 +79,16 @@ func set_line_end(coordinate: Vector2i) -> void:
 	line_end = coordinate
 
 func _process(delta: float) -> void:
-	%HoverRect.visible = false
-	
-	# TODO: Custom draw this stuff
-	for hover_rect in $LineHoverRects.get_children():
-		hover_rect.queue_free()
-	
 	if not Input.is_action_pressed("line_draw_modifier"):
 		line_start = null
 		line_end = null
+		line_coords = []
+		$HoverRectDraw.set_line_coords([] as Array[Vector2i])
 	
 	if construction_item:
 		var tile_position: Vector2i = local_to_map(get_local_mouse_position())
 		if PathFinder.is_valid_position(tile_position):
-			%HoverRect.position = map_to_local(tile_position) - Vector2(CELL_SIZE / 2)
-			%HoverRect.visible = true
+			$HoverRectDraw.set_line_coords([tile_position] as Array[Vector2i])
 			
 			if is_mouse_pressed:
 				if Input.is_action_pressed("line_draw_modifier"):
@@ -102,11 +96,14 @@ func _process(delta: float) -> void:
 						set_line_start(tile_position)
 					
 					set_line_end(tile_position)
-					var line_coords := get_tile_line(line_start, line_end)
-					for line_coord in line_coords:
-						var hover_rect := HOVER_RECT.instantiate()
-						hover_rect.position = map_to_local(line_coord) - Vector2(CELL_SIZE/2)
-						$LineHoverRects.add_child(hover_rect)
+					#line_coords = get_tile_line(line_start, line_end)
+					$HoverRectDraw.set_line_coords(get_tile_line(line_start, line_end))
+					
+					#var line_coords := get_tile_line(line_start, line_end)
+					#for line_coord in line_coords:
+						#var hover_rect := HOVER_RECT.instantiate()
+						#hover_rect.position = map_to_local(line_coord) - Vector2(CELL_SIZE/2)
+						#$LineHoverRects.add_child(hover_rect)
 				else:
 					_place_blueprint(tile_position)
 			
@@ -115,6 +112,7 @@ func _process(delta: float) -> void:
 					var line_coords := get_tile_line(line_start, line_end)
 					for line_coord in line_coords:
 						_place_blueprint(line_coord)
+	
 				
 
 func _place_blueprint(tile_position: Vector2i) -> void:
