@@ -4,8 +4,8 @@ class_name MainMap
 
 @onready var BLUEPRINT := preload("res://blueprint/Blueprint.tscn")
 
-const MAP_SIZE_X: int = 15
-const MAP_SIZE_Y: int = 15
+const MAP_SIZE_X: int = 50
+const MAP_SIZE_Y: int = 35
 const CELL_SIZE := Vector2i(24, 24)
 
 var construction_item: Variant # Item | null

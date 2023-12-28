@@ -43,4 +43,14 @@ func _ready() -> void:
 			settlers_to_place -= 1
 			if settlers_to_place <= 0:
 				break
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.pressed:
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				$MainCamera.zoom += Vector2(0.5, 0.5)
+			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				$MainCamera.zoom -= Vector2(0.5, 0.5)
+		
+		$MainCamera.zoom = $MainCamera.zoom.clamp(Vector2(0.25, 0.25), Vector2(4.0, 4.0))
 	
