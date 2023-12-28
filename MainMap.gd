@@ -46,12 +46,11 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if is_mouse_pressed:
 		var tile_position: Vector2i = local_to_map(get_local_mouse_position())
-		var source_id := get_cell_source_id(Layers.Building, tile_position)
-		var source_id2 := get_cell_source_id(Layers.Blueprint, tile_position)
+		var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
 		
 	# 	TODO: Instead of this, keep a proper x-y map of entities so you don't have to rely on tile_data
 		#if source_id < 0 and source_id2 < 0:
-		if not PathFinder.is_position_solid(tile_position):
+		if not PathFinder.is_position_solid(tile_position) and source_id < 0:
 			#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(1, 0))
 			set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
 			
