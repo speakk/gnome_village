@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=9 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="Texture2D" uid="uid://bgdpno3b05m2g" path="res://assets/settler.png" id="1_ryuwt"]
 [ext_resource type="Script" path="res://components/Inventory.gd" id="3_h7kst"]
+[ext_resource type="Texture2D" uid="uid://dbembrglpom0n" path="res://assets/tree.png" id="4_t22x3"]
 
 [sub_resource type="Animation" id="Animation_tnvni"]
 length = 0.001
@@ -76,3 +77,7 @@ script = ExtResource("3_h7kst")
 
 [node name="Line2D" type="Line2D" parent="."]
 width = 2.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("4_t22x3")
+offset = Vector2(0, -15)

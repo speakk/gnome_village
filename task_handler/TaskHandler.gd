@@ -20,7 +20,7 @@ func get_available_settler(task: Variant) -> Settler:
 	
 	if "target_tile" in task:
 		var target_tile := task.target_tile as Vector2i
-		target = Globals.map.map_to_local(target_tile)
+		target = Globals.map.coordinate_to_global_position(target_tile)
 	
 	# TODO: Make "settler picker heuristic" function or whatever
 	# for each task type that defines how settlers are prioritized

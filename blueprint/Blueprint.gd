@@ -15,7 +15,7 @@ func initialize(_item_id: Items.Id) -> Blueprint:
 
 func finish_construction() -> void:
 	Events.blueprint_finished.emit(self)
-	Events.solid_cell_placed.emit(Globals.get_map().local_to_map(global_position))
+	Events.solid_cell_placed.emit(Globals.get_map().global_position_to_coordinate(global_position))
 	$Sprite2D.modulate = Color.WHITE
 	$ProgressBar.hide()
 	

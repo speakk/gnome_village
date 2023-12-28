@@ -15,18 +15,21 @@ func _ready() -> void:
 
 	var item_types: Array[Items.Id] = [Items.Id.Wood]
 
-	#for i in 30:
-		#var item_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
-		#if not PathFinder.is_position_solid(item_position):
-			#var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(Items.Id.Tree)
-			#item_on_ground.global_position = item_position
-			#add_child(item_on_ground)
+	for i in 30:
+		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
+		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
+		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
+		if not PathFinder.is_position_solid(grid_position):
+			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(Items.Id.Tree)
+			item_on_ground.global_position = quantized_position
+			add_child(item_on_ground)
 
 	for i in 30:
-		var item_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
-		var grid_position := Globals.get_map().local_to_map(item_position) 
+		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
+		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
+		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
-			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(item_types.pick_random())
-			item_on_ground.global_position = item_position
+			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(Items.Id.Wood)
+			item_on_ground.global_position = quantized_position
 			add_child(item_on_ground)
 	

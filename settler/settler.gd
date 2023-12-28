@@ -20,7 +20,7 @@ var path: Variant: # PackedVector2Array | Null
 		path = new_path
 		if new_path:
 			$Line2D.points = Array(new_path).map(func(point: Vector2i) -> Vector2:
-				return Globals.get_map().map_to_local(point)
+				return Globals.get_map().coordinate_to_global_position(point)
 			)
 		else:
 			$Line2D.points = []
@@ -54,11 +54,11 @@ func get_direction_to_next_path_point() -> Vector2:
 	#print("Next path point: ", PathFinder.get_point_position(path[current_path_index]))
 	#var point_position := PathFinder.get_point_position(path[current_path_index])
 	var point_position := path[current_path_index] as Vector2
-	return global_position.direction_to(Globals.get_map().map_to_local(point_position))
+	return global_position.direction_to(Globals.get_map().coordinate_to_global_position(point_position))
 
 func advance_path_index() -> void:
 	if path:
-		var distance := global_position.distance_to(Globals.get_map().map_to_local(path[current_path_index]))
+		var distance := global_position.distance_to(Globals.get_map().coordinate_to_global_position(path[current_path_index]))
 		if distance < AT_DISTANCE or (current_path_index == path.size() - 2 and distance < REACH_DISTANCE):
 			current_path_index += 1
 			if current_path_index > path.size() - 1:
@@ -134,21 +134,21 @@ func get_task_status() -> int:
 
 func set_target(_target: Variant) -> void:
 	if !target or (_target and not (_target as Vector2).is_equal_approx(target)):
-		var map_position_from := Globals.get_map().local_to_map(global_position)
-		var map_position_to := Globals.get_map().local_to_map(_target)
+		var map_position_from := Globals.get_map().global_position_to_coordinate(global_position)
+		var map_position_to := Globals.get_map().global_position_to_coordinate(_target)
 		path = PathFinder.get_id_path(map_position_from, map_position_to)
 		current_path_index = 0
 	target = _target
 
 func ensure_valid_position() -> void:
 	if not is_in_valid_position():
-		var free_coordinate := PathFinder.get_closest_free_point(Globals.get_map().local_to_map(global_position)) as Vector2i
+		var free_coordinate := PathFinder.get_closest_free_point(Globals.get_map().global_position_to_coordinate(global_position)) as Vector2i
 		if free_coordinate:
-			var new_position := Globals.get_map().map_to_local(free_coordinate)
+			var new_position := Globals.get_map().coordinate_to_global_position(free_coordinate)
 			global_position = new_position
 
 func is_in_valid_position() -> bool:
-	return not PathFinder.is_position_solid(Globals.get_map().local_to_map(global_position))
+	return not PathFinder.is_position_solid(Globals.get_map().global_position_to_coordinate(global_position))
 	
 func set_build_target(_build_target: Variant) -> void:
 	build_target = _build_target
