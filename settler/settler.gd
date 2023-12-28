@@ -59,7 +59,7 @@ func get_direction_to_next_path_point() -> Vector2:
 func advance_path_index() -> void:
 	if path:
 		var distance := global_position.distance_to(Globals.get_map().map_to_local(path[current_path_index]))
-		if distance < AT_DISTANCE or (current_path_index == path.size() - 1 and distance < REACH_DISTANCE):
+		if distance < AT_DISTANCE or (current_path_index == path.size() - 2 and distance < REACH_DISTANCE):
 			current_path_index += 1
 			if current_path_index > path.size() - 1:
 				# TODO: Emit path finished event if needed?
