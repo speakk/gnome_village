@@ -35,7 +35,7 @@ func _ready() -> void:
 	
 	# TODO: Instead of this, keep a proper x-y map of entities so you don't have to rely on tile_data
 	#set_layer_modulate(Layers.Building, Color.TRANSPARENT)
-	set_layer_modulate(Layers.Ground, Color(0.7, 0.7, 0.7))
+	#set_layer_modulate(Layers.Ground, Color(0.7, 0.7, 0.7))
 	set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
 	
 	Events.blueprint_finished.connect(_blueprint_finished)
