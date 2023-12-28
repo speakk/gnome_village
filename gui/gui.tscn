@@ -1,6 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://cynniosvk7y2r"]
+[gd_scene load_steps=8 format=3 uid="uid://cynniosvk7y2r"]
 
 [ext_resource type="Script" path="res://gui/gui.gd" id="1_jqq6f"]
+[ext_resource type="PackedScene" uid="uid://ctd6ytjbkrp06" path="res://gui/build_menu.tscn" id="2_fxugl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yxxk3"]
+bg_color = Color(0.235338, 0.332834, 0.6, 1)
+border_width_left = 4
+
+[sub_resource type="InputEventAction" id="InputEventAction_fsw66"]
+action = &"toggle_menu_1"
+
+[sub_resource type="Shortcut" id="Shortcut_00krf"]
+events = [SubResource("InputEventAction_fsw66")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_2r1w2"]
+action = &"toggle_menu_2"
+
+[sub_resource type="Shortcut" id="Shortcut_uyf65"]
+events = [SubResource("InputEventAction_2r1w2")]
 
 [node name="GUI" type="MarginContainer"]
 anchors_preset = 15
@@ -14,19 +31,26 @@ script = ExtResource("1_jqq6f")
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
+[node name="MainButtons" type="HBoxContainer" parent="PanelContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BuildButton" type="Button" parent="PanelContainer/HBoxContainer"]
+[node name="BuildButton" type="Button" parent="PanelContainer/MainButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxFlat_yxxk3")
+toggle_mode = true
+shortcut = SubResource("Shortcut_00krf")
 text = "Build"
 
-[node name="PlantButton" type="Button" parent="PanelContainer/HBoxContainer"]
+[node name="PlantButton" type="Button" parent="PanelContainer/MainButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxFlat_yxxk3")
+toggle_mode = true
+shortcut = SubResource("Shortcut_uyf65")
 text = "Plant
 "
 
@@ -43,18 +67,9 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 
-[node name="BuildMenu" type="PanelContainer" parent="MarginContainer/SubMenuContainer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-
-[node name="BuildOptions" type="VBoxContainer" parent="MarginContainer/SubMenuContainer/BuildMenu"]
+[node name="BuildMenu" parent="MarginContainer/SubMenuContainer" instance=ExtResource("2_fxugl")]
 unique_name_in_owner = true
 layout_mode = 2
-
-[node name="Button" type="Button" parent="MarginContainer/SubMenuContainer/BuildMenu/BuildOptions"]
-layout_mode = 2
-text = "Wall"
 
 [node name="PlantMenu" type="PanelContainer" parent="MarginContainer/SubMenuContainer"]
 unique_name_in_owner = true
@@ -69,5 +84,5 @@ layout_mode = 2
 layout_mode = 2
 text = "Tree"
 
-[connection signal="pressed" from="PanelContainer/HBoxContainer/BuildButton" to="." method="_on_build_button_pressed"]
-[connection signal="pressed" from="PanelContainer/HBoxContainer/PlantButton" to="." method="_on_plant_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MainButtons/BuildButton" to="." method="_on_build_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MainButtons/PlantButton" to="." method="_on_plant_button_pressed"]

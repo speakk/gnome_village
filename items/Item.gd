@@ -26,6 +26,7 @@ enum RenderingType {
 @export var target_layer: MainMap.Layers = MainMap.Layers.Blueprint
 
 @export_category("Behaviour")
+@export var display_name: String = ""
 @export var can_be_picked: bool = true
 @export var can_be_constructed: bool = false
 @export var is_solid: bool = false

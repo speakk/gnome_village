@@ -16,6 +16,7 @@ tile_id = 0
 terrain_set_id = 0
 terrain_id = 0
 target_layer = 3
+display_name = "Tree"
 can_be_picked = true
 can_be_constructed = false
 is_solid = true

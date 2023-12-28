@@ -5,15 +5,19 @@
 
 [resource]
 script = ExtResource("1_oi3ex")
+rendering_type = 2
 texture = ExtResource("2_8tck3")
 hframes = 2
 vframes = 1
 frame = 0
-tile_type = 2
+origin = Vector2(0, 0)
 tileset_id = 0
 tile_id = 0
 terrain_set_id = 0
 terrain_id = 0
 target_layer = 0
+display_name = "Wood"
 can_be_picked = true
-crafting_requirements = Array[ExtResource("1_oi3ex")]([])
+can_be_constructed = false
+is_solid = false
+crafting_requirements = Array[Resource("res://items/ItemRequirement.gd")]([])
