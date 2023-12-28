@@ -2,7 +2,8 @@ extends Node2D
 
 class_name Settler
 
-const TARGET_DISTANCE_TRESHOLD := MainMap.CELL_SIZE.x * 1.1
+const REACH_DISTANCE := MainMap.CELL_SIZE.x * 1.1
+const AT_DISTANCE := 5.0
 
 var walk_speed := 100.0
 var build_speed := 0.3
@@ -49,7 +50,8 @@ func get_direction_to_next_path_point() -> Vector2:
 
 func advance_path_index() -> void:
 	if path:
-		if global_position.distance_to(Globals.get_map().map_to_local(path[current_path_index])) < TARGET_DISTANCE_TRESHOLD / 3:
+		var distance := global_position.distance_to(Globals.get_map().map_to_local(path[current_path_index]))
+		if distance < AT_DISTANCE or (current_path_index == path.size() - 1 and distance < REACH_DISTANCE):
 			current_path_index += 1
 			if current_path_index > path.size() - 1:
 				# TODO: Emit path finished event if needed?
@@ -140,5 +142,8 @@ func is_in_valid_position() -> bool:
 func set_build_target(_build_target: Variant) -> void:
 	build_target = _build_target
 
-func is_next_to_target(_target: Vector2) -> bool:
-	return global_position.distance_to(_target) <= TARGET_DISTANCE_TRESHOLD
+func is_at_target(_target: Vector2) -> bool:
+	return global_position.distance_to(_target) <= AT_DISTANCE
+
+func can_reach_target(_target: Vector2) -> bool:
+	return global_position.distance_to(_target) <= REACH_DISTANCE

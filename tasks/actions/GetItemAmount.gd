@@ -11,7 +11,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		print("FAILED at GetItemAmount", target_item)
 		return FAILURE
 	
-	if not actor.is_next_to_target(target_item.global_position):
+	if not actor.can_reach_target(target_item.global_position):
 		print("Failed at GetItemAmount")
 		return FAILURE
 	

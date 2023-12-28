@@ -7,7 +7,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	#print("Setting target", target)
 	actor.set_target(target)
 	
-	if actor.is_next_to_target(target):
+	if actor.can_reach_target(target):
 		#actor.set_target(null)
 		return SUCCESS
 		
