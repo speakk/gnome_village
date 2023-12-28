@@ -3,9 +3,10 @@ extends TileMap
 class_name MainMap
 
 @onready var BLUEPRINT := preload("res://blueprint/Blueprint.tscn")
+@onready var HOVER_RECT := preload("res://map/hover_rect.tscn")
 
-const MAP_SIZE_X: int = 50
-const MAP_SIZE_Y: int = 35
+const MAP_SIZE_X: int = 80
+const MAP_SIZE_Y: int = 40
 const CELL_SIZE := Vector2i(24, 24)
 
 var construction_item: Variant # Item | null
@@ -28,9 +29,7 @@ func _ready() -> void:
 	add_layer(Layers.Building)
 	add_layer(Layers.Materials)
 	add_layer(Layers.Blueprint)
-	
-	%HoverRect.size.x = CELL_SIZE.x
-	%HoverRect.size.y = CELL_SIZE.y
+
 	%HoverRect.visible = false
 	
 	for x in MAP_SIZE_X:
@@ -49,8 +48,48 @@ func _ready() -> void:
 	
 	Events.map_ready.emit(self)
 
+#Bresenham's line algorithm
+func get_tile_line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
+	var points: Array[Vector2i] = []
+	var dx := absi(to.x - from.x)
+	var dy := -absi(to.y - from.y)
+	var err := dx + dy
+	var e2 := 2 * err
+	var sx := 1 if from.x < to.x else -1
+	var sy := 1 if from.y < to.y else -1
+	while true:
+		points.append(Vector2i(from.x, from.y))
+		if from.x == to.x and from.y == to.y:
+			break
+		e2 = 2 * err
+		if e2 >= dy:
+			err += dy
+			from.x += sx
+		if e2 <= dx:
+			err += dx
+			from.y += sy
+	return points
+
+var line_start: Variant # Vector2i | null
+var line_end: Variant # Vector2i | null
+
+func set_line_start(coordinate: Vector2i) -> void:
+	line_start = coordinate
+	
+func set_line_end(coordinate: Vector2i) -> void:
+	line_end = coordinate
+
 func _process(delta: float) -> void:
 	%HoverRect.visible = false
+	
+	# TODO: Custom draw this stuff
+	for hover_rect in $LineHoverRects.get_children():
+		hover_rect.queue_free()
+	
+	if not Input.is_action_pressed("line_draw_modifier"):
+		line_start = null
+		line_end = null
+	
 	if construction_item:
 		var tile_position: Vector2i = local_to_map(get_local_mouse_position())
 		if PathFinder.is_valid_position(tile_position):
@@ -58,23 +97,37 @@ func _process(delta: float) -> void:
 			%HoverRect.visible = true
 			
 			if is_mouse_pressed:
-				var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
+				if Input.is_action_pressed("line_draw_modifier"):
+					if not line_start:
+						set_line_start(tile_position)
+					
+					set_line_end(tile_position)
+					var line_coords := get_tile_line(line_start, line_end)
+					for line_coord in line_coords:
+						var hover_rect := HOVER_RECT.instantiate()
+						hover_rect.position = map_to_local(line_coord) - Vector2(CELL_SIZE/2)
+						$LineHoverRects.add_child(hover_rect)
+				else:
+					_place_blueprint(tile_position)
+			
+			else:
+				if line_start and line_end:
+					var line_coords := get_tile_line(line_start, line_end)
+					for line_coord in line_coords:
+						_place_blueprint(line_coord)
 				
-			# 	TODO: Instead of this, keep a proper x-y map of entities so you don't have to rely on tile_data
-				#if source_id < 0 and source_id2 < 0:
-				if not PathFinder.is_position_solid(tile_position) and source_id < 0:
-					#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(1, 0))
-					set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
-					
-					#var blueprint := Blueprint.new().initialize(BuildingTypes.BuildingType.Wall)
-					var blueprint := (BLUEPRINT.instantiate() as Blueprint).initialize(Items.Id.WoodenWall)
-					blueprint.global_position = coordinate_to_global_position(tile_position)
-					#%Entities.add_child(blueprint)
-					get_tree().root.get_node("Main").add_child(blueprint)
-					
-					Events.blueprint_placed.emit(tile_position, blueprint)
-					#get_tree().root.get_viewport().set_input_as_handled()
 
+func _place_blueprint(tile_position: Vector2i) -> void:
+	var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
+				
+	if not PathFinder.is_position_solid(tile_position) and source_id < 0:
+		set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
+		
+		var blueprint := (BLUEPRINT.instantiate() as Blueprint).initialize(Items.Id.WoodenWall)
+		blueprint.global_position = coordinate_to_global_position(tile_position)
+		get_tree().root.get_node("Main").add_child(blueprint)
+		
+		Events.blueprint_placed.emit(tile_position, blueprint)
 var is_mouse_pressed := false
 
 # TODO: You could use an Area2D and the input_event in that to handle this instead

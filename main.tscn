@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://ubgvap601f4j"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j8rqp"]
-[ext_resource type="PackedScene" uid="uid://b4nj0xntglt07" path="res://main_map.tscn" id="1_lsh5n"]
+[ext_resource type="PackedScene" uid="uid://b4nj0xntglt07" path="res://map/main_map.tscn" id="1_lsh5n"]
 [ext_resource type="Script" path="res://MainCamera.gd" id="2_bak4i"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://gui/gui.tscn" id="5_4nnuu"]
 [ext_resource type="Script" path="res://task_handler/TaskHandler.gd" id="6_pe6uu"]
