@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://bb3p11lw17xsw"]
+
+[ext_resource type="Script" path="res://items/Item.gd" id="1_ql27c"]
+[ext_resource type="Texture2D" uid="uid://dbembrglpom0n" path="res://assets/tree.png" id="2_srme6"]
+
+[resource]
+script = ExtResource("1_ql27c")
+rendering_type = 2
+texture = ExtResource("2_srme6")
+hframes = 1
+vframes = 1
+frame = 0
+tileset_id = 0
+tile_id = 0
+terrain_set_id = 0
+terrain_id = 0
+target_layer = 3
+can_be_picked = true
+can_be_constructed = false
+is_solid = false
+crafting_requirements = Array[Resource("res://items/ItemRequirement.gd")]([])

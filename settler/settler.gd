@@ -2,8 +2,8 @@ extends Node2D
 
 class_name Settler
 
-const REACH_DISTANCE := MainMap.CELL_SIZE.x * 1.1
-const AT_DISTANCE := 5.0
+const REACH_DISTANCE := MainMap.CELL_SIZE.x * 1.5
+const AT_DISTANCE := 10.0
 
 var walk_speed := 100.0
 var build_speed := 0.3
@@ -15,7 +15,15 @@ var current_task: Task
 var target: Variant # Vector2 | Null
 var build_target: Blueprint
 
-var path: Variant # PackedVector2Array | Null
+var path: Variant: # PackedVector2Array | Null
+	set(new_path):
+		path = new_path
+		if new_path:
+			$Line2D.points = Array(new_path).map(func(point: Vector2i) -> Vector2:
+				return Globals.get_map().map_to_local(point)
+			)
+		else:
+			$Line2D.points = []
 var current_path_index: int = 0
 
 var valid_position_timer := 0.0
@@ -64,6 +72,9 @@ func _finished_path() -> void:
 
 func move_and_slide(delta: float) -> void:
 	global_position += velocity * delta
+
+func _process(delta: float) -> void:
+	$Line2D.global_position = get_parent().global_position
 
 func _physics_process(delta: float) -> void:
 	velocity = Vector2.ZERO
