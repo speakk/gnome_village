@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=9 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="Texture2D" uid="uid://bgdpno3b05m2g" path="res://assets/settler.png" id="1_ryuwt"]
@@ -58,6 +58,9 @@ _data = {
 "walk": SubResource("Animation_1gkn2")
 }
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bfemd"]
+polygon = PackedVector2Array(-6, 10, -6, 8, 7, 8, 6, 10)
+
 [node name="Settler" type="Node2D" groups=["settler"]]
 script = ExtResource("1_ghp1u")
 
@@ -77,3 +80,6 @@ script = ExtResource("3_h7kst")
 [node name="Line2D" type="Line2D" parent="."]
 width = 2.0
 default_color = Color(0.798, 0.95, 0.9272, 0.0196078)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_bfemd")
