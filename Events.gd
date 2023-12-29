@@ -4,6 +4,8 @@ signal blueprint_placed(tile_position: Vector2i, blueprint: Blueprint)
 signal blueprint_finished(blueprint: Blueprint)
 signal blueprint_cancel_issued(blueprint: Blueprint)
 
+signal task_finished(task: Task)
+
 signal map_ready(map: MainMap)
 signal solid_cell_placed(coordinate: Vector2i)
 signal solid_cell_removed(coordinate: Vector2i)

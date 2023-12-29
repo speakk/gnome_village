@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b4nj0xntglt07" path="res://map/main_map.tscn" id="1_lsh5n"]
 [ext_resource type="Script" path="res://MainCamera.gd" id="2_bak4i"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://gui/gui.tscn" id="5_4nnuu"]
-[ext_resource type="Script" path="res://task_handler/TaskHandler.gd" id="6_pe6uu"]
+[ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://task_handler/TaskHandler.tscn" id="5_jyric"]
 
 [sub_resource type="Environment" id="Environment_uqvws"]
 background_mode = 1
@@ -29,5 +29,4 @@ position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 script = ExtResource("2_bak4i")
 
-[node name="TaskHandler" type="Node" parent="."]
-script = ExtResource("6_pe6uu")
+[node name="TaskHandler" parent="." instance=ExtResource("5_jyric")]

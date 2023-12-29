@@ -4,12 +4,55 @@ class_name TaskHandler
 
 @onready var BLUEPRINT_TREE := preload("res://task_handler/trees/BlueprintTree.gd")
 
+@onready var debug_ui_tree := %Tree as Tree
+
 func _ready() -> void:
 	Events.blueprint_placed.connect(_blueprint_placed)
+	$Tasks.child_entered_tree.connect(_tasks_changed)
+	$Tasks.child_exiting_tree.connect(_tasks_changed)
+	$Tasks.child_order_changed.connect(_tasks_changed)
+	Events.task_finished.connect(func(_task: Task) -> void: _refresh_debug_tree($Tasks.get_children()))
 
+func _tasks_changed(_node: Node) -> void:
+	_refresh_debug_tree($Tasks.get_children())
+	
+func _refresh_debug_tree(tasks: Array[Node]) -> void:
+	await get_tree().physics_frame
+	debug_ui_tree.clear()
+	var root := debug_ui_tree.create_item()
+	
+	for task in tasks:
+		if task:
+			var child := debug_ui_tree.create_item(root)
+			child.set_text(0, task.name)
+			
+			for subtask in task.get_children():
+				var child2 := debug_ui_tree.create_item(child)
+				var label := subtask.name
+				if subtask is TaskTreeLeaf and subtask.task.is_finished:
+					label = label + " (DONE)"
+					child2.set_custom_color(0, Color.SEA_GREEN)
+				elif subtask is TaskTreeBranch:
+					var all_finished := false
+					for subsubtask in subtask.get_children():
+						var child3 := debug_ui_tree.create_item(child2)
+						var label3 := subsubtask.name
+						if subsubtask is TaskTreeLeaf:
+							if subsubtask.task.is_finished:
+								label3 = label3 + " (DONE)"
+								child2.set_custom_color(0, Color.SEA_GREEN)
+							else:
+								all_finished = false
+						
+						child3.set_text(0, label3)
+							
+				child2.set_text(0, label)
+	
+	#root.uncollapse_tree()
+			
 func _blueprint_placed(tile_position: Vector2i, blueprint: Blueprint) -> void:
 	var task_tree := (BLUEPRINT_TREE.new() as BlueprintTree).initialize(tile_position, blueprint, get_tree()) as TaskTreeBranch
-	add_child(task_tree)
+	$Tasks.add_child(task_tree)
 
 func get_available_settler(task: Variant) -> Settler:
 	var settlers := get_tree().get_nodes_in_group("settler") as Array[Node]
@@ -52,7 +95,7 @@ func _process(delta: float) -> void:
 	task_process_timer += delta
 	if task_process_timer >= task_process_delay:
 		#for task_tree in task_trees:
-		for task_tree in get_children() as Array[TaskTreeBranch]:
+		for task_tree in $Tasks.get_children() as Array[TaskTreeBranch]:
 			if task_tree:
 				var next_available_task: Variant = get_next_available_task(task_tree)
 				if next_available_task:
