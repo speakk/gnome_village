@@ -2,16 +2,14 @@ extends Node
 
 class_name TaskHandler
 
-@onready var blueprint_tree_creator := preload("res://task_handler/trees/blueprint_tree.gd").new()
+@onready var BLUEPRINT_TREE := preload("res://task_handler/trees/BlueprintTree.gd")
 
 func _ready() -> void:
 	Events.blueprint_placed.connect(_blueprint_placed)
 
-var task_trees: Array[TaskTreeBranch] = []
-
 func _blueprint_placed(tile_position: Vector2i, blueprint: Blueprint) -> void:
-	var task_tree := blueprint_tree_creator.create_blueprint_task_tree(tile_position, blueprint, get_tree()) as TaskTreeBranch
-	task_trees.append(task_tree)
+	var task_tree := (BLUEPRINT_TREE.new() as BlueprintTree).initialize(tile_position, blueprint, get_tree()) as TaskTreeBranch
+	add_child(task_tree)
 
 func get_available_settler(task: Variant) -> Settler:
 	var settlers := get_tree().get_nodes_in_group("settler") as Array[Node]
@@ -53,13 +51,15 @@ var task_process_delay := 0.5
 func _process(delta: float) -> void:
 	task_process_timer += delta
 	if task_process_timer >= task_process_delay:
-		for task_tree in task_trees:
-			var next_available_task: Variant = get_next_available_task(task_tree)
-			if next_available_task:
-				var available_settler := get_available_settler(next_available_task)
-				if available_settler:
-					available_settler.start_task(next_available_task)
-		
+		#for task_tree in task_trees:
+		for task_tree in get_children() as Array[TaskTreeBranch]:
+			if task_tree:
+				var next_available_task: Variant = get_next_available_task(task_tree)
+				if next_available_task:
+					var available_settler := get_available_settler(next_available_task)
+					if available_settler:
+						available_settler.start_task(next_available_task)
+				
 		task_process_timer = 0
 
 

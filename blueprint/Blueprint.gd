@@ -7,6 +7,8 @@ class_name Blueprint
 var build_progress := 0.0
 var item_id: Items.Id
 
+var finish_emitted := false
+
 func initialize(_item_id: Items.Id) -> Blueprint:
 	item_id = _item_id
 	$Sprite2D.modulate = Color(0.2, 0.2, 1.0, 0.2)
@@ -14,17 +16,20 @@ func initialize(_item_id: Items.Id) -> Blueprint:
 	return self
 
 func finish_construction() -> void:
-	Events.blueprint_finished.emit(self)
-	Events.solid_cell_placed.emit(Globals.get_map().global_position_to_coordinate(global_position))
-	$Sprite2D.modulate = Color.WHITE
-	$ProgressBar.hide()
-	
-	await get_tree().process_frame
-	
-	var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(item_id, 1)
-	item_on_ground.global_position = global_position
-	get_parent().add_child(item_on_ground)
-	queue_free()
+	if not finish_emitted:
+		#Events.solid_cell_placed.emit(Globals.get_map().global_position_to_coordinate(global_position))
+		$Sprite2D.modulate = Color.WHITE
+		$ProgressBar.hide()
+		
+		await get_tree().process_frame
+		
+		var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(item_id, 1)
+		item_on_ground.global_position = global_position
+		get_parent().add_child(item_on_ground)
+		
+		print("Finish construction")
+		finish_emitted = true
+		Events.blueprint_finished.emit(self)
 
 func increase_build_progress(amount: float) -> void:
 	build_progress += amount

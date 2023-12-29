@@ -20,8 +20,7 @@ enum Layers {
 #const MATERIALS_LAYER = 2
 
 var map_entities := {
-	Layers.Building: [] as Array[Node2D],
-	Layers.Materials: [] as Array[Node2D]
+	Layers.Blueprint: {} as Dictionary
 }
 
 func _ready() -> void:
@@ -85,8 +84,12 @@ func _process(delta: float) -> void:
 		line_coords = []
 		$HoverRectDraw.set_line_coords([] as Array[Vector2i])
 	
+	var tile_position: Vector2i = local_to_map(get_local_mouse_position())
+	
+	if is_mouse_2_pressed:
+		_cancel_blueprint(tile_position)
+		
 	if construction_item:
-		var tile_position: Vector2i = local_to_map(get_local_mouse_position())
 		if PathFinder.is_valid_position(tile_position):
 			$HoverRectDraw.set_line_coords([tile_position] as Array[Vector2i])
 			
@@ -96,17 +99,9 @@ func _process(delta: float) -> void:
 						set_line_start(tile_position)
 					
 					set_line_end(tile_position)
-					#line_coords = get_tile_line(line_start, line_end)
 					$HoverRectDraw.set_line_coords(get_tile_line(line_start, line_end))
-					
-					#var line_coords := get_tile_line(line_start, line_end)
-					#for line_coord in line_coords:
-						#var hover_rect := HOVER_RECT.instantiate()
-						#hover_rect.position = map_to_local(line_coord) - Vector2(CELL_SIZE/2)
-						#$LineHoverRects.add_child(hover_rect)
 				else:
 					_place_blueprint(tile_position)
-			
 			else:
 				if line_start and line_end:
 					var line_coords := get_tile_line(line_start, line_end)
@@ -114,6 +109,16 @@ func _process(delta: float) -> void:
 						_place_blueprint(line_coord)
 	
 				
+
+func _cancel_blueprint(tile_position: Vector2i) -> void:
+	var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
+	if source_id > 0:
+		print("Removing at: ", tile_position)
+		var blueprint := map_entities[Layers.Blueprint][tile_position] as Blueprint
+		Events.blueprint_cancel_issued.emit(blueprint)
+		map_entities[Layers.Blueprint].erase(tile_position)
+		set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
+	
 
 func _place_blueprint(tile_position: Vector2i) -> void:
 	var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
@@ -125,16 +130,24 @@ func _place_blueprint(tile_position: Vector2i) -> void:
 		blueprint.global_position = coordinate_to_global_position(tile_position)
 		get_tree().root.get_node("Main").add_child(blueprint)
 		
+		map_entities[Layers.Blueprint][tile_position] = blueprint
+		print("Placed at", tile_position)
 		Events.blueprint_placed.emit(tile_position, blueprint)
+		
 var is_mouse_pressed := false
+var is_mouse_2_pressed := false
 
 # TODO: You could use an Area2D and the input_event in that to handle this instead
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.is_pressed():
-			is_mouse_pressed = true
+			if event.button_index == 1:
+				is_mouse_pressed = true
+			else:
+				is_mouse_2_pressed = true
 		else:
 			is_mouse_pressed = false
+			is_mouse_2_pressed = false
 		
 			
 
@@ -152,6 +165,7 @@ func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
 func _blueprint_finished(blueprint: Blueprint) -> void:
 	var tile_position := global_position_to_coordinate(blueprint.global_position)
 	set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
+	map_entities[Layers.Blueprint].erase(tile_position) 
 	##set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
 	#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
 	#set_cells_terrain_connect(Layers.Building, [tile_position], 0, 0)

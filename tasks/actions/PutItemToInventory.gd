@@ -8,6 +8,9 @@ var amount: int
 
 @warning_ignore("untyped_declaration")
 func tick(actor: Node, blackboard: Blackboard) -> int:
+	if not target_inventory:
+		return FAILURE
+		
 	if not actor.can_reach_target(target_inventory.get_parent().global_position):
 		return FAILURE
 		

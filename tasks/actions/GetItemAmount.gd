@@ -7,7 +7,7 @@ var amount: int
 
 @warning_ignore("untyped_declaration")
 func tick(actor: Node, blackboard: Blackboard) -> int:
-	if target_item == null or target_item.itemAmount.amount < amount:
+	if not target_item or target_item.itemAmount.amount < amount:
 		print("FAILED at GetItemAmount", target_item)
 		return FAILURE
 	

@@ -38,23 +38,18 @@ enum TaskResult {
 }
 
 func _ready() -> void:
-	Events.task_finished.connect(_task_finished)
-	#process_mode = Node.PROCESS_MODE_DISABLED
-
-func _task_finished(task: Task) -> void:
-	if current_task == task:
-		current_task = null
-
-#func _process(delta: float) -> void:
-	#if current_task:
-		##print("Ticking?")
-		#current_task.tick()
+	name = "Settler"
 
 func get_direction_to_next_path_point() -> Vector2:
 	#print("Next path point: ", PathFinder.get_point_position(path[current_path_index]))
 	#var point_position := PathFinder.get_point_position(path[current_path_index])
 	var point_position := path[current_path_index] as Vector2
 	return global_position.direction_to(Globals.get_map().coordinate_to_global_position(point_position))
+
+func clear_path() -> void:
+	path = null
+	current_path_index = 0
+	target = null
 
 func advance_path_index() -> void:
 	if path:
@@ -64,8 +59,7 @@ func advance_path_index() -> void:
 			if current_path_index > path.size() - 1:
 				# TODO: Emit path finished event if needed?
 				#_finished_path()
-				path = null
-				current_path_index = 0
+				clear_path()
 
 func _finished_path() -> void:
 	pass
@@ -77,6 +71,10 @@ func _process(delta: float) -> void:
 	$Line2D.global_position = get_parent().global_position
 
 func _physics_process(delta: float) -> void:
+	if not current_task:
+		current_task = null
+		clear_path()
+	
 	velocity = Vector2.ZERO
 	advance_path_index()
 	
@@ -123,11 +121,10 @@ func finish_current_task() -> void:
 	current_task.is_being_worked_on = false
 	remove_child(current_task)
 	current_task = null
-	Events.task_finished.emit(current_task)
 	# TODO: Queue free task at some point maybe... Not now though
 
 func is_available_for_work() -> bool:
-	return current_task == null
+	return current_task == null or not current_task
 
 func get_task_status() -> int:
 	return current_task.get_last_tick_status()

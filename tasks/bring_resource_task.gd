@@ -52,7 +52,10 @@ func _ready() -> void:
 	%PutItemToBlueprint.target_inventory = blueprint.get_node("Inventory")
 	%PutItemToBlueprint.item_id = item_requirement.item_id
 	%PutItemToBlueprint.amount = item_requirement.amount
-	
+
+func clean_up() -> void:
+	if _material:
+		_material.reserved_for_picking = false
 
 func tick() -> int:
 	return super.tick()

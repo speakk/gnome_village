@@ -1,12 +1,30 @@
-extends Node
+extends TaskTree
+
+class_name BlueprintTree
 
 var BRING_RESOURCE_TASK := preload("res://tasks/bring_resource_task.tscn")
 var BUILD_TASK := preload("res://tasks/build_task.tscn")
 
-func create_blueprint_task_tree(tile_target: Vector2i, blueprint: Blueprint, scene_tree: SceneTree) -> TaskTreeBranch:
-	var blueprint_tree := TaskTreeBranch.new()
-	blueprint_tree.order_type = TaskTreeBranch.OrderType.Sequence
-	blueprint_tree.name = "Blueprint_Tree"
+var blueprint: Blueprint
+
+func _ready() -> void:
+	name = "Blueprint_Tree"
+	
+	Events.blueprint_finished.connect(func(_blueprint: Blueprint) -> void:
+		if _blueprint == blueprint:
+			clean_up()
+			blueprint.call_deferred("queue_free")
+	)
+	
+	Events.blueprint_cancel_issued.connect(func(_blueprint: Blueprint) -> void:
+		if _blueprint == blueprint:
+			clean_up()
+			blueprint.call_deferred("queue_free")
+	)
+	
+func initialize(tile_target: Vector2i, _blueprint: Blueprint, scene_tree: SceneTree) -> BlueprintTree:
+	order_type = TaskTreeBranch.OrderType.Sequence
+	blueprint = _blueprint
 	
 	var item_id := blueprint.item_id
 	var material_requirements := Items.get_crafting_requirements(item_id)
@@ -26,7 +44,7 @@ func create_blueprint_task_tree(tile_target: Vector2i, blueprint: Blueprint, sce
 	build_leaf.task = (BUILD_TASK.instantiate() as BuildTask).initialize(blueprint)
 	build_leaf.name = "Build_Leaf"
 	
-	blueprint_tree.add_child(bring_resources)
-	blueprint_tree.add_child(build_leaf)
-	
-	return blueprint_tree
+	add_child(bring_resources)
+	add_child(build_leaf)
+
+	return self
