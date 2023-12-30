@@ -7,13 +7,14 @@ const AT_DISTANCE := 10.0
 
 var walk_speed := 100.0
 var build_speed := 0.3
+var dismantling_speed := 3
 
 var velocity := Vector2(0, 0)
 
 var current_task: Task
 
 var target: Variant # Vector2 | Null
-var build_target: Blueprint
+var task_target: Variant
 
 var path: Variant: # PackedVector2Array | Null
 	set(new_path):
@@ -84,8 +85,11 @@ func _physics_process(delta: float) -> void:
 	if path:
 		velocity = get_direction_to_next_path_point() * walk_speed
 	
-	if build_target:
-		build_target.increase_build_progress(build_speed * delta)
+	if task_target:
+		if task_target is Blueprint and current_task is BuildTask:
+			task_target.increase_build_progress(build_speed * delta)
+		if task_target is ItemOnGround and current_task is DismantleTask:
+			task_target.decrease_durability(dismantling_speed * delta)
 	
 	if velocity.length() > 0.1:
 		$AnimationPlayer.play("walk")
@@ -147,8 +151,8 @@ func ensure_valid_position() -> void:
 func is_in_valid_position() -> bool:
 	return not PathFinder.is_position_solid(Globals.get_map().global_position_to_coordinate(global_position))
 	
-func set_build_target(_build_target: Variant) -> void:
-	build_target = _build_target
+func set_task_target(_task_target: Variant) -> void:
+	task_target = _task_target
 
 func is_at_target(_target: Vector2) -> bool:
 	return global_position.distance_to(_target) <= AT_DISTANCE
