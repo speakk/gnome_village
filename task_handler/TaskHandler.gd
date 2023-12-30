@@ -3,11 +3,13 @@ extends Node
 class_name TaskHandler
 
 @onready var BLUEPRINT_TREE := preload("res://task_handler/trees/BlueprintTree.gd")
+@onready var DISMANTLE_TREE := preload("res://task_handler/trees/DismantleTree.gd")
 
 @onready var debug_ui_tree := %Tree as Tree
 
 func _ready() -> void:
 	Events.blueprint_placed.connect(_blueprint_placed)
+	Events.dismantle_issued.connect(_dismantle_issued)
 	$Tasks.child_entered_tree.connect(_tasks_changed)
 	$Tasks.child_exiting_tree.connect(_tasks_changed)
 	$Tasks.child_order_changed.connect(func() -> void: _refresh_debug_tree($Tasks.get_children()))
@@ -52,6 +54,10 @@ func _refresh_debug_tree(tasks: Array[Node]) -> void:
 			
 func _blueprint_placed(tile_position: Vector2i, blueprint: Blueprint) -> void:
 	var task_tree := (BLUEPRINT_TREE.new() as BlueprintTree).initialize(tile_position, blueprint, get_tree()) as TaskTreeBranch
+	$Tasks.add_child(task_tree)
+
+func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
+	var task_tree := (DISMANTLE_TREE.new() as DismantleTree).initialize(item_on_ground)
 	$Tasks.add_child(task_tree)
 
 func get_available_settler(task: Variant) -> Settler:

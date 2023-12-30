@@ -6,6 +6,9 @@ func _on_build_button_pressed() -> void:
 func _on_plant_button_pressed() -> void:
 	show_submenu(%PlantMenu, %PlantButton)
 
+func _on_order_button_pressed() -> void:
+	show_submenu(%OrderMenu, %OrderButton)
+
 func show_submenu(menu: Node, button: Node) -> void:
 	for child in %MainButtons.get_children():
 		child.button_pressed = false
@@ -20,3 +23,7 @@ func hide_submenu() -> void:
 	%BuildMenu.hide()
 	%PlantMenu.hide()
 	%SubMenuContainer.hide()
+
+
+func _on_dismantle_button_pressed() -> void:
+	Events.dismantle_selected.emit()

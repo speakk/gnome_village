@@ -9,7 +9,7 @@ func initialize(_target: ItemOnGround) -> DismantleTask:
 	
 	target.reserved_for_dismantling = true
 	
-	%GoToAction.target = Globals.get_map().global_to_coordinate(target.global_position)
+	%GoToAction.target = Globals.get_map().global_position_to_coordinate(target.global_position)
 	%DismantleAction.target = target
 	
 	return self

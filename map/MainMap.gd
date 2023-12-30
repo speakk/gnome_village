@@ -11,8 +11,14 @@ const CELL_SIZE := Vector2i(24, 24)
 
 var construction_item: Variant # Item | null
 
+enum MapActions {
+	Build, Dismantle, None
+}
+
+var current_action: MapActions = MapActions.None
+
 enum Layers {
-	Ground, Building, Materials, Blueprint
+	Ground, Building, Materials, Blueprint, Items
 }
 #
 #const Layers.Ground = 0
@@ -20,8 +26,11 @@ enum Layers {
 #const MATERIALS_LAYER = 2
 
 var map_entities := {
-	Layers.Blueprint: {} as Dictionary
+	Layers.Blueprint: {} as Dictionary,
+	Layers.Items: {} as Dictionary
 }
+
+
 
 func _ready() -> void:
 	add_layer(Layers.Ground)
@@ -41,7 +50,21 @@ func _ready() -> void:
 	Events.blueprint_finished.connect(_blueprint_finished)
 	Events.terrain_placed.connect(_terrain_placed)
 	
+	Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector2) -> void:
+			var coordinate := global_position_to_coordinate(item_position)
+			if not map_entities[Layers.Items].has(coordinate):
+				map_entities[Layers.Items][coordinate] = []
+			map_entities[Layers.Items][coordinate].append(item)
+	)
+	
+	Events.item_removed_from_ground.connect(func(item: ItemOnGround, item_position: Vector2) -> void:
+			var coordinate := global_position_to_coordinate(item_position)
+			if map_entities[Layers.Items].has(coordinate):
+				map_entities[Layers.Items][coordinate].erase(item)
+	)
+	
 	Events.construction_selected.connect(_construction_selected)
+	Events.dismantle_selected.connect(func() -> void: current_action = MapActions.Dismantle)
 	
 	Events.map_ready.emit(self)
 
@@ -77,18 +100,7 @@ func set_line_start(coordinate: Vector2i) -> void:
 func set_line_end(coordinate: Vector2i) -> void:
 	line_end = coordinate
 
-func _process(delta: float) -> void:
-	if not Input.is_action_pressed("line_draw_modifier"):
-		line_start = null
-		line_end = null
-		line_coords = []
-		$HoverRectDraw.set_line_coords([] as Array[Vector2i])
-	
-	var tile_position: Vector2i = local_to_map(get_local_mouse_position())
-	
-	if is_mouse_2_pressed:
-		_cancel_blueprint(tile_position)
-		
+func _handle_build_action(tile_position: Vector2i) -> void:
 	if construction_item:
 		if PathFinder.is_valid_position(tile_position):
 			$HoverRectDraw.set_line_coords([tile_position] as Array[Vector2i])
@@ -107,8 +119,41 @@ func _process(delta: float) -> void:
 					var line_coords := get_tile_line(line_start, line_end)
 					for line_coord in line_coords:
 						_place_blueprint(line_coord)
+
+func _handle_dismantle_action(tile_position: Vector2i) -> void:
+	if is_mouse_pressed:
+		print("Handle dismantle action mouse pressed")
+		if map_entities[Layers.Items].has(tile_position):
+			var entities := map_entities[Layers.Items][tile_position] as Array
+			for entity in entities as Array[Node]:
+				entity as ItemOnGround
+				if entity.item.can_be_dismantled:
+					Events.dismantle_issued.emit(entity)
+					print("Issued")
+			#var entity 
+			#Events.dismantle_issued
+
+func _handle_map_action(tile_position: Vector2i) -> void:
+	if current_action == MapActions.Build:
+		_handle_build_action(tile_position)
+	if current_action == MapActions.Dismantle:
+		_handle_dismantle_action(tile_position)
 	
-				
+
+func _process(delta: float) -> void:
+	if not Input.is_action_pressed("line_draw_modifier"):
+		line_start = null
+		line_end = null
+		line_coords = []
+		$HoverRectDraw.set_line_coords([] as Array[Vector2i])
+	
+	var tile_position: Vector2i = local_to_map(get_local_mouse_position())
+	
+	if is_mouse_2_pressed:
+		_cancel_blueprint(tile_position)
+	
+	_handle_map_action(tile_position)
+	
 
 func _cancel_blueprint(tile_position: Vector2i) -> void:
 	var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
@@ -172,4 +217,5 @@ func _blueprint_finished(blueprint: Blueprint) -> void:
 	##set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(1, 0))
 
 func _construction_selected(item: Item) -> void:
+	current_action = MapActions.Build
 	construction_item = item

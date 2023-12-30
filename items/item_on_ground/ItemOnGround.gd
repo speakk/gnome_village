@@ -53,6 +53,11 @@ func _ready() -> void:
 	elif item.rendering_type == Item.RenderingType.Terrain:
 		Events.terrain_placed.emit(coordinates, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid)
 
+	Events.item_placed_on_ground.emit(self, global_position)
+
+func _exit_tree() -> void:
+	Events.item_removed_from_ground.emit(self)
+
 func reduce_durability(amount: float) -> void:
 	current_durability -= amount
 
