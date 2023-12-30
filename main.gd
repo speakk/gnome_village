@@ -1,7 +1,7 @@
 extends Node2D
 
 @onready var SETTLER := preload("res://settler/settler.tscn")
-@onready var ITEM_ON_GROUND := preload("res://items/ItemOnGround.tscn")
+@onready var ITEM_ON_GROUND := preload("res://items/item_on_ground/ItemOnGround.tscn")
 
 func _ready() -> void:
 	var test_divider := 1

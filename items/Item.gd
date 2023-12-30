@@ -15,6 +15,9 @@ enum RenderingType {
 @export var vframes: int = 1
 @export var frame: int = 0
 @export var origin: Vector2 = Vector2(0.0, 0.0)
+@export_category("Shadow")
+@export var cast_shadow_enabled: bool = false
+@export var cast_shadow_origin: Vector2 = Vector2(0, 0)
 
 @export_subgroup("Tile")
 @export var tileset_id: int = 0

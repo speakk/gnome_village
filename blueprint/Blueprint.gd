@@ -2,7 +2,7 @@ extends Node2D
 
 class_name Blueprint
 
-@onready var ITEM_ON_GROUND := preload("res://items/ItemOnGround.tscn")
+@onready var ITEM_ON_GROUND := preload("res://items/item_on_ground/ItemOnGround.tscn")
 
 var build_progress := 0.0
 var item_id: Items.Id

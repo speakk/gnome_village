@@ -3,6 +3,7 @@ extends Node2D
 class_name ItemOnGround
 
 @onready var sprite := $Sprite2D as Sprite2D
+@onready var occluder := $LightOccluder2D as LightOccluder2D
 @onready var itemAmount := $ItemAmount as ItemAmount
 
 var item_id: Items.Id
@@ -39,10 +40,9 @@ func _ready() -> void:
 		sprite.frame = item.frame
 		sprite.centered = false
 		var sprite_size := sprite.texture.get_size() / Vector2(sprite.hframes, sprite.vframes)
-		#sprite.offset = - Vector2(1-item.origin.x, 1-item.origin.y) * sprite_size
-		#sprite.offset = (- item.origin * sprite_size) + Vector2(MainMap.CELL_SIZE / 2)
 		sprite.offset = (- item.origin * sprite_size) - Vector2(MainMap.CELL_SIZE / 2)
-		#sprite.offset = item.origin
-		print("offset", sprite.offset, item.origin)
+		occluder.visible = item.cast_shadow_enabled
+		occluder.position = (item.cast_shadow_origin * sprite_size)
+		
 	elif item.rendering_type == Item.RenderingType.Terrain:
 		Events.terrain_placed.emit(coordinates, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid)
