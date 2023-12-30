@@ -10,7 +10,7 @@ func _ready() -> void:
 	Events.blueprint_placed.connect(_blueprint_placed)
 	$Tasks.child_entered_tree.connect(_tasks_changed)
 	$Tasks.child_exiting_tree.connect(_tasks_changed)
-	$Tasks.child_order_changed.connect(_tasks_changed)
+	$Tasks.child_order_changed.connect(func() -> void: _refresh_debug_tree($Tasks.get_children()))
 	Events.task_finished.connect(func(_task: Task) -> void: _refresh_debug_tree($Tasks.get_children()))
 
 func _tasks_changed(_node: Node) -> void:

@@ -13,10 +13,10 @@ background_color = Color(0.2, 0.337255, 0.576471, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_t5nmp"]
 shader = ExtResource("6_ujsti")
-shader_parameter/color = null
+shader_parameter/color = Color(0, 0, 0, 0.619608)
 shader_parameter/angle = 160.332
 shader_parameter/len = 47.826
-shader_parameter/fade_margin = 34.565
+shader_parameter/fade_margin = 1.0
 
 [sub_resource type="Gradient" id="Gradient_ntls3"]
 colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 0)
@@ -47,7 +47,6 @@ script = ExtResource("2_bak4i")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 z_index = 7
-color = Color(0.421875, 0.421875, 0.421875, 1)
 
 [node name="ShadowLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
