@@ -57,13 +57,23 @@ func get_closest_free_point(coordinate: Vector2i) -> Variant:
 	return null
 
 func get_id_path(from: Vector2i, to: Vector2i) -> PackedVector2Array:
-	#print("Getting id path: ", from, to)
 	var found_path := astar_grid.get_id_path(from, to)
-	#if found_path:
-	#	found_path.pop_back()
-	
 	return found_path
-	#return astar_grid.get_id_path(from, to)
+
+func get_id_path_to_closest_point(from: Vector2i, to: Vector2i) -> PackedVector2Array:
+	var found_path := astar_grid.get_id_path(from, to)
+	if not found_path:
+		var direction := Vector2(from).direction_to(Vector2(to))
+		var all_directions_clone := all_directions.duplicate()
+		all_directions_clone.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+				return Vector2(a).angle_to(direction) < Vector2(b).angle_to(direction)
+		)
+		for new_direction in all_directions_clone as Array[Vector2i]:
+			var new_path := astar_grid.get_id_path(from, to + new_direction)
+			if new_path:
+				return new_path
+		
+	return found_path
 
 func get_point_position(id: Vector2i) -> Vector2:
 	return astar_grid.get_point_position(id)

@@ -29,6 +29,7 @@ target_layer = 3
 display_name = "Tree"
 can_be_picked = true
 can_be_constructed = false
+can_be_dismantled = true
 is_solid = true
 durability = 10
 crafting_requirements = Array[Resource("res://items/ItemRequirement.gd")]([])

@@ -12,7 +12,7 @@ func _ready() -> void:
 	Events.dismantle_issued.connect(_dismantle_issued)
 	$Tasks.child_entered_tree.connect(_tasks_changed)
 	$Tasks.child_exiting_tree.connect(_tasks_changed)
-	$Tasks.child_order_changed.connect(func() -> void: _refresh_debug_tree($Tasks.get_children()))
+	$Tasks.child_order_changed.connect(func() -> void: if $Tasks: _refresh_debug_tree($Tasks.get_children()))
 	Events.task_finished.connect(func(_task: Task) -> void: _refresh_debug_tree($Tasks.get_children()))
 
 func _tasks_changed(_node: Node) -> void:

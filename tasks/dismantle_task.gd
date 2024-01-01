@@ -9,8 +9,12 @@ func initialize(_target: ItemOnGround) -> DismantleTask:
 	
 	target.reserved_for_dismantling = true
 	
-	%GoToAction.target = Globals.get_map().global_position_to_coordinate(target.global_position)
+	%GoToAction.target = target.global_position
+	print("Set gototarget to be: ", %GoToAction.target)
 	%DismantleAction.target = target
+	$SequenceComposite/FinishTask.finished.connect(func() -> void:
+		Events.dismantle_finished.emit(target)
+	)
 	
 	return self
 

@@ -42,8 +42,6 @@ func _ready() -> void:
 	name = "Settler"
 
 func get_direction_to_next_path_point() -> Vector2:
-	#print("Next path point: ", PathFinder.get_point_position(path[current_path_index]))
-	#var point_position := PathFinder.get_point_position(path[current_path_index])
 	var point_position := path[current_path_index] as Vector2
 	return global_position.direction_to(Globals.get_map().coordinate_to_global_position(point_position))
 
@@ -74,7 +72,7 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if not current_task:
 		current_task = null
-		clear_path()
+		#clear_path()
 	
 	velocity = Vector2.ZERO
 	advance_path_index()
@@ -89,7 +87,7 @@ func _physics_process(delta: float) -> void:
 		if task_target is Blueprint and current_task is BuildTask:
 			task_target.increase_build_progress(build_speed * delta)
 		if task_target is ItemOnGround and current_task is DismantleTask:
-			task_target.decrease_durability(dismantling_speed * delta)
+			task_target.reduce_durability(dismantling_speed * delta)
 	
 	if velocity.length() > 0.1:
 		$AnimationPlayer.play("walk")
@@ -137,7 +135,7 @@ func set_target(_target: Variant) -> void:
 	if !target or (_target and not (_target as Vector2).is_equal_approx(target)):
 		var map_position_from := Globals.get_map().global_position_to_coordinate(global_position)
 		var map_position_to := Globals.get_map().global_position_to_coordinate(_target)
-		path = PathFinder.get_id_path(map_position_from, map_position_to)
+		path = PathFinder.get_id_path_to_closest_point(map_position_from, map_position_to)
 		current_path_index = 0
 	target = _target
 

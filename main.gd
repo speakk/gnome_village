@@ -4,11 +4,11 @@ extends Node2D
 @onready var ITEM_ON_GROUND := preload("res://items/item_on_ground/ItemOnGround.tscn")
 
 func _ready() -> void:
-	var test_divider := 1
+	var test_divider := 4
 	var map_size_real_x := MainMap.MAP_SIZE_X * 24 / test_divider
 	var map_size_real_y := MainMap.MAP_SIZE_Y * 24 / test_divider
 	
-	for i in 40:
+	for i in 20:
 		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
 		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
@@ -30,7 +30,7 @@ func _ready() -> void:
 			item_on_ground.global_position = quantized_position
 			add_child(item_on_ground)
 	
-	var settlers_to_place := 50
+	var settlers_to_place := 1
 	var attempts := 400
 	for i in attempts:
 		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))

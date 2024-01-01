@@ -57,8 +57,8 @@ func _ready() -> void:
 			map_entities[Layers.Items][coordinate].append(item)
 	)
 	
-	Events.item_removed_from_ground.connect(func(item: ItemOnGround, item_position: Vector2) -> void:
-			var coordinate := global_position_to_coordinate(item_position)
+	Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:
+			var coordinate := global_position_to_coordinate(item.global_position)
 			if map_entities[Layers.Items].has(coordinate):
 				map_entities[Layers.Items][coordinate].erase(item)
 	)
@@ -127,7 +127,7 @@ func _handle_dismantle_action(tile_position: Vector2i) -> void:
 			var entities := map_entities[Layers.Items][tile_position] as Array
 			for entity in entities as Array[Node]:
 				entity as ItemOnGround
-				if entity.item.can_be_dismantled:
+				if entity.item.can_be_dismantled and not entity.reserved_for_dismantling:
 					Events.dismantle_issued.emit(entity)
 					print("Issued")
 			#var entity 
