@@ -3,7 +3,7 @@ extends Resource
 class_name Item
 
 enum RenderingType {
-	Tile, Terrain, Sprite
+	Tile, Terrain, Sprite, None
 }
 
 @export_group("Visuals")
@@ -30,6 +30,7 @@ enum RenderingType {
 
 @export_category("Behaviour")
 @export var display_name: String = ""
+@export var scene: PackedScene = null
 @export var can_be_picked: bool = true
 @export var can_be_constructed: bool = false
 @export var can_be_dismantled: bool = false

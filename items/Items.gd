@@ -1,7 +1,7 @@
 extends Node
 
 enum Id {
-	Stone, Wood, WoodenWall, Tree
+	Stone, Wood, WoodenWall, Tree, WoodenDoor
 }
 
 var list: Dictionary = {
@@ -9,6 +9,7 @@ var list: Dictionary = {
 	Id.Wood: load("res://items/item_data/wood.tres") as Item,
 	Id.WoodenWall: load("res://items/item_data/wooden_wall.tres") as Item,
 	Id.Tree: load("res://items/item_data/tree.tres") as Item,
+	Id.WoodenDoor: load("res://items/item_data/wooden_door.tres") as Item,
 }
 
 func get_by_id(id: Id) -> Item:
