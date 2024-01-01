@@ -154,7 +154,6 @@ func _dismantle_in_position(tile_position: Vector2i) -> void:
 
 func _handle_dismantle_action(tile_position: Vector2i) -> void:
 	if is_mouse_pressed:
-		print("Handle dismantle action mouse pressed")
 		if Input.is_action_pressed("rectangle_select_modifier"):
 			if not rect_start:
 				rect_start = tile_position
@@ -165,9 +164,7 @@ func _handle_dismantle_action(tile_position: Vector2i) -> void:
 			_dismantle_in_position(tile_position)
 	else:
 		if rect_start and rect_end:
-			print("Had rect_start and rect_end", rect_start, rect_end)
 			for tile_coordinate in rect_tile_coords:
-				print("Dismantling in rect_tile_coords", tile_coordinate)
 				_dismantle_in_position(tile_coordinate)
 			
 			clear_rectangle_selection()

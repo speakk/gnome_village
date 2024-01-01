@@ -43,3 +43,10 @@ func _ready() -> void:
 			settlers_to_place -= 1
 			if settlers_to_place <= 0:
 				break
+
+var debug_visuals := false
+
+func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("debug_toggle"):
+		debug_visuals = not debug_visuals
+		Events.debug_visuals_set.emit(debug_visuals)

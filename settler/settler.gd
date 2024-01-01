@@ -40,6 +40,7 @@ enum TaskResult {
 
 func _ready() -> void:
 	name = "Settler"
+	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
 
 func get_direction_to_next_path_point() -> Vector2:
 	var point_position := path[current_path_index] as Vector2

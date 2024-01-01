@@ -78,6 +78,7 @@ libraries = {
 script = ExtResource("3_h7kst")
 
 [node name="Line2D" type="Line2D" parent="."]
+visible = false
 width = 2.0
 default_color = Color(0.798, 0.95, 0.9272, 0.0196078)
 

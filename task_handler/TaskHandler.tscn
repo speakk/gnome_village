@@ -9,6 +9,8 @@ script = ExtResource("1_x5pqp")
 layer = 2
 
 [node name="DebugUI" type="Control" parent="CanvasLayer"]
+unique_name_in_owner = true
+visible = false
 z_index = 4
 layout_mode = 3
 anchors_preset = 15

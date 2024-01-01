@@ -25,6 +25,10 @@ func hide_submenu() -> void:
 	%OrderMenu.hide()
 	%SubMenuContainer.hide()
 
-
 func _on_dismantle_button_pressed() -> void:
 	Events.dismantle_selected.emit()
+
+func _ready() -> void:
+	for child in %MainButtons.get_children():
+		child.button_pressed = false
+	hide_submenu()

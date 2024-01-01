@@ -14,6 +14,7 @@ func _ready() -> void:
 	$Tasks.child_exiting_tree.connect(_tasks_changed)
 	$Tasks.child_order_changed.connect(func() -> void: if $Tasks: _refresh_debug_tree($Tasks.get_children()))
 	Events.task_finished.connect(func(_task: Task) -> void: _refresh_debug_tree($Tasks.get_children()))
+	Events.debug_visuals_set.connect(func(new_value: bool) -> void: %DebugUI.visible = new_value)
 
 func _tasks_changed(_node: Node) -> void:
 	_refresh_debug_tree($Tasks.get_children())

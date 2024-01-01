@@ -8,6 +8,8 @@ signal dismantle_issued(item_on_ground: ItemOnGround)
 signal dismantle_finished(item_on_ground: ItemOnGround)
 signal dismantle_cancel_issued(item_on_ground: ItemOnGround)
 
+signal debug_visuals_set(value: bool)
+
 signal task_finished(task: Task)
 
 signal map_ready(map: MainMap)
