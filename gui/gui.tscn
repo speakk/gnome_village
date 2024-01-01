@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cynniosvk7y2r"]
+[gd_scene load_steps=10 format=3 uid="uid://cynniosvk7y2r"]
 
 [ext_resource type="Script" path="res://gui/gui.gd" id="1_jqq6f"]
 [ext_resource type="StyleBox" uid="uid://1n0ehwbrxwuy" path="res://gui/main_button_pressed.tres" id="2_f1s78"]
@@ -15,6 +15,12 @@ action = &"toggle_menu_2"
 
 [sub_resource type="Shortcut" id="Shortcut_uyf65"]
 events = [SubResource("InputEventAction_2r1w2")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_e6snh"]
+action = &"toggle_menu_3"
+
+[sub_resource type="Shortcut" id="Shortcut_006ty"]
+events = [SubResource("InputEventAction_e6snh")]
 
 [node name="GUI" type="MarginContainer"]
 anchors_preset = 15
@@ -53,9 +59,12 @@ text = "Plant
 
 [node name="OrderButton" type="Button" parent="PanelContainer/MainButtons"]
 unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme_override_styles/pressed = ExtResource("2_f1s78")
 toggle_mode = true
+shortcut = SubResource("Shortcut_006ty")
 text = "Orders"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

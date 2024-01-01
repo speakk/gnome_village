@@ -22,6 +22,7 @@ func show_submenu(menu: Node, button: Node) -> void:
 func hide_submenu() -> void:
 	%BuildMenu.hide()
 	%PlantMenu.hide()
+	%OrderMenu.hide()
 	%SubMenuContainer.hide()
 
 

@@ -32,7 +32,7 @@ enum RenderingType {
 @export var display_name: String = ""
 @export var can_be_picked: bool = true
 @export var can_be_constructed: bool = false
-@export var can_be_dismantled: bool = true
+@export var can_be_dismantled: bool = false
 @export var is_solid: bool = false
 @export var durability: int = 10
 @export var crafting_requirements: Array[ItemRequirement] = []

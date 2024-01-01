@@ -11,10 +11,29 @@ class_name ItemOnGround
 var item_id: Items.Id
 var item: Item
 
-var current_durability: float = 10
+var max_durability: float = 10:
+	set(new_value):
+		$DurabilityProgressBar.max_value = new_value
+		max_durability = new_value
+		
+var current_durability: float = 10:
+	set(new_value):
+		$DurabilityProgressBar.value = new_value
+		current_durability = new_value
+		if current_durability < max_durability:
+			$DurabilityProgressBar.show()
+		else:
+			$DurabilityProgressBar.hide()
 
 var reserved_for_picking := false
-var reserved_for_dismantling := false
+var reserved_for_dismantling := false:
+	set(new_value):
+		if new_value:
+			$DismantleIndicator.show()
+		else:
+			$DismantleIndicator.hide()
+		
+		reserved_for_dismantling = new_value
 
 func initialize(_item_id: Items.Id, _amount: int = 1) -> ItemOnGround:
 	item_id = _item_id
@@ -31,6 +50,7 @@ func _ready() -> void:
 	item = Items.get_by_id(item_id) as Item
 	
 	current_durability = item.durability
+	max_durability = item.durability
 
 	sprite.visible = false
 	var coordinates := Globals.get_map().global_position_to_coordinate(global_position)

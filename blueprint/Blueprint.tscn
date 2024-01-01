@@ -4,11 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://bntknuw5pjfhw" path="res://assets/tilesheet.png" id="2_2rs4v"]
 [ext_resource type="Script" path="res://components/Inventory.gd" id="3_bequ3"]
 
-[sub_resource type="Gradient" id="Gradient_fm3l8"]
+[sub_resource type="Gradient" id="Gradient_sqx7s"]
 colors = PackedColorArray(0.492029, 0.550781, 0.333705, 1, 1, 0.936739, 0.577836, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_kfmrl"]
-gradient = SubResource("Gradient_fm3l8")
+gradient = SubResource("Gradient_sqx7s")
 
 [node name="Blueprint" type="Node2D"]
 script = ExtResource("1_rypgn")
