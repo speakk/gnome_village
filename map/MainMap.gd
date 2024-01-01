@@ -94,6 +94,10 @@ var line_start: Variant # Vector2i | null
 var line_end: Variant # Vector2i | null
 var line_coords: Array[Vector2i]
 
+var rect_start: Variant # Vector2i | null
+var rect_end: Variant # Vector2i | null
+var rect_tile_coords: Array[Vector2i]
+
 func set_line_start(coordinate: Vector2i) -> void:
 	line_start = coordinate
 	
@@ -120,25 +124,65 @@ func _handle_build_action(tile_position: Vector2i) -> void:
 					for line_coord in line_coords:
 						_place_blueprint(line_coord)
 
+func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordinate: Vector2i) -> void:
+	if not rect_start_coordinate or not rect_end_coordinate:
+		$RectangleRectDraw.selection_rectangle = null
+		return
+		
+	var start_position := Vector2(map_to_local(rect_start_coordinate)) - Vector2(CELL_SIZE) / 2
+	var end_position := Vector2(map_to_local(rect_end_coordinate))
+	var selection_rectangle := Rect2(start_position, (end_position - start_position).snapped(Vector2(CELL_SIZE)))
+	$RectangleRectDraw.selection_rectangle = selection_rectangle
+	
+	var new_rect_selection_coordinates: Array[Vector2i] = []
+	for y in rect_end_coordinate.y - rect_start_coordinate.y + 1:
+		var real_y := y + rect_start_coordinate.y
+		for x in rect_end_coordinate.x - rect_start_coordinate.x + 1:
+			var real_x := x + rect_start_coordinate.x
+			new_rect_selection_coordinates.append(Vector2i(real_x, real_y))
+	
+	rect_tile_coords = new_rect_selection_coordinates
+	print("Rect tile coords set", rect_tile_coords)
+
+func _dismantle_in_position(tile_position: Vector2i) -> void:
+	if map_entities[Layers.Items].has(tile_position):
+		var entities := map_entities[Layers.Items][tile_position] as Array
+		for entity in entities as Array[Node]:
+			entity as ItemOnGround
+			if entity.item.can_be_dismantled and not entity.reserved_for_dismantling:
+				Events.dismantle_issued.emit(entity)
+
 func _handle_dismantle_action(tile_position: Vector2i) -> void:
 	if is_mouse_pressed:
 		print("Handle dismantle action mouse pressed")
-		if map_entities[Layers.Items].has(tile_position):
-			var entities := map_entities[Layers.Items][tile_position] as Array
-			for entity in entities as Array[Node]:
-				entity as ItemOnGround
-				if entity.item.can_be_dismantled and not entity.reserved_for_dismantling:
-					Events.dismantle_issued.emit(entity)
-					print("Issued")
-			#var entity 
-			#Events.dismantle_issued
+		if Input.is_action_pressed("rectangle_select_modifier"):
+			if not rect_start:
+				rect_start = tile_position
+			
+			rect_end = tile_position
+			_set_rectangle_selection(rect_start, rect_end)
+		else:
+			_dismantle_in_position(tile_position)
+	else:
+		if rect_start and rect_end:
+			print("Had rect_start and rect_end", rect_start, rect_end)
+			for tile_coordinate in rect_tile_coords:
+				print("Dismantling in rect_tile_coords", tile_coordinate)
+				_dismantle_in_position(tile_coordinate)
+			
+			clear_rectangle_selection()
 
 func _handle_map_action(tile_position: Vector2i) -> void:
 	if current_action == MapActions.Build:
 		_handle_build_action(tile_position)
 	if current_action == MapActions.Dismantle:
 		_handle_dismantle_action(tile_position)
-	
+
+func clear_rectangle_selection() -> void:
+	rect_start = null
+	rect_end = null
+	rect_tile_coords = []
+	$RectangleRectDraw.selection_rectangle = null
 
 func _process(delta: float) -> void:
 	if not Input.is_action_pressed("line_draw_modifier"):
@@ -147,13 +191,15 @@ func _process(delta: float) -> void:
 		line_coords = []
 		$HoverRectDraw.set_line_coords([] as Array[Vector2i])
 	
+	if not Input.is_action_pressed("rectangle_select_modifier"):
+		clear_rectangle_selection()
+	
 	var tile_position: Vector2i = local_to_map(get_local_mouse_position())
 	
 	if is_mouse_2_pressed:
 		_cancel_blueprint(tile_position)
 	
 	_handle_map_action(tile_position)
-	
 
 func _cancel_blueprint(tile_position: Vector2i) -> void:
 	var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
@@ -164,7 +210,6 @@ func _cancel_blueprint(tile_position: Vector2i) -> void:
 		map_entities[Layers.Blueprint].erase(tile_position)
 		set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
 	
-
 func _place_blueprint(tile_position: Vector2i) -> void:
 	var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
 				
@@ -211,10 +256,6 @@ func _blueprint_finished(blueprint: Blueprint) -> void:
 	var tile_position := global_position_to_coordinate(blueprint.global_position)
 	set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
 	map_entities[Layers.Blueprint].erase(tile_position) 
-	##set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
-	#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
-	#set_cells_terrain_connect(Layers.Building, [tile_position], 0, 0)
-	##set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(1, 0))
 
 func _construction_selected(item: Item) -> void:
 	current_action = MapActions.Build

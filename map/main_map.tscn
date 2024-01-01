@@ -1,8 +1,9 @@
-[gd_scene load_steps=24 format=3 uid="uid://b4nj0xntglt07"]
+[gd_scene load_steps=25 format=3 uid="uid://b4nj0xntglt07"]
 
 [ext_resource type="Texture2D" uid="uid://bntknuw5pjfhw" path="res://assets/tilesheet.png" id="1_fv3c2"]
 [ext_resource type="Script" path="res://map/MainMap.gd" id="2_c6gph"]
 [ext_resource type="Texture2D" uid="uid://coxwefohcoj31" path="res://assets/wall_autotiles2.png" id="2_djkpl"]
+[ext_resource type="Script" path="res://map/RectangleRectDraw.gd" id="5_86rno"]
 [ext_resource type="Script" path="res://map/HoverRectDraw.gd" id="5_scvtq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xylra"]
@@ -185,3 +186,6 @@ z_as_relative = false
 
 [node name="HoverRectDraw" type="Node2D" parent="."]
 script = ExtResource("5_scvtq")
+
+[node name="RectangleRectDraw" type="Node2D" parent="."]
+script = ExtResource("5_86rno")
