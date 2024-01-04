@@ -2,9 +2,9 @@ extends Task
 
 class_name BuildTask
 
-var blueprint: Blueprint
+var blueprint: ItemOnGround
 
-func initialize(_blueprint: Blueprint) -> BuildTask:
+func initialize(_blueprint: ItemOnGround) -> BuildTask:
 	blueprint = _blueprint
 	
 	%GoToBlueprint.target = blueprint.position

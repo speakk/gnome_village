@@ -85,7 +85,7 @@ func _physics_process(delta: float) -> void:
 		velocity = get_direction_to_next_path_point() * walk_speed
 	
 	if task_target:
-		if task_target is Blueprint and current_task is BuildTask:
+		if task_target is ItemOnGround and current_task is BuildTask:
 			task_target.increase_build_progress(build_speed * delta)
 		if task_target is ItemOnGround and current_task is DismantleTask:
 			task_target.reduce_durability(dismantling_speed * delta)

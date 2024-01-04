@@ -5,24 +5,24 @@ class_name BlueprintTree
 var BRING_RESOURCE_TASK := preload("res://tasks/bring_resource_task.tscn")
 var BUILD_TASK := preload("res://tasks/build_task.tscn")
 
-var blueprint: Blueprint
+var blueprint: ItemOnGround
 
 func _ready() -> void:
-	name = "Blueprint_Tree"
+	name = "ItemOnGround_Tree"
 	
-	Events.blueprint_finished.connect(func(_blueprint: Blueprint) -> void:
+	Events.construction_finished.connect(func(_blueprint: ItemOnGround) -> void:
+		if _blueprint == blueprint:
+			clean_up()
+			#blueprint.call_deferred("queue_free")
+	)
+	
+	Events.blueprint_cancel_issued.connect(func(_blueprint: ItemOnGround) -> void:
 		if _blueprint == blueprint:
 			clean_up()
 			blueprint.call_deferred("queue_free")
 	)
 	
-	Events.blueprint_cancel_issued.connect(func(_blueprint: Blueprint) -> void:
-		if _blueprint == blueprint:
-			clean_up()
-			blueprint.call_deferred("queue_free")
-	)
-	
-func initialize(tile_target: Vector2i, _blueprint: Blueprint, scene_tree: SceneTree) -> BlueprintTree:
+func initialize(tile_target: Vector2i, _blueprint: ItemOnGround, scene_tree: SceneTree) -> BlueprintTree:
 	order_type = TaskTreeBranch.OrderType.Sequence
 	blueprint = _blueprint
 	

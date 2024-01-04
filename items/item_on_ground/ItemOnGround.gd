@@ -2,6 +2,10 @@ extends Node2D
 
 class_name ItemOnGround
 
+enum ItemState {
+	Blueprint, Normal
+}
+
 @onready var ITEM_ON_GROUND := preload("res://items/item_on_ground/ItemOnGround.tscn")
 
 @onready var sprite := $Sprite2D as Sprite2D
@@ -10,6 +14,33 @@ class_name ItemOnGround
 
 var item_id: Items.Id
 var item: Item
+var current_state: ItemState:
+	set(new_state):
+		var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
+		if item:
+			if new_state == ItemState.Normal:
+				if item.is_solid:
+					Events.solid_cell_placed.emit(coordinate)
+					
+				if item.rendering_type == Item.RenderingType.Terrain:
+					Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+					#signal terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int)
+					Events.terrain_cleared.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id)
+						
+				$Sprite2D.modulate = Color.WHITE
+			
+			if new_state == ItemState.Blueprint:
+				print("New state is blueprint!")
+				if item.rendering_type == Item.RenderingType.Terrain:
+					print("Setting blueprint terrain")
+					Events.terrain_placed.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+					Events.terrain_cleared.emit(coordinate, item.target_layer, item.terrain_set_id)
+					
+				elif item.rendering_type == Item.RenderingType.Sprite:
+					$Sprite2D.modulate = Color(0.6, 0.6, 1.0, 0.5)
+			
+		current_state = new_state
+		
 
 var max_durability: float = 10:
 	set(new_value):
@@ -35,10 +66,18 @@ var reserved_for_dismantling := false:
 		
 		reserved_for_dismantling = new_value
 
-func initialize(_item_id: Items.Id, _amount: int = 1) -> ItemOnGround:
+var _initial_state: Variant
+
+func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemState.Normal) -> ItemOnGround:
 	item_id = _item_id
 	$ItemAmount.amount = _amount
 	$ItemAmount.amount_changed.connect(_amount_changed)
+	
+	$ProgressBar.value = build_progress
+	
+	#current_state = state
+	_initial_state = state
+		
 	
 	return self
 	
@@ -55,9 +94,6 @@ func _ready() -> void:
 	sprite.visible = false
 	var coordinates := Globals.get_map().global_position_to_coordinate(global_position)
 	
-	if item.is_solid:
-		Events.solid_cell_placed.emit(coordinates)
-	
 	if item.rendering_type == Item.RenderingType.Sprite:
 		sprite.visible = true
 		sprite.texture = item.texture
@@ -71,8 +107,15 @@ func _ready() -> void:
 		occluder.position = (item.cast_shadow_origin * sprite_size)
 		
 	elif item.rendering_type == Item.RenderingType.Terrain:
-		Events.terrain_placed.emit(coordinates, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid)
+		Events.terrain_placed.emit(coordinates, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
 
+	if item.scene:
+		var scene := item.scene.instantiate() as Node2D
+		add_child(scene)
+		
+	# Trigger current_state setter with initialized item
+	print("Initializing item on ground, setting state: ", _initial_state)
+	current_state = _initial_state
 	Events.item_placed_on_ground.emit(self, global_position)
 
 func _exit_tree() -> void:
@@ -92,3 +135,44 @@ func generate_drops() -> void:
 			# TODO: Randomize position slightly
 			new_item_on_ground.global_position = global_position
 			get_parent().add_child(new_item_on_ground)
+
+
+# Blueprint related
+
+var finish_emitted := false
+var build_progress := 0.0
+
+func finish_construction() -> void:
+	if not finish_emitted:
+		#Events.solid_cell_placed.emit(Globals.get_map().global_position_to_coordinate(global_position))
+		$Sprite2D.modulate = Color.WHITE
+		$ProgressBar.hide()
+		
+		await get_tree().process_frame
+				
+		print("Finish construction")
+		finish_emitted = true
+		Events.construction_finished.emit(self)
+
+func increase_build_progress(amount: float) -> void:
+	build_progress += amount
+	$ProgressBar.value = build_progress
+	if build_progress > 0:
+		if current_state != ItemState.Normal:
+			current_state = ItemState.Normal
+
+	if is_finished():
+		finish_construction()
+
+func is_finished() -> bool:
+	return build_progress >= 1.0
+
+func has_materials() -> bool:
+	var material_requirements := Items.get_crafting_requirements(item_id)
+	
+	for requirement in material_requirements:
+		var deposited := $Inventory.get_items().find(func(depo: Inventory.InventoryItemAmount) -> bool: return depo.id == requirement.item_id) as Inventory.InventoryItemAmount
+		if deposited.amount < requirement.amount:
+			return false
+	
+	return true

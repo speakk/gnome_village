@@ -4,7 +4,7 @@ class_name BringResourceTask
 
 var target_tile: Vector2i
 var item_requirement: ItemRequirement 
-var blueprint: Blueprint
+var blueprint: ItemOnGround
 
 var _material: ItemOnGround
 
@@ -25,7 +25,7 @@ func find_closest_material(_item_requirement: ItemRequirement, tree: SceneTree) 
 	
 	return closest_material
 
-func initialize(_target_tile: Vector2i, _item_requirement: ItemRequirement, _blueprint: Blueprint, tree: SceneTree) -> BringResourceTask:
+func initialize(_target_tile: Vector2i, _item_requirement: ItemRequirement, _blueprint: ItemOnGround, tree: SceneTree) -> BringResourceTask:
 	target_tile = _target_tile
 	item_requirement = _item_requirement
 	blueprint = _blueprint
@@ -49,7 +49,7 @@ func _ready() -> void:
 	
 	%GoToBlueprint.target = (Globals.get_map() as MainMap).coordinate_to_global_position(target_tile)
 	
-	%PutItemToBlueprint.target_inventory = blueprint.get_node("Inventory")
+	%PutItemToBlueprint.target_inventory = blueprint.get_node("ConstructionInventory")
 	%PutItemToBlueprint.item_id = item_requirement.item_id
 	%PutItemToBlueprint.amount = item_requirement.amount
 

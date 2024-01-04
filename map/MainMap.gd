@@ -2,14 +2,14 @@ extends TileMap
 
 class_name MainMap
 
-@onready var BLUEPRINT := preload("res://blueprint/Blueprint.tscn")
+@onready var ITEM_ON_GROUND := preload("res://items/item_on_ground/ItemOnGround.tscn")
 @onready var HOVER_RECT := preload("res://map/hover_rect.tscn")
 
 const MAP_SIZE_X: int = 80
 const MAP_SIZE_Y: int = 40
 const CELL_SIZE := Vector2i(24, 24)
 
-var construction_item: Variant # Item | null
+var construction_item_id: Variant # Items.Id | null
 
 enum MapActions {
 	Build, Dismantle, None
@@ -27,6 +27,7 @@ enum Layers {
 
 var map_entities := {
 	Layers.Blueprint: {} as Dictionary,
+	Layers.Building: {} as Dictionary,
 	Layers.Items: {} as Dictionary
 }
 
@@ -47,8 +48,8 @@ func _ready() -> void:
 	#set_layer_modulate(Layers.Ground, Color(0.7, 0.7, 0.7))
 	set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
 	
-	Events.blueprint_finished.connect(_blueprint_finished)
 	Events.terrain_placed.connect(_terrain_placed)
+	Events.terrain_cleared.connect(_terrain_cleared)
 	
 	Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector2) -> void:
 			var coordinate := global_position_to_coordinate(item_position)
@@ -105,7 +106,7 @@ func set_line_end(coordinate: Vector2i) -> void:
 	line_end = coordinate
 
 func _handle_build_action(tile_position: Vector2i) -> void:
-	if construction_item:
+	if construction_item_id:
 		if PathFinder.is_valid_position(tile_position):
 			$HoverRectDraw.set_line_coords([tile_position] as Array[Vector2i])
 			
@@ -117,12 +118,12 @@ func _handle_build_action(tile_position: Vector2i) -> void:
 					set_line_end(tile_position)
 					$HoverRectDraw.set_line_coords(get_tile_line(line_start, line_end))
 				else:
-					_place_blueprint(tile_position)
+					_place_blueprint(tile_position, construction_item_id)
 			else:
 				if line_start and line_end:
 					var line_coords := get_tile_line(line_start, line_end)
 					for line_coord in line_coords:
-						_place_blueprint(line_coord)
+						_place_blueprint(line_coord, construction_item_id)
 
 func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordinate: Vector2i) -> void:
 	if not rect_start_coordinate or not rect_end_coordinate:
@@ -201,26 +202,27 @@ func _process(delta: float) -> void:
 func _cancel_blueprint(tile_position: Vector2i) -> void:
 	var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
 	if source_id > 0:
-		print("Removing at: ", tile_position)
-		var blueprint := map_entities[Layers.Blueprint][tile_position] as Blueprint
+		var blueprint := map_entities[Layers.Blueprint][tile_position] as ItemOnGround
 		Events.blueprint_cancel_issued.emit(blueprint)
-		map_entities[Layers.Blueprint].erase(tile_position)
-		set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
+		Events.terrain_cleared.emit(tile_position, Layers.Blueprint, source_id)
+		#func _terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int, item_on_ground: ItemOnGround) -> void:
+		print("Removing at: ", tile_position)
+		#map_entities[Layers.Blueprint].erase(tile_position)
+		#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
 	
-func _place_blueprint(tile_position: Vector2i) -> void:
+func _place_blueprint(tile_position: Vector2i, item_id: Items.Id) -> void:
 	var source_id := get_cell_source_id(Layers.Blueprint, tile_position)
-				
 	if not PathFinder.is_position_solid(tile_position) and source_id < 0:
-		set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
-		
-		var blueprint := (BLUEPRINT.instantiate() as Blueprint).initialize(Items.Id.WoodenWall)
+		var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
 		blueprint.global_position = coordinate_to_global_position(tile_position)
 		get_tree().root.get_node("Main").add_child(blueprint)
 		
-		map_entities[Layers.Blueprint][tile_position] = blueprint
-		print("Placed at", tile_position)
 		Events.blueprint_placed.emit(tile_position, blueprint)
 		
+		#set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
+
+
+
 var is_mouse_pressed := false
 var is_mouse_2_pressed := false
 
@@ -245,15 +247,23 @@ func global_position_to_coordinate(_global_position: Vector2) -> Vector2i:
 	return local_to_map(to_local(_global_position))
 
 func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
-						terrain_set_id: int, terrain_id: int, is_solid: bool) -> void:
+						terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround) -> void:
 	set_cells_terrain_connect(target_layer, [coordinate], terrain_set_id, terrain_id)
+	map_entities[target_layer][coordinate] = item_on_ground
+	#Events.solid_cell_placed.emit(coordinate)
+	#set_cells_terrain_connect(Layers.Blueprint, [tile_position], 0, 0)
 
-# TODO: Also _blueprint_removed
-func _blueprint_finished(blueprint: Blueprint) -> void:
-	var tile_position := global_position_to_coordinate(blueprint.global_position)
-	set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
-	map_entities[Layers.Blueprint].erase(tile_position) 
+func _terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int) -> void:
+	set_cell(target_layer, coordinate, tile_set.get_source_id(tileset_source_id), Vector2i(-1, -1))
+	map_entities[target_layer].erase(coordinate) 
+	#Events.solid_cell_removed.emit(coordinate)
 
-func _construction_selected(item: Item) -> void:
+## TODO: Also _blueprint_removed
+#func _construction_finished(blueprint: ItemOnGround) -> void:
+	#var tile_position := global_position_to_coordinate(blueprint.global_position)
+	#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
+	#map_entities[Layers.Blueprint].erase(tile_position) 
+
+func _construction_selected(item_id: Items.Id) -> void:
 	current_action = MapActions.Build
-	construction_item = item
+	construction_item_id = item_id

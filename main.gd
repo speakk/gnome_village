@@ -4,7 +4,7 @@ extends Node2D
 @onready var ITEM_ON_GROUND := preload("res://items/item_on_ground/ItemOnGround.tscn")
 
 func _ready() -> void:
-	var test_divider := 4
+	var test_divider := 2
 	var map_size_real_x := MainMap.MAP_SIZE_X * 24 / test_divider
 	var map_size_real_y := MainMap.MAP_SIZE_Y * 24 / test_divider
 	

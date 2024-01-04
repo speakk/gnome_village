@@ -2,7 +2,7 @@ extends ActionLeaf
 
 class_name FinishTask
 
-var target: Blueprint
+var target: ItemOnGround
 
 signal finished
 

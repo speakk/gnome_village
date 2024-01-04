@@ -1,6 +1,6 @@
 extends ActionLeaf
 
-var target: Blueprint
+var target: ItemOnGround
 
 @warning_ignore("untyped_declaration")
 func tick(actor: Node, blackboard: Blackboard) -> int:
