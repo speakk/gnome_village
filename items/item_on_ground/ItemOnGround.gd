@@ -26,8 +26,10 @@ var current_state: ItemState:
 					Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
 					#signal terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int)
 					Events.terrain_cleared.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id)
-						
-				$Sprite2D.modulate = Color.WHITE
+				elif item.rendering_type == Item.RenderingType.Sprite:
+					$Sprite2D.modulate = Color.WHITE
+				elif item.rendering_type == Item.RenderingType.None and item.scene:
+					get_node("scene").modulate = Color.WHITE
 			
 			if new_state == ItemState.Blueprint:
 				print("New state is blueprint!")
@@ -35,9 +37,10 @@ var current_state: ItemState:
 					print("Setting blueprint terrain")
 					Events.terrain_placed.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id, item.terrain_id, item.is_solid, self)
 					Events.terrain_cleared.emit(coordinate, item.target_layer, item.terrain_set_id)
-					
 				elif item.rendering_type == Item.RenderingType.Sprite:
 					$Sprite2D.modulate = Color(0.6, 0.6, 1.0, 0.5)
+				elif item.rendering_type == Item.RenderingType.None and item.scene:
+					get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
 			
 		current_state = new_state
 		
@@ -111,6 +114,7 @@ func _ready() -> void:
 
 	if item.scene:
 		var scene := item.scene.instantiate() as Node2D
+		scene.name = "scene"
 		add_child(scene)
 		
 	# Trigger current_state setter with initialized item
