@@ -19,12 +19,13 @@ var current_state: ItemState:
 		var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
 		if item:
 			if new_state == ItemState.Normal:
+				print("New state is Normal")
 				if item.is_solid:
 					Events.solid_cell_placed.emit(coordinate)
 					
 				if item.rendering_type == Item.RenderingType.Terrain:
+					print("Clearing terrain and adding to normal layer")
 					Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
-					#signal terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int)
 					Events.terrain_cleared.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id)
 				elif item.rendering_type == Item.RenderingType.Sprite:
 					$Sprite2D.modulate = Color.WHITE
@@ -42,6 +43,7 @@ var current_state: ItemState:
 				elif item.rendering_type == Item.RenderingType.None and item.scene:
 					get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
 			
+		Events.item_state_changed.emit(self, current_state, new_state)
 		current_state = new_state
 		
 

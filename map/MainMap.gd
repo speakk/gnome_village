@@ -20,18 +20,7 @@ var current_action: MapActions = MapActions.None
 enum Layers {
 	Ground, Building, Materials, Blueprint, Items
 }
-#
-#const Layers.Ground = 0
-#const Layers.Building = 1
-#const MATERIALS_LAYER = 2
 
-#var map_entities := {
-	#Layers.Blueprint: {} as Dictionary,
-	#Layers.Building: {} as Dictionary,
-	#Layers.Items: {} as Dictionary
-#}
-
-# Coordinate -> Array[ItemOnGround]
 var map_entities := {} as Dictionary
 
 func add_map_entity(coordinate: Vector2i, item_on_ground: ItemOnGround) -> void:
@@ -65,8 +54,6 @@ func is_coordinate_occupied(coordinate: Vector2i) -> bool:
 	return false
 	
 
-
-
 func _ready() -> void:
 	add_layer(Layers.Ground)
 	add_layer(Layers.Building)
@@ -77,9 +64,6 @@ func _ready() -> void:
 		for y in MAP_SIZE_Y:
 			set_cell(Layers.Ground, Vector2i(x, y), tile_set.get_source_id(0), Vector2i(0, 0))
 	
-	# TODO: Instead of this, keep a proper x-y map of entities so you don't have to rely on tile_data
-	#set_layer_modulate(Layers.Building, Color.TRANSPARENT)
-	#set_layer_modulate(Layers.Ground, Color(0.7, 0.7, 0.7))
 	set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
 	
 	Events.terrain_placed.connect(_terrain_placed)
@@ -234,7 +218,6 @@ func _cancel_blueprint(tile_position: Vector2i) -> void:
 	for entity in entities:
 		if entity.current_state == ItemOnGround.ItemState.Blueprint:
 			Events.blueprint_cancel_issued.emit(entity)
-			#Events.terrain_cleared.emit(tile_position, Layers.Blueprint, source_id)
 			print("Removing at: ", tile_position)
 	
 func _place_blueprint(tile_position: Vector2i, item_id: Items.Id) -> void:
@@ -260,7 +243,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			is_mouse_pressed = false
 			is_mouse_2_pressed = false
 		
-			
 
 func coordinate_to_global_position(coordinate: Vector2i) -> Vector2:
 	return to_global(map_to_local(coordinate))
@@ -272,29 +254,8 @@ func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
 						terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround) -> void:
 	set_cells_terrain_connect(target_layer, [coordinate], terrain_set_id, terrain_id)
 
-func _item_state_changed(item_on_ground: ItemOnGround, previous_state: ItemOnGround.ItemState, new_state: ItemOnGround.ItemState) -> void:
-	# TODO: Every bit of coordinate should be a list because there can be multiple items on each coordinate
-	var item := item_on_ground.item
-	var coordinate := global_position_to_coordinate(item_on_ground.global_position)
-	
-	var from_layer := Layers.Blueprint if previous_state == ItemOnGround.ItemState.Blueprint else item.target_layer
-	
-	var existing_item: Variant = map_entities[from_layer][coordinate]
-	
-	var source_id := get_cell_source_id(from_layer, coordinate)
-	if source_id > 0:
-		_terrain_cleared(coordinate, from_layer, item.terrain_id)
-	
-	if item_on_ground.item.rendering_type == Item.RenderingType.Terrain:
-		var layer := item.target_layer
-		if item_on_ground.current_state == ItemOnGround.ItemState.Blueprint:
-			layer = Layers.Blueprint
-			
-		set_cells_terrain_connect(layer, [coordinate], item.terrain_set_id, item.terrain_id)
-		
-
 func _terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int) -> void:
-	set_cell(target_layer, coordinate, tile_set.get_source_id(tileset_source_id), Vector2i(-1, -1))
+	set_cells_terrain_connect(target_layer, [coordinate], tileset_source_id, -1)
 
 ## TODO: Also _blueprint_removed
 #func _construction_finished(blueprint: ItemOnGround) -> void:

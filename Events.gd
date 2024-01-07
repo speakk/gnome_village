@@ -26,3 +26,4 @@ signal dismantle_selected()
 
 signal item_placed_on_ground(item: ItemOnGround, item_position: Vector2)
 signal item_removed_from_ground(item: ItemOnGround, item_position: Vector2)
+signal item_state_changed(item_on_ground: ItemOnGround, previous_state: ItemOnGround.ItemState, new_state: ItemOnGround.ItemState)
