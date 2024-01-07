@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://cac2htxxa8jhx"]
+[gd_scene load_steps=4 format=3 uid="uid://cac2htxxa8jhx"]
 
 [ext_resource type="Texture2D" uid="uid://dtp50b2sli3vs" path="res://assets/door.png" id="1_24bb3"]
+[ext_resource type="Script" path="res://items/item_data/scenes/door.gd" id="1_rep2w"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_0d06s"]
 polygon = PackedVector2Array(-4, -12, 3, -12, 3, 12, -4, 12)
 
 [node name="Door" type="Node2D"]
+script = ExtResource("1_rep2w")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_24bb3")

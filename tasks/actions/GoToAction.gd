@@ -1,4 +1,4 @@
-extends ActionLeaf
+extends SequenceComposite
 
 var target: Vector2i
 

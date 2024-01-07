@@ -134,11 +134,16 @@ func _handle_build_action(tile_position: Vector2i) -> void:
 					$HoverRectDraw.set_line_coords(get_tile_line(line_start, line_end))
 				else:
 					_place_blueprint(tile_position, construction_item_id)
+					line_start = null
+					line_end = null
 			else:
 				if line_start and line_end:
 					var line_coords := get_tile_line(line_start, line_end)
 					for line_coord in line_coords:
 						_place_blueprint(line_coord, construction_item_id)
+				
+					line_start = null
+					line_end = null
 
 func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordinate: Vector2i) -> void:
 	if not rect_start_coordinate or not rect_end_coordinate:
