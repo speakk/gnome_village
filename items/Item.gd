@@ -6,6 +6,10 @@ enum RenderingType {
 	Tile, Terrain, Sprite, None
 }
 
+enum SpecialFeatures {
+	Door
+}
+
 @export_group("Visuals")
 @export var rendering_type: RenderingType = RenderingType.Sprite
 
@@ -38,3 +42,4 @@ enum RenderingType {
 @export var durability: int = 10
 @export var crafting_requirements: Array[ItemRequirement] = []
 @export var item_drops: Array[ItemDrop] = []
+@export var special_features: Array[SpecialFeatures]

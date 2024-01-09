@@ -12,6 +12,8 @@ enum ItemState {
 @onready var occluder := $LightOccluder2D as LightOccluder2D
 @onready var itemAmount := $ItemAmount as ItemAmount
 
+var item_scene: Node2D
+
 var item_id: Items.Id
 var item: Item
 var current_state: ItemState:
@@ -118,6 +120,7 @@ func _ready() -> void:
 		var scene := item.scene.instantiate() as Node2D
 		scene.name = "scene"
 		add_child(scene)
+		item_scene = scene
 		
 	# Trigger current_state setter with initialized item
 	print("Initializing item on ground, setting state: ", _initial_state)
@@ -125,6 +128,8 @@ func _ready() -> void:
 	Events.item_placed_on_ground.emit(self, global_position)
 
 func _exit_tree() -> void:
+	if item.rendering_type == Item.RenderingType.Terrain:
+		Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), item.target_layer, item.terrain_set_id)
 	Events.item_removed_from_ground.emit(self)
 
 func reduce_durability(amount: float) -> void:
@@ -134,6 +139,7 @@ func has_durability_left() -> bool:
 	return current_durability > 0
 
 func generate_drops() -> void:
+	print("Generate drops yeah?")
 	for item_drop in item.item_drops:
 		if randf() <= item_drop.probability:
 			var amount := randi_range(item_drop.amount_min, item_drop.amount_max)

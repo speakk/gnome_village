@@ -107,6 +107,9 @@ var _process_time_metric_name : String
 var _process_time_metric_value : float = 0.0
 var _can_send_message: bool = false
 
+# speak's custom addition
+var blackboard_time: float = 0
+
 
 func _ready() -> void:
 	if not process_thread:
@@ -148,6 +151,7 @@ func _physics_process(_delta: float) -> void:
 	
 func _process(_delta: float) -> void:
 	_process_internally()
+
 
 
 func _process_internally() -> void:

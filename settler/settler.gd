@@ -101,6 +101,8 @@ func _physics_process(delta: float) -> void:
 	else:
 		$AnimationPlayer.play("idle")
 	
+	process_actions(delta)
+	
 	move_and_slide(delta)
 	
 	# TODO: Handle this betterer at some point
@@ -158,3 +160,13 @@ func is_at_target(_target: Vector2) -> bool:
 
 func can_reach_target(_target: Vector2) -> bool:
 	return global_position.distance_to(_target) <= REACH_DISTANCE
+
+var actions: Array[ActorAction]
+
+func add_action(action: ActorAction) -> void:
+	actions.append(action)
+	action.finished.connect(func(_action: ActorAction) -> void: actions.erase(_action))
+
+func process_actions(delta: float) -> void:
+	for action in actions:
+		action.process_action(self, delta)
