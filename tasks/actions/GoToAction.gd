@@ -1,15 +1,15 @@
-extends SequenceComposite
-
-var target: Vector2i
+class_name GoToAction extends SequenceComposite
 
 @warning_ignore("untyped_declaration")
 func tick(actor: Node, blackboard: Blackboard) -> int:
-	#print("Setting target", target)
-	actor.set_target(target)
-	
-	if actor.can_reach_target(target):
-		#actor.set_target(null)
+	if _done:
 		return SUCCESS
+	
+	if not _action:
+		print("Alright adding goto action")
+		_action = ACTION.new().initialize({ target_coordinate =  target_coordinate })
+		_action.finished.connect(func(__action: ActorAction) -> void: _done = true)
+		blackboard.set_value("goto_action", _action)
+		actor.add_action(_action)
 		
-	# TODO: Check if at target, in which case return finished
 	return RUNNING

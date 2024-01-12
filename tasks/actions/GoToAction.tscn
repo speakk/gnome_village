@@ -1,44 +1,46 @@
 [gd_scene load_steps=10 format=3 uid="uid://bevd0ykcp7npk"]
 
-[ext_resource type="Script" path="res://tasks/actions/GoToAction.gd" id="1_e08yj"]
+[ext_resource type="Script" path="res://tasks/actions/GoToUpdatePath.gd" id="2_1psy6"]
 [ext_resource type="Script" path="res://tasks/conditions/IsWithinRange.gd" id="2_i1rh5"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector.gd" id="2_vbggv"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_nu6c4"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/decorators/inverter.gd" id="3_yi44a"]
-[ext_resource type="Script" path="res://addons/beehave/nodes/leaves/action.gd" id="4_fdtvh"]
 [ext_resource type="Script" path="res://tasks/actions/FinishTask.gd" id="6_se1hn"]
 [ext_resource type="Script" path="res://tasks/conditions/IsBlockedByDoor.gd" id="7_lcpct"]
 [ext_resource type="Script" path="res://tasks/actions/OpenDoor.gd" id="8_or0dk"]
+[ext_resource type="Script" path="res://tasks/actions/AdvanceAlongPath.gd" id="9_1n0he"]
 
 [node name="GoToAction" type="Node"]
-script = ExtResource("1_e08yj")
 
-[node name="SelectorComposite" type="Node" parent="."]
+[node name="UpdatePath" type="Node" parent="."]
+script = ExtResource("2_1psy6")
+
+[node name="FinishCheck" type="Node" parent="."]
 script = ExtResource("2_vbggv")
 
-[node name="Not" type="Node" parent="SelectorComposite"]
+[node name="Not" type="Node" parent="FinishCheck"]
 script = ExtResource("3_yi44a")
 
-[node name="IsWithinRange" type="Node" parent="SelectorComposite/Not"]
+[node name="IsWithinRange" type="Node" parent="FinishCheck/Not"]
 script = ExtResource("2_i1rh5")
 
-[node name="FinishTask" type="Node" parent="SelectorComposite"]
+[node name="FinishTask" type="Node" parent="FinishCheck"]
 script = ExtResource("6_se1hn")
 
-[node name="SequenceComposite" type="Node" parent="."]
+[node name="MoveSequence" type="Node" parent="."]
 script = ExtResource("3_nu6c4")
 
-[node name="DoorSelector" type="Node" parent="SequenceComposite"]
+[node name="DoorSelector" type="Node" parent="MoveSequence"]
 script = ExtResource("3_nu6c4")
 
-[node name="Not" type="Node" parent="SequenceComposite/DoorSelector"]
+[node name="Not" type="Node" parent="MoveSequence/DoorSelector"]
 script = ExtResource("3_yi44a")
 
-[node name="IsBlockedByDoor" type="Node" parent="SequenceComposite/DoorSelector/Not"]
+[node name="IsBlockedByDoor" type="Node" parent="MoveSequence/DoorSelector/Not"]
 script = ExtResource("7_lcpct")
 
-[node name="OpenDoor" type="Node" parent="SequenceComposite/DoorSelector"]
+[node name="OpenDoor" type="Node" parent="MoveSequence/DoorSelector"]
 script = ExtResource("8_or0dk")
 
-[node name="AdvanceAlongPath" type="Node" parent="SequenceComposite"]
-script = ExtResource("4_fdtvh")
+[node name="AdvanceAlongPath" type="Node" parent="MoveSequence"]
+script = ExtResource("9_1n0he")

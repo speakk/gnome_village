@@ -16,16 +16,6 @@ var current_task: Task
 var target: Variant # Vector2 | Null
 var task_target: Variant
 
-var path: Variant: # PackedVector2Array | Null
-	set(new_path):
-		path = new_path
-		if new_path:
-			$Line2D.points = Array(new_path).map(func(point: Vector2i) -> Vector2:
-				return Globals.get_map().coordinate_to_global_position(point)
-			)
-		else:
-			$Line2D.points = []
-var current_path_index: int = 0
 
 var valid_position_timer := 0.0
 var valid_position_interval := 1.0
@@ -42,25 +32,6 @@ func _ready() -> void:
 	name = "Settler"
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
 
-func get_direction_to_next_path_point() -> Vector2:
-	var point_position := path[current_path_index] as Vector2
-	return global_position.direction_to(Globals.get_map().coordinate_to_global_position(point_position))
-
-func clear_path() -> void:
-	path = null
-	current_path_index = 0
-	target = null
-
-func advance_path_index() -> void:
-	if path:
-		var distance := global_position.distance_to(Globals.get_map().coordinate_to_global_position(path[current_path_index]))
-		if distance < AT_DISTANCE or (current_path_index == path.size() - 2 and distance < REACH_DISTANCE):
-			current_path_index += 1
-			if current_path_index > path.size() - 1:
-				# TODO: Emit path finished event if needed?
-				#_finished_path()
-				clear_path()
-
 func _finished_path() -> void:
 	pass
 
@@ -76,19 +47,6 @@ func _physics_process(delta: float) -> void:
 		#clear_path()
 	
 	velocity = Vector2.ZERO
-	advance_path_index()
-	
-	#if target:
-		#velocity = global_position.direction_to(target) * walk_speed
-	
-	if path:
-		velocity = get_direction_to_next_path_point() * walk_speed
-	
-	if task_target:
-		if task_target is ItemOnGround and current_task is BuildTask:
-			task_target.increase_build_progress(build_speed * delta)
-		if task_target is ItemOnGround and current_task is DismantleTask:
-			task_target.reduce_durability(dismantling_speed * delta)
 	
 	if velocity.length() > 0.1:
 		$AnimationPlayer.play("walk")
@@ -134,14 +92,6 @@ func is_available_for_work() -> bool:
 func get_task_status() -> int:
 	return current_task.get_last_tick_status()
 
-func set_target(_target: Variant) -> void:
-	if !target or (_target and not (_target as Vector2).is_equal_approx(target)):
-		var map_position_from := Globals.get_map().global_position_to_coordinate(global_position)
-		var map_position_to := Globals.get_map().global_position_to_coordinate(_target)
-		path = PathFinder.get_id_path_to_closest_point(map_position_from, map_position_to)
-		current_path_index = 0
-	target = _target
-
 func ensure_valid_position() -> void:
 	if not is_in_valid_position():
 		var free_coordinate := PathFinder.get_closest_free_point(Globals.get_map().global_position_to_coordinate(global_position)) as Vector2i
@@ -151,9 +101,6 @@ func ensure_valid_position() -> void:
 
 func is_in_valid_position() -> bool:
 	return not PathFinder.is_position_solid(Globals.get_map().global_position_to_coordinate(global_position))
-	
-func set_task_target(_task_target: Variant) -> void:
-	task_target = _task_target
 
 func is_at_target(_target: Vector2) -> bool:
 	return global_position.distance_to(_target) <= AT_DISTANCE
