@@ -43,12 +43,12 @@ value = "\"true\""
 
 [node name="BlackboardSetAction2" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck/SequenceComposite"]
 script = ExtResource("7_f8gd8")
-key = "path"
+key = "\"path\""
 value = "null"
 
 [node name="BlackboardSetAction3" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck/SequenceComposite"]
 script = ExtResource("7_f8gd8")
-key = "current_path_index"
+key = "\"current_path_index\""
 value = "0"
 
 [node name="FinishTask" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck/SequenceComposite"]
