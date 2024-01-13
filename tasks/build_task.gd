@@ -7,7 +7,7 @@ var blueprint: ItemOnGround
 func initialize(_blueprint: ItemOnGround) -> BuildTask:
 	blueprint = _blueprint
 	
-	%GoToBlueprint.target = blueprint.position
+	%GoToBlueprint.target_coordinate = Globals.get_map().global_position_to_coordinate(blueprint.global_position)
 	%BuildAction.target = blueprint
 	
 	return self

@@ -1,15 +1,12 @@
 class_name GoToAction extends SequenceComposite
 
+var target_coordinate: Vector2i:
+	set(new_value):
+		%UpdatePath.target_coordinate = new_value
+		%IsWithinRange.target_coordinate = new_value
+		target_coordinate = new_value
+
 @warning_ignore("untyped_declaration")
-func tick(actor: Node, blackboard: Blackboard) -> int:
-	if _done:
-		return SUCCESS
-	
-	if not _action:
-		print("Alright adding goto action")
-		_action = ACTION.new().initialize({ target_coordinate =  target_coordinate })
-		_action.finished.connect(func(__action: ActorAction) -> void: _done = true)
-		blackboard.set_value("goto_action", _action)
-		actor.add_action(_action)
-		
-	return RUNNING
+func tick(_node, _blackboard) -> int:
+	print("Ticking GoToAction, ", name)
+	return super.tick(_node, _blackboard)

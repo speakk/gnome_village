@@ -108,6 +108,9 @@ func is_at_target(_target: Vector2) -> bool:
 func can_reach_target(_target: Vector2) -> bool:
 	return global_position.distance_to(_target) <= REACH_DISTANCE
 
+func get_action_range() -> float:
+	return REACH_DISTANCE
+
 var actions: Array[ActorAction]
 
 func add_action(action: ActorAction) -> void:

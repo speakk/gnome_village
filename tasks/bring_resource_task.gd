@@ -42,12 +42,13 @@ func _ready() -> void:
 	
 	material.reserved_for_picking = true
 	#%GoToResource.target = (Globals.get_map() as MainMap).coordinate_to_global_position(material.global_position)
-	%GoToResource.target = material.global_position
+	#%GoToResource.target = material.global_position
+	%GoToResource.target_coordinate = Globals.get_map().global_position_to_coordinate(material.global_position)
 	
 	%GetItemFromGround.target_item = material
 	%GetItemFromGround.amount = item_requirement.amount
 	
-	%GoToBlueprint.target = (Globals.get_map() as MainMap).coordinate_to_global_position(target_tile)
+	%GoToBlueprint.target_coordinate = target_tile
 	
 	%PutItemToBlueprint.target_inventory = blueprint.get_node("ConstructionInventory")
 	%PutItemToBlueprint.item_id = item_requirement.item_id

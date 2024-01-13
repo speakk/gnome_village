@@ -8,13 +8,14 @@ var amount: int
 @warning_ignore("untyped_declaration")
 func tick(actor: Node, blackboard: Blackboard) -> int:
 	if not target_item or target_item.itemAmount.amount < amount:
-		print("FAILED at GetItemAmount", target_item)
+		print("FAILED at GetItemAmount", target_item, name)
 		return FAILURE
 	
 	if not actor.can_reach_target(target_item.global_position):
 		print("Failed at GetItemAmount")
 		return FAILURE
 	
+	print("Added item in getitemamount")
 	target_item.itemAmount.amount -= amount
 	actor.get_node("Inventory").add_item_amount(target_item.item_id, amount)
 	return SUCCESS
