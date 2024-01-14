@@ -15,7 +15,7 @@ var current_path_index: int = 0
 
 func initialize(params: Variant) -> ActorAction:
 	target_coordinate = params.target_coordinate
-	print("GoTo init with target: ", target_coordinate)
+	#print("GoTo init with target: ", target_coordinate)
 	return self
 
 func update_path(actor: Settler) -> void:

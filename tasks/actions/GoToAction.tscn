@@ -1,9 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://bevd0ykcp7npk"]
+[gd_scene load_steps=12 format=3 uid="uid://bevd0ykcp7npk"]
 
 [ext_resource type="Script" path="res://tasks/actions/GoToAction.gd" id="1_qg1rs"]
 [ext_resource type="Script" path="res://tasks/actions/GoToUpdatePath.gd" id="2_1psy6"]
 [ext_resource type="Script" path="res://tasks/decorators/ConditionalLoop.gd" id="2_2p2s2"]
-[ext_resource type="Script" path="res://tasks/conditions/IsWithinRange.gd" id="2_i1rh5"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector.gd" id="2_vbggv"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_nu6c4"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/decorators/inverter.gd" id="3_yi44a"]
@@ -22,21 +21,6 @@ blackboard_key = "goto_finished"
 
 [node name="SequenceComposite" type="Node" parent="ConditionalLoopDecorator"]
 script = ExtResource("3_nu6c4")
-
-[node name="FinishCheck" type="Node" parent="ConditionalLoopDecorator/SequenceComposite"]
-script = ExtResource("2_vbggv")
-
-[node name="Not" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck"]
-script = ExtResource("3_yi44a")
-
-[node name="IsWithinRange" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck/Not"]
-unique_name_in_owner = true
-script = ExtResource("2_i1rh5")
-
-[node name="BlackboardSetAction" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck"]
-script = ExtResource("7_f8gd8")
-key = "\"goto_finished\""
-value = "\"true\""
 
 [node name="UpdatePath" type="Node" parent="ConditionalLoopDecorator/SequenceComposite"]
 unique_name_in_owner = true

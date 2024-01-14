@@ -14,7 +14,7 @@ func clean_up() -> void:
 		if child.has_method("clean_up"):
 			print("Calling clean up on: ", child)
 			child.clean_up()
-		else:
-			child.queue_free()
+		
+		child.queue_free()
 	
 	queue_free()

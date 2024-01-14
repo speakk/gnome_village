@@ -12,6 +12,7 @@ func _ready() -> void:
 	
 	Events.construction_finished.connect(func(_blueprint: ItemOnGround) -> void:
 		if _blueprint == blueprint:
+			print("Cleaning up after finishing contruction")
 			clean_up()
 			#blueprint.call_deferred("queue_free")
 	)

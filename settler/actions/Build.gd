@@ -7,7 +7,7 @@ func initialize(params: Variant) -> ActorAction:
 	return self
 
 func process_action(actor: Settler, delta: float) -> void:
-	print("Processing build action")
+	#print("Processing build action")
 	build_target.increase_build_progress(actor.build_speed * delta)
 	if build_target.is_finished():
 		finished.emit(self)

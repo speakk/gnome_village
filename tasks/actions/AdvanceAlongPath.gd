@@ -14,11 +14,11 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	
 	if not _action:
 		var current_path_index := blackboard.get_value("current_path_index") as int
-		print("Making new goto action with current_path_index", current_path_index)
+		#print("Making new goto action with current_path_index", current_path_index)
 		var path := blackboard.get_value("path") as PackedVector2Array
-		print("Path size: ", path.size())
+		#print("Path size: ", path.size())
 		if current_path_index <= path.size() - 1:
-			print("Path index was undex size, proceeding")
+			#print("Path index was undex size, proceeding")
 			var current_target_coordinate := path[current_path_index]
 			
 			_action = ACTION.new().initialize({ target_coordinate =  current_target_coordinate })
@@ -30,6 +30,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 			blackboard.set_value("goto_action", _action)
 			actor.add_action(_action)
 		else:
+			blackboard.set_value("goto_finished", "true")
 			return SUCCESS
 		
 	return RUNNING

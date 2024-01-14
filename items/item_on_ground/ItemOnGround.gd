@@ -21,12 +21,12 @@ var current_state: ItemState:
 		var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
 		if item:
 			if new_state == ItemState.Normal:
-				print("New state is Normal")
+				#print("New state is Normal")
 				if item.is_solid:
 					Events.solid_cell_placed.emit(coordinate)
 					
 				if item.rendering_type == Item.RenderingType.Terrain:
-					print("Clearing terrain and adding to normal layer")
+					#print("Clearing terrain and adding to normal layer")
 					Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
 					Events.terrain_cleared.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id)
 				elif item.rendering_type == Item.RenderingType.Sprite:
@@ -35,9 +35,9 @@ var current_state: ItemState:
 					get_node("scene").modulate = Color.WHITE
 			
 			if new_state == ItemState.Blueprint:
-				print("New state is blueprint!")
+				#print("New state is blueprint!")
 				if item.rendering_type == Item.RenderingType.Terrain:
-					print("Setting blueprint terrain")
+					#print("Setting blueprint terrain")
 					Events.terrain_placed.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id, item.terrain_id, item.is_solid, self)
 					Events.terrain_cleared.emit(coordinate, item.target_layer, item.terrain_set_id)
 				elif item.rendering_type == Item.RenderingType.Sprite:
