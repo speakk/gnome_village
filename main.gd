@@ -21,7 +21,7 @@ func _ready() -> void:
 
 	var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone]
 
-	for i in 140:
+	for i in 20:
 		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
 		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
@@ -30,7 +30,7 @@ func _ready() -> void:
 			item_on_ground.global_position = quantized_position
 			add_child(item_on_ground)
 	
-	var settlers_to_place := 10
+	var settlers_to_place := 1
 	var attempts := 400
 	for i in attempts:
 		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))

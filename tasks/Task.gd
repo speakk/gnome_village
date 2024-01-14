@@ -11,6 +11,7 @@ var is_finished := false:
 var has_failed := false
 
 func _exit_tree() -> void:
+	super._exit_tree()
 	clean_up()
 
 # Implement when extending

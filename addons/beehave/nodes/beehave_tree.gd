@@ -271,7 +271,7 @@ func _exit_tree() -> void:
 			Performance.remove_custom_monitor(_process_time_metric_name)
 			BeehaveGlobalMetrics.unregister_tree(self)
 
-		BeehaveDebuggerMessages.unregister_tree(get_instance_id())
+	BeehaveDebuggerMessages.unregister_tree(get_instance_id())
 
 
 # Called by the engine to profile this tree
