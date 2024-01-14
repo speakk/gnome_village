@@ -13,5 +13,5 @@ func open_by_amount(amount: float) -> void:
 	if open_amount >= 1:
 		open_amount = 1
 
-func is_fully_open() -> bool:
+func is_open() -> bool:
 	return open_amount >= 1.0

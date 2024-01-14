@@ -11,7 +11,8 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		var next_coordinate := path[current_path_index + 1]
 		var entities := Globals.get_map().get_map_entities(next_coordinate)
 		for entity in entities:
-			if entity.item.special_features.has(Item.SpecialFeatures.Door):
+			if entity.item.special_features.has(Item.SpecialFeatures.Door) and entity.current_state != ItemOnGround.ItemState.Blueprint and not entity.item_scene.is_open():
+				blackboard.set_value("blocking_door", entity)
 				print("DID have door in IsBlockedByDoor")
 				return SUCCESS
 	

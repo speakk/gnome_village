@@ -7,6 +7,6 @@ func initialize(params: Variant) -> ActorAction:
 	return self
 
 func process_action(actor: Settler, delta: float) -> void:
-	door.scene.open_by_amount(actor.open_door_speed * delta)
-	if door.scene.is_fully_open():
+	door.item_scene.open_by_amount(actor.open_door_speed * delta)
+	if door.item_scene.is_open():
 		finished.emit(self)

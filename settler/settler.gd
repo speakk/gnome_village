@@ -8,6 +8,7 @@ const AT_DISTANCE := 10.0
 var walk_speed := 100.0
 var build_speed := 0.3
 var dismantling_speed := 3
+var open_door_speed := 0.4
 
 var velocity := Vector2(0, 0)
 

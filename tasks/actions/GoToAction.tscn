@@ -68,6 +68,10 @@ key = "\"goto_finished\""
 script = ExtResource("8_v0c37")
 key = "\"path\""
 
+[node name="BlackboardEraseAction3" type="Node" parent="."]
+script = ExtResource("8_v0c37")
+key = "\"blocking_door\""
+
 [node name="BlackboardSetAction3" type="Node" parent="."]
 script = ExtResource("7_f8gd8")
 key = "\"current_path_index\""
