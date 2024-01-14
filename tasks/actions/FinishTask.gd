@@ -2,8 +2,6 @@ extends ActionLeaf
 
 class_name FinishTask
 
-var target: ItemOnGround
-
 signal finished
 
 @warning_ignore("untyped_declaration")

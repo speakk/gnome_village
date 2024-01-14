@@ -7,10 +7,10 @@
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector.gd" id="2_vbggv"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_nu6c4"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/decorators/inverter.gd" id="3_yi44a"]
-[ext_resource type="Script" path="res://tasks/actions/FinishTask.gd" id="6_se1hn"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_set.gd" id="7_f8gd8"]
 [ext_resource type="Script" path="res://tasks/conditions/IsBlockedByDoor.gd" id="7_lcpct"]
 [ext_resource type="Script" path="res://tasks/actions/OpenDoor.gd" id="8_or0dk"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_erase.gd" id="8_v0c37"]
 [ext_resource type="Script" path="res://tasks/actions/AdvanceAlongPath.gd" id="9_1n0he"]
 
 [node name="GoToAction" type="Node"]
@@ -33,26 +33,10 @@ script = ExtResource("3_yi44a")
 unique_name_in_owner = true
 script = ExtResource("2_i1rh5")
 
-[node name="SequenceComposite" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck"]
-script = ExtResource("3_nu6c4")
-
-[node name="BlackboardSetAction" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck/SequenceComposite"]
+[node name="BlackboardSetAction" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck"]
 script = ExtResource("7_f8gd8")
 key = "\"goto_finished\""
 value = "\"true\""
-
-[node name="BlackboardSetAction2" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck/SequenceComposite"]
-script = ExtResource("7_f8gd8")
-key = "\"path\""
-value = "null"
-
-[node name="BlackboardSetAction3" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck/SequenceComposite"]
-script = ExtResource("7_f8gd8")
-key = "\"current_path_index\""
-value = "0"
-
-[node name="FinishTask" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/FinishCheck/SequenceComposite"]
-script = ExtResource("6_se1hn")
 
 [node name="UpdatePath" type="Node" parent="ConditionalLoopDecorator/SequenceComposite"]
 unique_name_in_owner = true
@@ -75,3 +59,16 @@ script = ExtResource("8_or0dk")
 
 [node name="AdvanceAlongPath" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/MoveSequence"]
 script = ExtResource("9_1n0he")
+
+[node name="BlackboardEraseAction" type="Node" parent="."]
+script = ExtResource("8_v0c37")
+key = "\"goto_finished\""
+
+[node name="BlackboardEraseAction2" type="Node" parent="."]
+script = ExtResource("8_v0c37")
+key = "\"path\""
+
+[node name="BlackboardSetAction3" type="Node" parent="."]
+script = ExtResource("7_f8gd8")
+key = "\"current_path_index\""
+value = "0"
