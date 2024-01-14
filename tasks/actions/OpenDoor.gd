@@ -14,10 +14,13 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	if not door:
 		return SUCCESS
 	
-	if not actor.can_reach_target(door.global_position):
-		return FAILURE
+	print("Had door in OpenDoor")
+	
+	#if not actor.can_reach_target(door.global_position):
+		#return FAILURE
 	
 	if not _action:
+		print("opening door")
 		_action = ACTION.new().initialize({ door = door })
 		_action.finished.connect(func(__action: ActorAction) -> void: _done = true)
 		actor.add_action(_action)

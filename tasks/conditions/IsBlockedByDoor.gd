@@ -13,7 +13,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		for entity in entities:
 			if entity.item.special_features.has(Item.SpecialFeatures.Door) and entity.current_state != ItemOnGround.ItemState.Blueprint and not entity.item_scene.is_open():
 				blackboard.set_value("blocking_door", entity)
-				#print("DID have door in IsBlockedByDoor")
+				print("DID have door in IsBlockedByDoor")
 				return SUCCESS
 	
 	
