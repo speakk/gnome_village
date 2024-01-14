@@ -6,11 +6,12 @@
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_0d06s"]
 polygon = PackedVector2Array(-4, -12, 3, -12, 3, 12, -4, 12)
 
-[node name="Door" type="Node2D"]
+[node name="Door" type="Sprite2D"]
+position = Vector2(0, 8)
+texture = ExtResource("1_24bb3")
+offset = Vector2(0, -8)
 script = ExtResource("1_rep2w")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_24bb3")
-
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2(0, -8)
 occluder = SubResource("OccluderPolygon2D_0d06s")

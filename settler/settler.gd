@@ -8,7 +8,7 @@ const AT_DISTANCE := 10.0
 var walk_speed := 100.0
 var build_speed := 0.3
 var dismantling_speed := 3
-var open_door_speed := 0.4
+var open_door_speed := 0.6
 
 var velocity := Vector2(0, 0)
 
@@ -102,7 +102,13 @@ func ensure_valid_position() -> void:
 			#global_position = new_position
 
 func is_in_valid_position() -> bool:
-	return not PathFinder.is_position_solid(Globals.get_map().global_position_to_coordinate(global_position))
+	var entities := Globals.get_map().get_map_entities(Globals.get_map().global_position_to_coordinate(global_position))
+	for entity in entities:
+		if entity.item.can_be_constructed or entity.item.is_solid:
+			return false
+	
+	return true
+	#return not PathFinder.is_position_solid(Globals.get_map().global_position_to_coordinate(global_position))
 
 func is_at_target(_target: Vector2) -> bool:
 	return global_position.distance_to(_target) <= AT_DISTANCE

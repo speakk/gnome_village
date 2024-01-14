@@ -14,8 +14,6 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	if not door:
 		return SUCCESS
 	
-	print("Had door in OpenDoor")
-	
 	#if not actor.can_reach_target(door.global_position):
 		#return FAILURE
 	

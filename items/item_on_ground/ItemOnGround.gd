@@ -101,6 +101,8 @@ func _ready() -> void:
 	sprite.visible = false
 	var coordinates := Globals.get_map().global_position_to_coordinate(global_position)
 	
+	occluder.visible = false
+	
 	if item.rendering_type == Item.RenderingType.Sprite:
 		sprite.visible = true
 		sprite.texture = item.texture

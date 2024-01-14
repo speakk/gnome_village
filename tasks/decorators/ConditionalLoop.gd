@@ -23,8 +23,6 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		blackboard.set_value("last_condition_status", response, str(actor.get_instance_id()))
 
 	if blackboard.get_value(blackboard_key) == "true":
-	#if blackboard.has_value(blackboard_key):
-		print("Black board key was true for, ", blackboard_key, blackboard.get_value(blackboard_key))
 		c.after_run(actor, blackboard)
 		blackboard.erase_value(blackboard_key)
 		return SUCCESS
