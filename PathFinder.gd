@@ -10,6 +10,7 @@ func _ready() -> void:
 func _map_ready(map: MainMap) -> void:
 	astar_grid.cell_size = MainMap.CELL_SIZE
 	astar_grid.region = Rect2i(0, 0, MainMap.MAP_SIZE_X, MainMap.MAP_SIZE_Y)
+	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
 
 func _solid_cell_placed(coordinates: Vector2i) -> void:

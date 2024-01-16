@@ -65,7 +65,7 @@ polygon = PackedVector2Array(-6, 10, -6, 8, 7, 8, 6, 10)
 script = ExtResource("1_ghp1u")
 
 [node name="Sprite" type="Sprite2D" parent="."]
-position = Vector2(0, -2)
+position = Vector2(0, -10)
 texture = ExtResource("1_ryuwt")
 hframes = 6
 
@@ -83,4 +83,5 @@ width = 2.0
 default_color = Color(0.798, 0.95, 0.9272, 0.0196078)
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2(0, -8)
 occluder = SubResource("OccluderPolygon2D_bfemd")
