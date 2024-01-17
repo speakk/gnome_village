@@ -107,6 +107,19 @@ var current_durability: float = 10:
 		else:
 			$DurabilityProgressBar.hide()
 
+
+var finish_emitted := false
+var build_progress := 0.0:
+	set(new_value):
+		$ProgressBar.value = build_progress
+		if new_value >= 1.0 or new_value <= 0.0:
+			$ProgressBar.hide()
+		else:
+			$ProgressBar.show()
+			
+		build_progress = new_value
+
+
 var reserved_for_picking := false
 var reserved_for_dismantling := false:
 	set(new_value):
@@ -127,6 +140,7 @@ func save() -> Dictionary:
 		"reserved_for_picking" = reserved_for_picking,
 		"current_durability" = current_durability,
 		"max_durability" = max_durability,
+		"build_progress" = build_progress,
 		"current_state" = current_state,
 		"item_id" = item_id,
 	}
@@ -139,19 +153,17 @@ func load_save(save_dict: Dictionary) -> void:
 	reserved_for_dismantling = save_dict["reserved_for_dismantling"]
 	reserved_for_picking = save_dict["reserved_for_picking"]
 	current_durability = save_dict["current_durability"]
+	build_progress = save_dict["build_progress"]
 	max_durability = save_dict["max_durability"]
 	current_state = save_dict["current_state"]
 	item_id = save_dict["item_id"]
 	_initial_state = current_state
-	print("Set intial state as: ", current_state)
 	item = Items.get_by_id(item_id) as Item
 
 func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemState.Normal) -> ItemOnGround:
 	item_id = _item_id
 	$ItemAmount.amount = _amount
 	$ItemAmount.amount_changed.connect(_amount_changed)
-	
-	$ProgressBar.value = build_progress
 	
 	current_state = state
 	_initial_state = state
@@ -191,12 +203,6 @@ func generate_drops() -> void:
 			new_item_on_ground.global_position = global_position
 			get_parent().add_child(new_item_on_ground)
 
-
-# Blueprint related
-
-var finish_emitted := false
-var build_progress := 0.0
-
 func finish_construction() -> void:
 	if not finish_emitted:
 		#Events.solid_cell_placed.emit(Globals.get_map().global_position_to_coordinate(global_position))
@@ -211,7 +217,6 @@ func finish_construction() -> void:
 
 func increase_build_progress(amount: float) -> void:
 	build_progress += amount
-	$ProgressBar.value = build_progress
 	if build_progress > 0:
 		if current_state != ItemState.Normal:
 			current_state = ItemState.Normal

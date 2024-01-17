@@ -55,6 +55,7 @@ tint_progress = Color(1, 0.249349, 0.279199, 1)
 script = ExtResource("5_64i58")
 
 [node name="ProgressBar" type="TextureProgressBar" parent="."]
+visible = false
 offset_left = -12.0
 offset_top = 7.0
 offset_right = 11.0
