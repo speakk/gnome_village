@@ -43,6 +43,9 @@ position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 script = ExtResource("2_bak4i")
 
+[node name="Entities" type="Node2D" parent="."]
+unique_name_in_owner = true
+
 [node name="TaskHandler" parent="." instance=ExtResource("5_jyric")]
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]

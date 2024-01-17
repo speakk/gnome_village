@@ -2,6 +2,8 @@ extends Node2D
 
 class_name Settler
 
+@onready var persistent := $Persistent
+
 const REACH_DISTANCE := MainMap.CELL_SIZE.x * 1.5
 const AT_DISTANCE := 10.0
 
@@ -13,10 +15,6 @@ var open_door_speed := 0.6
 var velocity := Vector2(0, 0)
 
 var current_task: Task
-
-var target: Variant # Vector2 | Null
-var task_target: Variant
-
 
 var valid_position_timer := 0.0
 var valid_position_interval := 1.0
@@ -32,6 +30,35 @@ enum TaskResult {
 func _ready() -> void:
 	name = "Settler"
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
+
+func save() -> Dictionary:
+	var save_dict := {
+		"position_x" = global_position.x,
+		"position_y" = global_position.y,
+		"walk_speed" = walk_speed,
+		"build_speed" = build_speed,
+		"dismantling_speed" = dismantling_speed,
+		"open_door_speed" = open_door_speed,
+		"velocity_x" = velocity.x,
+		"velocity_y" = velocity.y,
+	}
+	
+	if current_task:
+		save_dict["current_task_save_id"] = current_task.persistent.get_save_id()
+	
+	return save_dict
+
+func load_save(save_dict: Dictionary) -> void:
+	global_position.x = save_dict["position_x"]
+	global_position.y = save_dict["position_y"]
+	walk_speed = save_dict["walk_speed"]
+	build_speed = save_dict["build_speed"]
+	dismantling_speed = save_dict["dismantling_speed"]
+	open_door_speed = save_dict["open_door_speed"]
+	velocity.x = save_dict["velocity_x"]
+	velocity.y = save_dict["velocity_y"]
+	if save_dict.has("current_task_save_id"):
+		SaveSystem.register_load_reference(self, "current_task", save_dict["current_task_save_id"])
 
 func _finished_path() -> void:
 	pass

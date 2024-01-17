@@ -1,4 +1,4 @@
-extends Node2D
+class_name Main extends Node2D
 
 @onready var SETTLER := preload("res://settler/settler.tscn")
 @onready var ITEM_ON_GROUND := preload("res://items/item_on_ground/ItemOnGround.tscn")
@@ -15,7 +15,7 @@ func _ready() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(Items.Id.Tree)
 			item_on_ground.global_position = quantized_position
-			add_child(item_on_ground)
+			%Entities.add_child(item_on_ground)
 	
 	await get_tree().physics_frame
 
@@ -28,7 +28,7 @@ func _ready() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(item_types.pick_random())
 			item_on_ground.global_position = quantized_position
-			add_child(item_on_ground)
+			%Entities.add_child(item_on_ground)
 	
 	var settlers_to_place := 20
 	var attempts := 400
@@ -39,7 +39,7 @@ func _ready() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var settler := SETTLER.instantiate()
 			settler.global_position = quantized_position
-			add_child(settler)
+			%Entities.add_child(settler)
 			settlers_to_place -= 1
 			if settlers_to_place <= 0:
 				break
@@ -50,3 +50,29 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("debug_toggle"):
 		debug_visuals = not debug_visuals
 		Events.debug_visuals_set.emit(debug_visuals)
+
+func load_save(data: Dictionary) -> void:
+	for entity in %Entities.get_children():
+		entity.queue_free()
+	
+	var entities: Dictionary = data["entities"]
+	
+	for entity_dict in entities.values() as Array[Dictionary]:
+		var new_object: Variant = load(entity_dict["filename"]).instantiate()
+		%Entities.add_child(new_object)
+		new_object.load_save(entity_dict)
+		new_object.persistent.set_save_id(entity_dict["save_id"])
+
+func save() -> Dictionary:
+	var save_dict: Dictionary = {}
+	save_dict["entities"] = {}
+	
+	for entity in %Entities.get_children():
+		if entity.has_method("save"):
+			var entity_dict: Dictionary = entity.save()
+			SaveSystem.enrich_save_data(entity, entity_dict)
+			save_dict["entities"][entity_dict["save_id"]] = entity_dict
+		else:
+			push_warning("Entity did not have save method defined: ", entity)
+	
+	return save_dict
