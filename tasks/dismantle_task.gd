@@ -18,8 +18,5 @@ func initialize(_target: ItemOnGround) -> DismantleTask:
 	
 	return self
 
-func tick() -> int:
-	return super.tick()
-
 func clean_up() -> void:
 	target.reserved_for_dismantling = false

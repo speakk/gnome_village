@@ -1,26 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://dllkku4j86v6u"]
+[gd_scene load_steps=4 format=3 uid="uid://dllkku4j86v6u"]
 
+[ext_resource type="Script" path="res://tasks/Task.gd" id="1_6wq1v"]
 [ext_resource type="PackedScene" uid="uid://c85n546uy1wp3" path="res://Persistent.tscn" id="1_45ce0"]
-
-[sub_resource type="GDScript" id="GDScript_m4v7k"]
-script/source = "extends BeehaveTree
-
-#class_name Task
-
-@onready var persistent := $Persistent
-
-var is_being_worked_on := false
-var is_finished := false
-
-func _ready() -> void:
-	Events.task_finished.connect(_task_finished)
-	
-func _task_finished(task: Task) -> void:
-	if task == self:
-		is_finished = true
-"
+[ext_resource type="Script" path="res://addons/beehave/nodes/beehave_tree.gd" id="2_31ce2"]
 
 [node name="Task" type="Node"]
-script = SubResource("GDScript_m4v7k")
+script = ExtResource("1_6wq1v")
 
 [node name="Persistent" parent="." instance=ExtResource("1_45ce0")]
+
+[node name="BeehaveTree" type="Node" parent="." node_paths=PackedStringArray("blackboard")]
+script = ExtResource("2_31ce2")
+blackboard = NodePath("@Node@21279")

@@ -11,22 +11,25 @@
 [node name="BringResourceTask" instance=ExtResource("1_fm161")]
 script = ExtResource("2_2s8wd")
 
-[node name="SequenceComposite" type="Node" parent="." index="0"]
+[node name="BeehaveTree" parent="." index="1" node_paths=PackedStringArray("blackboard")]
+blackboard = NodePath("@Node@19956")
+
+[node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0"]
 script = ExtResource("3_06fow")
 
-[node name="GoToResource" parent="SequenceComposite" index="0" instance=ExtResource("4_7mp0k")]
+[node name="GoToResource" parent="BeehaveTree/SequenceComposite" index="0" instance=ExtResource("4_7mp0k")]
 unique_name_in_owner = true
 
-[node name="GetItemFromGround" type="Node" parent="SequenceComposite" index="1"]
+[node name="GetItemFromGround" type="Node" parent="BeehaveTree/SequenceComposite" index="1"]
 unique_name_in_owner = true
 script = ExtResource("5_d8kge")
 
-[node name="GoToBlueprint" parent="SequenceComposite" index="2" instance=ExtResource("4_7mp0k")]
+[node name="GoToBlueprint" parent="BeehaveTree/SequenceComposite" index="2" instance=ExtResource("4_7mp0k")]
 unique_name_in_owner = true
 
-[node name="PutItemToBlueprint" type="Node" parent="SequenceComposite" index="3"]
+[node name="PutItemToBlueprint" type="Node" parent="BeehaveTree/SequenceComposite" index="3"]
 unique_name_in_owner = true
 script = ExtResource("6_rapg4")
 
-[node name="FinishTask" type="Node" parent="SequenceComposite" index="4"]
+[node name="FinishTask" type="Node" parent="BeehaveTree/SequenceComposite" index="4"]
 script = ExtResource("5_78qgj")

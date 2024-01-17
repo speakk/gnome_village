@@ -10,14 +10,17 @@
 [node name="BuildTask" instance=ExtResource("1_atino")]
 script = ExtResource("2_42ej0")
 
-[node name="SequenceComposite" type="Node" parent="." index="0"]
+[node name="BeehaveTree" parent="." index="1" node_paths=PackedStringArray("blackboard")]
+blackboard = NodePath("@Node@19626")
+
+[node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0"]
 script = ExtResource("3_d45j8")
 
-[node name="GoToBlueprint" parent="SequenceComposite" index="0" instance=ExtResource("4_2w3bl")]
+[node name="GoToBlueprint" parent="BeehaveTree/SequenceComposite" index="0" instance=ExtResource("4_2w3bl")]
 unique_name_in_owner = true
 
-[node name="BuildAction" parent="SequenceComposite" index="1" instance=ExtResource("5_yvkqm")]
+[node name="BuildAction" parent="BeehaveTree/SequenceComposite" index="1" instance=ExtResource("5_yvkqm")]
 unique_name_in_owner = true
 
-[node name="FinishTask" type="Node" parent="SequenceComposite" index="2"]
+[node name="FinishTask" type="Node" parent="BeehaveTree/SequenceComposite" index="2"]
 script = ExtResource("6_7crgi")

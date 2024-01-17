@@ -54,7 +54,7 @@ func _refresh_debug_tree(tasks: Array[Node]) -> void:
 	#root.uncollapse_tree()
 			
 func _blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround) -> void:
-	var task_tree := (BLUEPRINT_TREE.new() as BlueprintTree).initialize(tile_position, blueprint, get_tree()) as TaskTreeBranch
+	var task_tree := (BLUEPRINT_TREE.new() as BlueprintTree).initialize(tile_position, blueprint) as TaskTreeBranch
 	$Tasks.add_child(task_tree)
 
 func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
@@ -74,6 +74,8 @@ func get_available_settler(task: Variant) -> Settler:
 	# for each task type that defines how settlers are prioritized
 	if "blueprint" in task:
 		target = task.blueprint.global_position
+	
+	print("Getting available settler", target)
 	
 	if target:
 		var settlers_clone := settlers.duplicate()

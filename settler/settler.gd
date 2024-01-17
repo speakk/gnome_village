@@ -102,10 +102,10 @@ func get_current_task() -> Task:
 
 func start_task(task: Task) -> void:
 	current_task = task
-	current_task.is_being_worked_on = true
-	current_task.enable()
-	current_task.actor = self
 	add_child(current_task)
+	current_task.is_being_worked_on = true
+	current_task.tree.enable()
+	current_task.tree.actor = self
 
 func finish_current_task() -> void:
 	current_task.is_finished = true

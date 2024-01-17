@@ -1,6 +1,8 @@
-extends BeehaveTree
+extends Node
 
 class_name Task
+
+@onready var tree: BeehaveTree = $BeehaveTree as BeehaveTree
 
 var is_being_worked_on := false
 var is_finished := false:
@@ -10,8 +12,11 @@ var is_finished := false:
 		is_finished = new_value
 var has_failed := false
 
+func _ready() -> void:
+	tree.actor = get_parent()
+
 func _exit_tree() -> void:
-	super._exit_tree()
+	$BeehaveTree._exit_tree()
 	clean_up()
 
 # Implement when extending

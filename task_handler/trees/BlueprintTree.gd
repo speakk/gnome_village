@@ -23,7 +23,7 @@ func _ready() -> void:
 			blueprint.call_deferred("queue_free")
 	)
 	
-func initialize(tile_target: Vector2i, _blueprint: ItemOnGround, scene_tree: SceneTree) -> BlueprintTree:
+func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTree:
 	order_type = TaskTreeBranch.OrderType.Sequence
 	blueprint = _blueprint
 	
@@ -38,7 +38,7 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround, scene_tree: Sce
 		#var bring_resource_task := 
 		var bring_resource_leaf := TaskTreeLeaf.new()
 		bring_resource_leaf.name = "Bring_Resource_Leaf"
-		bring_resource_leaf.task = (BRING_RESOURCE_TASK.instantiate() as BringResourceTask).initialize(tile_target, material_requirement, blueprint, scene_tree)
+		bring_resource_leaf.task = (BRING_RESOURCE_TASK.instantiate() as BringResourceTask).initialize(tile_target, material_requirement, blueprint)
 		bring_resources.add_child(bring_resource_leaf)
 	
 	var build_leaf := TaskTreeLeaf.new()

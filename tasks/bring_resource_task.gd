@@ -9,8 +9,8 @@ var blueprint: ItemOnGround
 var _material: ItemOnGround
 
 # TODO: Handle amounts
-func find_closest_material(_item_requirement: ItemRequirement, tree: SceneTree) -> ItemOnGround:
-	var materials_on_ground := tree.get_nodes_in_group("item_on_ground") as Array[Node]
+func find_closest_material(_item_requirement: ItemRequirement) -> ItemOnGround:
+	var materials_on_ground := get_tree().get_nodes_in_group("item_on_ground") as Array[Node]
 	var correct_materials := materials_on_ground.filter(func(material: ItemOnGround) -> bool:
 		return material.item_id == _item_requirement.item_id and not material.reserved_for_picking
 	)
@@ -18,14 +18,14 @@ func find_closest_material(_item_requirement: ItemRequirement, tree: SceneTree) 
 	var closest_distance := 99999999.0
 	var closest_material: ItemOnGround
 	for material_on_ground in correct_materials as Array[ItemOnGround]:
-		var distance: float = actor.global_position.distance_to(material_on_ground.global_position)
+		var distance: float = tree.actor.global_position.distance_to(material_on_ground.global_position)
 		if distance < closest_distance:
 			closest_distance = distance
 			closest_material = material_on_ground
 	
 	return closest_material
 
-func initialize(_target_tile: Vector2i, _item_requirement: ItemRequirement, _blueprint: ItemOnGround, tree: SceneTree) -> BringResourceTask:
+func initialize(_target_tile: Vector2i, _item_requirement: ItemRequirement, _blueprint: ItemOnGround) -> BringResourceTask:
 	target_tile = _target_tile
 	item_requirement = _item_requirement
 	blueprint = _blueprint
@@ -33,7 +33,8 @@ func initialize(_target_tile: Vector2i, _item_requirement: ItemRequirement, _blu
 	return self
 
 func _ready() -> void:
-	var material := find_closest_material(item_requirement, get_tree())
+	super._ready()
+	var material := find_closest_material(item_requirement)
 	
 	if not material:
 		return
@@ -57,6 +58,3 @@ func _ready() -> void:
 func clean_up() -> void:
 	if _material:
 		_material.reserved_for_picking = false
-
-func tick() -> int:
-	return super.tick()

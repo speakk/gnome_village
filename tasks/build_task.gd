@@ -11,6 +11,3 @@ func initialize(_blueprint: ItemOnGround) -> BuildTask:
 	%BuildAction.target = blueprint
 	
 	return self
-
-func tick() -> int:
-	return super.tick()

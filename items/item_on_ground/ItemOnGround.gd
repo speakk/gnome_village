@@ -153,7 +153,7 @@ func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemSta
 	
 	$ProgressBar.value = build_progress
 	
-	#current_state = state
+	current_state = state
 	_initial_state = state
 		
 	print("Did we call init here?", _initial_state)
