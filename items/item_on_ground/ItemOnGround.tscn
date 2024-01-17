@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://f30j7nr3ioc4"]
+[gd_scene load_steps=12 format=3 uid="uid://f30j7nr3ioc4"]
 
 [ext_resource type="Script" path="res://items/item_on_ground/ItemOnGround.gd" id="1_j80v7"]
 [ext_resource type="Script" path="res://components/ItemAmount.gd" id="2_x2hv8"]
 [ext_resource type="Texture2D" uid="uid://dbembrglpom0n" path="res://assets/tree.png" id="3_n3puk"]
 [ext_resource type="Texture2D" uid="uid://bw1pf7p1ry4gq" path="res://assets/dismantle_indicator.png" id="4_xl2yw"]
 [ext_resource type="Script" path="res://components/Inventory.gd" id="5_64i58"]
+[ext_resource type="PackedScene" uid="uid://c85n546uy1wp3" path="res://Persistent.tscn" id="6_0vclw"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_50i3m"]
 polygon = PackedVector2Array(-4, -3, -5, 0, -4, 3, 0, 4, 4, 3, 5, 0, 4, -3, 0, -4)
@@ -63,3 +64,5 @@ step = 0.01
 value = 0.2
 nine_patch_stretch = true
 texture_progress = SubResource("GradientTexture2D_8n5hh")
+
+[node name="Persistent" parent="." instance=ExtResource("6_0vclw")]

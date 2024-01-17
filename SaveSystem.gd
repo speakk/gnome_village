@@ -17,7 +17,7 @@ func _process(_delta: float) -> void:
 		load_state()
 
 func enrich_save_data(entity: Variant, entity_dict: Dictionary) -> void:
-	entity_dict["save_id"] = entity.get("persistent").get_save_id()
+	entity_dict["save_id"] = entity.persistent.get_save_id()
 	entity_dict["parent"] = entity.get_parent().get_path()
 	entity_dict["filename"] = entity.get_scene_file_path()
 
@@ -33,8 +33,12 @@ func load_state() -> void:
 	
 	last_save_id = save_dict["last_save_id"]
 	
-	var main := get_node("/root/Main") as Main
-	main.load_save(save_dict["main_data"])
+	Events.load_game_called.emit(save_dict)
+	
+	await get_tree().physics_frame
+	
+	#var main := get_node("/root/Main") as Main
+	#main.load_save(save_dict["main_data"])
 	
 	# TODO: All "entities" stuff should probably be in Main eventually
 	fill_in_references(save_dict["main_data"]["entities"])
@@ -44,10 +48,14 @@ func save_state() -> void:
 	var save_dict: Dictionary = {}
 	save_dict["last_save_id"] = last_save_id
 	
-	var main := get_node("/root/Main") as Main
-	var main_dict := main.save()
+	#var main := get_node("/root/Main") as Main
+	#var main_dict := main.save()
 	
-	save_dict["main_data"] = main_dict
+	Events.save_game_called.emit(save_dict)
+	
+	await get_tree().physics_frame
+	
+	#save_dict["main_data"] = main_dict
 
 	save_game.store_line(JSON.stringify(save_dict))
 

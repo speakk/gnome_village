@@ -6,16 +6,60 @@ enum ItemState {
 	Blueprint, Normal
 }
 
+@onready var persistent := $Persistent as Persistent
+
 @onready var ITEM_ON_GROUND := preload("res://items/item_on_ground/ItemOnGround.tscn")
 
 @onready var sprite := $Sprite2D as Sprite2D
 @onready var occluder := $LightOccluder2D as LightOccluder2D
 @onready var itemAmount := $ItemAmount as ItemAmount
 
+
+
 var item_scene: Node2D
 
-var item_id: Items.Id
 var item: Item
+
+var item_id: Items.Id:
+	set(new_item_id):
+		item_id = new_item_id
+		item = Items.get_by_id(item_id) as Item
+		current_durability = item.durability
+		max_durability = item.durability
+
+		sprite.visible = false
+		var coordinates := Globals.get_map().global_position_to_coordinate(global_position)
+		
+		occluder.visible = false
+		
+		if item.rendering_type == Item.RenderingType.Sprite:
+			sprite.visible = true
+			sprite.texture = item.texture
+			sprite.hframes = item.hframes
+			sprite.vframes = item.vframes
+			sprite.frame = item.frame
+			sprite.centered = false
+			var sprite_size := sprite.texture.get_size() / Vector2(sprite.hframes, sprite.vframes)
+			sprite.offset = (- item.origin * sprite_size) - Vector2(MainMap.CELL_SIZE / 2)
+			occluder.visible = item.cast_shadow_enabled
+			occluder.position = (item.cast_shadow_origin * sprite_size)
+			
+		elif item.rendering_type == Item.RenderingType.Terrain:
+			Events.terrain_placed.emit(coordinates, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+
+		if item.scene:
+			if item_scene:
+				remove_child(get_node("scene"))
+				item_scene.queue_free()
+				
+			var scene := item.scene.instantiate() as Node2D
+			scene.name = "scene"
+			add_child(scene)
+			item_scene = scene
+		
+
+
+
 var current_state: ItemState:
 	set(new_state):
 		var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
@@ -75,6 +119,33 @@ var reserved_for_dismantling := false:
 
 var _initial_state: Variant
 
+func save() -> Dictionary:
+	var save_dict := {
+		"position_x" = global_position.x,
+		"position_y" = global_position.y,
+		"reserved_for_dismantling" = reserved_for_dismantling,
+		"reserved_for_picking" = reserved_for_picking,
+		"current_durability" = current_durability,
+		"max_durability" = max_durability,
+		"current_state" = current_state,
+		"item_id" = item_id,
+	}
+	
+	return save_dict
+
+func load_save(save_dict: Dictionary) -> void:
+	global_position.x = save_dict["position_x"]
+	global_position.y = save_dict["position_y"]
+	reserved_for_dismantling = save_dict["reserved_for_dismantling"]
+	reserved_for_picking = save_dict["reserved_for_picking"]
+	current_durability = save_dict["current_durability"]
+	max_durability = save_dict["max_durability"]
+	current_state = save_dict["current_state"]
+	item_id = save_dict["item_id"]
+	_initial_state = current_state
+	print("Set intial state as: ", current_state)
+	item = Items.get_by_id(item_id) as Item
+
 func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemState.Normal) -> ItemOnGround:
 	item_id = _item_id
 	$ItemAmount.amount = _amount
@@ -85,6 +156,7 @@ func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemSta
 	#current_state = state
 	_initial_state = state
 		
+	print("Did we call init here?", _initial_state)
 	
 	return self
 	
@@ -93,40 +165,9 @@ func _amount_changed(new_amount: int) -> void:
 		queue_free()
 
 func _ready() -> void:
-	item = Items.get_by_id(item_id) as Item
-	
-	current_durability = item.durability
-	max_durability = item.durability
-
-	sprite.visible = false
-	var coordinates := Globals.get_map().global_position_to_coordinate(global_position)
-	
-	occluder.visible = false
-	
-	if item.rendering_type == Item.RenderingType.Sprite:
-		sprite.visible = true
-		sprite.texture = item.texture
-		sprite.hframes = item.hframes
-		sprite.vframes = item.vframes
-		sprite.frame = item.frame
-		sprite.centered = false
-		var sprite_size := sprite.texture.get_size() / Vector2(sprite.hframes, sprite.vframes)
-		sprite.offset = (- item.origin * sprite_size) - Vector2(MainMap.CELL_SIZE / 2)
-		occluder.visible = item.cast_shadow_enabled
-		occluder.position = (item.cast_shadow_origin * sprite_size)
-		
-	elif item.rendering_type == Item.RenderingType.Terrain:
-		Events.terrain_placed.emit(coordinates, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
-
-	if item.scene:
-		var scene := item.scene.instantiate() as Node2D
-		scene.name = "scene"
-		add_child(scene)
-		item_scene = scene
-		
 	# Trigger current_state setter with initialized item
-	print("Initializing item on ground, setting state: ", _initial_state)
-	current_state = _initial_state
+	print("Initializing item on ground, setting state: ", _initial_state, current_state)
+	#current_state = _initial_state
 	Events.item_placed_on_ground.emit(self, global_position)
 
 func _exit_tree() -> void:

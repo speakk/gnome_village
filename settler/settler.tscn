@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="Texture2D" uid="uid://bgdpno3b05m2g" path="res://assets/settler.png" id="1_ryuwt"]
 [ext_resource type="Script" path="res://components/Inventory.gd" id="3_h7kst"]
-[ext_resource type="Script" path="res://Persistent.gd" id="4_24j1k"]
+[ext_resource type="PackedScene" uid="uid://c85n546uy1wp3" path="res://Persistent.tscn" id="4_xwcan"]
 
 [sub_resource type="Animation" id="Animation_tnvni"]
 length = 0.001
@@ -87,5 +87,4 @@ default_color = Color(0.798, 0.95, 0.9272, 0.0196078)
 position = Vector2(0, -8)
 occluder = SubResource("OccluderPolygon2D_bfemd")
 
-[node name="Persistent" type="Node" parent="."]
-script = ExtResource("4_24j1k")
+[node name="Persistent" parent="." instance=ExtResource("4_xwcan")]

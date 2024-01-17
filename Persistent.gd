@@ -1,6 +1,5 @@
 class_name Persistent extends Node
 
-var parent: Variant
 var save_id: int = -1
 	
 func get_save_id() -> int:

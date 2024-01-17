@@ -2,7 +2,7 @@ extends Node2D
 
 class_name Settler
 
-@onready var persistent := $Persistent
+@onready var persistent: Persistent = get_node("Persistent") as Persistent
 
 const REACH_DISTANCE := MainMap.CELL_SIZE.x * 1.5
 const AT_DISTANCE := 10.0

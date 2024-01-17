@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dllkku4j86v6u"]
 
-[ext_resource type="Script" path="res://Persistent.gd" id="1_xtvcv"]
+[ext_resource type="PackedScene" uid="uid://c85n546uy1wp3" path="res://Persistent.tscn" id="1_45ce0"]
 
 [sub_resource type="GDScript" id="GDScript_m4v7k"]
 script/source = "extends BeehaveTree
@@ -23,5 +23,4 @@ func _task_finished(task: Task) -> void:
 [node name="Task" type="Node"]
 script = SubResource("GDScript_m4v7k")
 
-[node name="Persistent" type="Node" parent="."]
-script = ExtResource("1_xtvcv")
+[node name="Persistent" parent="." instance=ExtResource("1_45ce0")]
