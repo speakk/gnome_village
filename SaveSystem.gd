@@ -6,6 +6,7 @@ class LoadReference:
 	var entity: Variant
 	var property_name: String
 	var reference_save_id: int
+	var add_as_child: bool
 
 var load_references: Array[LoadReference] = []
 
@@ -87,11 +88,12 @@ func save_state() -> void:
 
 #SaveSystem.register_load_reference(self, "current_task", save_dict["current_task_save_id"])
 
-func register_load_reference(entity: Variant, property_name: String, reference_save_id: int) -> void:
+func register_load_reference(entity: Variant, property_name: String, reference_save_id: int, add_as_child: bool = false) -> void:
 	var new_reference := LoadReference.new()
 	new_reference.entity = entity
 	new_reference.property_name = property_name
 	new_reference.reference_save_id = reference_save_id
+	new_reference.add_as_child = add_as_child
 	
 	load_references.append(new_reference)
 
@@ -115,4 +117,7 @@ func get_saved_entity(entity_id: int) -> Variant:
 
 func fill_in_references(entity_ids: Array) -> void:
 	for reference in load_references:
-		reference.entity[reference.property_name] = loaded_entities[reference.reference_save_id]
+		var referenced_entity: Variant = loaded_entities[reference.reference_save_id]
+		reference.entity[reference.property_name] = referenced_entity
+		if reference.add_as_child:
+			reference.entity.add_child(referenced_entity)

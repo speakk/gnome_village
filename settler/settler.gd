@@ -58,7 +58,7 @@ func load_save(save_dict: Dictionary) -> void:
 	velocity.x = save_dict["velocity_x"]
 	velocity.y = save_dict["velocity_y"]
 	if save_dict.has("current_task_save_id"):
-		SaveSystem.register_load_reference(self, "current_task", save_dict["current_task_save_id"])
+		SaveSystem.register_load_reference(self, "current_task", save_dict["current_task_save_id"], true)
 
 func _finished_path() -> void:
 	pass

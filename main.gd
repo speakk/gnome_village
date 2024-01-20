@@ -3,15 +3,19 @@ class_name Main extends Node2D
 @onready var SETTLER := preload("res://settler/settler.tscn")
 @onready var ITEM_ON_GROUND := preload("res://items/item_on_ground/ItemOnGround.tscn")
 
+const TEST_TREES = 1
+const TEST_RESOURCES = 50
+const TEST_SETTLERS = 2
+
 func _ready() -> void:
 	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
 	Events.save_game_called.connect(func(save_dict: Dictionary) -> void: save(save_dict))
 	
-	var test_divider := 1
+	var test_divider := 3
 	var map_size_real_x := MainMap.MAP_SIZE_X * 24 / test_divider
 	var map_size_real_y := MainMap.MAP_SIZE_Y * 24 / test_divider
 	
-	for i in 20:
+	for i in TEST_TREES:
 		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
 		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
@@ -25,7 +29,7 @@ func _ready() -> void:
 
 	var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone]
 
-	for i in 180:
+	for i in TEST_RESOURCES:
 		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
 		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
@@ -35,7 +39,7 @@ func _ready() -> void:
 			%Entities.add_child(item_on_ground)
 			item_on_ground.initialize(item_types.pick_random())
 	
-	var settlers_to_place := 20
+	var settlers_to_place := TEST_SETTLERS
 	var attempts := 400
 	for i in attempts:
 		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
