@@ -44,7 +44,7 @@ func save() -> Dictionary:
 	}
 	
 	if current_task:
-		save_dict["current_task_save_id"] = current_task.persistent.get_save_id()
+		save_dict["current_task_save_id"] = SaveSystem.save_entity(current_task)
 	
 	return save_dict
 

@@ -47,6 +47,7 @@ script = ExtResource("2_bak4i")
 unique_name_in_owner = true
 
 [node name="TaskHandler" parent="." instance=ExtResource("5_jyric")]
+unique_name_in_owner = true
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 z_index = 7

@@ -58,3 +58,30 @@ func _ready() -> void:
 func clean_up() -> void:
 	if _material:
 		_material.reserved_for_picking = false
+
+func save() -> Dictionary:
+	var save_dict := super.save()
+	save_dict["target_tile.x"] = target_tile.x
+	save_dict["target_tile.y"] = target_tile.y
+	save_dict["item_requirement_id"] = SaveSystem.save_entity(item_requirement)
+	
+	if blueprint:
+		save_dict["blueprint_save_id"] = SaveSystem.save_entity(blueprint)
+	
+	if _material:
+		save_dict["_material_save_id"] = SaveSystem.save_entity(_material)
+	
+	return save_dict
+
+func load_save(save_dict: Dictionary) -> void:
+	super.load_save(save_dict)
+	target_tile = Vector2i(save_dict["target_tile.x"], save_dict["target_tile.y"])
+	#item_requirement = ItemRequirement.new()
+	#item_requirement.load_save(save_dict["item_requirement"])
+	
+	if save_dict.has("item_requirement_id"):
+		SaveSystem.register_load_reference(self, "item_requirement", save_dict["item_requirement_id"])
+	if save_dict.has("blueprint_save_id"):
+		SaveSystem.register_load_reference(self, "blueprint", save_dict["blueprint_save_id"])
+	if save_dict.has("_material_save_id"):
+		SaveSystem.register_load_reference(self, "_material", save_dict["_material_save_id"])

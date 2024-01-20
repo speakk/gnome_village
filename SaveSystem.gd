@@ -9,6 +9,9 @@ class LoadReference:
 
 var load_references: Array[LoadReference] = []
 
+var saved_entities: Dictionary
+var loaded_entities: Dictionary
+
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("quicksave"):
 		save_state()
@@ -17,9 +20,16 @@ func _process(_delta: float) -> void:
 		load_state()
 
 func enrich_save_data(entity: Variant, entity_dict: Dictionary) -> void:
-	entity_dict["save_id"] = entity.persistent.get_save_id()
-	entity_dict["parent"] = entity.get_parent().get_path()
-	entity_dict["filename"] = entity.get_scene_file_path()
+	entity_dict["save_id"] = get_object_save_id(entity)
+	#entity_dict["parent"] = entity.get_parent().get_path()
+	if not entity is Resource:
+		var file_path: String = entity.get_scene_file_path()
+		entity_dict["filename"] = file_path
+		assert(file_path)
+	else:
+		#var classname := entity.get_class_name() as String
+		var resource_path := entity.get_path() as String
+		entity_dict["resource_path"] = resource_path
 
 func get_next_save_id() -> int:
 	last_save_id += 1
@@ -33,6 +43,18 @@ func load_state() -> void:
 	
 	last_save_id = save_dict["last_save_id"]
 	
+	for entity_dict in save_dict["entities"].values() as Array[Dictionary]:
+		var new_object: Variant
+		if entity_dict.has("resource_path"):
+			new_object = ResourceLoader.load(entity_dict.get("resource_path"))
+			#new_object = ClassDB.instantiate(entity_dict.get("class_name"))
+		else:
+			new_object = load(entity_dict["filename"]).instantiate()
+			
+		new_object.call_deferred("load_save", entity_dict)
+		new_object.set_meta("save_id", entity_dict["save_id"] as int)
+		loaded_entities[entity_dict["save_id"] as int] = new_object
+	
 	Events.load_game_called.emit(save_dict)
 	
 	await get_tree().physics_frame
@@ -42,8 +64,10 @@ func load_state() -> void:
 	
 	# TODO: All "entities" stuff should probably be in Main eventually
 	fill_in_references(save_dict["main_data"]["entities"])
+	fill_in_references(save_dict["main_data"]["tasks"])
 
 func save_state() -> void:
+	saved_entities = {}
 	var save_game := FileAccess.open("user://savegame.save", FileAccess.WRITE)
 	var save_dict: Dictionary = {}
 	save_dict["last_save_id"] = last_save_id
@@ -56,6 +80,8 @@ func save_state() -> void:
 	await get_tree().physics_frame
 	
 	#save_dict["main_data"] = main_dict
+	
+	save_dict["entities"] = saved_entities
 
 	save_game.store_line(JSON.stringify(save_dict))
 
@@ -69,6 +95,24 @@ func register_load_reference(entity: Variant, property_name: String, reference_s
 	
 	load_references.append(new_reference)
 
-func fill_in_references(entities_dict: Dictionary) -> void:
+func get_object_save_id(entity: Variant) -> int:
+	if entity.has_meta("save_id"):
+		return entity.get_meta("save_id")
+		
+	var save_id := SaveSystem.get_next_save_id()
+	entity.set_meta("save_id", save_id)
+	
+	return save_id
+
+func save_entity(entity: Variant) -> int:
+	var save_dict := entity.save() as Dictionary
+	enrich_save_data(entity, save_dict)
+	saved_entities[get_object_save_id(entity)] = save_dict
+	return get_object_save_id(entity)
+
+func get_saved_entity(entity_id: int) -> Variant:
+	return loaded_entities[entity_id]
+
+func fill_in_references(entity_ids: Array) -> void:
 	for reference in load_references:
-		reference.entity[reference.property_name] = entities_dict[reference.reference_save_id]
+		reference.entity[reference.property_name] = loaded_entities[reference.reference_save_id]

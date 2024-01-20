@@ -2,8 +2,8 @@ extends Node
 
 class_name TaskHandler
 
-@onready var BLUEPRINT_TREE := preload("res://task_handler/trees/BlueprintTree.gd")
-@onready var DISMANTLE_TREE := preload("res://task_handler/trees/DismantleTree.gd")
+@onready var BLUEPRINT_TREE := preload("res://task_handler/trees/BlueprintTree.tscn")
+@onready var DISMANTLE_TREE := preload("res://task_handler/trees/DismantleTree.tscn")
 
 @onready var debug_ui_tree := %Tree as Tree
 
@@ -32,6 +32,8 @@ func _refresh_debug_tree(tasks: Array[Node]) -> void:
 			for subtask in task.get_children():
 				var child2 := debug_ui_tree.create_item(child)
 				var label := subtask.name
+				if subtask is TaskTreeLeaf and not subtask.task:
+					continue
 				if subtask is TaskTreeLeaf and subtask.task.is_finished:
 					label = label + " (DONE)"
 					child2.set_custom_color(0, Color.SEA_GREEN)
@@ -41,6 +43,8 @@ func _refresh_debug_tree(tasks: Array[Node]) -> void:
 						var child3 := debug_ui_tree.create_item(child2)
 						var label3 := subsubtask.name
 						if subsubtask is TaskTreeLeaf:
+							if not subsubtask.task:
+								continue
 							if subsubtask.task.is_finished:
 								label3 = label3 + " (DONE)"
 								child2.set_custom_color(0, Color.SEA_GREEN)
@@ -54,11 +58,11 @@ func _refresh_debug_tree(tasks: Array[Node]) -> void:
 	#root.uncollapse_tree()
 			
 func _blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround) -> void:
-	var task_tree := (BLUEPRINT_TREE.new() as BlueprintTree).initialize(tile_position, blueprint) as TaskTreeBranch
+	var task_tree := (BLUEPRINT_TREE.instantiate() as BlueprintTree).initialize(tile_position, blueprint) as TaskTreeBranch
 	$Tasks.add_child(task_tree)
 
 func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
-	var task_tree := (DISMANTLE_TREE.new() as DismantleTree).initialize(item_on_ground)
+	var task_tree := (DISMANTLE_TREE.instantiate() as DismantleTree).initialize(item_on_ground)
 	$Tasks.add_child(task_tree)
 
 func get_available_settler(task: Variant) -> Settler:

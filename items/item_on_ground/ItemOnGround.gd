@@ -22,6 +22,9 @@ var item: Item
 
 var item_id: Items.Id:
 	set(new_item_id):
+		if not sprite:
+			item_id = new_item_id
+			return
 		item_id = new_item_id
 		item = Items.get_by_id(item_id) as Item
 		current_durability = item.durability
@@ -180,6 +183,7 @@ func _ready() -> void:
 	# Trigger current_state setter with initialized item
 	print("Initializing item on ground, setting state: ", _initial_state, current_state)
 	#current_state = _initial_state
+	item_id = item_id
 	Events.item_placed_on_ground.emit(self, global_position)
 
 func _exit_tree() -> void:

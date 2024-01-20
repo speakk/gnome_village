@@ -56,30 +56,43 @@ func _process(delta: float) -> void:
 		debug_visuals = not debug_visuals
 		Events.debug_visuals_set.emit(debug_visuals)
 
+	
+# For now this is okay, but eventually Entities and
+# TaskHandler ought to have their own save methods
+@onready var containers := [
+	{
+		data_name = "entities",
+		node = %Entities,
+	},
+	{
+		data_name = "tasks",
+		node = %TaskHandler.get_node("Tasks"),
+	},
+] as Array[Dictionary]
+
 func load_save(data: Dictionary) -> void:
-	for entity in %Entities.get_children():
-		entity.queue_free()
-	
-	var entities: Dictionary = data["main_data"]["entities"]
-	
-	for entity_dict in entities.values() as Array[Dictionary]:
-		var new_object: Variant = load(entity_dict["filename"]).instantiate()
-		%Entities.add_child(new_object)
-		new_object.load_save(entity_dict)
-		new_object.persistent.set_save_id(entity_dict["save_id"])
+	for container in containers:
+		for entity in container["node"].get_children() as Array[Node]:
+			entity.queue_free()
+		
+		var entity_ids: Array[int]
+		entity_ids.assign(data["main_data"][container["data_name"]])
+		
+		for entity_id in entity_ids:
+			var entity: Variant = SaveSystem.get_saved_entity(entity_id)
+			container["node"].add_child(entity)
 
 func save(save_dict: Dictionary) -> void:
 	var main_data: Dictionary = {}
-	main_data["entities"] = {}
+	main_data["entities"] = []
+	main_data["tasks"] = []
 	
-	for entity in %Entities.get_children():
-		if entity.has_method("save"):
-			var entity_dict: Dictionary = entity.save()
-			SaveSystem.enrich_save_data(entity, entity_dict)
-			main_data["entities"][entity_dict["save_id"]] = entity_dict
-		else:
-			push_warning("Entity did not have save method defined: ", entity)
-	
-	#print("Saving main data: ", main_data)
+	for container in containers:
+		for entity in container["node"].get_children() as Array[Node]:
+			if entity.has_method("save"):
+				var entity_id := SaveSystem.save_entity(entity)
+				main_data[container["data_name"]].append(entity_id)
+			else:
+				push_warning("Entity did not have save method defined: ", entity)
 	
 	save_dict["main_data"] = main_data
