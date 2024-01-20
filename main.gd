@@ -80,6 +80,7 @@ func load_save(data: Dictionary) -> void:
 		
 		for entity_id in entity_ids:
 			var entity: Variant = SaveSystem.get_saved_entity(entity_id)
+			print("Adding child right?", entity)
 			container["node"].add_child(entity)
 
 func save(save_dict: Dictionary) -> void:

@@ -34,3 +34,4 @@ is_solid = true
 durability = 10
 crafting_requirements = Array[Resource("res://items/ItemRequirement.gd")]([])
 item_drops = Array[ExtResource("1_3s5ki")]([SubResource("Resource_851nl")])
+special_features = Array[int]([])
