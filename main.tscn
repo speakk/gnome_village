@@ -45,6 +45,7 @@ script = ExtResource("2_bak4i")
 
 [node name="Entities" type="Node2D" parent="."]
 unique_name_in_owner = true
+y_sort_enabled = true
 
 [node name="TaskHandler" parent="." instance=ExtResource("5_jyric")]
 unique_name_in_owner = true

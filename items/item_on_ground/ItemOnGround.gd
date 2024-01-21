@@ -26,75 +26,144 @@ var item_id: Items.Id:
 		item = Items.get_by_id(item_id) as Item
 		current_durability = item.durability
 		max_durability = item.durability
-
-		if not sprite:
-			item_id = new_item_id
-			return
-		sprite.visible = false
-		var coordinates := Globals.get_map().global_position_to_coordinate(global_position)
+#		
+		update_rendering()
+		#sprite.visible = false
+		#var coordinates := Globals.get_map().global_position_to_coordinate(global_position)
+		#
+		#occluder.visible = false
+		#
+		#if item.rendering_type == Item.RenderingType.Sprite:
+			#sprite.visible = true
+			#sprite.texture = item.texture
+			#sprite.hframes = item.hframes
+			#sprite.vframes = item.vframes
+			#sprite.frame = item.frame
+			#sprite.centered = false
+			#var sprite_size := sprite.texture.get_size() / Vector2(sprite.hframes, sprite.vframes)
+			#sprite.offset = (- item.origin * sprite_size) - Vector2(MainMap.CELL_SIZE / 2)
+			#occluder.visible = item.cast_shadow_enabled
+			#occluder.position = (item.cast_shadow_origin * sprite_size)
+			#
+		#elif item.rendering_type == Item.RenderingType.Terrain:
+			#Events.terrain_placed.emit(coordinates, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+#
+		#if item.scene:
+			#if item_scene:
+				#remove_child(get_node("scene"))
+				#item_scene.queue_free()
+				#
+			#var scene := item.scene.instantiate() as Node2D
+			#scene.name = "scene"
+			#add_child(scene)
+			#item_scene = scene
 		
-		occluder.visible = false
-		
-		if item.rendering_type == Item.RenderingType.Sprite:
-			sprite.visible = true
-			sprite.texture = item.texture
-			sprite.hframes = item.hframes
-			sprite.vframes = item.vframes
-			sprite.frame = item.frame
-			sprite.centered = false
-			var sprite_size := sprite.texture.get_size() / Vector2(sprite.hframes, sprite.vframes)
-			sprite.offset = (- item.origin * sprite_size) - Vector2(MainMap.CELL_SIZE / 2)
-			occluder.visible = item.cast_shadow_enabled
-			occluder.position = (item.cast_shadow_origin * sprite_size)
-			
-		elif item.rendering_type == Item.RenderingType.Terrain:
-			Events.terrain_placed.emit(coordinates, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
-
-		if item.scene:
-			if item_scene:
-				remove_child(get_node("scene"))
-				item_scene.queue_free()
-				
-			var scene := item.scene.instantiate() as Node2D
-			scene.name = "scene"
-			add_child(scene)
-			item_scene = scene
-		
-
 
 
 var current_state: ItemState:
 	set(new_state):
-		var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
-		if item:
-			if new_state == ItemState.Normal:
-				#print("New state is Normal")
-				if item.is_solid:
-					Events.solid_cell_placed.emit(coordinate)
-					
-				if item.rendering_type == Item.RenderingType.Terrain:
-					#print("Clearing terrain and adding to normal layer")
-					Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
-					Events.terrain_cleared.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id)
-				elif item.rendering_type == Item.RenderingType.Sprite:
-					$Sprite2D.modulate = Color.WHITE
-				elif item.rendering_type == Item.RenderingType.None and item.scene:
-					get_node("scene").modulate = Color.WHITE
-			
-			if new_state == ItemState.Blueprint:
-				#print("New state is blueprint!")
-				if item.rendering_type == Item.RenderingType.Terrain:
-					#print("Setting blueprint terrain")
-					Events.terrain_placed.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id, item.terrain_id, item.is_solid, self)
-					Events.terrain_cleared.emit(coordinate, item.target_layer, item.terrain_set_id)
-				elif item.rendering_type == Item.RenderingType.Sprite:
-					$Sprite2D.modulate = Color(0.6, 0.6, 1.0, 0.5)
-				elif item.rendering_type == Item.RenderingType.None and item.scene:
-					get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
-			
+		#var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
+		#if item:
+			#if new_state == ItemState.Normal:
+				##print("New state is Normal")
+				#if item.is_solid:
+					#Events.solid_cell_placed.emit(coordinate)
+					#
+				#if item.rendering_type == Item.RenderingType.Terrain:
+					##print("Clearing terrain and adding to normal layer")
+					#Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+					#Events.terrain_cleared.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id)
+				#elif item.rendering_type == Item.RenderingType.Sprite:
+					#$Sprite2D.modulate = Color.WHITE
+				#elif item.rendering_type == Item.RenderingType.None and item.scene:
+					#get_node("scene").modulate = Color.WHITE
+			#
+			#if new_state == ItemState.Blueprint:
+				##print("New state is blueprint!")
+				#if item.rendering_type == Item.RenderingType.Terrain:
+					##print("Setting blueprint terrain")
+					#Events.terrain_placed.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+					#Events.terrain_cleared.emit(coordinate, item.target_layer, item.terrain_set_id)
+				#elif item.rendering_type == Item.RenderingType.Sprite:
+					#$Sprite2D.modulate = Color(0.6, 0.6, 1.0, 0.5)
+				#elif item.rendering_type == Item.RenderingType.None and item.scene:
+					#get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
+			#
 		Events.item_state_changed.emit(self, current_state, new_state)
 		current_state = new_state
+		update_rendering()
 		
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_SCENE_INSTANTIATED:
+		print("UPDATING NERH")
+		update_rendering()
+
+func update_rendering() -> void:
+	# Not _ready yet if no sprite available
+	if not sprite or not item:
+		print("Not ready :(")
+		return
+	
+	print("Ready!")
+	
+	var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
+	
+	sprite.visible = false
+	occluder.visible = false
+	
+	if item.rendering_type == Item.RenderingType.Sprite:
+		sprite.visible = true
+		sprite.texture = item.texture
+		sprite.hframes = item.hframes
+		sprite.vframes = item.vframes
+		sprite.frame = item.frame
+		sprite.centered = false
+		var sprite_size := sprite.texture.get_size() / Vector2(sprite.hframes, sprite.vframes)
+		sprite.offset = (- item.origin * sprite_size) - Vector2(MainMap.CELL_SIZE / 2)
+		occluder.visible = item.cast_shadow_enabled
+		occluder.position = (item.cast_shadow_origin * sprite_size)
+		
+	elif item.rendering_type == Item.RenderingType.Terrain:
+		Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+
+	if item.scene:
+		if item_scene:
+			remove_child(get_node("scene"))
+			item_scene.queue_free()
+			
+		var scene := item.scene.instantiate() as Node2D
+		scene.name = "scene"
+		add_child(scene)
+		item_scene = scene
+
+	if current_state == ItemState.Normal:
+		#print("New state is Normal")
+		
+		# TODO: Rendering really shouldn't update the solid_cell thing
+		if item.is_solid:
+			Events.solid_cell_placed.emit(coordinate)
+			
+		if item.rendering_type == Item.RenderingType.Terrain:
+			#print("Clearing terrain and adding to normal layer")
+			Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+			Events.terrain_cleared.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id)
+		elif item.rendering_type == Item.RenderingType.Sprite:
+			$Sprite2D.modulate = Color.WHITE
+		elif item.rendering_type == Item.RenderingType.None and item.scene:
+			get_node("scene").modulate = Color.WHITE
+	
+	if current_state == ItemState.Blueprint:
+		#print("New state is blueprint!")
+		if item.rendering_type == Item.RenderingType.Terrain:
+			#print("Setting blueprint terrain")
+			Events.terrain_placed.emit(coordinate, MainMap.Layers.Blueprint, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+			Events.terrain_cleared.emit(coordinate, item.target_layer, item.terrain_set_id)
+		elif item.rendering_type == Item.RenderingType.Sprite:
+			$Sprite2D.modulate = Color(0.6, 0.6, 1.0, 0.5)
+		elif item.rendering_type == Item.RenderingType.None and item.scene:
+			get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
+
 
 var max_durability: float = 10:
 	set(new_value):
@@ -183,9 +252,7 @@ func _ready() -> void:
 	# Trigger current_state setter with initialized item
 	print("Initializing item on ground, setting state: ", _initial_state, current_state)
 	#current_state = _initial_state
-	var tmp_item_id := item_id
-	item_id = tmp_item_id
-	print("Setting item id", item_id)
+	update_rendering()
 	Events.item_placed_on_ground.emit(self, global_position)
 
 func _exit_tree() -> void:
