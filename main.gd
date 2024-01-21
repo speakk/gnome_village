@@ -3,6 +3,8 @@ class_name Main extends Node2D
 @onready var SETTLER := preload("res://settler/settler.tscn")
 @onready var ITEM_ON_GROUND := preload("res://items/item_on_ground/ItemOnGround.tscn")
 
+@onready var main_map: MainMap = $MainMap as MainMap
+
 const TEST_TREES = 1
 const TEST_RESOURCES = 50
 const TEST_SETTLERS = 2
@@ -75,6 +77,8 @@ func _process(delta: float) -> void:
 ] as Array[Dictionary]
 
 func load_save(data: Dictionary) -> void:
+	main_map.prepare_for_load()
+	PathFinder.prepare_for_load()
 	for container in containers:
 		for entity in container["node"].get_children() as Array[Node]:
 			entity.queue_free()

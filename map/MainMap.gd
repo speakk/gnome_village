@@ -23,6 +23,11 @@ enum Layers {
 
 var map_entities := {} as Dictionary
 
+func prepare_for_load() -> void:
+	map_entities.clear()
+	current_action = MapActions.None
+	construction_item_id = null
+
 func add_map_entity(coordinate: Vector2i, item_on_ground: ItemOnGround) -> void:
 	if not map_entities.has(coordinate):
 		map_entities[coordinate] = []
@@ -31,7 +36,8 @@ func add_map_entity(coordinate: Vector2i, item_on_ground: ItemOnGround) -> void:
 		map_entities[coordinate].append(item_on_ground)
 
 func remove_map_entity(coordinate: Vector2i, item_on_ground: ItemOnGround) -> void:
-	map_entities[coordinate].erase(item_on_ground)
+	if map_entities.has(coordinate):
+		map_entities[coordinate].erase(item_on_ground)
 
 func get_map_entities(coordinate: Vector2i) -> Array[ItemOnGround]:
 	var result: Array[ItemOnGround]
