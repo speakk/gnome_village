@@ -14,8 +14,6 @@ enum ItemState {
 @onready var occluder := $LightOccluder2D as LightOccluder2D
 @onready var itemAmount := $ItemAmount as ItemAmount
 
-
-
 var item_scene: Node2D
 
 var item: Item
@@ -214,6 +212,7 @@ func save() -> Dictionary:
 		"max_durability" = max_durability,
 		"build_progress" = build_progress,
 		"current_state" = current_state,
+		"item_amount" = itemAmount.save(),
 		"item_id" = item_id,
 	}
 	
@@ -231,11 +230,12 @@ func load_save(save_dict: Dictionary) -> void:
 	item_id = save_dict["item_id"]
 	_initial_state = current_state
 	item = Items.get_by_id(item_id) as Item
+	itemAmount.load_save(save_dict["item_amount"])
+	
 
 func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemState.Normal) -> ItemOnGround:
 	item_id = _item_id
 	$ItemAmount.amount = _amount
-	$ItemAmount.amount_changed.connect(_amount_changed)
 	
 	current_state = state
 	_initial_state = state
@@ -249,6 +249,7 @@ func _amount_changed(new_amount: int) -> void:
 		queue_free()
 
 func _ready() -> void:
+	$ItemAmount.amount_changed.connect(_amount_changed)
 	# Trigger current_state setter with initialized item
 	print("Initializing item on ground, setting state: ", _initial_state, current_state)
 	#current_state = _initial_state
@@ -309,3 +310,7 @@ func has_materials() -> bool:
 			return false
 	
 	return true
+
+
+func _on_item_amount_amount_changed(new_amount: int) -> void:
+	$ItemAmountLabel.text = "%s" % new_amount

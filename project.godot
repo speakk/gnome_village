@@ -43,6 +43,10 @@ enabled=PackedStringArray("res://addons/beehave/plugin.cfg")
 
 item_on_ground="Items On Ground"
 
+[gui]
+
+theme/custom_font="res://assets/fonts/m5x7.ttf"
+
 [input]
 
 pan_camera_left={
