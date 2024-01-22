@@ -5,7 +5,12 @@ class_name Task
 @onready var tree: BeehaveTree = $BeehaveTree as BeehaveTree
 @onready var persistent: Persistent = $Persistent as Persistent
 
-var is_being_worked_on := false
+var is_being_worked_on := false:
+	set(new_value):
+		if new_value:
+			if is_inside_tree():
+				start_work()
+		is_being_worked_on = new_value
 var is_finished := false:
 	set(new_value):
 		if new_value:
@@ -14,7 +19,7 @@ var is_finished := false:
 var has_failed := false
 
 func _ready() -> void:
-	tree.actor = get_parent()
+	tree.disable()
 
 func _exit_tree() -> void:
 	$BeehaveTree._exit_tree()
@@ -23,6 +28,10 @@ func _exit_tree() -> void:
 # Implement when extending
 func clean_up() -> void:
 	pass
+
+func start_work() -> void:
+	tree.actor = get_parent()
+	tree.enable()
 
 func save() -> Dictionary:
 	var save_dict := {

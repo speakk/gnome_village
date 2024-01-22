@@ -57,8 +57,12 @@ func load_save(save_dict: Dictionary) -> void:
 	open_door_speed = save_dict["open_door_speed"]
 	velocity.x = save_dict["velocity_x"]
 	velocity.y = save_dict["velocity_y"]
-	if save_dict.has("current_task_save_id"):
-		SaveSystem.register_load_reference(self, "current_task", save_dict["current_task_save_id"], true)
+	current_task = SaveSystem.get_saved_entity(save_dict["current_task_save_id"])
+	add_child(current_task)
+	start_task(current_task)
+	
+	#if save_dict.has("current_task_save_id"):
+	#	SaveSystem.register_load_reference(self, "current_task", save_dict["current_task_save_id"], true)
 
 func _finished_path() -> void:
 	pass
@@ -102,6 +106,7 @@ func get_current_task() -> Task:
 
 func start_task(task: Task) -> void:
 	current_task = task
+	current_task.get_parent().remove_child(current_task)
 	add_child(current_task)
 	current_task.is_being_worked_on = true
 	current_task.tree.enable()

@@ -16,11 +16,13 @@ func initialize(_blueprint: ItemOnGround) -> BuildTask:
 func save() -> Dictionary:
 	var save_dict := super.save()
 	if blueprint:
-		save_dict["blueprint_save_id"] = SaveSystem.get_object_save_id(blueprint)
+		save_dict["blueprint_save_id"] = SaveSystem.save_entity(blueprint)
 	
 	return save_dict
 
 func load_save(save_dict: Dictionary) -> void:
 	super.load_save(save_dict)
-	if save_dict.has("blueprint_save_id"):
-		SaveSystem.register_load_reference(self, "blueprint", save_dict["blueprint_save_id"])
+	blueprint = SaveSystem.get_saved_entity(save_dict["blueprint_save_id"])
+	print(blueprint)
+	#if save_dict.has("blueprint_save_id"):
+		#SaveSystem.register_load_reference(self, "blueprint", save_dict["blueprint_save_id"])

@@ -30,10 +30,16 @@ func initialize(_target_tile: Vector2i, _item_requirement: ItemRequirement, _blu
 	item_requirement = _item_requirement
 	blueprint = _blueprint
 
+	%GoToBlueprint.target_coordinate = target_tile
+	
+	%PutItemToBlueprint.target_inventory = blueprint.get_node("ConstructionInventory")
+	%PutItemToBlueprint.item_id = item_requirement.item_id
+	%PutItemToBlueprint.amount = item_requirement.amount
+
 	return self
 
-func _ready() -> void:
-	super._ready()
+func start_work() -> void:
+	super.start_work()
 	var material := find_closest_material(item_requirement)
 	
 	if not material:
@@ -42,18 +48,14 @@ func _ready() -> void:
 	_material = material
 	
 	material.reserved_for_picking = true
-	#%GoToResource.target = (Globals.get_map() as MainMap).coordinate_to_global_position(material.global_position)
-	#%GoToResource.target = material.global_position
+	
 	%GoToResource.target_coordinate = Globals.get_map().global_position_to_coordinate(material.global_position)
 	
 	%GetItemFromGround.target_item = material
 	%GetItemFromGround.amount = item_requirement.amount
-	
-	%GoToBlueprint.target_coordinate = target_tile
-	
-	%PutItemToBlueprint.target_inventory = blueprint.get_node("ConstructionInventory")
-	%PutItemToBlueprint.item_id = item_requirement.item_id
-	%PutItemToBlueprint.amount = item_requirement.amount
+
+func _ready() -> void:
+	super._ready()
 
 func clean_up() -> void:
 	if _material:
@@ -79,9 +81,15 @@ func load_save(save_dict: Dictionary) -> void:
 	#item_requirement = ItemRequirement.new()
 	#item_requirement.load_save(save_dict["item_requirement"])
 	
-	if save_dict.has("item_requirement_id"):
-		SaveSystem.register_load_reference(self, "item_requirement", save_dict["item_requirement_id"])
-	if save_dict.has("blueprint_save_id"):
-		SaveSystem.register_load_reference(self, "blueprint", save_dict["blueprint_save_id"])
+	blueprint = SaveSystem.get_saved_entity(save_dict["blueprint_save_id"])
+	item_requirement = SaveSystem.get_saved_entity(save_dict["item_requirement_id"])
+	
 	if save_dict.has("_material_save_id"):
-		SaveSystem.register_load_reference(self, "_material", save_dict["_material_save_id"])
+		_material = SaveSystem.get_saved_entity(save_dict["_material_save_id"])
+	
+	#if save_dict.has("item_requirement_id"):
+		#SaveSystem.register_load_reference(self, "item_requirement", save_dict["item_requirement_id"])
+	##if save_dict.has("blueprint_save_id"):
+	##	SaveSystem.register_load_reference(self, "blueprint", save_dict["blueprint_save_id"])
+	#if save_dict.has("_material_save_id"):
+		#SaveSystem.register_load_reference(self, "_material", save_dict["_material_save_id"])

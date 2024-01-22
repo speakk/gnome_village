@@ -8,7 +8,7 @@ var BUILD_TASK := preload("res://tasks/build_task.tscn")
 var blueprint: ItemOnGround
 
 func _ready() -> void:
-	name = "ItemOnGround_Tree"
+	name = "BlueprintTree"
 	
 	Events.construction_finished.connect(func(_blueprint: ItemOnGround) -> void:
 		if _blueprint == blueprint:
@@ -38,15 +38,18 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 		#var bring_resource_task := 
 		var bring_resource_leaf := TaskTreeLeaf.new()
 		bring_resource_leaf.name = "Bring_Resource_Leaf"
-		bring_resource_leaf.task = (BRING_RESOURCE_TASK.instantiate() as BringResourceTask).initialize(tile_target, material_requirement, blueprint)
+		bring_resource_leaf.set_task(BRING_RESOURCE_TASK.instantiate())
 		bring_resources.add_child(bring_resource_leaf)
+		bring_resource_leaf.task.call_deferred("initialize", tile_target, material_requirement, blueprint)
 	
 	var build_leaf := TaskTreeLeaf.new()
-	build_leaf.task = (BUILD_TASK.instantiate() as BuildTask).initialize(blueprint)
+	build_leaf.set_task(BUILD_TASK.instantiate() as BuildTask)
 	build_leaf.name = "Build_Leaf"
 	
 	add_child(bring_resources)
 	add_child(build_leaf)
+	
+	build_leaf.task.initialize(blueprint)
 
 	return self
 
@@ -54,6 +57,7 @@ func save() -> Dictionary:
 	var save_dict: Dictionary = {}
 	
 	save_dict["Build_Leaf_Task_Id"] = SaveSystem.save_entity(get_node("Build_Leaf").task)
+	save_dict["blueprint_id"] = SaveSystem.save_entity(blueprint)
 	
 	var bring_resources_parallel_children_ids: Array[int]
 	
@@ -66,9 +70,15 @@ func save() -> Dictionary:
 
 func load_save(save_dict: Dictionary) -> void:
 	var build_leaf := TaskTreeLeaf.new()
-	SaveSystem.register_load_reference(build_leaf, "task", save_dict["Build_Leaf_Task_Id"])
+	
+	#SaveSystem.register_load_reference(self, "blueprint", save_dict["blueprint_id"])
+	blueprint = SaveSystem.get_saved_entity(save_dict["blueprint_id"])
+	
+	#SaveSystem.register_load_reference(build_leaf, "task", save_dict["Build_Leaf_Task_Id"])
 	build_leaf.name = "Build_Leaf"
 	add_child(build_leaf)
+	build_leaf.set_task(SaveSystem.get_saved_entity(save_dict["Build_Leaf_Task_Id"]))
+	
 	
 	var bring_resources := TaskTreeBranch.new()
 	bring_resources.order_type = TaskTreeBranch.OrderType.Parallel
@@ -77,7 +87,8 @@ func load_save(save_dict: Dictionary) -> void:
 	for id in save_dict["bring_resources_parallel_children_ids"] as Array[int]:
 		var bring_resource_leaf := TaskTreeLeaf.new()
 		bring_resource_leaf.name = "Bring_Resource_Leaf"
-		SaveSystem.register_load_reference(bring_resource_leaf, "task", id)
+		#SaveSystem.register_load_reference(bring_resource_leaf, "task", id)
 		bring_resources.add_child(bring_resource_leaf)
+		bring_resource_leaf.set_task(SaveSystem.get_saved_entity(id))
 	
 	add_child(bring_resources)

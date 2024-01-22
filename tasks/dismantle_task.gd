@@ -26,7 +26,7 @@ func clean_up() -> void:
 func save() -> Dictionary:
 	var save_dict := super.save()
 	if target:
-		save_dict["target_save_id"] = SaveSystem.get_object_save_id(target)
+		save_dict["target_save_id"] = SaveSystem.save_entity(target)
 	
 	return save_dict
 

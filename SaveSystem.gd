@@ -12,6 +12,7 @@ var load_references: Array[LoadReference] = []
 
 var saved_entities: Dictionary
 var loaded_entities: Dictionary
+var entity_dicts: Dictionary
 
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("quicksave"):
@@ -43,6 +44,7 @@ func load_state() -> void:
 	var save_dict := JSON.parse_string(save_game.get_line()) as Dictionary
 	
 	last_save_id = save_dict["last_save_id"]
+	entity_dicts = save_dict["entities"]
 	
 	for entity_dict in save_dict["entities"].values() as Array[Dictionary]:
 		var new_object: Variant
@@ -52,11 +54,15 @@ func load_state() -> void:
 		else:
 			new_object = load(entity_dict["filename"]).instantiate()
 			
-		new_object.call_deferred("load_save", entity_dict)
+		#new_object.call_deferred("load_save", entity_dict)
 		new_object.set_meta("save_id", entity_dict["save_id"] as int)
 		loaded_entities[entity_dict["save_id"] as int] = new_object
 	
 	Events.load_game_called.emit(save_dict)
+	
+	await get_tree().physics_frame
+	
+	load_entity_saves(save_dict["entities"].values())
 	
 	await get_tree().physics_frame
 	
@@ -66,6 +72,12 @@ func load_state() -> void:
 	# TODO: All "entities" stuff should probably be in Main eventually
 	fill_in_references(save_dict["main_data"]["entities"])
 	fill_in_references(save_dict["main_data"]["tasks"])
+
+func load_entity_saves(entities_orig: Array) -> void:
+	var entities: Array[Dictionary]
+	entities.assign(entities_orig)
+	for entity_dict in entities:
+		loaded_entities[entity_dict["save_id"] as int].load_save(entity_dict)
 
 func save_state() -> void:
 	saved_entities = {}
@@ -111,6 +123,10 @@ func save_entity(entity: Variant) -> int:
 	enrich_save_data(entity, save_dict)
 	saved_entities[get_object_save_id(entity)] = save_dict
 	return get_object_save_id(entity)
+
+func load_entity(entity: Variant) -> void:
+	var save_dict: Dictionary = entity_dicts["%s" % get_object_save_id(entity)]
+	entity.load_save(save_dict)
 
 func get_saved_entity(entity_id: int) -> Variant:
 	return loaded_entities[entity_id]
