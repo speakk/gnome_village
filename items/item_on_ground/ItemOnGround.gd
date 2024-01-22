@@ -13,6 +13,7 @@ enum ItemState {
 @onready var sprite := $Sprite2D as Sprite2D
 @onready var occluder := $LightOccluder2D as LightOccluder2D
 @onready var itemAmount := $ItemAmount as ItemAmount
+@onready var constructionInventory := $ConstructionInventory as Inventory
 
 var item_scene: Node2D
 
@@ -213,6 +214,7 @@ func save() -> Dictionary:
 		"build_progress" = build_progress,
 		"current_state" = current_state,
 		"item_amount" = itemAmount.save(),
+		"construction_inventory" = constructionInventory.save(),
 		"item_id" = item_id,
 	}
 	
@@ -230,7 +232,14 @@ func load_save(save_dict: Dictionary) -> void:
 	item_id = save_dict["item_id"]
 	_initial_state = current_state
 	item = Items.get_by_id(item_id) as Item
-	itemAmount.load_save(save_dict["item_amount"])
+	$ItemAmount.load_save(save_dict["item_amount"])
+	$ConstructionInventory.load_save(save_dict["construction_inventory"])
+
+	#$ItemAmount.queue_free()
+	#$ConstructionInventory.queue_free()
+	
+	#SaveSystem.register_load_reference(self, "itemAmount", save_dict["item_amount_id"], true)
+	#SaveSystem.register_load_reference(self, "construction_inventory", save_dict["construction_inventory_id"], true)
 	
 
 func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemState.Normal) -> ItemOnGround:
@@ -245,11 +254,13 @@ func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemSta
 	return self
 	
 func _amount_changed(new_amount: int) -> void:
+	$ItemAmountLabel.text = "%s" % new_amount
+	print("New amount for item: ", new_amount)
+	
 	if new_amount <= 0:
 		queue_free()
 
 func _ready() -> void:
-	$ItemAmount.amount_changed.connect(_amount_changed)
 	# Trigger current_state setter with initialized item
 	print("Initializing item on ground, setting state: ", _initial_state, current_state)
 	#current_state = _initial_state
@@ -305,12 +316,8 @@ func has_materials() -> bool:
 	var material_requirements := Items.get_crafting_requirements(item_id)
 	
 	for requirement in material_requirements:
-		var deposited := $Inventory.get_items().find(func(depo: Inventory.InventoryItemAmount) -> bool: return depo.id == requirement.item_id) as Inventory.InventoryItemAmount
+		var deposited := $ConstructionInventory.get_items().find(func(depo: Inventory.InventoryItemAmount) -> bool: return depo.id == requirement.item_id) as Inventory.InventoryItemAmount
 		if deposited.amount < requirement.amount:
 			return false
 	
 	return true
-
-
-func _on_item_amount_amount_changed(new_amount: int) -> void:
-	$ItemAmountLabel.text = "%s" % new_amount

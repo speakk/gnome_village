@@ -79,6 +79,9 @@ func _process(delta: float) -> void:
 func load_save(data: Dictionary) -> void:
 	main_map.prepare_for_load()
 	PathFinder.prepare_for_load()
+	
+	await get_tree().physics_frame
+	
 	for container in containers:
 		for entity in container["node"].get_children() as Array[Node]:
 			entity.queue_free()

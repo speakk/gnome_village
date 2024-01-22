@@ -30,3 +30,11 @@ func remove_item_amount(item_id: Variant, amount: int) -> void:
 
 func get_items() -> Array[Item]:
 	return item_amounts.values()
+	
+func save() -> Dictionary:
+	return {
+		item_amounts = item_amounts
+	}
+
+func load_save(save_dict: Dictionary) -> void:
+	item_amounts = save_dict["item_amounts"]
