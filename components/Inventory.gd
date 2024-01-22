@@ -28,6 +28,12 @@ func remove_item_amount(item_id: Variant, amount: int) -> void:
 	item_amounts[item_id].amount -= amount
 	item_removed.emit(item_id, amount)
 
+func has_item_amount(item_id: Variant, amount: int) -> bool:
+	if not item_amounts.has(item_id):
+		return false
+	
+	return item_amounts[item_id].amount >= amount
+
 func get_items() -> Array[Item]:
 	return item_amounts.values()
 	

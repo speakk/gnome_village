@@ -35,23 +35,25 @@ func initialize(_target_tile: Vector2i, _item_requirement: ItemRequirement, _blu
 	%PutItemToBlueprint.target_inventory = blueprint.get_node("ConstructionInventory")
 	%PutItemToBlueprint.item_id = item_requirement.item_id
 	%PutItemToBlueprint.amount = item_requirement.amount
+	
+	%HasItemRequirement.item_requirement = item_requirement
 
 	return self
 
 func start_work() -> void:
 	super.start_work()
-	var material := find_closest_material(item_requirement)
+	if not _material:
+		var material := find_closest_material(item_requirement)
+		if not material:
+			return
 	
-	if not material:
-		return
+		_material = material
 	
-	_material = material
+	_material.reserved_for_picking = true
 	
-	material.reserved_for_picking = true
+	%GoToResource.target_coordinate = Globals.get_map().global_position_to_coordinate(_material.global_position)
 	
-	%GoToResource.target_coordinate = Globals.get_map().global_position_to_coordinate(material.global_position)
-	
-	%GetItemFromGround.target_item = material
+	%GetItemFromGround.target_item = _material
 	%GetItemFromGround.amount = item_requirement.amount
 
 func _ready() -> void:
@@ -86,6 +88,8 @@ func load_save(save_dict: Dictionary) -> void:
 	
 	if save_dict.has("_material_save_id"):
 		_material = SaveSystem.get_saved_entity(save_dict["_material_save_id"])
+	
+	initialize(target_tile, item_requirement, blueprint)
 	
 	#if save_dict.has("item_requirement_id"):
 		#SaveSystem.register_load_reference(self, "item_requirement", save_dict["item_requirement_id"])

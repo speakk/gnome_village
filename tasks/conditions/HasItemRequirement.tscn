@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bs566fkjhp1wx"]
+
+[ext_resource type="Script" path="res://tasks/conditions/HasItemRequirement.gd" id="1_5tsxq"]
+
+[node name="HasItemRequirement" type="Node"]
+script = ExtResource("1_5tsxq")

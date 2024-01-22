@@ -69,16 +69,11 @@ func save() -> Dictionary:
 	return save_dict
 
 func load_save(save_dict: Dictionary) -> void:
-	var build_leaf := TaskTreeLeaf.new()
 	
 	#SaveSystem.register_load_reference(self, "blueprint", save_dict["blueprint_id"])
 	blueprint = SaveSystem.get_saved_entity(save_dict["blueprint_id"])
 	
 	#SaveSystem.register_load_reference(build_leaf, "task", save_dict["Build_Leaf_Task_Id"])
-	build_leaf.name = "Build_Leaf"
-	add_child(build_leaf)
-	build_leaf.set_task(SaveSystem.get_saved_entity(save_dict["Build_Leaf_Task_Id"]))
-	
 	
 	var bring_resources := TaskTreeBranch.new()
 	bring_resources.order_type = TaskTreeBranch.OrderType.Parallel
@@ -92,3 +87,9 @@ func load_save(save_dict: Dictionary) -> void:
 		bring_resource_leaf.set_task(SaveSystem.get_saved_entity(id))
 	
 	add_child(bring_resources)
+	
+	var build_leaf := TaskTreeLeaf.new()
+	build_leaf.name = "Build_Leaf"
+	add_child(build_leaf)
+	build_leaf.set_task(SaveSystem.get_saved_entity(save_dict["Build_Leaf_Task_Id"]))
+	
