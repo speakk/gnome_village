@@ -22,11 +22,12 @@ var item: Item
 var item_id: Items.Id:
 	set(new_item_id):
 		item_id = new_item_id
-		item = Items.get_by_id(item_id) as Item
+		item = Items.get_by_id(item_id)
 		current_durability = item.durability
 		max_durability = item.durability
 #		
-		update_rendering()
+		_dirty = true
+		#update_rendering()
 		#sprite.visible = false
 		#var coordinates := Globals.get_map().global_position_to_coordinate(global_position)
 		#
@@ -58,6 +59,7 @@ var item_id: Items.Id:
 			#item_scene = scene
 		
 
+var _dirty: bool
 
 var current_state: ItemState:
 	set(new_state):
@@ -90,21 +92,14 @@ var current_state: ItemState:
 			#
 		Events.item_state_changed.emit(self, current_state, new_state)
 		current_state = new_state
-		update_rendering()
+		_dirty = true
+		#update_rendering()
 		
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_SCENE_INSTANTIATED:
-		print("UPDATING NERH")
-		update_rendering()
 
 func update_rendering() -> void:
 	# Not _ready yet if no sprite available
 	if not item:
-		print("Not ready :(")
 		return
-	
-	print("Ready!")
 	
 	var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
 	
@@ -227,16 +222,19 @@ func load_save(save_dict: Dictionary) -> void:
 	reserved_for_picking = save_dict["reserved_for_picking"]
 	current_durability = save_dict["current_durability"]
 	build_progress = save_dict["build_progress"]
+	_initial_state = current_state
+	item_id = save_dict["item_id"]
 	max_durability = save_dict["max_durability"]
 	current_state = save_dict["current_state"]
-	item_id = save_dict["item_id"]
-	_initial_state = current_state
-	item = Items.get_by_id(item_id) as Item
+	#item = Items.get_by_id(item_id) as Item
 	$ItemAmount.load_save(save_dict["item_amount"])
 	$ConstructionInventory.load_save(save_dict["construction_inventory"])
 
 	Events.item_placed_on_ground.emit(self, global_position)
-	update_rendering()
+	# TODO: Get rid of the await here, update_rendering() SHOULD have
+	# item here already but for some reason doesn't
+	#await get_tree().physics_frame
+	#update_rendering()
 
 	#$ItemAmount.queue_free()
 	#$ConstructionInventory.queue_free()
@@ -252,20 +250,20 @@ func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemSta
 	current_state = state
 	_initial_state = state
 		
-	print("Did we call init here?", _initial_state)
-	
 	return self
 	
 func _amount_changed(new_amount: int) -> void:
 	$ItemAmountLabel.text = "%s" % new_amount
-	print("New amount for item: ", new_amount)
+	if new_amount > 1:
+		$ItemAmountLabel.show()
+	else:
+		$ItemAmountLabel.hide()
 	
 	if new_amount <= 0:
 		queue_free()
 
 func _ready() -> void:
 	# Trigger current_state setter with initialized item
-	print("Initializing item on ground, setting state: ", _initial_state, current_state)
 	#current_state = _initial_state
 	update_rendering()
 	Events.item_placed_on_ground.emit(self, global_position)
@@ -282,7 +280,6 @@ func has_durability_left() -> bool:
 	return current_durability > 0
 
 func generate_drops() -> void:
-	print("Generate drops yeah?")
 	for item_drop in item.item_drops:
 		if randf() <= item_drop.probability:
 			var amount := randi_range(item_drop.amount_min, item_drop.amount_max)
@@ -290,6 +287,11 @@ func generate_drops() -> void:
 			# TODO: Randomize position slightly
 			new_item_on_ground.global_position = global_position
 			get_parent().add_child(new_item_on_ground)
+
+func _process(delta: float) -> void:
+	if _dirty:
+		update_rendering()
+		_dirty = false
 
 func finish_construction() -> void:
 	if not finish_emitted:
@@ -299,7 +301,6 @@ func finish_construction() -> void:
 		
 		await get_tree().process_frame
 				
-		print("Finish construction")
 		finish_emitted = true
 		Events.construction_finished.emit(self)
 

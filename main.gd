@@ -5,15 +5,15 @@ class_name Main extends Node2D
 
 @onready var main_map: MainMap = $MainMap as MainMap
 
-const TEST_TREES = 1
-const TEST_RESOURCES = 50
-const TEST_SETTLERS = 2
+const TEST_TREES = 20
+const TEST_RESOURCES = 300
+const TEST_SETTLERS = 30
 
 func _ready() -> void:
 	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
 	Events.save_game_called.connect(func(save_dict: Dictionary) -> void: save(save_dict))
 	
-	var test_divider := 3
+	var test_divider := 1
 	var map_size_real_x := MainMap.MAP_SIZE_X * 24 / test_divider
 	var map_size_real_y := MainMap.MAP_SIZE_Y * 24 / test_divider
 	

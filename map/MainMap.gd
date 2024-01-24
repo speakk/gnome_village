@@ -18,15 +18,17 @@ enum MapActions {
 var current_action: MapActions = MapActions.None
 
 enum Layers {
-	Ground, Building, Materials, Blueprint, Items
+	Ground, Building, Blueprint
 }
 
 var map_entities := {} as Dictionary
 
 func prepare_for_load() -> void:
 	map_entities.clear()
-	current_action = MapActions.None
-	construction_item_id = null
+	clear_layer(Layers.Building)
+	clear_layer(Layers.Blueprint)
+	#current_action = MapActions.None
+	#construction_item_id = null
 
 func add_map_entity(coordinate: Vector2i, item_on_ground: ItemOnGround) -> void:
 	if not map_entities.has(coordinate):
@@ -63,7 +65,6 @@ func is_coordinate_occupied(coordinate: Vector2i) -> bool:
 func _ready() -> void:
 	add_layer(Layers.Ground)
 	add_layer(Layers.Building)
-	add_layer(Layers.Materials)
 	add_layer(Layers.Blueprint)
 
 	for x in MAP_SIZE_X:
