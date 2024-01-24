@@ -11,6 +11,10 @@ var amount: int = 1:
 		
 var id: Items.Id
 
+func _init(_amount: int = 0, _item_id: Items.Id = Items.Id.Wood) -> void:
+	amount = _amount
+	id = _item_id
+
 func save() -> Dictionary:
 	var save_dict := {
 		"amount": amount,

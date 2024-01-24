@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="Texture2D" uid="uid://bgdpno3b05m2g" path="res://assets/settler.png" id="1_ryuwt"]
-[ext_resource type="Script" path="res://components/Inventory.gd" id="3_h7kst"]
+[ext_resource type="PackedScene" uid="uid://dnly7t4x7n0av" path="res://components/Inventory.tscn" id="4_qojkr"]
 [ext_resource type="PackedScene" uid="uid://c85n546uy1wp3" path="res://Persistent.tscn" id="4_xwcan"]
 
 [sub_resource type="Animation" id="Animation_tnvni"]
@@ -75,9 +75,6 @@ libraries = {
 "": SubResource("AnimationLibrary_fp115")
 }
 
-[node name="Inventory" type="Node" parent="."]
-script = ExtResource("3_h7kst")
-
 [node name="Line2D" type="Line2D" parent="."]
 visible = false
 width = 2.0
@@ -88,3 +85,5 @@ position = Vector2(0, -8)
 occluder = SubResource("OccluderPolygon2D_bfemd")
 
 [node name="Persistent" parent="." instance=ExtResource("4_xwcan")]
+
+[node name="Inventory" parent="." instance=ExtResource("4_qojkr")]

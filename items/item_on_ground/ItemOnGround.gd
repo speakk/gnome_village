@@ -100,7 +100,7 @@ func _notification(what: int) -> void:
 
 func update_rendering() -> void:
 	# Not _ready yet if no sprite available
-	if not sprite or not item:
+	if not item:
 		print("Not ready :(")
 		return
 	
@@ -235,6 +235,9 @@ func load_save(save_dict: Dictionary) -> void:
 	$ItemAmount.load_save(save_dict["item_amount"])
 	$ConstructionInventory.load_save(save_dict["construction_inventory"])
 
+	Events.item_placed_on_ground.emit(self, global_position)
+	update_rendering()
+
 	#$ItemAmount.queue_free()
 	#$ConstructionInventory.queue_free()
 	
@@ -316,7 +319,7 @@ func has_materials() -> bool:
 	var material_requirements := Items.get_crafting_requirements(item_id)
 	
 	for requirement in material_requirements:
-		var deposited := $ConstructionInventory.get_items().find(func(depo: Inventory.InventoryItemAmount) -> bool: return depo.id == requirement.item_id) as Inventory.InventoryItemAmount
+		var deposited := $ConstructionInventory.get_items().find(func(depo: ItemAmount) -> bool: return depo.id == requirement.item_id) as ItemAmount
 		if deposited.amount < requirement.amount:
 			return false
 	

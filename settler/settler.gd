@@ -43,6 +43,8 @@ func save() -> Dictionary:
 		"velocity_y" = velocity.y,
 	}
 	
+	save_dict["inventory_id"] = SaveSystem.save_entity($Inventory)
+	
 	if current_task:
 		save_dict["current_task_save_id"] = SaveSystem.save_entity(current_task)
 	
@@ -61,6 +63,12 @@ func load_save(save_dict: Dictionary) -> void:
 		current_task = SaveSystem.get_saved_entity(save_dict["current_task_save_id"])
 		add_child(current_task)
 		start_task(current_task)
+	
+	var inventory: Variant = SaveSystem.get_saved_entity(save_dict["inventory_id"])
+	$Inventory.queue_free()
+	$Inventory.name = "old_inventory"
+	add_child(inventory)
+	inventory.name = "Inventory"
 	
 	#if save_dict.has("current_task_save_id"):
 	#	SaveSystem.register_load_reference(self, "current_task", save_dict["current_task_save_id"], true)

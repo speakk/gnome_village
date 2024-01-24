@@ -41,7 +41,7 @@ func load_state() -> void:
 	load_references = []
 	
 	var save_game := FileAccess.open("user://savegame.save", FileAccess.READ)
-	var save_dict := JSON.parse_string(save_game.get_line()) as Dictionary
+	var save_dict: Variant = str_to_var(save_game.get_as_text())
 	
 	last_save_id = save_dict["last_save_id"]
 	entity_dicts = save_dict["entities"]
@@ -96,7 +96,8 @@ func save_state() -> void:
 	
 	save_dict["entities"] = saved_entities
 
-	save_game.store_line(JSON.stringify(save_dict))
+	#save_game.store_line(JSON.stringify(save_dict))
+	save_game.store_line(var_to_str(save_dict))
 
 #SaveSystem.register_load_reference(self, "current_task", save_dict["current_task_save_id"])
 

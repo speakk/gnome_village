@@ -235,8 +235,8 @@ func _place_blueprint(tile_position: Vector2i, item_id: Items.Id) -> void:
 	if not is_coordinate_occupied(tile_position):
 		var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 		blueprint.global_position = coordinate_to_global_position(tile_position)
-		blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
 		get_tree().root.get_node("Main").get_node("Entities").add_child(blueprint)
+		blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
 		Events.blueprint_placed.emit(tile_position, blueprint)
 
 

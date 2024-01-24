@@ -9,7 +9,7 @@ var is_being_worked_on := false:
 	set(new_value):
 		if new_value:
 			if is_inside_tree():
-				start_work()
+				call_deferred("start_work")
 		is_being_worked_on = new_value
 var is_finished := false:
 	set(new_value):
