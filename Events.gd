@@ -30,3 +30,5 @@ signal item_state_changed(item_on_ground: ItemOnGround, previous_state: ItemOnGr
 
 signal load_game_called(save_dict: Dictionary)
 signal save_game_called(save_dict: Dictionary)
+
+signal current_time_changed(new_time: float)

@@ -5,6 +5,9 @@ class_name Main extends Node2D
 
 @onready var main_map: MainMap = $MainMap as MainMap
 
+@export var daylight_amount: Curve
+@export var yellow_light_amount: Curve
+
 const TEST_TREES = 20
 const TEST_RESOURCES = 300
 const TEST_SETTLERS = 30
@@ -12,6 +15,8 @@ const TEST_SETTLERS = 30
 func _ready() -> void:
 	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
 	Events.save_game_called.connect(func(save_dict: Dictionary) -> void: save(save_dict))
+	
+	Events.current_time_changed.connect(_current_time_changed)
 	
 	var test_divider := 1
 	var map_size_real_x := MainMap.MAP_SIZE_X * 24 / test_divider
@@ -111,3 +116,16 @@ func save(save_dict: Dictionary) -> void:
 				push_warning("Entity did not have save method defined: ", entity)
 	
 	save_dict["main_data"] = main_data
+
+func _current_time_changed(new_time: float) -> void:
+	var daylight_sampled := daylight_amount.sample(new_time)
+	var red_green := daylight_sampled
+	var yellow_amount := yellow_light_amount.sample(new_time)
+	$CanvasModulate.color = Color(red_green, red_green - yellow_amount * 0.1, 1.0 - yellow_amount * 0.4)
+	var shaderNode := %ShadowSpriteShader as Sprite2D
+	shaderNode.material.set_shader_parameter("angle", - new_time * 360.0 * 2)
+	shaderNode.material.set_shader_parameter("len", 200 - daylight_sampled * 190)
+	shaderNode.material.set_shader_parameter("color", Color(Color.BLACK, maxf(0, daylight_sampled - 0.4)))
+	
+	#shaderNode.material.set("shader_param/angle", -sin(new_time) * 360.0)
+	#print("New time", new_time)

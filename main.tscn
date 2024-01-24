@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ubgvap601f4j"]
+[gd_scene load_steps=14 format=3 uid="uid://ubgvap601f4j"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j8rqp"]
 [ext_resource type="PackedScene" uid="uid://b4nj0xntglt07" path="res://map/main_map.tscn" id="1_lsh5n"]
@@ -6,6 +6,15 @@
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://gui/gui.tscn" id="5_4nnuu"]
 [ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://task_handler/TaskHandler.tscn" id="5_jyric"]
 [ext_resource type="Shader" path="res://shadow.gdshader" id="6_ujsti"]
+[ext_resource type="PackedScene" uid="uid://dk7vrm018wwop" path="res://systems/day_night_cycle.tscn" id="7_lqenh"]
+
+[sub_resource type="Curve" id="Curve_86jfl"]
+_data = [Vector2(0, 0.414894), 0.0, 0.0, 0, 0, Vector2(0.501961, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.414894), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_4l0vs"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.251029, 1), 0.0, 0.0, 0, 0, Vector2(0.395062, 0.802198), 0.0, 0.0, 0, 0, Vector2(0.502058, 0), 0.0, 0.0, 0, 0, Vector2(0.596708, 0.78022), 0.0, 0.0, 0, 0, Vector2(0.757202, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 7
 
 [sub_resource type="Environment" id="Environment_uqvws"]
 background_mode = 1
@@ -27,6 +36,8 @@ gradient = SubResource("Gradient_ntls3")
 [node name="Main" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_j8rqp")
+daylight_amount = SubResource("Curve_86jfl")
+yellow_light_amount = SubResource("Curve_4l0vs")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_uqvws")
@@ -57,7 +68,10 @@ z_index = 7
 follow_viewport_enabled = true
 
 [node name="ShadowSpriteShader" type="Sprite2D" parent="ShadowLayer"]
+unique_name_in_owner = true
 material = SubResource("ShaderMaterial_t5nmp")
 position = Vector2(902.5, 516.5)
 scale = Vector2(29.2031, 17.1406)
 texture = SubResource("GradientTexture2D_dnjan")
+
+[node name="DayNightCycle" parent="." instance=ExtResource("7_lqenh")]
