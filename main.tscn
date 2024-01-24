@@ -22,9 +22,9 @@ background_color = Color(0.2, 0.337255, 0.576471, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_t5nmp"]
 shader = ExtResource("6_ujsti")
-shader_parameter/color = Color(0, 0, 0, 0.619608)
-shader_parameter/angle = 160.332
-shader_parameter/len = 47.826
+shader_parameter/shadow_color = null
+shader_parameter/shadow_angle = null
+shader_parameter/shadow_length = 300.0
 shader_parameter/fade_margin = 1.0
 
 [sub_resource type="Gradient" id="Gradient_ntls3"]

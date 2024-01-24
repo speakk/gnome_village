@@ -123,9 +123,9 @@ func _current_time_changed(new_time: float) -> void:
 	var yellow_amount := yellow_light_amount.sample(new_time)
 	$CanvasModulate.color = Color(red_green, red_green - yellow_amount * 0.1, 1.0 - yellow_amount * 0.4)
 	var shaderNode := %ShadowSpriteShader as Sprite2D
-	shaderNode.material.set_shader_parameter("angle", - new_time * 360.0 * 2)
-	shaderNode.material.set_shader_parameter("len", 200 - daylight_sampled * 190)
-	shaderNode.material.set_shader_parameter("color", Color(Color.BLACK, maxf(0, daylight_sampled - 0.4)))
+	shaderNode.material.set_shader_parameter("shadow_angle", - new_time * 360.0 * 2)
+	shaderNode.material.set_shader_parameter("shadow_length", 200 - daylight_sampled * 190)
+	shaderNode.material.set_shader_parameter("shadow_color", Color(Color.BLACK, maxf(0, daylight_sampled - 0.4)))
 	
 	#shaderNode.material.set("shader_param/angle", -sin(new_time) * 360.0)
 	#print("New time", new_time)
