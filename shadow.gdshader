@@ -27,5 +27,6 @@ void fragment() {
 		alpha *= max(0.0,accum / fade_margin);
 	}
 
-	COLOR = vec4(shadow_color.rgb,alpha * shadow_color.a);
+	vec4 shadowed_color = vec4(shadow_color.rgb,alpha * shadow_color.a);
+	COLOR = shadowed_color;
 }

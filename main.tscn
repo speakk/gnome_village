@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://ubgvap601f4j"]
+[gd_scene load_steps=16 format=3 uid="uid://ubgvap601f4j"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j8rqp"]
 [ext_resource type="PackedScene" uid="uid://b4nj0xntglt07" path="res://map/main_map.tscn" id="1_lsh5n"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://gui/gui.tscn" id="5_4nnuu"]
 [ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://task_handler/TaskHandler.tscn" id="5_jyric"]
 [ext_resource type="Shader" path="res://shadow.gdshader" id="6_ujsti"]
+[ext_resource type="Shader" path="res://daylight.gdshader" id="7_7ur7k"]
 [ext_resource type="PackedScene" uid="uid://dk7vrm018wwop" path="res://systems/day_night_cycle.tscn" id="7_lqenh"]
 
 [sub_resource type="Curve" id="Curve_86jfl"]
@@ -32,6 +33,11 @@ colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_dnjan"]
 gradient = SubResource("Gradient_ntls3")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ts1ki"]
+shader = ExtResource("7_7ur7k")
+shader_parameter/daylight_amount = null
+shader_parameter/yellow_amount = null
 
 [node name="Main" type="Node2D"]
 y_sort_enabled = true
@@ -70,6 +76,16 @@ follow_viewport_enabled = true
 [node name="ShadowSpriteShader" type="Sprite2D" parent="ShadowLayer"]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_t5nmp")
+position = Vector2(902.5, 516.5)
+scale = Vector2(29.2031, 17.1406)
+texture = SubResource("GradientTexture2D_dnjan")
+
+[node name="DayLightLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="DayLightSpriteShader" type="Sprite2D" parent="DayLightLayer"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_ts1ki")
 position = Vector2(902.5, 516.5)
 scale = Vector2(29.2031, 17.1406)
 texture = SubResource("GradientTexture2D_dnjan")
