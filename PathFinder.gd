@@ -30,7 +30,7 @@ func is_position_solid(coordinates: Vector2i) -> bool:
 	return astar_grid.is_point_solid(coordinates)
 
 func is_valid_position(coordinate: Vector2i) -> bool:
-	return astar_grid.is_in_bounds(coordinate.x, coordinate.y)
+	return astar_grid.is_in_bounds(coordinate.x, coordinate.y) and not is_position_solid(coordinate)
 
 var all_directions: Array[Vector2i] = [
 	Vector2i(-1, -1),
@@ -82,3 +82,6 @@ func get_id_path_to_closest_point(from: Vector2i, to: Vector2i) -> PackedVector2
 
 func get_point_position(id: Vector2i) -> Vector2:
 	return astar_grid.get_point_position(id)
+
+func set_coordinate_invalid(coordinate: Vector2i) -> void:
+	astar_grid.set_point_solid(coordinate)

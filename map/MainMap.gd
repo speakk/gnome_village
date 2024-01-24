@@ -67,9 +67,13 @@ func _ready() -> void:
 	add_layer(Layers.Building)
 	add_layer(Layers.Blueprint)
 
+	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
+
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
-			set_cell(Layers.Ground, Vector2i(x, y), tile_set.get_source_id(0), Vector2i(0, 0))
+			#set_cell(Layers.Ground, Vector2i(x, y), tile_set.get_source_id(0), Vector2i(0, 0))
+			if world_center.distance_to(Vector2(x * CELL_SIZE.x, y * CELL_SIZE.y)) < 400:
+				set_cells_terrain_connect(Layers.Ground, [Vector2i(x, y)], 1, 0)
 	
 	set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
 	
@@ -90,6 +94,13 @@ func _ready() -> void:
 	Events.dismantle_selected.connect(func() -> void: current_action = MapActions.Dismantle)
 	
 	Events.map_ready.emit(self)
+	
+	#await get_tree().ph
+	
+	for x in MAP_SIZE_X:
+		for y in MAP_SIZE_Y:
+			if get_cell_source_id(Layers.Ground, Vector2i(x, y)) < 0:
+				PathFinder.set_coordinate_invalid(Vector2i(x, y))
 
 #Bresenham's line algorithm
 func get_tile_line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
@@ -269,6 +280,10 @@ func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
 
 func _terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int) -> void:
 	set_cells_terrain_connect(target_layer, [coordinate], tileset_source_id, -1)
+
+func is_vacant_coordinate(coordinate: Vector2i) -> bool:
+	var has_ground := get_cell_source_id(Layers.Ground, coordinate) >= 0
+	return not PathFinder.is_position_solid(coordinate) and has_ground
 
 ## TODO: Also _blueprint_removed
 #func _construction_finished(blueprint: ItemOnGround) -> void:

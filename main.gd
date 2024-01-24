@@ -22,6 +22,8 @@ func _ready() -> void:
 	var map_size_real_x := MainMap.MAP_SIZE_X * 24 / test_divider
 	var map_size_real_y := MainMap.MAP_SIZE_Y * 24 / test_divider
 	
+	print("Now spawning entities")
+	
 	for i in TEST_TREES:
 		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
 		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
