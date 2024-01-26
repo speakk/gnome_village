@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://ubgvap601f4j"]
+[gd_scene load_steps=25 format=3 uid="uid://ubgvap601f4j"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j8rqp"]
 [ext_resource type="PackedScene" uid="uid://b4nj0xntglt07" path="res://map/main_map.tscn" id="1_lsh5n"]
 [ext_resource type="Script" path="res://MainCamera.gd" id="2_bak4i"]
+[ext_resource type="Shader" path="res://water.gdshader" id="3_ta3du"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://gui/gui.tscn" id="5_4nnuu"]
 [ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://task_handler/TaskHandler.tscn" id="5_jyric"]
 [ext_resource type="Shader" path="res://shadow.gdshader" id="6_ujsti"]
@@ -20,6 +21,50 @@ point_count = 7
 [sub_resource type="Environment" id="Environment_uqvws"]
 background_mode = 1
 background_color = Color(0.2, 0.337255, 0.576471, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7nyj3"]
+frequency = 0.0471
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_t8u0w"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_7nyj3")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_876x6"]
+seed = 1
+frequency = 0.0183
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5pnu2"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_876x6")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rml7x"]
+shader = ExtResource("3_ta3du")
+shader_parameter/scroll1 = Vector2(0.01, 0.02)
+shader_parameter/scroll2 = Vector2(-0.01, -0.01)
+shader_parameter/distortion_strength = 0.05
+shader_parameter/light_start = 0.551
+shader_parameter/light_end = 0.913
+shader_parameter/base_texture_colour = Color(0.07171, 0.121592, 0.488281, 1)
+shader_parameter/top_color = Color(0.530104, 0.700182, 0.917969, 1)
+shader_parameter/noise1 = SubResource("NoiseTexture2D_t8u0w")
+shader_parameter/noise2 = SubResource("NoiseTexture2D_5pnu2")
+
+[sub_resource type="Gradient" id="Gradient_u4hrw"]
+colors = PackedColorArray(0.765625, 0.765625, 0.765625, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_15cvo"]
+noise_type = 2
+frequency = 0.0228
+fractal_lacunarity = 3.0
+cellular_distance_function = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xb5al"]
+color_ramp = SubResource("Gradient_u4hrw")
+noise = SubResource("FastNoiseLite_15cvo")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_t5nmp"]
 shader = ExtResource("6_ujsti")
@@ -51,6 +96,12 @@ environment = SubResource("Environment_uqvws")
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="GUI" parent="CanvasLayer" instance=ExtResource("5_4nnuu")]
+
+[node name="Water" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_rml7x")
+texture = SubResource("NoiseTexture2D_xb5al")
+centered = false
 
 [node name="MainMap" parent="." instance=ExtResource("1_lsh5n")]
 

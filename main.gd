@@ -24,6 +24,8 @@ func _ready() -> void:
 	
 	print("Now spawning entities")
 	
+	%Water.scale = Vector2(MainMap.MAP_SIZE_X, MainMap.MAP_SIZE_Y) * Vector2(MainMap.CELL_SIZE) / %Water.texture.get_size()
+	
 	for i in TEST_TREES:
 		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
 		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
