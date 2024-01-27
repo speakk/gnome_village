@@ -113,21 +113,21 @@ func _physics_process(delta: float) -> void:
 func get_current_task() -> Task:
 	return current_task
 
-func start_task(task_id: Tasks.TaskId, params: Dictionary = {}) -> void:
-	var task := Tasks.create_task_actuator(task_id, params)
-	add_child(task)
-	current_task = task
-	#current_task.is_being_worked_on = true
-	#current_task.tree.enable()
-	#current_task.tree.actor = self
-
-#func start_task(task: Task) -> void:
+#func start_task(task_id: Tasks.TaskId, params: Dictionary = {}) -> void:
+	#var task := Tasks.create_task_actuator(task_id, params)
+	#add_child(task)
 	#current_task = task
-	#current_task.get_parent().remove_child(current_task)
-	#add_child(current_task)
-	#current_task.is_being_worked_on = true
-	#current_task.tree.enable()
-	#current_task.tree.actor = self
+	##current_task.is_being_worked_on = true
+	##current_task.tree.enable()
+	##current_task.tree.actor = self
+
+func start_task(task: Task) -> void:
+	current_task = task
+	current_task.get_parent().remove_child(current_task)
+	add_child(current_task)
+	current_task.is_being_worked_on = true
+	current_task.tree.enable()
+	current_task.tree.actor = self
 
 func finish_current_task() -> void:
 	current_task.is_finished = true
