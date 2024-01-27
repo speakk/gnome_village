@@ -10,6 +10,7 @@ var task_actuators: Dictionary = {
 	TaskId.Dismantle: preload("res://src/tasks/task_actuators/dismantle.tscn"),
 }
 
-func create_task_actuator(task_id: TaskId, params: Dictionary = {}) -> Task:
-	var actuator := task_actuators[task_id].instantiate() as Task
+func create_task_actuator(task: Task) -> TaskActuator:
+	var actuator := task_actuators[task.task_id].instantiate() as TaskActuator
+	actuator.initialize(task)
 	return actuator

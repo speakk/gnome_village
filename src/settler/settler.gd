@@ -14,7 +14,7 @@ var open_door_speed := 0.6
 
 var velocity := Vector2(0, 0)
 
-var current_task: Task
+var current_task_actuator: TaskActuator
 
 var valid_position_timer := 0.0
 var valid_position_interval := 1.0
@@ -45,8 +45,8 @@ func save() -> Dictionary:
 	
 	save_dict["inventory_id"] = SaveSystem.save_entity($Inventory)
 	
-	if current_task:
-		save_dict["current_task_save_id"] = SaveSystem.save_entity(current_task)
+	if current_task_actuator:
+		save_dict["current_task_save_id"] = SaveSystem.save_entity(current_task_actuator)
 	
 	return save_dict
 
@@ -60,9 +60,8 @@ func load_save(save_dict: Dictionary) -> void:
 	velocity.x = save_dict["velocity_x"]
 	velocity.y = save_dict["velocity_y"]
 	if save_dict.has("current_task_save_id"):
-		current_task = SaveSystem.get_saved_entity(save_dict["current_task_save_id"])
-		add_child(current_task)
-		start_task(current_task)
+		current_task_actuator = SaveSystem.get_saved_entity(save_dict["current_task_save_id"])
+		add_child(current_task_actuator)
 	
 	var inventory: Variant = SaveSystem.get_saved_entity(save_dict["inventory_id"])
 	$Inventory.queue_free()
@@ -71,7 +70,7 @@ func load_save(save_dict: Dictionary) -> void:
 	inventory.name = "Inventory"
 	
 	#if save_dict.has("current_task_save_id"):
-	#	SaveSystem.register_load_reference(self, "current_task", save_dict["current_task_save_id"], true)
+	#	SaveSystem.register_load_reference(self, "current_task_actuator", save_dict["current_task_save_id"], true)
 
 func _finished_path() -> void:
 	pass
@@ -83,8 +82,8 @@ func _process(delta: float) -> void:
 	$Line2D.global_position = get_parent().global_position
 
 func _physics_process(delta: float) -> void:
-	if not current_task:
-		current_task = null
+	if not current_task_actuator:
+		current_task_actuator = null
 		#clear_path()
 	
 	velocity = Vector2.ZERO
@@ -110,37 +109,36 @@ func _physics_process(delta: float) -> void:
 		ensure_valid_position()
 		valid_position_timer = 0
 
-func get_current_task() -> Task:
-	return current_task
-
-#func start_task(task_id: Tasks.TaskId, params: Dictionary = {}) -> void:
-	#var task := Tasks.create_task_actuator(task_id, params)
-	#add_child(task)
-	#current_task = task
-	##current_task.is_being_worked_on = true
-	##current_task.tree.enable()
-	##current_task.tree.actor = self
+func get_current_task() -> TaskActuator:
+	return current_task_actuator
 
 func start_task(task: Task) -> void:
-	current_task = task
-	current_task.get_parent().remove_child(current_task)
-	add_child(current_task)
-	current_task.is_being_worked_on = true
-	current_task.tree.enable()
-	current_task.tree.actor = self
+	var task_actuator := Tasks.create_task_actuator(task)
+	add_child(task_actuator)
+	current_task_actuator = task_actuator
+	#current_task_actuator.is_being_worked_on = true
+	#current_task_actuator.tree.enable()
+	#current_task_actuator.tree.actor = self
+
+#func start_task(task: Task) -> void:
+	#current_task_actuator = task
+	#current_task_actuator.get_parent().remove_child(current_task_actuator)
+	#add_child(current_task_actuator)
+	#current_task_actuator.is_being_worked_on = true
+	#current_task_actuator.tree.enable()
+	#current_task_actuator.tree.actor = self
 
 func finish_current_task() -> void:
-	current_task.is_finished = true
-	current_task.is_being_worked_on = false
-	remove_child(current_task)
-	current_task = null
+	current_task_actuator.finish()
+	remove_child(current_task_actuator)
+	current_task_actuator = null
 	# TODO: Queue free task at some point maybe... Not now though
 
 func is_available_for_work() -> bool:
-	return current_task == null or not current_task
+	return current_task_actuator == null or not current_task_actuator
 
 func get_task_status() -> int:
-	return current_task.get_last_tick_status()
+	return current_task_actuator.get_last_tick_status()
 
 func ensure_valid_position() -> void:
 	if not is_in_valid_position():

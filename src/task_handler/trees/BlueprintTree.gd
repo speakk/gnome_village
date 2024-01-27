@@ -2,8 +2,8 @@ extends TaskTree
 
 class_name BlueprintTree
 
-var BRING_RESOURCE_TASK := preload("res://src/tasks/task_actuators/bring_resource.tscn")
-var BUILD_TASK := preload("res://src/tasks/task_actuators/build.tscn")
+var BRING_RESOURCE_TASK := preload("res://src/tasks/task_data/BringResource.tscn")
+var BUILD_TASK := preload("res://src/tasks/task_data/Build.tscn")
 
 var blueprint: ItemOnGround
 
@@ -38,21 +38,28 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 		#var bring_resource_task := 
 		var bring_resource_leaf := TaskTreeLeaf.new()
 		bring_resource_leaf.name = "Bring_Resource_Leaf"
+		var task := BRING_RESOURCE_TASK.instantiate() as BringResourceTask
+		task.initialize({
+			target_coordinate = tile_target,
+			item_requirement = material_requirement,
+			inventory_holder_entity = blueprint
+		})
 		#bring_resource_leaf.set_task(Tasks.TaskId.BringResource, {
 			#tile_target: tile_target, material_requirement: material_requirement, blueprint: blueprint
 		#})
-		bring_resource_leaf.set_task(BRING_RESOURCE_TASK.instantiate())
+		bring_resource_leaf.set_task(task)
 		bring_resources.add_child(bring_resource_leaf)
-		bring_resource_leaf.task.call_deferred("initialize", tile_target, material_requirement, blueprint)
 	
 	var build_leaf := TaskTreeLeaf.new()
-	build_leaf.set_task(BUILD_TASK.instantiate() as BuildTask)
+	var build_task := BUILD_TASK.instantiate() as BuildTask
+	build_task.initialize({
+		blueprint = blueprint
+	})
+	build_leaf.set_task(build_task)
 	build_leaf.name = "Build_Leaf"
 	
 	add_child(bring_resources)
 	add_child(build_leaf)
-	
-	build_leaf.task.initialize(blueprint)
 
 	return self
 

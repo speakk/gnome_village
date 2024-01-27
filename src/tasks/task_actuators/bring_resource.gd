@@ -1,10 +1,6 @@
-extends Task
+extends TaskActuator
 
-class_name BringResourceTask
-
-var target_tile: Vector2i
-var item_requirement: ItemRequirement 
-var blueprint: ItemOnGround
+class_name BringResourceActuator
 
 var _material: ItemOnGround
 
@@ -25,25 +21,14 @@ func find_closest_material(_item_requirement: ItemRequirement) -> ItemOnGround:
 	
 	return closest_material
 
-func initialize(_target_tile: Vector2i, _item_requirement: ItemRequirement, _blueprint: ItemOnGround) -> BringResourceTask:
-	target_tile = _target_tile
-	item_requirement = _item_requirement
-	blueprint = _blueprint
-
-	%GoToBlueprint.target_coordinate = target_tile
-	
-	%PutItemToBlueprint.target_inventory = blueprint.get_node("ConstructionInventory")
-	%PutItemToBlueprint.item_id = item_requirement.item_id
-	%PutItemToBlueprint.amount = item_requirement.amount
-	
-	%HasItemRequirement.item_requirement = item_requirement
-
+func initialize(_task: BringResourceTask) -> BringResourceActuator:
+	task = _task
 	return self
 
 func start_work() -> void:
 	super.start_work()
 	if not _material:
-		var material := find_closest_material(item_requirement)
+		var material := find_closest_material(task.item_requirement)
 		if not material:
 			return
 	
@@ -54,7 +39,15 @@ func start_work() -> void:
 	%GoToResource.target_coordinate = Globals.get_map().global_position_to_coordinate(_material.global_position)
 	
 	%GetItemFromGround.target_item = _material
-	%GetItemFromGround.amount = item_requirement.amount
+	%GetItemFromGround.amount = task.item_requirement.amount
+	
+	%GoToBlueprint.target_coordinate = task.target_coordinate
+	
+	%PutItemToBlueprint.target_inventory = task.inventory_holder_entity.get_node("ConstructionInventory")
+	%PutItemToBlueprint.item_id = task.item_requirement.item_id
+	%PutItemToBlueprint.amount = task.item_requirement.amount
+	
+	%HasItemRequirement.item_requirement = task.item_requirement
 
 func _ready() -> void:
 	super._ready()
@@ -65,13 +58,6 @@ func clean_up() -> void:
 
 func save() -> Dictionary:
 	var save_dict := super.save()
-	save_dict["target_tile.x"] = target_tile.x
-	save_dict["target_tile.y"] = target_tile.y
-	save_dict["item_requirement_id"] = SaveSystem.save_entity(item_requirement)
-	
-	if blueprint:
-		save_dict["blueprint_save_id"] = SaveSystem.save_entity(blueprint)
-	
 	if _material:
 		save_dict["_material_save_id"] = SaveSystem.save_entity(_material)
 	
@@ -79,21 +65,6 @@ func save() -> Dictionary:
 
 func load_save(save_dict: Dictionary) -> void:
 	super.load_save(save_dict)
-	target_tile = Vector2i(save_dict["target_tile.x"], save_dict["target_tile.y"])
-	#item_requirement = ItemRequirement.new()
-	#item_requirement.load_save(save_dict["item_requirement"])
-	
-	blueprint = SaveSystem.get_saved_entity(save_dict["blueprint_save_id"])
-	item_requirement = SaveSystem.get_saved_entity(save_dict["item_requirement_id"])
 	
 	if save_dict.has("_material_save_id"):
 		_material = SaveSystem.get_saved_entity(save_dict["_material_save_id"])
-	
-	initialize(target_tile, item_requirement, blueprint)
-	
-	#if save_dict.has("item_requirement_id"):
-		#SaveSystem.register_load_reference(self, "item_requirement", save_dict["item_requirement_id"])
-	##if save_dict.has("blueprint_save_id"):
-	##	SaveSystem.register_load_reference(self, "blueprint", save_dict["blueprint_save_id"])
-	#if save_dict.has("_material_save_id"):
-		#SaveSystem.register_load_reference(self, "_material", save_dict["_material_save_id"])

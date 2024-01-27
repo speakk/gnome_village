@@ -2,7 +2,7 @@ extends TaskTree
 
 class_name DismantleTree
 
-var DISMANTLE_TASK := preload("res://src/tasks/task_actuators/dismantle.tscn")
+var DISMANTLE_TASK := preload("res://src/tasks/task_data/Dismantle.tscn")
 
 var item_on_ground: ItemOnGround
 
@@ -26,8 +26,13 @@ func initialize(_item_on_ground: ItemOnGround) -> DismantleTree:
 	order_type = TaskTreeBranch.OrderType.Sequence
 	item_on_ground = _item_on_ground
 	
+	var task := DISMANTLE_TASK.instantiate() as DismantleTask
+	task.initialize({
+		item_on_ground = item_on_ground
+	})
+	
 	var dismantle_leaf := TaskTreeLeaf.new()
-	dismantle_leaf.task = (DISMANTLE_TASK.instantiate() as DismantleTask).initialize(item_on_ground)
+	dismantle_leaf.set_task(task)
 	dismantle_leaf.name = "Dismantle_leaf"
 	
 	add_child(dismantle_leaf)

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://lq7qq75uuuq5"]
+
+[ext_resource type="Script" path="res://src/tasks/task_data/Build.gd" id="1_8e13d"]
+
+[node name="Build" type="Node"]
+script = ExtResource("1_8e13d")
