@@ -28,7 +28,7 @@ func initialize(_item_on_ground: ItemOnGround) -> DismantleTree:
 	
 	var task := DISMANTLE_TASK.instantiate() as DismantleTask
 	task.initialize({
-		item_on_ground = item_on_ground
+		target = item_on_ground
 	})
 	
 	var dismantle_leaf := TaskTreeLeaf.new()

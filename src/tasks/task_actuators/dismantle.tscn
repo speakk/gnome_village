@@ -11,7 +11,7 @@
 script = ExtResource("1_6vuxa")
 
 [node name="BeehaveTree" parent="." index="1" node_paths=PackedStringArray("blackboard")]
-blackboard = NodePath("@Node@17495")
+blackboard = NodePath("@Node@23103")
 
 [node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0"]
 script = ExtResource("2_a2kab")
@@ -24,4 +24,5 @@ unique_name_in_owner = true
 script = ExtResource("4_unmgl")
 
 [node name="FinishTask" type="Node" parent="BeehaveTree/SequenceComposite" index="2"]
+unique_name_in_owner = true
 script = ExtResource("5_iplfe")

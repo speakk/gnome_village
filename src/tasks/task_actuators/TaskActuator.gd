@@ -10,8 +10,9 @@ var task: Task
 func _ready() -> void:
 	tree.disable()
 
-func _enter_tree() -> void:
-	call_deferred("start_work")
+#func _enter_tree() -> void:
+	##call_deferred("start_work")
+	#start_work()
 
 func _exit_tree() -> void:
 	$BeehaveTree._exit_tree()

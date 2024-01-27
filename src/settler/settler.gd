@@ -116,6 +116,7 @@ func start_task(task: Task) -> void:
 	var task_actuator := Tasks.create_task_actuator(task)
 	add_child(task_actuator)
 	current_task_actuator = task_actuator
+	current_task_actuator.start_work()
 	#current_task_actuator.is_being_worked_on = true
 	#current_task_actuator.tree.enable()
 	#current_task_actuator.tree.actor = self
