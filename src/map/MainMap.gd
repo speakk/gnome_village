@@ -167,17 +167,23 @@ func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordina
 	if not rect_start_coordinate or not rect_end_coordinate:
 		$RectangleRectDraw.selection_rectangle = null
 		return
-		
-	var start_position := Vector2(map_to_local(rect_start_coordinate)) - Vector2(CELL_SIZE) / 2
-	var end_position := Vector2(map_to_local(rect_end_coordinate))
+	
+	# TODO: There's gotta be a better way :D
+	var start_position_orig := Vector2(map_to_local(rect_start_coordinate))
+	var end_position_orig := Vector2(map_to_local(rect_end_coordinate))
+	var start_position := Vector2(min(start_position_orig.x, end_position_orig.x), min(start_position_orig.y, end_position_orig.y)) - Vector2(CELL_SIZE) / 2
+	var end_position := Vector2(max(start_position_orig.x, end_position_orig.x), max(start_position_orig.y, end_position_orig.y)) + Vector2(CELL_SIZE) / 2
 	var selection_rectangle := Rect2(start_position, (end_position - start_position).snapped(Vector2(CELL_SIZE)))
 	$RectangleRectDraw.selection_rectangle = selection_rectangle
 	
+	var snapped_start := local_to_map(start_position + Vector2(CELL_SIZE) / 2)
+	var snapped_end := local_to_map(end_position - Vector2(CELL_SIZE) / 2)
+	
 	var new_rect_selection_coordinates: Array[Vector2i] = []
-	for y in rect_end_coordinate.y - rect_start_coordinate.y + 1:
-		var real_y := y + rect_start_coordinate.y
-		for x in rect_end_coordinate.x - rect_start_coordinate.x + 1:
-			var real_x := x + rect_start_coordinate.x
+	for y in snapped_end.y - snapped_start.y + 1:
+		var real_y := y + snapped_start.y
+		for x in snapped_end.x - snapped_start.x + 1:
+			var real_x := x + snapped_start.x
 			new_rect_selection_coordinates.append(Vector2i(real_x, real_y))
 	
 	rect_tile_coords = new_rect_selection_coordinates
