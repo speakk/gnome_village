@@ -2,7 +2,7 @@ extends TaskTree
 
 class_name DismantleTree
 
-var DISMANTLE_TASK := preload("res://src/tasks/dismantle_task.tscn")
+var DISMANTLE_TASK := preload("res://src/tasks/task_actuators/dismantle.tscn")
 
 var item_on_ground: ItemOnGround
 

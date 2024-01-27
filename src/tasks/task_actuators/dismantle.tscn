@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://b1b0p6dvv08dl"]
 
-[ext_resource type="Script" path="res://src/tasks/dismantle_task.gd" id="1_6vuxa"]
-[ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://src/tasks/Task.tscn" id="1_fm161"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/dismantle.gd" id="1_6vuxa"]
+[ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://src/tasks/task_actuators/TaskActuator.tscn" id="1_fm161"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_a2kab"]
-[ext_resource type="PackedScene" uid="uid://bevd0ykcp7npk" path="res://src/tasks/actions/GoToAction.tscn" id="3_sxw6n"]
-[ext_resource type="Script" path="res://src/tasks/actions/DismantleAction.gd" id="4_unmgl"]
-[ext_resource type="Script" path="res://src/tasks/actions/FinishTask.gd" id="5_iplfe"]
+[ext_resource type="PackedScene" uid="uid://bevd0ykcp7npk" path="res://src/tasks/task_actuators/actions/GoToAction.tscn" id="3_sxw6n"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/DismantleAction.gd" id="4_unmgl"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/FinishTask.gd" id="5_iplfe"]
 
 [node name="DismantleTask" instance=ExtResource("1_fm161")]
 script = ExtResource("1_6vuxa")

@@ -2,8 +2,8 @@ extends TaskTree
 
 class_name BlueprintTree
 
-var BRING_RESOURCE_TASK := preload("res://src/tasks/bring_resource_task.tscn")
-var BUILD_TASK := preload("res://src/tasks/build_task.tscn")
+var BRING_RESOURCE_TASK := preload("res://src/tasks/task_actuators/bring_resource.tscn")
+var BUILD_TASK := preload("res://src/tasks/task_actuators/build.tscn")
 
 var blueprint: ItemOnGround
 

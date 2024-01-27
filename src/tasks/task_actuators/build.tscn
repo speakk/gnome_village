@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://bna286exuq615"]
 
-[ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://src/tasks/Task.tscn" id="1_atino"]
-[ext_resource type="Script" path="res://src/tasks/build_task.gd" id="2_42ej0"]
+[ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://src/tasks/task_actuators/TaskActuator.tscn" id="1_atino"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/build.gd" id="2_42ej0"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_d45j8"]
-[ext_resource type="PackedScene" uid="uid://bevd0ykcp7npk" path="res://src/tasks/actions/GoToAction.tscn" id="4_2w3bl"]
-[ext_resource type="PackedScene" uid="uid://cxah2qb0vkqog" path="res://src/tasks/actions/BuildAction.tscn" id="5_yvkqm"]
-[ext_resource type="Script" path="res://src/tasks/actions/FinishTask.gd" id="6_7crgi"]
+[ext_resource type="PackedScene" uid="uid://bevd0ykcp7npk" path="res://src/tasks/task_actuators/actions/GoToAction.tscn" id="4_2w3bl"]
+[ext_resource type="PackedScene" uid="uid://cxah2qb0vkqog" path="res://src/tasks/task_actuators/actions/BuildAction.tscn" id="5_yvkqm"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/FinishTask.gd" id="6_7crgi"]
 
 [node name="BuildTask" instance=ExtResource("1_atino")]
 script = ExtResource("2_42ej0")

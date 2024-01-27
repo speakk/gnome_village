@@ -1,16 +1,16 @@
 [gd_scene load_steps=12 format=3 uid="uid://bevd0ykcp7npk"]
 
-[ext_resource type="Script" path="res://src/tasks/actions/GoToAction.gd" id="1_qg1rs"]
-[ext_resource type="Script" path="res://src/tasks/actions/GoToUpdatePath.gd" id="2_1psy6"]
-[ext_resource type="Script" path="res://src/tasks/decorators/ConditionalLoop.gd" id="2_2p2s2"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/GoToAction.gd" id="1_qg1rs"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/GoToUpdatePath.gd" id="2_1psy6"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/decorators/ConditionalLoop.gd" id="2_2p2s2"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector.gd" id="2_vbggv"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_nu6c4"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/decorators/inverter.gd" id="3_yi44a"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_set.gd" id="7_f8gd8"]
-[ext_resource type="Script" path="res://src/tasks/conditions/IsBlockedByDoor.gd" id="7_lcpct"]
-[ext_resource type="Script" path="res://src/tasks/actions/OpenDoor.gd" id="8_or0dk"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/conditions/IsBlockedByDoor.gd" id="7_lcpct"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/OpenDoor.gd" id="8_or0dk"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_erase.gd" id="8_v0c37"]
-[ext_resource type="Script" path="res://src/tasks/actions/AdvanceAlongPath.gd" id="9_1n0he"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/AdvanceAlongPath.gd" id="9_1n0he"]
 
 [node name="GoToAction" type="Node"]
 script = ExtResource("1_qg1rs")

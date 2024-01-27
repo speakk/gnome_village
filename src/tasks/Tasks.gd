@@ -5,9 +5,9 @@ enum TaskId {
 }
 
 var task_actuators: Dictionary = {
-	TaskId.BringResource: preload("res://src/tasks/bring_resource_task.tscn"),
-	TaskId.Build: preload("res://src/tasks/build_task.tscn"),
-	TaskId.Dismantle: preload("res://src/tasks/dismantle_task.tscn"),
+	TaskId.BringResource: preload("res://src/tasks/task_actuators/bring_resource.tscn"),
+	TaskId.Build: preload("res://src/tasks/task_actuators/build.tscn"),
+	TaskId.Dismantle: preload("res://src/tasks/task_actuators/dismantle.tscn"),
 }
 
 func create_task_actuator(task_id: TaskId, params: Dictionary = {}) -> Task:

@@ -1,14 +1,14 @@
 [gd_scene load_steps=10 format=3 uid="uid://dh81vo68ekn1p"]
 
-[ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://src/tasks/Task.tscn" id="1_fm161"]
-[ext_resource type="Script" path="res://src/tasks/bring_resource_task.gd" id="2_2s8wd"]
+[ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://src/tasks/task_actuators/TaskActuator.tscn" id="1_fm161"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/bring_resource.gd" id="2_2s8wd"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_06fow"]
-[ext_resource type="PackedScene" uid="uid://bevd0ykcp7npk" path="res://src/tasks/actions/GoToAction.tscn" id="4_7mp0k"]
+[ext_resource type="PackedScene" uid="uid://bevd0ykcp7npk" path="res://src/tasks/task_actuators/actions/GoToAction.tscn" id="4_7mp0k"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector.gd" id="4_t3tmc"]
-[ext_resource type="PackedScene" uid="uid://bs566fkjhp1wx" path="res://src/tasks/conditions/HasItemRequirement.tscn" id="5_1yofc"]
-[ext_resource type="Script" path="res://src/tasks/actions/FinishTask.gd" id="5_78qgj"]
-[ext_resource type="Script" path="res://src/tasks/actions/GetItemAmount.gd" id="5_d8kge"]
-[ext_resource type="Script" path="res://src/tasks/actions/PutItemToInventory.gd" id="6_rapg4"]
+[ext_resource type="PackedScene" uid="uid://bs566fkjhp1wx" path="res://src/tasks/task_actuators/conditions/HasItemRequirement.tscn" id="5_1yofc"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/FinishTask.gd" id="5_78qgj"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/GetItemAmount.gd" id="5_d8kge"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/PutItemToInventory.gd" id="6_rapg4"]
 
 [node name="BringResourceTask" instance=ExtResource("1_fm161")]
 script = ExtResource("2_2s8wd")
