@@ -24,6 +24,7 @@ Globals="*res://Globals.gd"
 PathFinder="*res://PathFinder.gd"
 Items="*res://items/Items.gd"
 SaveSystem="*res://SaveSystem.gd"
+Tasks="*res://tasks/Tasks.gd"
 
 [debug]
 

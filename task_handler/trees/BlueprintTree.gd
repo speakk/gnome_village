@@ -38,7 +38,10 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 		#var bring_resource_task := 
 		var bring_resource_leaf := TaskTreeLeaf.new()
 		bring_resource_leaf.name = "Bring_Resource_Leaf"
-		bring_resource_leaf.set_task(BRING_RESOURCE_TASK.instantiate())
+		bring_resource_leaf.set_task(Tasks.TaskId.BringResource, {
+			tile_target: tile_target, material_requirement: material_requirement, blueprint: blueprint
+		})
+		#bring_resource_leaf.set_task(BRING_RESOURCE_TASK.instantiate())
 		bring_resources.add_child(bring_resource_leaf)
 		bring_resource_leaf.task.call_deferred("initialize", tile_target, material_requirement, blueprint)
 	
@@ -82,7 +85,6 @@ func load_save(save_dict: Dictionary) -> void:
 	for id in save_dict["bring_resources_parallel_children_ids"] as Array[int]:
 		var bring_resource_leaf := TaskTreeLeaf.new()
 		bring_resource_leaf.name = "Bring_Resource_Leaf"
-		#SaveSystem.register_load_reference(bring_resource_leaf, "task", id)
 		bring_resources.add_child(bring_resource_leaf)
 		bring_resource_leaf.set_task(SaveSystem.get_saved_entity(id))
 	
