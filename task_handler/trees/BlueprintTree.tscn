@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://c3312sguirgpl"]
-
-[ext_resource type="Script" path="res://task_handler/trees/BlueprintTree.gd" id="1_nf38b"]
-
-[node name="BlueprintTree" type="Node"]
-script = ExtResource("1_nf38b")

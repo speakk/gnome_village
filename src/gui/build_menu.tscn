@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctd6ytjbkrp06"]
+
+[ext_resource type="Script" path="res://src/gui/build_menu.gd" id="1_buu25"]
+
+[node name="BuildMenu" type="PanelContainer"]
+visible = false
+script = ExtResource("1_buu25")
+
+[node name="BuildOptions" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Button" type="Button" parent="BuildOptions"]
+layout_mode = 2
+text = "Wall"
