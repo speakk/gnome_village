@@ -10,3 +10,7 @@ func _map_ready(_map: MainMap) -> void:
 
 func get_map() -> MainMap:
 	return map
+
+enum PlayerAction {
+	Build, Dismantle, ZoneAdd
+}

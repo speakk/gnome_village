@@ -32,3 +32,10 @@ signal load_game_called(save_dict: Dictionary)
 signal save_game_called(save_dict: Dictionary)
 
 signal current_time_changed(new_time: float)
+
+
+signal zone_add_pressed(zone_type: ZoneManager.ZoneType, zone_name: String)
+signal zone_delete_pressed(zone: Zone)
+signal zone_added(zone: Zone)
+signal zone_deleted(zone: Zone)
+signal zone_list_changed

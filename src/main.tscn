@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://ubgvap601f4j"]
+[gd_scene load_steps=26 format=3 uid="uid://ubgvap601f4j"]
 
 [ext_resource type="Script" path="res://src/main.gd" id="1_j8rqp"]
 [ext_resource type="PackedScene" uid="uid://b4nj0xntglt07" path="res://src/map/main_map.tscn" id="1_lsh5n"]
@@ -9,6 +9,7 @@
 [ext_resource type="Shader" path="res://src/shadow.gdshader" id="6_ujsti"]
 [ext_resource type="Shader" path="res://src/daylight.gdshader" id="7_7ur7k"]
 [ext_resource type="PackedScene" uid="uid://dk7vrm018wwop" path="res://src/systems/day_night_cycle.tscn" id="7_lqenh"]
+[ext_resource type="PackedScene" uid="uid://du6ros11u7s0m" path="res://src/zones/ZoneManager.tscn" id="10_dx4j4"]
 
 [sub_resource type="Curve" id="Curve_86jfl"]
 _data = [Vector2(0, 0.414894), 0.0, 0.0, 0, 0, Vector2(0.501961, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.414894), 0.0, 0.0, 0, 0]
@@ -142,3 +143,5 @@ scale = Vector2(29.2031, 17.1406)
 texture = SubResource("GradientTexture2D_dnjan")
 
 [node name="DayNightCycle" parent="." instance=ExtResource("7_lqenh")]
+
+[node name="ZoneManager" parent="." instance=ExtResource("10_dx4j4")]

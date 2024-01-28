@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://csea754sopgpn"]
+
+[ext_resource type="Script" path="res://src/zones/gui/zone_list_item.gd" id="1_lrr5q"]
+
+[node name="ZoneListItem" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_lrr5q")
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="AddAreaButton" type="Button" parent="."]
+layout_mode = 2
+text = "Add Area"
+
+[node name="RemoveAreaButton" type="Button" parent="."]
+layout_mode = 2
+text = "Remove Area"
+
+[node name="DeleteButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Delete"
+
+[connection signal="button_down" from="AddAreaButton" to="." method="_on_add_area_button_button_down"]
+[connection signal="pressed" from="RemoveAreaButton" to="." method="_on_remove_area_button_pressed"]
+[connection signal="pressed" from="DeleteButton" to="." method="_on_delete_button_pressed"]

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://eq4ql3nfelmu"]
+
+[ext_resource type="Script" path="res://src/zones/zone_types/FarmingZone.gd" id="1_4o3k5"]
+
+[node name="FarmingZone" type="Node2D" groups=["zone"]]
+script = ExtResource("1_4o3k5")

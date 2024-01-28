@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://du6ros11u7s0m"]
+
+[ext_resource type="Script" path="res://src/zones/ZoneManager.gd" id="1_qtgk5"]
+
+[node name="ZoneManager" type="Node2D"]
+script = ExtResource("1_qtgk5")
+
+[node name="Zones" type="Node" parent="."]

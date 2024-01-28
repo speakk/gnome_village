@@ -9,6 +9,9 @@ func _on_plant_button_pressed() -> void:
 func _on_order_button_pressed() -> void:
 	show_submenu(%OrderMenu, %OrderButton)
 
+func _on_zone_button_pressed() -> void:
+	show_submenu(%ZoneMenu, %ZoneButton)
+
 func show_submenu(menu: Node, button: Node) -> void:
 	for child in %MainButtons.get_children():
 		child.button_pressed = false
@@ -23,6 +26,7 @@ func hide_submenu() -> void:
 	%BuildMenu.hide()
 	%PlantMenu.hide()
 	%OrderMenu.hide()
+	%ZoneMenu.hide()
 	%SubMenuContainer.hide()
 
 func _on_dismantle_button_pressed() -> void:
@@ -32,3 +36,4 @@ func _ready() -> void:
 	for child in %MainButtons.get_children():
 		child.button_pressed = false
 	hide_submenu()
+
