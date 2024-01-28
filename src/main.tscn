@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://src/MainCamera.gd" id="2_bak4i"]
 [ext_resource type="Shader" path="res://src/water.gdshader" id="3_ta3du"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://src/gui/gui.tscn" id="5_4nnuu"]
-[ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://src/task_handler/TaskHandler.tscn" id="5_jyric"]
+[ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://src/tasks/task_assigner/TaskHandler.tscn" id="5_jyric"]
 [ext_resource type="Shader" path="res://src/shadow.gdshader" id="6_ujsti"]
 [ext_resource type="Shader" path="res://src/daylight.gdshader" id="7_7ur7k"]
 [ext_resource type="PackedScene" uid="uid://dk7vrm018wwop" path="res://src/systems/day_night_cycle.tscn" id="7_lqenh"]

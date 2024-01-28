@@ -2,8 +2,8 @@ extends Node
 
 class_name TaskHandler
 
-@onready var BLUEPRINT_TREE := preload("res://src/task_handler/trees/BlueprintTree.tscn")
-@onready var DISMANTLE_TREE := preload("res://src/task_handler/trees/DismantleTree.tscn")
+@onready var BLUEPRINT_TREE := preload("res://src/tasks/task_assigner/trees/BlueprintTree.tscn")
+@onready var DISMANTLE_TREE := preload("res://src/tasks/task_assigner/trees/DismantleTree.tscn")
 
 @onready var debug_ui_tree := %Tree as Tree
 
