@@ -23,6 +23,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 placeholder_text = "New zone name"
+scroll_fit_content_height = true
 
 [node name="AddZoneButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true

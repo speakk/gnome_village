@@ -21,8 +21,10 @@ signal terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
 
 signal terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int)
 
-signal construction_selected(item_id: Items.Id)
-signal dismantle_selected()
+#signal construction_selected(item_id: Items.Id)
+#signal dismantle_selected()
+#signal player_action_selected(action: Globals.PlayerAction, params: Dictionary)
+signal ui_action_selected(ui_action: UiAction)
 
 signal item_placed_on_ground(item: ItemOnGround, item_position: Vector2)
 signal item_removed_from_ground(item: ItemOnGround, item_position: Vector2)

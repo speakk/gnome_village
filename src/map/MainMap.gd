@@ -9,13 +9,16 @@ const MAP_SIZE_X: int = 80
 const MAP_SIZE_Y: int = 40
 const CELL_SIZE := Vector2i(24, 24)
 
-var construction_item_id: Variant # Items.Id | null
+#var construction_item_id: Variant # Items.Id | null
 
 enum MapActions {
 	Build, Dismantle, None
 }
 
-var current_action: MapActions = MapActions.None
+#var current_action: Globals.PlayerAction = Globals.PlayerAction.None
+#var current_action_params: Dictionary
+
+var selected_ui_action: UiAction
 
 enum Layers {
 	Ground, Building, Blueprint
@@ -90,8 +93,11 @@ func _ready() -> void:
 			remove_map_entity(coordinate, item)
 	)
 	
-	Events.construction_selected.connect(_construction_selected)
-	Events.dismantle_selected.connect(func() -> void: current_action = MapActions.Dismantle)
+	#Events.construction_selected.connect(_construction_selected)
+	#Events.dismantle_selected.connect(func() -> void: current_action = MapActions.Dismantle)
+	
+	#Events.player_action_selected.connect(_handle_player_action_select)
+	Events.ui_action_selected.connect(_handle_ui_action_selection)
 	
 	Events.map_ready.emit(self)
 	
@@ -101,6 +107,13 @@ func _ready() -> void:
 		for y in MAP_SIZE_Y:
 			if get_cell_source_id(Layers.Ground, Vector2i(x, y)) < 0:
 				PathFinder.set_coordinate_invalid(Vector2i(x, y))
+
+#func _handle_player_action_select(player_action: Globals.PlayerAction, params: Dictionary) -> void:
+	#current_action = player_action
+	#current_action_params = params
+
+func _handle_ui_action_selection(new_ui_action: UiAction) -> void:
+	selected_ui_action = new_ui_action
 
 #Bresenham's line algorithm
 func get_tile_line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
@@ -139,7 +152,9 @@ func set_line_end(coordinate: Vector2i) -> void:
 	line_end = coordinate
 
 func _handle_build_action(tile_position: Vector2i) -> void:
-	if construction_item_id:
+	var ui_action := selected_ui_action as UiAction.Build
+	var item_id := ui_action.item_id
+	if item_id:
 		if PathFinder.is_valid_position(tile_position):
 			$HoverRectDraw.set_line_coords([tile_position] as Array[Vector2i])
 			
@@ -151,14 +166,14 @@ func _handle_build_action(tile_position: Vector2i) -> void:
 					set_line_end(tile_position)
 					$HoverRectDraw.set_line_coords(get_tile_line(line_start, line_end))
 				else:
-					_place_blueprint(tile_position, construction_item_id)
+					_place_blueprint(tile_position, item_id)
 					line_start = null
 					line_end = null
 			else:
 				if line_start and line_end:
 					var line_coords := get_tile_line(line_start, line_end)
 					for line_coord in line_coords:
-						_place_blueprint(line_coord, construction_item_id)
+						_place_blueprint(line_coord, item_id)
 				
 					line_start = null
 					line_end = null
@@ -214,10 +229,12 @@ func _handle_dismantle_action(tile_position: Vector2i) -> void:
 			clear_rectangle_selection()
 
 func _handle_map_action(tile_position: Vector2i) -> void:
-	if current_action == MapActions.Build:
+	if selected_ui_action is UiAction.Build:
 		_handle_build_action(tile_position)
-	if current_action == MapActions.Dismantle:
+	if selected_ui_action is UiAction.Dismantle:
 		_handle_dismantle_action(tile_position)
+	if selected_ui_action is UiAction.ZoneAddTiles:
+		print("Handle tile add")
 
 func clear_rectangle_selection() -> void:
 	rect_start = null
@@ -296,7 +313,7 @@ func is_vacant_coordinate(coordinate: Vector2i) -> bool:
 	#var tile_position := global_position_to_coordinate(blueprint.global_position)
 	#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
 	#map_entities[Layers.Blueprint].erase(tile_position) 
-
-func _construction_selected(item_id: Items.Id) -> void:
-	current_action = MapActions.Build
-	construction_item_id = item_id
+#
+#func _construction_selected(item_id: Items.Id) -> void:
+	#current_action = MapActions.Build
+	#construction_item_id = item_id

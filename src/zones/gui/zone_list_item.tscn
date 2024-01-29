@@ -14,11 +14,11 @@ layout_mode = 2
 
 [node name="AddAreaButton" type="Button" parent="."]
 layout_mode = 2
-text = "Add Area"
+text = "Add Tiles"
 
 [node name="RemoveAreaButton" type="Button" parent="."]
 layout_mode = 2
-text = "Remove Area"
+text = "Remove Tiles"
 
 [node name="DeleteButton" type="Button" parent="."]
 unique_name_in_owner = true

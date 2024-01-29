@@ -14,4 +14,7 @@ func _ready() -> void:
 		%BuildOptions.add_child(button)
 
 func _construction_button_pressed(item_id: Items.Id) -> void:
-	Events.construction_selected.emit(item_id)
+	#Events.construction_selected.emit(item_id)
+	var ui_action := UiAction.Build.new(item_id)
+	Events.ui_action_selected.emit(ui_action)
+	#Events.player_action_selected.emit(Globals.PlayerAction.Build, { item_id = item_id})
