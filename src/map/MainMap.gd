@@ -3,13 +3,18 @@ extends TileMap
 class_name MainMap
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
-@onready var HOVER_RECT := preload("res://src/map/hover_rect.tscn")
+#@onready var HOVER_RECT := preload("res://src/map/hover_rect.tscn")
 
 const MAP_SIZE_X: int = 80
 const MAP_SIZE_Y: int = 40
 const CELL_SIZE := Vector2i(24, 24)
 
 #var construction_item_id: Variant # Items.Id | null
+
+@onready var ui_action_handlers: Dictionary = {
+	UiAction.UiActionId.Build: preload("res://src/map/ui_action_handlers/build_handler.gd").new(),
+	UiAction.UiActionId.Dismantle: preload("res://src/map/ui_action_handlers/dismantle_handler.gd").new()
+}
 
 enum MapActions {
 	Build, Dismantle, None
@@ -69,6 +74,9 @@ func _ready() -> void:
 	add_layer(Layers.Ground)
 	add_layer(Layers.Building)
 	add_layer(Layers.Blueprint)
+	
+	ui_action_handlers[UiAction.UiActionId.Build].build_issued.connect(_place_blueprint)
+	ui_action_handlers[UiAction.UiActionId.Dismantle].dismantle_issued.connect(_dismantle_in_position)
 
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
 
@@ -93,116 +101,17 @@ func _ready() -> void:
 			remove_map_entity(coordinate, item)
 	)
 	
-	#Events.construction_selected.connect(_construction_selected)
-	#Events.dismantle_selected.connect(func() -> void: current_action = MapActions.Dismantle)
-	
-	#Events.player_action_selected.connect(_handle_player_action_select)
 	Events.ui_action_selected.connect(_handle_ui_action_selection)
 	
 	Events.map_ready.emit(self)
-	
-	#await get_tree().ph
 	
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
 			if get_cell_source_id(Layers.Ground, Vector2i(x, y)) < 0:
 				PathFinder.set_coordinate_invalid(Vector2i(x, y))
 
-#func _handle_player_action_select(player_action: Globals.PlayerAction, params: Dictionary) -> void:
-	#current_action = player_action
-	#current_action_params = params
-
 func _handle_ui_action_selection(new_ui_action: UiAction) -> void:
 	selected_ui_action = new_ui_action
-
-#Bresenham's line algorithm
-func get_tile_line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
-	var points: Array[Vector2i] = []
-	var dx := absi(to.x - from.x)
-	var dy := -absi(to.y - from.y)
-	var err := dx + dy
-	var e2 := 2 * err
-	var sx := 1 if from.x < to.x else -1
-	var sy := 1 if from.y < to.y else -1
-	while true:
-		points.append(Vector2i(from.x, from.y))
-		if from.x == to.x and from.y == to.y:
-			break
-		e2 = 2 * err
-		if e2 >= dy:
-			err += dy
-			from.x += sx
-		if e2 <= dx:
-			err += dx
-			from.y += sy
-	return points
-
-var line_start: Variant # Vector2i | null
-var line_end: Variant # Vector2i | null
-var line_coords: Array[Vector2i]
-
-var rect_start: Variant # Vector2i | null
-var rect_end: Variant # Vector2i | null
-var rect_tile_coords: Array[Vector2i]
-
-func set_line_start(coordinate: Vector2i) -> void:
-	line_start = coordinate
-	
-func set_line_end(coordinate: Vector2i) -> void:
-	line_end = coordinate
-
-func _handle_build_action(tile_position: Vector2i) -> void:
-	var ui_action := selected_ui_action as UiAction.Build
-	var item_id := ui_action.item_id
-	if item_id:
-		if PathFinder.is_valid_position(tile_position):
-			$HoverRectDraw.set_line_coords([tile_position] as Array[Vector2i])
-			
-			if is_mouse_pressed:
-				if Input.is_action_pressed("line_draw_modifier"):
-					if not line_start:
-						set_line_start(tile_position)
-					
-					set_line_end(tile_position)
-					$HoverRectDraw.set_line_coords(get_tile_line(line_start, line_end))
-				else:
-					_place_blueprint(tile_position, item_id)
-					line_start = null
-					line_end = null
-			else:
-				if line_start and line_end:
-					var line_coords := get_tile_line(line_start, line_end)
-					for line_coord in line_coords:
-						_place_blueprint(line_coord, item_id)
-				
-					line_start = null
-					line_end = null
-
-func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordinate: Vector2i) -> void:
-	if not rect_start_coordinate or not rect_end_coordinate:
-		$RectangleRectDraw.selection_rectangle = null
-		return
-	
-	# TODO: There's gotta be a better way :D
-	var start_position_orig := Vector2(map_to_local(rect_start_coordinate))
-	var end_position_orig := Vector2(map_to_local(rect_end_coordinate))
-	var start_position := Vector2(min(start_position_orig.x, end_position_orig.x), min(start_position_orig.y, end_position_orig.y)) - Vector2(CELL_SIZE) / 2
-	var end_position := Vector2(max(start_position_orig.x, end_position_orig.x), max(start_position_orig.y, end_position_orig.y)) + Vector2(CELL_SIZE) / 2
-	var selection_rectangle := Rect2(start_position, (end_position - start_position).snapped(Vector2(CELL_SIZE)))
-	$RectangleRectDraw.selection_rectangle = selection_rectangle
-	
-	var snapped_start := local_to_map(start_position + Vector2(CELL_SIZE) / 2)
-	var snapped_end := local_to_map(end_position - Vector2(CELL_SIZE) / 2)
-	
-	var new_rect_selection_coordinates: Array[Vector2i] = []
-	for y in snapped_end.y - snapped_start.y + 1:
-		var real_y := y + snapped_start.y
-		for x in snapped_end.x - snapped_start.x + 1:
-			var real_x := x + snapped_start.x
-			new_rect_selection_coordinates.append(Vector2i(real_x, real_y))
-	
-	rect_tile_coords = new_rect_selection_coordinates
-	print("Rect tile coords set", rect_tile_coords)
 
 func _dismantle_in_position(tile_position: Vector2i) -> void:
 	var entities := get_map_entities(tile_position)
@@ -211,47 +120,15 @@ func _dismantle_in_position(tile_position: Vector2i) -> void:
 		if entity.item.can_be_dismantled and not entity.reserved_for_dismantling:
 			Events.dismantle_issued.emit(entity)
 
-func _handle_dismantle_action(tile_position: Vector2i) -> void:
-	if is_mouse_pressed:
-		if Input.is_action_pressed("rectangle_select_modifier"):
-			if not rect_start:
-				rect_start = tile_position
-			
-			rect_end = tile_position
-			_set_rectangle_selection(rect_start, rect_end)
-		else:
-			_dismantle_in_position(tile_position)
-	else:
-		if rect_start and rect_end:
-			for tile_coordinate in rect_tile_coords:
-				_dismantle_in_position(tile_coordinate)
-			
-			clear_rectangle_selection()
-
 func _handle_map_action(tile_position: Vector2i) -> void:
-	if selected_ui_action is UiAction.Build:
-		_handle_build_action(tile_position)
-	if selected_ui_action is UiAction.Dismantle:
-		_handle_dismantle_action(tile_position)
-	if selected_ui_action is UiAction.ZoneAddTiles:
-		print("Handle tile add")
-
-func clear_rectangle_selection() -> void:
-	rect_start = null
-	rect_end = null
-	rect_tile_coords = []
-	$RectangleRectDraw.selection_rectangle = null
+	if not selected_ui_action:
+		return
+	
+	if ui_action_handlers.has(selected_ui_action.ui_action_id):
+		var handler := ui_action_handlers[selected_ui_action.ui_action_id] as UiActionHandler
+		handler.handle_action(selected_ui_action, tile_position, $SelectionDraw, is_mouse_pressed, is_mouse_2_pressed)
 
 func _process(delta: float) -> void:
-	if not Input.is_action_pressed("line_draw_modifier"):
-		line_start = null
-		line_end = null
-		line_coords = []
-		$HoverRectDraw.set_line_coords([] as Array[Vector2i])
-	
-	if not Input.is_action_pressed("rectangle_select_modifier"):
-		clear_rectangle_selection()
-	
 	var tile_position: Vector2i = local_to_map(get_local_mouse_position())
 	
 	if is_mouse_2_pressed:
@@ -259,13 +136,6 @@ func _process(delta: float) -> void:
 	
 	_handle_map_action(tile_position)
 
-func _cancel_blueprint(tile_position: Vector2i) -> void:
-	var entities := get_map_entities(tile_position)
-	for entity in entities:
-		if entity.current_state == ItemOnGround.ItemState.Blueprint:
-			Events.blueprint_cancel_issued.emit(entity)
-			print("Removing at: ", tile_position)
-	
 func _place_blueprint(tile_position: Vector2i, item_id: Items.Id) -> void:
 	if not is_coordinate_occupied(tile_position):
 		var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
@@ -273,6 +143,13 @@ func _place_blueprint(tile_position: Vector2i, item_id: Items.Id) -> void:
 		get_tree().root.get_node("Main").get_node("Entities").add_child(blueprint)
 		blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
 		Events.blueprint_placed.emit(tile_position, blueprint)
+
+func _cancel_blueprint(tile_position: Vector2i) -> void:
+	var entities := get_map_entities(tile_position)
+	for entity in entities:
+		if entity.current_state == ItemOnGround.ItemState.Blueprint:
+			Events.blueprint_cancel_issued.emit(entity)
+			print("Removing at: ", tile_position)
 
 
 var is_mouse_pressed := false
@@ -307,13 +184,3 @@ func _terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tilese
 func is_vacant_coordinate(coordinate: Vector2i) -> bool:
 	var has_ground := get_cell_source_id(Layers.Ground, coordinate) >= 0
 	return not PathFinder.is_position_solid(coordinate) and has_ground
-
-## TODO: Also _blueprint_removed
-#func _construction_finished(blueprint: ItemOnGround) -> void:
-	#var tile_position := global_position_to_coordinate(blueprint.global_position)
-	#set_cell(Layers.Blueprint, tile_position, tile_set.get_source_id(1), Vector2i(-1, -1))
-	#map_entities[Layers.Blueprint].erase(tile_position) 
-#
-#func _construction_selected(item_id: Items.Id) -> void:
-	#current_action = MapActions.Build
-	#construction_item_id = item_id
