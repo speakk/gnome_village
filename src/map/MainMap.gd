@@ -3,13 +3,10 @@ extends TileMap
 class_name MainMap
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
-#@onready var HOVER_RECT := preload("res://src/map/hover_rect.tscn")
 
 const MAP_SIZE_X: int = 80
 const MAP_SIZE_Y: int = 40
 const CELL_SIZE := Vector2i(24, 24)
-
-#var construction_item_id: Variant # Items.Id | null
 
 @onready var ui_action_handlers: Dictionary = {
 	UiAction.UiActionId.Build: preload("res://src/map/ui_action_handlers/build_handler.gd").new(),
@@ -19,9 +16,6 @@ const CELL_SIZE := Vector2i(24, 24)
 enum MapActions {
 	Build, Dismantle, None
 }
-
-#var current_action: Globals.PlayerAction = Globals.PlayerAction.None
-#var current_action_params: Dictionary
 
 var selected_ui_action: UiAction
 
@@ -35,8 +29,6 @@ func prepare_for_load() -> void:
 	map_entities.clear()
 	clear_layer(Layers.Building)
 	clear_layer(Layers.Blueprint)
-	#current_action = MapActions.None
-	#construction_item_id = null
 
 func add_map_entity(coordinate: Vector2i, item_on_ground: ItemOnGround) -> void:
 	if not map_entities.has(coordinate):
@@ -82,7 +74,6 @@ func _ready() -> void:
 
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
-			#set_cell(Layers.Ground, Vector2i(x, y), tile_set.get_source_id(0), Vector2i(0, 0))
 			if world_center.distance_to(Vector2(x * CELL_SIZE.x, y * CELL_SIZE.y)) < 400:
 				set_cells_terrain_connect(Layers.Ground, [Vector2i(x, y)], 1, 0)
 	
