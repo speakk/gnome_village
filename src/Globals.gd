@@ -11,6 +11,11 @@ func _map_ready(_map: MainMap) -> void:
 func get_map() -> MainMap:
 	return map
 
+var control_has_focus: bool = false
 
-# PlayerAction params:
-# Build: { 
+func register_focus_input(input: Control) -> void:
+	input.focus_entered.connect(func() -> void: control_has_focus = true)
+	input.focus_exited.connect(func() -> void: control_has_focus = false)
+	
+func is_focus_in_control() -> bool:
+	return control_has_focus

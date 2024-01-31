@@ -9,6 +9,8 @@ func _ready() -> void:
 	Events.zone_deleted.connect(func(_new_zone: Zone) -> void: _refresh_zones())
 	Events.zone_list_changed.connect(func() -> void: _refresh_zones())
 	
+	Globals.register_focus_input(%ZoneNameEdit)
+	
 	visibility_changed.connect(_visibility_changed)
 	
 	_refresh_zones()
