@@ -3,6 +3,7 @@ extends PanelContainer
 var ZONE_TYPE_TAB := preload("res://src/zones/gui/zone_type_tab.tscn")
 
 func _ready() -> void:
+	visibility_changed.connect(_visibility_changed)
 	#var zones = get_tree().get_nodes_in_group("zone")
 	for child in %ZoneTypesTabs.get_children():
 		child.queue_free()
@@ -12,3 +13,8 @@ func _ready() -> void:
 		zone_type_tab.set_zone_type(zone_type)
 		zone_type_tab.name = ZoneManager.get_zone_type_name(zone_type)
 		%ZoneTypesTabs.add_child(zone_type_tab)
+
+
+func _visibility_changed() -> void:
+	if not visible:
+		Events.zone_menu_hidden.emit()

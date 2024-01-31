@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://hewmqp1k1i03"]
+
+[ext_resource type="Script" path="res://src/zones/zone_renderer.gd" id="1_a52u5"]
+
+[node name="ZoneRenderer" type="Node2D"]
+script = ExtResource("1_a52u5")

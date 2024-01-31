@@ -41,3 +41,6 @@ signal zone_delete_pressed(zone: Zone)
 signal zone_added(zone: Zone)
 signal zone_deleted(zone: Zone)
 signal zone_list_changed
+signal zone_selected(zone: Zone)
+signal zone_updated(zone: Zone)
+signal zone_menu_hidden()

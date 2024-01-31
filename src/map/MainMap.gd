@@ -13,8 +13,9 @@ const CELL_SIZE := Vector2i(24, 24)
 var selected_ui_action: UiAction
 
 var action_handlers: Dictionary = {
-	#UiAction.UiActionId.Build: func(coordinates: Array[Vector2i]) b
-	UiAction.UiActionId.Build: _place_blueprint
+	UiAction.UiActionId.Build: _place_blueprint,
+	UiAction.UiActionId.Dismantle: _dismantle_in_position,
+	UiAction.UiActionId.ZoneAddTiles: _zone_add_tiles
 }
 
 enum Layers {
@@ -65,8 +66,6 @@ func _ready() -> void:
 	add_layer(Layers.Building)
 	add_layer(Layers.Blueprint)
 	
-	#ui_action_handlers[UiAction.UiActionId.Build].build_issued.connect(_place_blueprint)
-	#ui_action_handlers[UiAction.UiActionId.Dismantle].dismantle_issued.connect(_dismantle_in_position)
 	map_tile_selector.tiles_selected.connect(_tiles_selected)
 
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
@@ -104,7 +103,8 @@ func _handle_ui_action_selection(new_ui_action: UiAction) -> void:
 	selected_ui_action = new_ui_action
 
 func _tiles_selected(coordinates: Array[Vector2i]) -> void:
-	action_handlers[selected_ui_action.ui_action_id].call(coordinates)
+	if selected_ui_action:
+		action_handlers[selected_ui_action.ui_action_id].call(coordinates)
 
 func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 	for tile_position in coordinates:
@@ -114,13 +114,9 @@ func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 			if entity.item.can_be_dismantled and not entity.reserved_for_dismantling:
 				Events.dismantle_issued.emit(entity)
 
-#func _handle_map_action(tile_position: Vector2i) -> void:
-	#if not selected_ui_action:
-		#return
-	#
-	#if ui_action_handlers.has(selected_ui_action.ui_action_id):
-		#var handler := ui_action_handlers[selected_ui_action.ui_action_id] as UiActionHandler
-		#handler.handle_action(selected_ui_action, tile_position, $SelectionDraw, is_mouse_pressed, is_mouse_2_pressed)
+func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
+	var zone := (selected_ui_action as UiAction.ZoneAddTiles).zone
+	zone.add_coordinates(coordinates)
 
 func _process(delta: float) -> void:
 	var tile_position: Vector2i = local_to_map(get_local_mouse_position())
@@ -128,7 +124,6 @@ func _process(delta: float) -> void:
 	#if is_mouse_2_pressed:
 		#_cancel_blueprint(tile_position)
 
-#func _place_blueprint(tile_position: Vector2i, item_id: Items.Id) -> void:
 func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 	var item_id := (selected_ui_action as UiAction.Build).item_id
 	for tile_position in coordinates:
