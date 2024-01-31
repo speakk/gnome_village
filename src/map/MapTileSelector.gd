@@ -1,4 +1,6 @@
-class_name MapTileSelector extends RefCounted
+class_name MapTileSelector extends Node
+
+@export var selection_draw: SelectionDraw
 
 signal tiles_selected(coordinates: Array[Vector2i])
 
@@ -10,7 +12,7 @@ var rect_start: Variant # Vector2i | null
 var rect_end: Variant # Vector2i | null
 var rect_tile_coords: Array[Vector2i]
 
-func _set_rectangle_selection(selection_draw: SelectionDraw, rect_start_coordinate: Vector2i, rect_end_coordinate: Vector2i) -> void:
+func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordinate: Vector2i) -> void:
 	if not rect_start_coordinate or not rect_end_coordinate:
 		selection_draw.selection_rectangle = null
 		return
@@ -38,13 +40,30 @@ func _set_rectangle_selection(selection_draw: SelectionDraw, rect_start_coordina
 	rect_tile_coords = new_rect_selection_coordinates
 	print("Rect tile coords set", rect_tile_coords)
 
-func clear_rectangle_selection(selection_draw: SelectionDraw) -> void:
+func clear_rectangle_selection() -> void:
 	rect_start = null
 	rect_end = null
 	rect_tile_coords = []
 	selection_draw.selection_rectangle = null
 
-func handle_tile_selection(tile_position: Vector2i, selection_draw: SelectionDraw, mouse_pressed_1: bool, mouse_pressed_2: bool) -> void:
+var mouse_pressed_1 := false
+var mouse_pressed_2 := false
+
+# TODO: You could use an Area2D and the input_event in that to handle this instead
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.is_pressed():
+			if event.button_index == 1:
+				mouse_pressed_1 = true
+			else:
+				mouse_pressed_2 = true
+		else:
+			mouse_pressed_1 = false
+			mouse_pressed_2 = false
+		
+
+func _process(delta: float) -> void:
+	var tile_position: Vector2i = Globals.get_map().local_to_map(Globals.get_map().get_local_mouse_position())
 	#push_warning("handle_action not implemented for: %s" % _ui_action)
 	if not Input.is_action_pressed("line_draw_modifier"):
 		line_start = null
@@ -53,7 +72,7 @@ func handle_tile_selection(tile_position: Vector2i, selection_draw: SelectionDra
 		selection_draw.line_coords = [] as Array[Vector2i]
 	
 	if not Input.is_action_pressed("rectangle_select_modifier"):
-		clear_rectangle_selection(selection_draw)
+		clear_rectangle_selection()
 	
 	if PathFinder.is_valid_position(tile_position):
 		selection_draw.line_coords = [tile_position]
@@ -76,13 +95,13 @@ func handle_tile_selection(tile_position: Vector2i, selection_draw: SelectionDra
 					rect_start = tile_position
 				
 				rect_end = tile_position
-				_set_rectangle_selection(selection_draw, rect_start, rect_end)
+				_set_rectangle_selection(rect_start, rect_end)
 			elif not Input.is_action_pressed("line_draw_modifier"):
 				tiles_selected.emit([tile_position] as Array[Vector2i])
 		else:
 			if rect_start and rect_end:
 				tiles_selected.emit(rect_tile_coords)
-				clear_rectangle_selection(selection_draw)
+				clear_rectangle_selection()
 			
 			if line_start and line_end:
 				var line_coords := get_tile_line(line_start, line_end)

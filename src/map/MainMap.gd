@@ -8,7 +8,7 @@ const MAP_SIZE_X: int = 80
 const MAP_SIZE_Y: int = 40
 const CELL_SIZE := Vector2i(24, 24)
 
-@onready var map_tile_selector := preload("res://src/map/map_tile_selector.gd").new() as MapTileSelector
+@onready var map_tile_selector := $MapTileSelector as MapTileSelector
 
 var selected_ui_action: UiAction
 
@@ -124,12 +124,9 @@ func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 
 func _process(delta: float) -> void:
 	var tile_position: Vector2i = local_to_map(get_local_mouse_position())
-	
-	if is_mouse_2_pressed:
-		_cancel_blueprint(tile_position)
-	
-	#_handle_map_action(tile_position)
-	map_tile_selector.handle_tile_selection(tile_position, $SelectionDraw, is_mouse_pressed, is_mouse_2_pressed)
+	#
+	#if is_mouse_2_pressed:
+		#_cancel_blueprint(tile_position)
 
 #func _place_blueprint(tile_position: Vector2i, item_id: Items.Id) -> void:
 func _place_blueprint(coordinates: Array[Vector2i]) -> void:
@@ -148,23 +145,6 @@ func _cancel_blueprint(tile_position: Vector2i) -> void:
 		if entity.current_state == ItemOnGround.ItemState.Blueprint:
 			Events.blueprint_cancel_issued.emit(entity)
 			print("Removing at: ", tile_position)
-
-
-var is_mouse_pressed := false
-var is_mouse_2_pressed := false
-
-# TODO: You could use an Area2D and the input_event in that to handle this instead
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.is_pressed():
-			if event.button_index == 1:
-				is_mouse_pressed = true
-			else:
-				is_mouse_2_pressed = true
-		else:
-			is_mouse_pressed = false
-			is_mouse_2_pressed = false
-		
 
 func coordinate_to_global_position(coordinate: Vector2i) -> Vector2:
 	return to_global(map_to_local(coordinate))

@@ -1,10 +1,11 @@
-[gd_scene load_steps=26 format=3 uid="uid://b4nj0xntglt07"]
+[gd_scene load_steps=27 format=3 uid="uid://b4nj0xntglt07"]
 
 [ext_resource type="Texture2D" uid="uid://bntknuw5pjfhw" path="res://assets/tilesheet.png" id="1_fv3c2"]
 [ext_resource type="Script" path="res://src/map/MainMap.gd" id="2_c6gph"]
 [ext_resource type="Texture2D" uid="uid://coxwefohcoj31" path="res://assets/wall_autotiles2.png" id="2_djkpl"]
 [ext_resource type="Texture2D" uid="uid://bfetv6hkdr38" path="res://assets/ground_autotiles.png" id="3_3q27b"]
 [ext_resource type="Script" path="res://src/map/SelectionDraw.gd" id="5_i408n"]
+[ext_resource type="Script" path="res://src/map/MapTileSelector.gd" id="6_adfia"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xylra"]
 texture = ExtResource("1_fv3c2")
@@ -274,3 +275,7 @@ z_as_relative = false
 
 [node name="SelectionDraw" type="Node2D" parent="."]
 script = ExtResource("5_i408n")
+
+[node name="MapTileSelector" type="Node" parent="." node_paths=PackedStringArray("selection_draw")]
+script = ExtResource("6_adfia")
+selection_draw = NodePath("../SelectionDraw")
