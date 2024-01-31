@@ -1,4 +1,6 @@
-class_name UiActionHandler extends RefCounted
+class_name MapTileSelector extends RefCounted
+
+signal tiles_selected(coordinates: Array[Vector2i])
 
 var line_start: Variant # Vector2i | null
 var line_end: Variant # Vector2i | null
@@ -42,7 +44,7 @@ func clear_rectangle_selection(selection_draw: SelectionDraw) -> void:
 	rect_tile_coords = []
 	selection_draw.selection_rectangle = null
 
-func handle_action(_ui_action: UiAction, tile_position: Vector2i, selection_draw: SelectionDraw, mouse_pressed_1: bool, mouse_pressed_2: bool) -> void:
+func handle_tile_selection(tile_position: Vector2i, selection_draw: SelectionDraw, mouse_pressed_1: bool, mouse_pressed_2: bool) -> void:
 	#push_warning("handle_action not implemented for: %s" % _ui_action)
 	if not Input.is_action_pressed("line_draw_modifier"):
 		line_start = null
@@ -52,6 +54,42 @@ func handle_action(_ui_action: UiAction, tile_position: Vector2i, selection_draw
 	
 	if not Input.is_action_pressed("rectangle_select_modifier"):
 		clear_rectangle_selection(selection_draw)
+	
+	if PathFinder.is_valid_position(tile_position):
+		selection_draw.line_coords = [tile_position]
+		
+		if mouse_pressed_1:
+			if Input.is_action_pressed("line_draw_modifier"):
+				if not line_start:
+					set_line_start(tile_position)
+				
+				set_line_end(tile_position)
+				selection_draw.line_coords = get_tile_line(line_start, line_end)
+			elif not Input.is_action_pressed("rectangle_select_modifier"):
+				tiles_selected.emit([tile_position] as Array[Vector2i])
+				#build_issued.emit(tile_position, item_id)
+				line_start = null
+				line_end = null
+				
+			if Input.is_action_pressed("rectangle_select_modifier"):
+				if not rect_start:
+					rect_start = tile_position
+				
+				rect_end = tile_position
+				_set_rectangle_selection(selection_draw, rect_start, rect_end)
+			elif not Input.is_action_pressed("line_draw_modifier"):
+				tiles_selected.emit([tile_position] as Array[Vector2i])
+		else:
+			if rect_start and rect_end:
+				tiles_selected.emit(rect_tile_coords)
+				clear_rectangle_selection(selection_draw)
+			
+			if line_start and line_end:
+				var line_coords := get_tile_line(line_start, line_end)
+				tiles_selected.emit(line_coords)
+			
+				line_start = null
+				line_end = null
 
 func set_line_start(coordinate: Vector2i) -> void:
 	line_start = coordinate

@@ -8,16 +8,14 @@ const MAP_SIZE_X: int = 80
 const MAP_SIZE_Y: int = 40
 const CELL_SIZE := Vector2i(24, 24)
 
-@onready var ui_action_handlers: Dictionary = {
-	UiAction.UiActionId.Build: preload("res://src/map/ui_action_handlers/build_handler.gd").new(),
-	UiAction.UiActionId.Dismantle: preload("res://src/map/ui_action_handlers/dismantle_handler.gd").new()
-}
-
-enum MapActions {
-	Build, Dismantle, None
-}
+@onready var map_tile_selector := preload("res://src/map/map_tile_selector.gd").new() as MapTileSelector
 
 var selected_ui_action: UiAction
+
+var action_handlers: Dictionary = {
+	#UiAction.UiActionId.Build: func(coordinates: Array[Vector2i]) b
+	UiAction.UiActionId.Build: _place_blueprint
+}
 
 enum Layers {
 	Ground, Building, Blueprint
@@ -67,8 +65,9 @@ func _ready() -> void:
 	add_layer(Layers.Building)
 	add_layer(Layers.Blueprint)
 	
-	ui_action_handlers[UiAction.UiActionId.Build].build_issued.connect(_place_blueprint)
-	ui_action_handlers[UiAction.UiActionId.Dismantle].dismantle_issued.connect(_dismantle_in_position)
+	#ui_action_handlers[UiAction.UiActionId.Build].build_issued.connect(_place_blueprint)
+	#ui_action_handlers[UiAction.UiActionId.Dismantle].dismantle_issued.connect(_dismantle_in_position)
+	map_tile_selector.tiles_selected.connect(_tiles_selected)
 
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
 
@@ -104,20 +103,24 @@ func _ready() -> void:
 func _handle_ui_action_selection(new_ui_action: UiAction) -> void:
 	selected_ui_action = new_ui_action
 
-func _dismantle_in_position(tile_position: Vector2i) -> void:
-	var entities := get_map_entities(tile_position)
-	for entity in entities as Array[Node]:
-		entity as ItemOnGround
-		if entity.item.can_be_dismantled and not entity.reserved_for_dismantling:
-			Events.dismantle_issued.emit(entity)
+func _tiles_selected(coordinates: Array[Vector2i]) -> void:
+	action_handlers[selected_ui_action.ui_action_id].call(coordinates)
 
-func _handle_map_action(tile_position: Vector2i) -> void:
-	if not selected_ui_action:
-		return
-	
-	if ui_action_handlers.has(selected_ui_action.ui_action_id):
-		var handler := ui_action_handlers[selected_ui_action.ui_action_id] as UiActionHandler
-		handler.handle_action(selected_ui_action, tile_position, $SelectionDraw, is_mouse_pressed, is_mouse_2_pressed)
+func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
+	for tile_position in coordinates:
+		var entities := get_map_entities(tile_position)
+		for entity in entities as Array[Node]:
+			entity as ItemOnGround
+			if entity.item.can_be_dismantled and not entity.reserved_for_dismantling:
+				Events.dismantle_issued.emit(entity)
+
+#func _handle_map_action(tile_position: Vector2i) -> void:
+	#if not selected_ui_action:
+		#return
+	#
+	#if ui_action_handlers.has(selected_ui_action.ui_action_id):
+		#var handler := ui_action_handlers[selected_ui_action.ui_action_id] as UiActionHandler
+		#handler.handle_action(selected_ui_action, tile_position, $SelectionDraw, is_mouse_pressed, is_mouse_2_pressed)
 
 func _process(delta: float) -> void:
 	var tile_position: Vector2i = local_to_map(get_local_mouse_position())
@@ -125,15 +128,19 @@ func _process(delta: float) -> void:
 	if is_mouse_2_pressed:
 		_cancel_blueprint(tile_position)
 	
-	_handle_map_action(tile_position)
+	#_handle_map_action(tile_position)
+	map_tile_selector.handle_tile_selection(tile_position, $SelectionDraw, is_mouse_pressed, is_mouse_2_pressed)
 
-func _place_blueprint(tile_position: Vector2i, item_id: Items.Id) -> void:
-	if not is_coordinate_occupied(tile_position):
-		var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
-		blueprint.global_position = coordinate_to_global_position(tile_position)
-		get_tree().root.get_node("Main").get_node("Entities").add_child(blueprint)
-		blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
-		Events.blueprint_placed.emit(tile_position, blueprint)
+#func _place_blueprint(tile_position: Vector2i, item_id: Items.Id) -> void:
+func _place_blueprint(coordinates: Array[Vector2i]) -> void:
+	var item_id := (selected_ui_action as UiAction.Build).item_id
+	for tile_position in coordinates:
+		if not is_coordinate_occupied(tile_position):
+			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
+			blueprint.global_position = coordinate_to_global_position(tile_position)
+			get_tree().root.get_node("Main").get_node("Entities").add_child(blueprint)
+			blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
+			Events.blueprint_placed.emit(tile_position, blueprint)
 
 func _cancel_blueprint(tile_position: Vector2i) -> void:
 	var entities := get_map_entities(tile_position)
