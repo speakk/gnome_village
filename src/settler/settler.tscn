@@ -8,7 +8,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v2m0m"]
 shader = ExtResource("2_qwovc")
-shader_parameter/color = Color(0.0391575, 0.0737183, 0.203125, 1)
+shader_parameter/color = Color(0.0168245, 0.0482932, 0.152344, 1)
 shader_parameter/width = 1.0
 shader_parameter/pattern = 0
 shader_parameter/inside = false

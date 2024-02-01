@@ -269,11 +269,6 @@ tile_set = SubResource("TileSet_17sb5")
 format = 2
 script = ExtResource("2_c6gph")
 
-[node name="Entities" type="Node2D" parent="."]
-unique_name_in_owner = true
-z_index = 6
-z_as_relative = false
-
 [node name="SelectionDraw" type="Node2D" parent="."]
 script = ExtResource("5_i408n")
 

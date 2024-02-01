@@ -157,3 +157,12 @@ func _terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tilese
 func is_vacant_coordinate(coordinate: Vector2i) -> bool:
 	var has_ground := get_cell_source_id(Layers.Ground, coordinate) >= 0
 	return not PathFinder.is_position_solid(coordinate) and has_ground
+
+# TODO: Unholy
+func get_random_coordinate(accept_occupied: bool = true) -> Vector2i:
+	while(true):
+		var random_position := Vector2i(randi_range(1, MAP_SIZE_X-1), randi_range(1, MAP_SIZE_Y-1))
+		if not PathFinder.is_position_solid(random_position):
+			return random_position
+	
+	return Vector2i(0, 0)

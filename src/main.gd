@@ -11,6 +11,7 @@ class_name Main extends Node2D
 const TEST_TREES = 20
 const TEST_RESOURCES = 300
 const TEST_SETTLERS = 30
+const DECAL_AMOUNT = 600
 
 func _ready() -> void:
 	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
@@ -64,6 +65,32 @@ func _ready() -> void:
 			settlers_to_place -= 1
 			if settlers_to_place <= 0:
 				break
+	
+	var decal_texture := load("res://assets/tree.png") as Texture2D
+	for i in DECAL_AMOUNT:
+		var sprite := Sprite2D.new()
+		sprite.texture = decal_texture
+		sprite.hframes = 6
+		sprite.frame = [1,2,3][weighted_random([0.02, 0.6, 0.6])]
+		sprite.offset = Vector2(0, -19)
+		var grid_position := Globals.get_map().get_random_coordinate()
+		var new_position := Globals.get_map().coordinate_to_global_position(grid_position)
+		sprite.global_position = new_position + Vector2(randf_range(-6, 6), randf_range(-6, 6))
+		%Entities.add_child(sprite)
+		
+
+static func weighted_random(weights: Array[float]) -> int:
+	var weights_sum := 0.0
+	for weight in weights:
+		weights_sum += weight
+	
+	var remaining_distance := randf() * weights_sum
+	for i in weights.size():
+		remaining_distance -= weights[i]
+		if remaining_distance < 0:
+			return i
+	
+	return 0
 
 var debug_visuals := false
 
