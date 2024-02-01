@@ -38,7 +38,10 @@ var current_state: ItemState:
 func update_rendering() -> void:
 	# Not _ready yet if no sprite available
 	if not item:
+		visible = false
 		return
+		
+	visible = true
 	
 	var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
 	
