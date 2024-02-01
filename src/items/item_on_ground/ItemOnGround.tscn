@@ -25,6 +25,7 @@ gradient = SubResource("Gradient_sqx7s")
 [sub_resource type="LabelSettings" id="LabelSettings_d3jp2"]
 
 [node name="ItemOnGround" type="Node2D" groups=["item_on_ground"]]
+z_index = 1
 script = ExtResource("1_j80v7")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

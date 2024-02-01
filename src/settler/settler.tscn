@@ -100,6 +100,7 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
 [node name="Settler" type="Node2D" groups=["settler"]]
+z_index = 1
 script = ExtResource("1_ghp1u")
 
 [node name="Sprite" type="Sprite2D" parent="."]
@@ -131,3 +132,6 @@ texture = SubResource("GradientTexture2D_gyjcw")
 [node name="Persistent" parent="." instance=ExtResource("4_xwcan")]
 
 [node name="Inventory" parent="." instance=ExtResource("4_qojkr")]
+
+[node name="CarryItemSprite" type="Sprite2D" parent="."]
+position = Vector2(0, -23)

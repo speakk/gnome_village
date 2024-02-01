@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://dulsru7myeyi4"]
+
+[ext_resource type="Script" path="res://src/items/Item.gd" id="1_am7fa"]
+[ext_resource type="Texture2D" uid="uid://b7mqhkshlqi01" path="res://assets/farm_plot.png" id="2_jys86"]
+
+[resource]
+script = ExtResource("1_am7fa")
+rendering_type = 2
+texture = ExtResource("2_jys86")
+hframes = 1
+vframes = 1
+frame = 0
+origin = Vector2(0, 0)
+cast_shadow_enabled = false
+cast_shadow_origin = Vector2(0, 0)
+tileset_id = 0
+tile_id = 0
+terrain_set_id = 0
+terrain_id = 0
+target_layer = 2
+display_name = "Farm Plot"
+can_be_picked = false
+can_be_constructed = true
+can_be_dismantled = true
+is_solid = false
+durability = 10
+crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
+special_features = Array[int]([1])

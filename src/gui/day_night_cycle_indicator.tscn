@@ -1,0 +1,64 @@
+[gd_scene load_steps=7 format=3 uid="uid://d3hc65n7bfkm3"]
+
+[ext_resource type="Texture2D" uid="uid://w5p41vpxdgjd" path="res://assets/daynight_cycle.png" id="1_2srfe"]
+[ext_resource type="Script" path="res://src/gui/day_night_cycle_indicator.gd" id="1_7lmog"]
+
+[sub_resource type="Gradient" id="Gradient_k1xbb"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ql0ij"]
+gradient = SubResource("Gradient_k1xbb")
+width = 300
+height = 300
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_lxa1g"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.886179, 1)
+colors = PackedColorArray(0.8, 0.588235, 0.4, 0, 0.660156, 0.380622, 0.331168, 1, 0.8, 0.586667, 0.4, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_hyege"]
+gradient = SubResource("Gradient_lxa1g")
+width = 300
+height = 300
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="DayNightCycleIndicator" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+script = ExtResource("1_7lmog")
+
+[node name="CircleClipTexture" type="TextureRect" parent="."]
+clip_children = 1
+layout_mode = 0
+offset_left = -151.0
+offset_top = -150.0
+offset_right = 149.0
+offset_bottom = 150.0
+scale = Vector2(0.33, 0.33)
+pivot_offset = Vector2(150, 150)
+texture = SubResource("GradientTexture2D_ql0ij")
+
+[node name="IndicatorTexture" type="TextureRect" parent="CircleClipTexture"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 300.0
+pivot_offset = Vector2(151, 150)
+texture = ExtResource("1_2srfe")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -57.0
+offset_top = -56.0
+offset_right = 243.0
+offset_bottom = 244.0
+scale = Vector2(0.37, 0.37)
+texture = SubResource("GradientTexture2D_hyege")

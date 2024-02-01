@@ -30,25 +30,28 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 	var item_id := blueprint.item_id
 	var material_requirements := Items.get_crafting_requirements(item_id)
 	
-	var bring_resources := TaskTreeBranch.new()
-	bring_resources.order_type = TaskTreeBranch.OrderType.Parallel
-	bring_resources.name = "Bring_Resources_Parallel"
-	
-	for material_requirement in material_requirements as Array[ItemRequirement]:
-		#var bring_resource_task := 
-		var bring_resource_leaf := TaskTreeLeaf.new()
-		bring_resource_leaf.name = "Bring_Resource_Leaf"
-		var task := BRING_RESOURCE_TASK.instantiate() as BringResourceTask
-		task.initialize({
-			target_coordinate = tile_target,
-			item_requirement = material_requirement,
-			inventory_holder_entity = blueprint
-		})
-		#bring_resource_leaf.set_task(Tasks.TaskId.BringResource, {
-			#tile_target: tile_target, material_requirement: material_requirement, blueprint: blueprint
-		#})
-		bring_resource_leaf.set_task(task)
-		bring_resources.add_child(bring_resource_leaf)
+	if material_requirements.size() > 0:
+		var bring_resources := TaskTreeBranch.new()
+		bring_resources.order_type = TaskTreeBranch.OrderType.Parallel
+		bring_resources.name = "Bring_Resources_Parallel"
+		
+		for material_requirement in material_requirements as Array[ItemRequirement]:
+			#var bring_resource_task := 
+			var bring_resource_leaf := TaskTreeLeaf.new()
+			bring_resource_leaf.name = "Bring_Resource_Leaf"
+			var task := BRING_RESOURCE_TASK.instantiate() as BringResourceTask
+			task.initialize({
+				target_coordinate = tile_target,
+				item_requirement = material_requirement,
+				inventory_holder_entity = blueprint
+			})
+			#bring_resource_leaf.set_task(Tasks.TaskId.BringResource, {
+				#tile_target: tile_target, material_requirement: material_requirement, blueprint: blueprint
+			#})
+			bring_resource_leaf.set_task(task)
+			bring_resources.add_child(bring_resource_leaf)
+		
+		add_child(bring_resources)
 	
 	var build_leaf := TaskTreeLeaf.new()
 	var build_task := BUILD_TASK.instantiate() as BuildTask
@@ -58,7 +61,6 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 	build_leaf.set_task(build_task)
 	build_leaf.name = "Build_Leaf"
 	
-	add_child(bring_resources)
 	add_child(build_leaf)
 
 	return self

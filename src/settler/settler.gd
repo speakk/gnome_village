@@ -34,6 +34,8 @@ enum TaskResult {
 func _ready() -> void:
 	name = "Settler"
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
+	$Inventory.item_added.connect(_inventory_item_added)
+	$Inventory.item_removed.connect(_inventory_item_removed)
 	#
 	#var hair := hair_options.pick_random() as Texture2D
 	#if hair:
@@ -164,7 +166,7 @@ func ensure_valid_position() -> void:
 func is_in_valid_position() -> bool:
 	var entities := Globals.get_map().get_map_entities(Globals.get_map().global_position_to_coordinate(global_position))
 	for entity in entities:
-		if entity.item.can_be_constructed or entity.item.is_solid:
+		if entity.item.is_solid:
 			return false
 	
 	return true
@@ -188,3 +190,11 @@ func add_action(action: ActorAction) -> void:
 func process_actions(delta: float) -> void:
 	for action in actions:
 		action.process_action(self, delta)
+	
+func _inventory_item_added(item_id: Variant, _amount: int) -> void:
+	var item := Items.get_by_id(item_id)
+	Items.copy_item_properties_to_sprite(item, $CarryItemSprite)
+	$CarryItemSprite.show()
+
+func _inventory_item_removed(_item_id: Variant, _amount: int) -> void:
+	$CarryItemSprite.hide()

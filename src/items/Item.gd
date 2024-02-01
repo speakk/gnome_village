@@ -7,7 +7,7 @@ enum RenderingType {
 }
 
 enum SpecialFeatures {
-	Door
+	Door, FarmPlot
 }
 
 @export_group("Visuals")

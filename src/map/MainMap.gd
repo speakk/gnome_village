@@ -66,6 +66,8 @@ func _ready() -> void:
 	add_layer(Layers.Building)
 	add_layer(Layers.Blueprint)
 	
+	set_layer_z_index(Layers.Building, 1)
+	
 	map_tile_selector.tiles_selected.connect(_tiles_selected)
 
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
