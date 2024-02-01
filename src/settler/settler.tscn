@@ -1,9 +1,18 @@
-[gd_scene load_steps=10 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=13 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://src/settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="Texture2D" uid="uid://bgdpno3b05m2g" path="res://assets/settler.png" id="1_ryuwt"]
+[ext_resource type="Shader" path="res://src/settler/settler.gdshader" id="2_qwovc"]
 [ext_resource type="PackedScene" uid="uid://dnly7t4x7n0av" path="res://src/components/Inventory.tscn" id="4_qojkr"]
 [ext_resource type="PackedScene" uid="uid://c85n546uy1wp3" path="res://src/Persistent.tscn" id="4_xwcan"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v2m0m"]
+shader = ExtResource("2_qwovc")
+shader_parameter/color = Color(0.0391575, 0.0737183, 0.203125, 1)
+shader_parameter/width = 1.0
+shader_parameter/pattern = 0
+shader_parameter/inside = false
+shader_parameter/add_margins = true
 
 [sub_resource type="Animation" id="Animation_tnvni"]
 length = 0.001
@@ -52,11 +61,27 @@ tracks/0/keys = {
 "values": [2, 3, 4, 5]
 }
 
+[sub_resource type="Animation" id="Animation_dq7pd"]
+resource_name = "walk_still"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fp115"]
 _data = {
 "RESET": SubResource("Animation_tnvni"),
 "idle": SubResource("Animation_j4frm"),
-"walk": SubResource("Animation_1gkn2")
+"walk": SubResource("Animation_1gkn2"),
+"walk_still": SubResource("Animation_dq7pd")
 }
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bfemd"]
@@ -66,9 +91,10 @@ polygon = PackedVector2Array(-6, 10, -6, 8, 7, 8, 6, 10)
 script = ExtResource("1_ghp1u")
 
 [node name="Sprite" type="Sprite2D" parent="."]
-position = Vector2(0, -10)
+material = SubResource("ShaderMaterial_v2m0m")
+position = Vector2(0, -8)
 texture = ExtResource("1_ryuwt")
-hframes = 6
+hframes = 7
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

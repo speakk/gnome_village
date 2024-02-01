@@ -4,6 +4,10 @@ class_name Settler
 
 @onready var persistent: Persistent = get_node("Persistent") as Persistent
 
+#@onready var hair_options: Array[Texture2D] = [
+	#preload("res://assets/settler_hair_1.png"), preload("res://assets/settler_hair_2.png"), null
+#]
+
 const REACH_DISTANCE := MainMap.CELL_SIZE.x * 1.5
 const AT_DISTANCE := 10.0
 
@@ -30,6 +34,12 @@ enum TaskResult {
 func _ready() -> void:
 	name = "Settler"
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
+	#
+	#var hair := hair_options.pick_random() as Texture2D
+	#if hair:
+		#$HairSprite.texture = hair
+	#else:
+		#$HairSprite.visible = false
 
 func save() -> Dictionary:
 	var save_dict := {
@@ -88,18 +98,20 @@ func _physics_process(delta: float) -> void:
 	
 	velocity = Vector2.ZERO
 	
-	if velocity.length() > 0.1:
-		$AnimationPlayer.play("walk")
+	process_actions(delta)
+	
+	if velocity.length() > 0:
+		$AnimationPlayer.play("walk_still")
 		
 		if velocity.x > 0:
 			$Sprite.flip_h = false
+			#$HairSprite.flip_h = false
 		else:
 			$Sprite.flip_h = true
+			#$HairSprite.flip_h = true
 		
 	else:
 		$AnimationPlayer.play("idle")
-	
-	process_actions(delta)
 	
 	move_and_slide(delta)
 	
