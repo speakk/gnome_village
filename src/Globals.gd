@@ -19,3 +19,17 @@ func register_focus_input(input: Control) -> void:
 	
 func is_focus_in_control() -> bool:
 	return control_has_focus
+
+
+static func weighted_random(weights: Array[float]) -> int:
+	var weights_sum := 0.0
+	for weight in weights:
+		weights_sum += weight
+	
+	var remaining_distance := randf() * weights_sum
+	for i in weights.size():
+		remaining_distance -= weights[i]
+		if remaining_distance < 0:
+			return i
+	
+	return 0

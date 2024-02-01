@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=15 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://src/settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="Texture2D" uid="uid://bgdpno3b05m2g" path="res://assets/settler.png" id="1_ryuwt"]
@@ -8,7 +8,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v2m0m"]
 shader = ExtResource("2_qwovc")
-shader_parameter/color = Color(0.0168245, 0.0482932, 0.152344, 1)
+shader_parameter/color = Color(0.00978938, 0.0184296, 0.0507812, 1)
 shader_parameter/width = 1.0
 shader_parameter/pattern = 0
 shader_parameter/inside = false
@@ -85,7 +85,19 @@ _data = {
 }
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bfemd"]
-polygon = PackedVector2Array(-6, 10, -6, 8, 7, 8, 6, 10)
+polygon = PackedVector2Array(-5, 10, -4, 8, 4, 8, 5, 10)
+
+[sub_resource type="Gradient" id="Gradient_a8oqd"]
+offsets = PackedFloat32Array(0, 0.658537, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0.243902, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_gyjcw"]
+gradient = SubResource("Gradient_a8oqd")
+width = 48
+height = 13
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [node name="Settler" type="Node2D" groups=["settler"]]
 script = ExtResource("1_ghp1u")
@@ -109,6 +121,12 @@ default_color = Color(0.798, 0.95, 0.9272, 0.0196078)
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
 position = Vector2(0, -8)
 occluder = SubResource("OccluderPolygon2D_bfemd")
+
+[node name="FakeDropShadow" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.647059)
+position = Vector2(0, 2)
+scale = Vector2(0.416667, 0.416667)
+texture = SubResource("GradientTexture2D_gyjcw")
 
 [node name="Persistent" parent="." instance=ExtResource("4_xwcan")]
 
