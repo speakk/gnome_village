@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://du6ros11u7s0m" path="res://src/zones/ZoneManager.tscn" id="10_dx4j4"]
 
 [sub_resource type="Curve" id="Curve_86jfl"]
-_data = [Vector2(0, 0.414894), 0.0, 0.0, 0, 0, Vector2(0.501961, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.414894), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0.197802), 0.0, 0.0, 0, 0, Vector2(0.501961, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.197802), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_4l0vs"]

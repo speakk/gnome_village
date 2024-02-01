@@ -20,7 +20,7 @@ func _process(delta: float) -> void:
 		if Input.is_action_pressed("pan_camera_right"):
 			movement_vector += Vector2(1, 0)
 	
-	position += movement_vector.normalized() * CAMERA_SPEED * delta
+	position += movement_vector.normalized() * CAMERA_SPEED * delta / Engine.time_scale
 	
 	var view_size := get_viewport_rect().size
 	var x_offset := view_size.x / (2*zoom.x)
