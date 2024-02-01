@@ -99,6 +99,14 @@ func _process(delta: float) -> void:
 		debug_visuals = not debug_visuals
 		Events.debug_visuals_set.emit(debug_visuals)
 
+	if Input.is_action_just_pressed("game_speed_1"):
+		Engine.time_scale = 1.0
+	
+	if Input.is_action_just_pressed("game_speed_2"):
+		Engine.time_scale = 2.0
+	
+	if Input.is_action_just_pressed("game_speed_3"):
+		Engine.time_scale = 5.0
 	
 # For now this is okay, but eventually Entities and
 # TaskHandler ought to have their own save methods

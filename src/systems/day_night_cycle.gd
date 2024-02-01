@@ -1,6 +1,6 @@
 extends Node2D
 
-const DAY_SPEED: float = 0.1
+const DAY_SPEED: float = 0.01
 
 # Current time between 0 and 1. 0.5 is the middle of the day
 var current_time: float = 0.0:
