@@ -164,7 +164,7 @@ func _current_time_changed(new_time: float) -> void:
 	var shaderNode := %ShadowSpriteShader as Sprite2D
 	shaderNode.material.set_shader_parameter("shadow_angle", - new_time * 360.0 * 2)
 	shaderNode.material.set_shader_parameter("shadow_length", 200 - daylight_sampled * 190)
-	shaderNode.material.set_shader_parameter("shadow_color", Color(Color.BLACK, maxf(0, daylight_sampled - 0.4)))
+	shaderNode.material.set_shader_parameter("shadow_color", Color(Color.BLACK, maxf(0, daylight_sampled - 0.3)))
 	
 	var daylightNode := %DayLightSpriteShader as Sprite2D
 	daylightNode.material.set_shader_parameter("daylight_amount", daylight_sampled)
