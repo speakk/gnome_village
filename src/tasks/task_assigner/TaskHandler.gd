@@ -60,12 +60,14 @@ func _refresh_debug_tree(tasks: Array[Node]) -> void:
 func _blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround) -> void:
 	var task_tree := (BLUEPRINT_TREE.instantiate() as BlueprintTree) as TaskTreeBranch
 	$Tasks.add_child(task_tree)
-	task_tree.call_deferred("initialize", tile_position, blueprint)
+	#task_tree.call_deferred("initialize", tile_position, blueprint)
+	task_tree.initialize(tile_position, blueprint)
 
 func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
 	var task_tree := (DISMANTLE_TREE.instantiate() as DismantleTree)
 	$Tasks.add_child(task_tree)
-	task_tree.call_deferred("initialize", item_on_ground)
+	#task_tree.call_deferred("initialize", item_on_ground)
+	task_tree.initialize(item_on_ground)
 
 func get_available_settler(task: Variant) -> Settler:
 	var settlers := get_tree().get_nodes_in_group("settler") as Array[Node]
