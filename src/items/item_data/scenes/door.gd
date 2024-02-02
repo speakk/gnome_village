@@ -14,14 +14,11 @@ var open_amount := 0.0:
 		open_amount = new_amount
 
 func correct_orientation() -> void:
-	print("Correcting orientation")
 	var self_coordinate := (Globals.get_map() as MainMap).global_position_to_coordinate(global_position)
 	var surrounding_coordinates := PathFinder.get_surrounding_coordinates(self_coordinate, false)
 	for coordinate in surrounding_coordinates:
-		print("Going through coordinate")
 		var coordinate_entities := Globals.get_map().get_map_entities(coordinate)
 		for coordinate_entity in coordinate_entities:
-			print("Going through coordinate entity")
 			if coordinate_entity.item_id == Items.Id.WoodenWall:
 				var angle_to := Vector2(self_coordinate).angle_to_point(Vector2(coordinate))
 				global_rotation = angle_to + PI/2
@@ -35,7 +32,6 @@ func correct_orientation() -> void:
 					offset.y = -8 
 					position.x = 0
 					position.y = 8
-				print("Set angle to: ", angle_to)
 				return
 
 func _ready() -> void:
