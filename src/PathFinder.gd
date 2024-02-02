@@ -31,8 +31,8 @@ func get_point_path(from: Vector2i, to: Vector2i) -> PackedVector2Array:
 func is_position_solid(coordinates: Vector2i) -> bool:
 	return astar_grid.is_point_solid(coordinates)
 
-func is_valid_position(coordinate: Vector2i) -> bool:
-	return astar_grid.is_in_bounds(coordinate.x, coordinate.y) and not is_position_solid(coordinate)
+func is_valid_position(coordinate: Vector2i, check_for_solid: bool = true) -> bool:
+	return astar_grid.is_in_bounds(coordinate.x, coordinate.y) and (not check_for_solid or not is_position_solid(coordinate))
 
 var all_directions: Array[Vector2i] = [
 	Vector2i(-1, -1),

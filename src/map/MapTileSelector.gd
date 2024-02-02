@@ -54,9 +54,8 @@ func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordina
 		)	
 	else:
 		final_coordinates.assign(new_rect_selection_coordinates)
-		
+
 	rect_tile_coords = final_coordinates
-	print("Rect tile coords set", rect_tile_coords)
 
 func clear_rectangle_selection() -> void:
 	rect_start = null
@@ -92,7 +91,9 @@ func _process(delta: float) -> void:
 	if not Input.is_action_pressed("rectangle_select_modifier"):
 		clear_rectangle_selection()
 	
-	if PathFinder.is_valid_position(tile_position):
+	var check_for_solid: bool = selected_ui_action.ui_action_id == UiAction.UiActionId.Build if selected_ui_action else true
+	
+	if PathFinder.is_valid_position(tile_position, check_for_solid):
 		selection_draw.line_coords = [tile_position]
 		
 		if mouse_pressed_1:

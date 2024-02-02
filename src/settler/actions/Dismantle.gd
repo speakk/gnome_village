@@ -7,6 +7,9 @@ func initialize(params: Variant) -> ActorAction:
 	return self
 
 func process_action(actor: Settler, delta: float) -> void:
-	target.reduce_durability(actor.dismantling_speed * delta)
-	if not target.has_durability_left():
-		finished.emit(self)
+	# TODO: Probably should not even end up in process_action if target has
+	# already been freed
+	if target:
+		target.reduce_durability(actor.dismantling_speed * delta)
+		if not target.has_durability_left():
+			finished.emit(self)
