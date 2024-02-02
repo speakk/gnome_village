@@ -4,6 +4,8 @@ class_name MapTileSelector extends Node
 
 signal tiles_selected(coordinates: Array[Vector2i])
 
+var selected_ui_action: UiAction
+
 var line_start: Variant # Vector2i | null
 var line_end: Variant # Vector2i | null
 var line_coords: Array[Vector2i]
@@ -12,7 +14,10 @@ var rect_start: Variant # Vector2i | null
 var rect_end: Variant # Vector2i | null
 var rect_tile_coords: Array[Vector2i]
 
-func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordinate: Vector2i) -> void:
+func _ready() -> void:
+	Events.ui_action_selected.connect(func(new_ui_action: UiAction) -> void: selected_ui_action = new_ui_action)
+
+func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordinate: Vector2i, hollow: bool) -> void:
 	if not rect_start_coordinate or not rect_end_coordinate:
 		selection_draw.selection_rectangle = null
 		return
@@ -37,7 +42,20 @@ func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordina
 			var real_x := x + snapped_start.x
 			new_rect_selection_coordinates.append(Vector2i(real_x, real_y))
 	
-	rect_tile_coords = new_rect_selection_coordinates
+	var final_coordinates: Array[Vector2i]
+	
+	if hollow:
+		var start_x := snapped_start.x
+		var start_y := snapped_start.y
+		var end_x := snapped_end.x
+		var end_y := snapped_end.y
+		final_coordinates.assign(new_rect_selection_coordinates.filter(func(coord: Vector2i) -> bool:
+			return coord.x == start_x or coord.x == end_x or coord.y == start_y or coord.y == end_y)
+		)	
+	else:
+		final_coordinates.assign(new_rect_selection_coordinates)
+		
+	rect_tile_coords = final_coordinates
 	print("Rect tile coords set", rect_tile_coords)
 
 func clear_rectangle_selection() -> void:
@@ -95,7 +113,10 @@ func _process(delta: float) -> void:
 					rect_start = tile_position
 				
 				rect_end = tile_position
-				_set_rectangle_selection(rect_start, rect_end)
+				
+				var hollow := selected_ui_action.ui_action_id == UiAction.UiActionId.Build
+				
+				_set_rectangle_selection(rect_start, rect_end, hollow)
 			elif not Input.is_action_pressed("line_draw_modifier"):
 				tiles_selected.emit([tile_position] as Array[Vector2i])
 		else:
