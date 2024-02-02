@@ -19,9 +19,11 @@ func _map_ready(_map: MainMap) -> void:
 
 func _solid_cell_placed(coordinates: Vector2i) -> void:
 	astar_grid.set_point_solid(coordinates)
+	Events.map_changed.emit(coordinates)
 
 func _solid_cell_removed(coordinates: Vector2i) -> void:
 	astar_grid.set_point_solid(coordinates, false)
+	Events.map_changed.emit(coordinates)
 
 func get_point_path(from: Vector2i, to: Vector2i) -> PackedVector2Array:
 	return astar_grid.get_point_path(from, to)
@@ -43,9 +45,22 @@ var all_directions: Array[Vector2i] = [
 	Vector2i(-1, 0),
 ]
 
-func get_surrounding_coordinates(center_coordinate: Vector2i) -> Array[Vector2i]:
+var non_diagonal_directions: Array[Vector2i] = [
+	Vector2i(0, -1),
+	Vector2i(1, 0),
+	Vector2i(0, 1),
+	Vector2i(-1, 0),
+]
+
+func get_surrounding_coordinates(center_coordinate: Vector2i, include_diagonals: bool = true) -> Array[Vector2i]:
 	var surrounding: Array[Vector2i] = []
-	for direction in all_directions:
+	var directions_to_check: Array[Vector2i]
+	if include_diagonals:
+		directions_to_check.assign(all_directions)
+	else:
+		directions_to_check.assign(non_diagonal_directions)
+		
+	for direction in directions_to_check:
 		var coordinate := center_coordinate + direction
 		surrounding.push_back(coordinate)
 	
