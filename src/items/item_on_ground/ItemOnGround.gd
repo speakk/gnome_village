@@ -197,6 +197,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	if item.rendering_type == Item.RenderingType.Terrain:
 		Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), item.target_layer, item.terrain_set_id)
+		Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), MainMap.Layers.Blueprint, item.terrain_set_id)
 	Events.item_removed_from_ground.emit(self)
 
 func reduce_durability(amount: float) -> void:

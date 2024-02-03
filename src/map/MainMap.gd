@@ -18,6 +18,10 @@ var action_handlers: Dictionary = {
 	UiAction.UiActionId.ZoneAddTiles: _zone_add_tiles
 }
 
+var secondary_action_handlers: Dictionary = {
+	UiAction.UiActionId.Build: _cancel_blueprint
+}
+
 enum Layers {
 	Ground, Building, Blueprint
 }
@@ -69,6 +73,7 @@ func _ready() -> void:
 	set_layer_z_index(Layers.Building, 1)
 	
 	map_tile_selector.tiles_selected.connect(_tiles_selected)
+	map_tile_selector.tiles_selected_secondary.connect(_tiles_selected_secondary)
 
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
 
@@ -110,6 +115,11 @@ func _tiles_selected(coordinates: Array[Vector2i]) -> void:
 	if selected_ui_action:
 		action_handlers[selected_ui_action.ui_action_id].call(coordinates)
 
+func _tiles_selected_secondary(coordinates: Array[Vector2i]) -> void:
+	print("Secondary called", coordinates)
+	if selected_ui_action:
+		secondary_action_handlers[selected_ui_action.ui_action_id].call(coordinates)
+
 func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 	for tile_position in coordinates:
 		var entities := get_map_entities(tile_position)
@@ -138,12 +148,13 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 			blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
 			Events.blueprint_placed.emit(tile_position, blueprint)
 
-func _cancel_blueprint(tile_position: Vector2i) -> void:
-	var entities := get_map_entities(tile_position)
-	for entity in entities:
-		if entity.current_state == ItemOnGround.ItemState.Blueprint:
-			Events.blueprint_cancel_issued.emit(entity)
-			print("Removing at: ", tile_position)
+func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
+	for coordinate in coordinates:
+		var entities := get_map_entities(coordinate)
+		for entity in entities:
+			if entity.current_state == ItemOnGround.ItemState.Blueprint:
+				Events.blueprint_cancel_issued.emit(entity)
+				print("Removing at: ", coordinate)
 
 func coordinate_to_global_position(coordinate: Vector2i) -> Vector2:
 	return to_global(map_to_local(coordinate))

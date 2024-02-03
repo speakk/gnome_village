@@ -20,7 +20,8 @@ func _ready() -> void:
 	Events.blueprint_cancel_issued.connect(func(_blueprint: ItemOnGround) -> void:
 		if _blueprint == blueprint:
 			clean_up()
-			blueprint.call_deferred("queue_free")
+			#blueprint.call_deferred("queue_free")
+			blueprint.queue_free()
 	)
 	
 func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTree:
