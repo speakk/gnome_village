@@ -2,8 +2,6 @@ extends Node2D
 
 class_name Settler
 
-@onready var persistent: Persistent = get_node("Persistent") as Persistent
-
 #@onready var hair_options: Array[Texture2D] = [
 	#preload("res://assets/settler_hair_1.png"), preload("res://assets/settler_hair_2.png"), null
 #]

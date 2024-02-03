@@ -6,8 +6,6 @@ enum ItemState {
 	Blueprint, Normal
 }
 
-@onready var persistent := $Persistent as Persistent
-
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
 @onready var sprite := $Sprite2D as Sprite2D

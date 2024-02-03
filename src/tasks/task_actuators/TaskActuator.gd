@@ -5,7 +5,6 @@ class_name TaskActuator
 var task: Task
 
 @onready var tree: BeehaveTree = $BeehaveTree as BeehaveTree
-@onready var persistent: Persistent = $Persistent as Persistent
 
 func _ready() -> void:
 	tree.disable()

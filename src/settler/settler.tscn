@@ -1,10 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=14 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://src/settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="Texture2D" uid="uid://bgdpno3b05m2g" path="res://assets/settler.png" id="1_ryuwt"]
 [ext_resource type="Shader" path="res://src/settler/settler.gdshader" id="2_qwovc"]
 [ext_resource type="PackedScene" uid="uid://dnly7t4x7n0av" path="res://src/components/Inventory.tscn" id="4_qojkr"]
-[ext_resource type="PackedScene" uid="uid://c85n546uy1wp3" path="res://src/Persistent.tscn" id="4_xwcan"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v2m0m"]
 shader = ExtResource("2_qwovc")
@@ -128,8 +127,6 @@ modulate = Color(1, 1, 1, 0.647059)
 position = Vector2(0, 2)
 scale = Vector2(0.416667, 0.416667)
 texture = SubResource("GradientTexture2D_gyjcw")
-
-[node name="Persistent" parent="." instance=ExtResource("4_xwcan")]
 
 [node name="Inventory" parent="." instance=ExtResource("4_qojkr")]
 
