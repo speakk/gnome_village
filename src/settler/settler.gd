@@ -128,20 +128,14 @@ func get_current_task() -> TaskActuator:
 
 func start_task(task: Task) -> void:
 	var task_actuator := Tasks.create_task_actuator(task)
+	task.tree_exited.connect(_clean_up_actuator)
 	add_child(task_actuator)
 	current_task_actuator = task_actuator
 	current_task_actuator.start_work()
-	#current_task_actuator.is_being_worked_on = true
-	#current_task_actuator.tree.enable()
-	#current_task_actuator.tree.actor = self
 
-#func start_task(task: Task) -> void:
-	#current_task_actuator = task
-	#current_task_actuator.get_parent().remove_child(current_task_actuator)
-	#add_child(current_task_actuator)
-	#current_task_actuator.is_being_worked_on = true
-	#current_task_actuator.tree.enable()
-	#current_task_actuator.tree.actor = self
+func _clean_up_actuator() -> void:
+	remove_child(current_task_actuator)
+	current_task_actuator = null
 
 func finish_current_task() -> void:
 	current_task_actuator.finish()
