@@ -30,6 +30,7 @@ func start_work() -> void:
 	if not _material:
 		var material := find_closest_material(task.item_requirement)
 		if not material:
+			task.has_failed = true
 			return
 	
 		_material = material

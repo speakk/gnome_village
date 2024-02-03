@@ -26,7 +26,7 @@ func start_work() -> void:
 	tree.actor = get_parent()
 	tree.enable()
 	task.is_being_worked_on = true
-
+	
 func save() -> Dictionary:
 	var save_dict := {
 		"task_id" = SaveSystem.save_entity(task)

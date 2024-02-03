@@ -46,6 +46,7 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 				item_requirement = material_requirement,
 				inventory_holder_entity = blueprint
 			})
+			task.failed.connect(_handle_task_failure)
 			#bring_resource_leaf.set_task(Tasks.TaskId.BringResource, {
 				#tile_target: tile_target, material_requirement: material_requirement, blueprint: blueprint
 			#})
@@ -59,12 +60,16 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 	build_task.initialize({
 		blueprint = blueprint
 	})
+	build_task.failed.connect(_handle_task_failure)
 	build_leaf.set_task(build_task)
 	build_leaf.name = "Build_Leaf"
 	
 	add_child(build_leaf)
 
 	return self
+
+func _handle_task_failure(task: Task) -> void:
+	pass
 
 func save() -> Dictionary:
 	var save_dict: Dictionary = {}

@@ -2,6 +2,8 @@ class_name Task extends Node
 
 var task_id: Tasks.TaskId
 
+signal failed(task: Task)
+
 var is_being_worked_on := false
 
 var is_finished := false:
@@ -10,7 +12,12 @@ var is_finished := false:
 			Events.task_finished.emit(self)
 		is_finished = new_value
 
-var has_failed := false
+var has_failed := false:
+	set(new_value):
+		has_failed = new_value
+		if new_value:
+			failed.emit(self)
+			is_being_worked_on = false
 
 func initialize(params: Dictionary) -> void:
 	push_error("Task - Abstract initialize called. Did you forget to implement initialize?")

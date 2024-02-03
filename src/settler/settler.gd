@@ -129,13 +129,19 @@ func get_current_task() -> TaskActuator:
 func start_task(task: Task) -> void:
 	var task_actuator := Tasks.create_task_actuator(task)
 	task.tree_exited.connect(_clean_up_actuator)
+	task.failed.connect(_task_failed)
 	add_child(task_actuator)
 	current_task_actuator = task_actuator
 	current_task_actuator.start_work()
 
 func _clean_up_actuator() -> void:
+	current_task_actuator.task.failed.disconnect(_task_failed)
+	current_task_actuator.task.tree_exited.disconnect(_clean_up_actuator)
 	remove_child(current_task_actuator)
 	current_task_actuator = null
+
+func _task_failed(_task: Task) -> void:
+	_clean_up_actuator()
 
 func finish_current_task() -> void:
 	current_task_actuator.finish()
