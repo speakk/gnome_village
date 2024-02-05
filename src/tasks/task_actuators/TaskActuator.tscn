@@ -8,4 +8,4 @@ script = ExtResource("1_6wq1v")
 
 [node name="BeehaveTree" type="Node" parent="." node_paths=PackedStringArray("blackboard")]
 script = ExtResource("2_31ce2")
-blackboard = NodePath("@Node@31403")
+blackboard = NodePath("@Node@17482")

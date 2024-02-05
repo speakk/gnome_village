@@ -18,6 +18,8 @@ func remove_item_amount(item_id: Variant, amount: int) -> void:
 	if not item_amounts.has(item_id):
 		item_amounts[item_id] = ItemAmount.new(0, item_id)
 	item_amounts[item_id].amount -= amount
+	if item_amounts[item_id].amount <= 0:
+		item_amounts.erase(item_id)
 	item_removed.emit(item_id, amount)
 
 func has_item_amount(item_id: Variant, amount: int) -> bool:
@@ -26,8 +28,10 @@ func has_item_amount(item_id: Variant, amount: int) -> bool:
 	
 	return item_amounts[item_id].amount >= amount
 
-func get_items() -> Array[Item]:
-	return item_amounts.values()
+func get_items() -> Array[ItemAmount]:
+	var items: Array[ItemAmount]
+	items.assign(item_amounts.values())
+	return items
 	
 func save() -> Dictionary:
 	return {

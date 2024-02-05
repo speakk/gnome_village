@@ -6,6 +6,8 @@ class_name Settler
 	#preload("res://assets/settler_hair_1.png"), preload("res://assets/settler_hair_2.png"), null
 #]
 
+@onready var inventory: Inventory = $Inventory
+
 const REACH_DISTANCE := MainMap.CELL_SIZE.x * 1.5
 const AT_DISTANCE := 10.0
 
@@ -56,7 +58,8 @@ func save() -> Dictionary:
 	save_dict["inventory_id"] = SaveSystem.save_entity($Inventory)
 	
 	if current_task_actuator:
-		save_dict["current_task_save_id"] = SaveSystem.save_entity(current_task_actuator)
+		#save_dict["current_task_actuator_id"] = SaveSystem.save_entity(current_task_actuator)
+		save_dict["task_id"] = SaveSystem.save_entity(current_task_actuator.task)
 	
 	return save_dict
 
@@ -69,15 +72,22 @@ func load_save(save_dict: Dictionary) -> void:
 	open_door_speed = save_dict["open_door_speed"]
 	velocity.x = save_dict["velocity_x"]
 	velocity.y = save_dict["velocity_y"]
-	if save_dict.has("current_task_save_id"):
-		current_task_actuator = SaveSystem.get_saved_entity(save_dict["current_task_save_id"])
-		add_child(current_task_actuator)
+	#if save_dict.has("current_task_actuator_id"):
+		#current_task_actuator = SaveSystem.get_saved_entity(save_dict["current_task_actuator_id"])
+		#add_child(current_task_actuator)
 	
-	var inventory: Variant = SaveSystem.get_saved_entity(save_dict["inventory_id"])
-	$Inventory.queue_free()
-	$Inventory.name = "old_inventory"
-	add_child(inventory)
-	inventory.name = "Inventory"
+	if save_dict.has("task_id"):
+		var task := SaveSystem.get_saved_entity(save_dict["task_id"]) as Task
+		#add_child(current_task_actuator)
+		start_task(task)
+	
+	inventory = SaveSystem.get_saved_entity(save_dict["inventory_id"])
+	#$Inventory.queue_free()
+	#$Inventory.name = "old_inventory"
+	#add_child(inventory)
+	#inventory.name = "Inventory"
+
+	_refresh_carry_item_sprite()
 	
 	#if save_dict.has("current_task_save_id"):
 	#	SaveSystem.register_load_reference(self, "current_task_actuator", save_dict["current_task_save_id"], true)
@@ -133,19 +143,18 @@ func start_task(task: Task) -> void:
 	current_task_actuator.start_work()
 
 func _clean_up_actuator() -> void:
-	current_task_actuator.task.failed.disconnect(_task_failed)
-	current_task_actuator.task.tree_exited.disconnect(_clean_up_actuator)
-	remove_child(current_task_actuator)
-	current_task_actuator = null
+	if current_task_actuator:
+		current_task_actuator.task.failed.disconnect(_task_failed)
+		current_task_actuator.task.tree_exited.disconnect(_clean_up_actuator)
+		remove_child(current_task_actuator)
+		current_task_actuator = null
 
 func _task_failed(_task: Task) -> void:
 	_clean_up_actuator()
 
 func finish_current_task() -> void:
 	current_task_actuator.finish()
-	remove_child(current_task_actuator)
-	current_task_actuator = null
-	# TODO: Queue free task at some point maybe... Not now though
+	_clean_up_actuator()
 
 func is_available_for_work() -> bool:
 	return current_task_actuator == null or not current_task_actuator
@@ -188,11 +197,20 @@ func add_action(action: ActorAction) -> void:
 func process_actions(delta: float) -> void:
 	for action in actions:
 		action.process_action(self, delta)
-	
+
+func _refresh_carry_item_sprite() -> void:
+	var items := inventory.get_items()
+	if items.size() > 0:
+		var first_item_amount := items[0]
+		var item := Items.get_by_id(first_item_amount.id)
+		Items.copy_item_properties_to_sprite(item, $CarryItemSprite)
+		$CarryItemSprite.show()
+	else:
+		$CarryItemSprite.hide()
+		
+
 func _inventory_item_added(item_id: Variant, _amount: int) -> void:
-	var item := Items.get_by_id(item_id)
-	Items.copy_item_properties_to_sprite(item, $CarryItemSprite)
-	$CarryItemSprite.show()
+	_refresh_carry_item_sprite()
 
 func _inventory_item_removed(_item_id: Variant, _amount: int) -> void:
-	$CarryItemSprite.hide()
+	_refresh_carry_item_sprite()

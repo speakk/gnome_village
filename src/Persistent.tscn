@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://q87gpcg45m4w"]
+
+[sub_resource type="GDScript" id="GDScript_bg2as"]
+script/source = "class_name Persistent extends Node
+
+var save_id: int = -1
+	
+func get_save_id() -> int:
+	if save_id < 0:
+		save_id = SaveSystem.get_next_save_id()
+	
+	return save_id
+
+func set_save_id(new_id: int) -> void:
+	save_id = new_id
+"
+
+[node name="Persistent" type="Node"]
+script = SubResource("GDScript_bg2as")

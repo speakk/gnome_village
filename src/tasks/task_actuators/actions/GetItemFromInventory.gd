@@ -12,5 +12,5 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		return FAILURE
 	
 	target_inventory.remove_item_amount(item_id, amount)
-	actor.get_node("Inventory").add_item_amount(item_id, amount)
+	actor.inventory.add_item_amount(item_id, amount)
 	return SUCCESS
