@@ -1,10 +1,24 @@
-[gd_resource type="MeshLibrary" load_steps=4 format=3 uid="uid://cpsm4h5sl5dg6"]
+[gd_resource type="MeshLibrary" load_steps=7 format=3 uid="uid://cpsm4h5sl5dg6"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c2lns"]
-albedo_color = Color(1, 0.705667, 0.513739, 1)
+[ext_resource type="Texture2D" uid="uid://bi6mp65lpsrbx" path="res://assets/textures/wooden_wall.png" id="1_dahys"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_po3cx"]
+noise_type = 2
+frequency = 0.0067
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hsqk2"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_po3cx")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vf4wq"]
+albedo_texture = ExtResource("1_dahys")
+normal_enabled = true
+normal_scale = 0.48
+normal_texture = SubResource("NoiseTexture2D_hsqk2")
 
 [sub_resource type="BoxMesh" id="BoxMesh_l7w1v"]
-material = SubResource("StandardMaterial3D_c2lns")
+material = SubResource("StandardMaterial3D_vf4wq")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tiln4"]
 

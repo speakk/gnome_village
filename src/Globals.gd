@@ -34,14 +34,14 @@ static func weighted_random(weights: Array[float]) -> int:
 	
 	return 0
 
-static func truncate_vec3(vector: Vector3) -> Vector2:
+func truncate_vec3(vector: Vector3) -> Vector2:
 	return Vector2(vector.x, vector.z)
 
-static func extend_vec2(vector: Vector2) -> Vector3:
+func extend_vec2(vector: Vector2) -> Vector3:
 	return Vector3(vector.x, 0, vector.y)
 
-static func truncate_vec3i(vector: Vector3i) -> Vector2i:
+func truncate_vec3i(vector: Vector3i) -> Vector2i:
 	return Vector2i(vector.x, vector.z)
 
-static func extend_vec2i(vector: Vector2i) -> Vector3i:
+func extend_vec2i(vector: Vector2i) -> Vector3i:
 	return Vector3i(vector.x, 0, vector.y)
