@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cdn5fwsgd0fpm"]
+[gd_scene load_steps=12 format=3 uid="uid://cdn5fwsgd0fpm"]
 
 [ext_resource type="Script" path="res://src/main_3d.gd" id="1_h0o83"]
 [ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://src/tasks/task_assigner/TaskHandler.tscn" id="1_lyh74"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://du6ros11u7s0m" path="res://src/zones/ZoneManager.tscn" id="3_v025i"]
 [ext_resource type="PackedScene" uid="uid://dk7vrm018wwop" path="res://src/systems/day_night_cycle.tscn" id="5_gc7w6"]
 [ext_resource type="PackedScene" uid="uid://w5t5a0o36hje" path="res://src/camera_3d.tscn" id="6_wahq5"]
+[ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://src/gui/gui.tscn" id="7_vml5v"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_g782x"]
 
@@ -31,6 +32,9 @@ unique_name_in_owner = true
 
 [node name="MainMap3d" parent="." instance=ExtResource("2_l8r3t")]
 
+[node name="MapTileSelector" parent="MainMap3d" index="1" node_paths=PackedStringArray("selection_draw")]
+selection_draw = NodePath("../SelectionDraw")
+
 [node name="Entities" type="Node3D" parent="."]
 unique_name_in_owner = true
 
@@ -46,5 +50,7 @@ target = NodePath("../MainMap3d/GridMap")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.333182, 0.666705, 0.666705, 0, -0.707107, 0.707107, 0.942863, -0.235595, -0.235595, 0, 12.5409, 16.4982)
 shadow_enabled = true
+
+[node name="GUI" parent="." instance=ExtResource("7_vml5v")]
 
 [editable path="MainMap3d"]

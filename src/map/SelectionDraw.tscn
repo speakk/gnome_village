@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://c67ua8jdle4ma"]
+
+[ext_resource type="Script" path="res://src/map/SelectionDraw.gd" id="1_227fd"]
+
+[node name="SelectionDraw" type="Node3D"]
+script = ExtResource("1_227fd")
+
+[node name="TileIndicators" type="Node3D" parent="."]
+unique_name_in_owner = true

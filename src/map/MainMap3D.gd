@@ -6,7 +6,7 @@ class_name MainMap3D extends Node3D
 
 const MAP_SIZE_X: int = 80
 const MAP_SIZE_Y: int = 40
-const CELL_SIZE := Vector2i(24, 24)
+const CELL_SIZE := Vector2i(1, 1)
 
 #@onready var map_tile_selector := $MapTileSelector as MapTileSelector
 

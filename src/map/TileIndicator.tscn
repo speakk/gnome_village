@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3stfjmysaqny"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jpfia"]
+transparency = 1
+albedo_color = Color(0.425391, 0.945312, 0.564036, 0.372549)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6fb6p"]
+material = SubResource("StandardMaterial3D_jpfia")
+
+[node name="TileIndicator" type="MeshInstance3D"]
+mesh = SubResource("BoxMesh_6fb6p")
