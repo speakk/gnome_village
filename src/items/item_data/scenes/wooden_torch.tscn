@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://uqcgysgd2yqr"]
+
+[ext_resource type="Texture2D" uid="uid://cljj53wgt1j7" path="res://assets/items_sheet.png" id="1_4vkyx"]
+
+[node name="WoodenTorch" type="Node2D" groups=["radial_light"]]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -4)
+texture = ExtResource("1_4vkyx")
+hframes = 30
+vframes = 30

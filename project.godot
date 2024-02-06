@@ -44,6 +44,7 @@ enabled=PackedStringArray("res://addons/beehave/plugin.cfg")
 
 item_on_ground="Items On Ground"
 zone=""
+radial_light=""
 
 [gui]
 
@@ -152,3 +153,4 @@ environment/defaults/default_clear_color=Color(0.164706, 0.223529, 0.301961, 1)
 viewport/hdr_2d=true
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
+2d/sdf/scale=0
