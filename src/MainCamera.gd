@@ -22,10 +22,25 @@ func _process(delta: float) -> void:
 
 	_hover_target(get_viewport().get_mouse_position())
 
+var max_zoom_in := 4.0
+var max_zoom_out := 1.5
+var zoom_step := 2.5
+
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton or event is InputEventScreenTouch:
+	if event is InputEventMouseButton:
 		if event.pressed:
 			_select_target(event.position)
+	
+	if event is InputEventMouseButton:
+		if event.pressed:
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				size -= zoom_step
+				#zoom = (zoom + Vector2(0.5, 0.5)).clamp(Vector2(max_zoom_out, max_zoom_out), Vector2(max_zoom_in, max_zoom_in))
+			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				size += zoom_step
+				#zoom = (zoom - Vector2(0.5, 0.5)).clamp(Vector2(max_zoom_out, max_zoom_out), Vector2(max_zoom_in, max_zoom_in))
+		
+
 
 func _hover_target(hover_position: Vector2) -> void:
 	var from := project_ray_origin(hover_position)
@@ -51,15 +66,3 @@ func _select_target(click_position: Vector2) -> void:
 	print("Result", raycast_result)
 	if raycast_result.has("position"):
 		Events.mouse_clicked_on_map.emit(raycast_result.get("position") as Vector3)
-
-var max_zoom_in := 4.0
-var max_zoom_out := 1.5
-
-#func _input(event: InputEvent) -> void:
-	#if event is InputEventMouseButton:
-		#if event.pressed:
-			#if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				#zoom = (zoom + Vector2(0.5, 0.5)).clamp(Vector2(max_zoom_out, max_zoom_out), Vector2(max_zoom_in, max_zoom_in))
-			#if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				#zoom = (zoom - Vector2(0.5, 0.5)).clamp(Vector2(max_zoom_out, max_zoom_out), Vector2(max_zoom_in, max_zoom_in))
-		#
