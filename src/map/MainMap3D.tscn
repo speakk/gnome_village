@@ -1,8 +1,55 @@
-[gd_scene load_steps=2 format=3 uid="uid://cxfu88mnhmgb7"]
+[gd_scene load_steps=10 format=3 uid="uid://cxfu88mnhmgb7"]
 
 [ext_resource type="Script" path="res://src/map/MainMap3D.gd" id="1_hry08"]
+[ext_resource type="Script" path="res://src/map/MapTileSelector.gd" id="2_k2ptl"]
+[ext_resource type="MeshLibrary" uid="uid://cpsm4h5sl5dg6" path="res://src/map/map_mesh_library.tres" id="2_nprxo"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bylo6"]
+size = Vector3(200, 1, 200)
+
+[sub_resource type="Gradient" id="Gradient_gpv11"]
+colors = PackedColorArray(0.675781, 0.675781, 0.675781, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_me303"]
+noise_type = 2
+frequency = 0.0132
+fractal_gain = 0.8
+cellular_return_type = 2
+domain_warp_enabled = true
+domain_warp_type = 2
+domain_warp_fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gyv7a"]
+width = 2048
+height = 2048
+color_ramp = SubResource("Gradient_gpv11")
+noise = SubResource("FastNoiseLite_me303")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_44mkl"]
+albedo_color = Color(0.75, 0.558289, 0.401478, 1)
+albedo_texture = SubResource("NoiseTexture2D_gyv7a")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_y0iy8"]
+material = SubResource("StandardMaterial3D_44mkl")
+size = Vector2(200, 200)
 
 [node name="MainMap3d" type="Node3D"]
 script = ExtResource("1_hry08")
 
 [node name="GridMap" type="GridMap" parent="."]
+mesh_library = ExtResource("2_nprxo")
+cell_size = Vector3(1, 1, 1)
+data = {
+"cells": PackedInt32Array(1, 65534, 0, 2, 65534, 0, 3, 65534, 0, 5, 65534, 0, 5, 65535, 0, 5, 0, 0, 5, 1, 0, 4, 1, 0, 3, 1, 0, 65530, 0, 0, 65530, 65534, 0, 65530, 2, 0)
+}
+
+[node name="MapTileSelector" type="Node" parent="."]
+script = ExtResource("2_k2ptl")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_bylo6")
+
+[node name="GroundPlane" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_y0iy8")

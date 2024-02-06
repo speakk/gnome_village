@@ -80,6 +80,18 @@ class_name MapTileSelector extends Node
 			#mouse_pressed_2 = false
 		#
 #
+
+func _ready() -> void:
+	Events.mouse_hovered_on_map.connect(_mouse_hovered)
+
+func _mouse_hovered(mouse_position: Vector3) -> void:
+	var tile_position:  Vector3i = Globals.get_map().grid.local_to_map(mouse_position)
+	print("Tile position", tile_position)
+
+#func _process(delta: float) -> void:
+	#var tile_position: Vector2i = Globals.get_map().local_to_map(Globals.get_map().get_local_mouse_position())
+	#print("tile pos", tile_position)
+
 #func _process(delta: float) -> void:
 	#var tile_position: Vector2i = Globals.get_map().local_to_map(Globals.get_map().get_local_mouse_position())
 	##push_warning("handle_action not implemented for: %s" % _ui_action)

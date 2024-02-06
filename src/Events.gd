@@ -16,6 +16,8 @@ signal map_ready(map: MainMap3D)
 signal solid_cell_placed(coordinate: Vector2i)
 signal solid_cell_removed(coordinate: Vector2i)
 signal map_changed(coordinate: Vector2i)
+signal mouse_clicked_on_map(click_position: Vector3)
+signal mouse_hovered_on_map(hover_position: Vector3)
 
 #signal terrain_placed(coordinate: Vector2i, target_layer: MainMap3D.Layers,
 						#terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround)

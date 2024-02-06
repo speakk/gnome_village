@@ -1,0 +1,17 @@
+[gd_resource type="MeshLibrary" load_steps=4 format=3 uid="uid://cpsm4h5sl5dg6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c2lns"]
+albedo_color = Color(1, 0.705667, 0.513739, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_l7w1v"]
+material = SubResource("StandardMaterial3D_c2lns")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tiln4"]
+
+[resource]
+item/0/name = "wooden_wall"
+item/0/mesh = SubResource("BoxMesh_l7w1v")
+item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/shapes = [SubResource("BoxShape3D_tiln4"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)]
+item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/navigation_layers = 1

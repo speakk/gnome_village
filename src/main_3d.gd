@@ -8,10 +8,10 @@ extends Node3D
 @export var daylight_amount: Curve
 @export var yellow_light_amount: Curve
 
-const TEST_TREES = 20
-const TEST_RESOURCES = 300
-const TEST_SETTLERS = 10
-const DECAL_AMOUNT = 600
+const TEST_TREES = 1
+const TEST_RESOURCES = 2
+const TEST_SETTLERS = 1
+const DECAL_AMOUNT = 2
 
 func _ready() -> void:
 	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
