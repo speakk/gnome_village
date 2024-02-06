@@ -5,12 +5,12 @@ var target_coordinate: Vector2i
 var path: Variant: # PackedVector2Array | Null
 	set(new_path):
 		path = new_path
-		if new_path:
-			$Line2D.points = Array(new_path).map(func(point: Vector2i) -> Vector2:
-				return Globals.get_map().coordinate_to_global_position(point)
-			)
-		else:
-			$Line2D.points = []
+		#if new_path:
+			#$Line2D.points = Array(new_path).map(func(point: Vector2i) -> Vector2:
+				#return Globals.get_map().coordinate_to_global_position(point)
+			#)
+		#else:
+			#$Line2D.points = []
 var current_path_index: int = 0
 
 func initialize(params: Variant) -> ActorAction:
@@ -40,8 +40,8 @@ func process_action(actor: Settler, delta: float) -> void:
 	actor.velocity = actor.global_position.direction_to(Globals.get_map().coordinate_to_global_position(target_coordinate)) * actor.walk_speed
 	#print("Velocity now, ", actor.global_position, " vs ", Globals.get_map().coordinate_to_global_position(target_coordinate))
 
-func get_direction_to_next_path_point(actor: Settler) -> Vector2:
-	var point_position := path[current_path_index] as Vector2
+func get_direction_to_next_path_point(actor: Settler) -> Vector3:
+	var point_position := path[current_path_index] as Vector2i
 	return actor.global_position.direction_to(Globals.get_map().coordinate_to_global_position(point_position))
 
 func clear_path() -> void:

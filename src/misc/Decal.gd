@@ -1,4 +1,4 @@
-extends Sprite2D
+extends Sprite3D
 
 func _ready() -> void:
 	frame = [1,2,3][Globals.weighted_random([0.02, 0.6, 0.6])]

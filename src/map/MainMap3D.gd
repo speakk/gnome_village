@@ -1,6 +1,6 @@
-extends TileMap
+class_name MainMap3D extends Node3D
 
-class_name MainMap
+@onready var grid: GridMap = $GridMap
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
@@ -30,8 +30,8 @@ var map_entities := {} as Dictionary
 
 func prepare_for_load() -> void:
 	map_entities.clear()
-	clear_layer(Layers.Building)
-	clear_layer(Layers.Blueprint)
+	#clear_layer(Layers.Building)
+	#clear_layer(Layers.Blueprint)
 
 func add_map_entity(coordinate: Vector2i, item_on_ground: ItemOnGround) -> void:
 	if not map_entities.has(coordinate):
@@ -66,47 +66,48 @@ func is_coordinate_occupied(coordinate: Vector2i) -> bool:
 	
 
 func _ready() -> void:
-	add_layer(Layers.Ground)
-	add_layer(Layers.Building)
-	add_layer(Layers.Blueprint)
+	#add_layer(Layers.Ground)
+	#add_layer(Layers.Building)
+	#add_layer(Layers.Blueprint)
+	#
+	#set_layer_z_index(Layers.Building, 1)
 	
-	set_layer_z_index(Layers.Building, 1)
-	
-	map_tile_selector.tiles_selected.connect(_tiles_selected)
-	map_tile_selector.tiles_selected_secondary.connect(_tiles_selected_secondary)
+	#map_tile_selector.tiles_selected.connect(_tiles_selected)
+	#map_tile_selector.tiles_selected_secondary.connect(_tiles_selected_secondary)
 
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
 
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
 			if world_center.distance_to(Vector2(x * CELL_SIZE.x, y * CELL_SIZE.y)) < 400:
-				set_cells_terrain_connect(Layers.Ground, [Vector2i(x, y)], 1, 0)
+				pass
+				#set_cells_terrain_connect(Layers.Ground, [Vector2i(x, y)], 1, 0)
 	
-	set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
+	#set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
 	
-	Events.terrain_placed.connect(_terrain_placed)
-	Events.terrain_cleared.connect(_terrain_cleared)
+	#Events.terrain_placed.connect(_terrain_placed)
+	#Events.terrain_cleared.connect(_terrain_cleared)
 	
-	Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector2) -> void:
-			var coordinate := global_position_to_coordinate(item_position)
-			add_map_entity(coordinate, item)
-	)
-	
-	Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:
-			var coordinate := global_position_to_coordinate(item.global_position)
-			remove_map_entity(coordinate, item)
-			if item.item.is_solid:
-				Events.solid_cell_removed.emit(coordinate)
-	)
+	#Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector3) -> void:
+			#var coordinate := global_position_to_coordinate(item_position)
+			#add_map_entity(coordinate, item)
+	#)
+	#
+	#Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:
+			#var coordinate := global_position_to_coordinate(item.global_position)
+			#remove_map_entity(coordinate, item)
+			#if item.item.is_solid:
+				#Events.solid_cell_removed.emit(coordinate)
+	#)
 	
 	Events.ui_action_selected.connect(_handle_ui_action_selection)
 	
 	Events.map_ready.emit(self)
 	
-	for x in MAP_SIZE_X:
-		for y in MAP_SIZE_Y:
-			if get_cell_source_id(Layers.Ground, Vector2i(x, y)) < 0:
-				PathFinder.set_coordinate_invalid(Vector2i(x, y))
+	#for x in MAP_SIZE_X:
+		#for y in MAP_SIZE_Y:
+			#if get_cell_source_id(Layers.Ground, Vector2i(x, y)) < 0:
+				#PathFinder.set_coordinate_invalid(Vector2i(x, y))
 
 func _handle_ui_action_selection(new_ui_action: UiAction) -> void:
 	selected_ui_action = new_ui_action
@@ -132,21 +133,16 @@ func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
 	var zone := (selected_ui_action as UiAction.ZoneAddTiles).zone
 	zone.add_coordinates(coordinates)
 
-func _process(delta: float) -> void:
-	var tile_position: Vector2i = local_to_map(get_local_mouse_position())
-	#
-	#if is_mouse_2_pressed:
-		#_cancel_blueprint(tile_position)
-
 func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 	var item_id := (selected_ui_action as UiAction.Build).item_id
 	for tile_position in coordinates:
 		if not is_coordinate_occupied(tile_position):
-			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
-			blueprint.global_position = coordinate_to_global_position(tile_position)
-			get_tree().root.get_node("Main").get_node("Entities").add_child(blueprint)
-			blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
-			Events.blueprint_placed.emit(tile_position, blueprint)
+			pass
+			#var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
+			#blueprint.global_position = coordinate_to_global_position(tile_position)
+			#get_tree().root.get_node("Main").get_node("Entities").add_child(blueprint)
+			#blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
+			#Events.blueprint_placed.emit(tile_position, blueprint)
 
 func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 	for coordinate in coordinates:
@@ -156,22 +152,16 @@ func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 				Events.blueprint_cancel_issued.emit(entity)
 				print("Removing at: ", coordinate)
 
-func coordinate_to_global_position(coordinate: Vector2i) -> Vector2:
-	return to_global(map_to_local(coordinate))
-
-func global_position_to_coordinate(_global_position: Vector2) -> Vector2i:
-	return local_to_map(to_local(_global_position))
-
-func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
-						terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround) -> void:
-	set_cells_terrain_connect(target_layer, [coordinate], terrain_set_id, terrain_id)
-
-func _terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int) -> void:
-	set_cells_terrain_connect(target_layer, [coordinate], tileset_source_id, -1)
-
-func is_vacant_coordinate(coordinate: Vector2i) -> bool:
-	var has_ground := get_cell_source_id(Layers.Ground, coordinate) >= 0
-	return not PathFinder.is_position_solid(coordinate) and has_ground
+#func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
+						#terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround) -> void:
+	#set_cells_terrain_connect(target_layer, [coordinate], terrain_set_id, terrain_id)
+#
+#func _terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int) -> void:
+	#set_cells_terrain_connect(target_layer, [coordinate], tileset_source_id, -1)
+#
+#func is_vacant_coordinate(coordinate: Vector2i) -> bool:
+	#var has_ground := get_cell_source_id(Layers.Ground, coordinate) >= 0
+	#return not PathFinder.is_position_solid(coordinate) and has_ground
 
 # TODO: Unholy
 func get_random_coordinate(accept_occupied: bool = true) -> Vector2i:
@@ -181,3 +171,10 @@ func get_random_coordinate(accept_occupied: bool = true) -> Vector2i:
 			return random_position
 	
 	return Vector2i(0, 0)
+
+func coordinate_to_global_position(coordinate: Vector2i) -> Vector3:
+	return grid.to_global(grid.map_to_local(Vector3(coordinate.x, coordinate.y, 0)))
+
+func global_position_to_coordinate(_global_position: Vector3) -> Vector2i:
+	var coordinate: Vector3i = grid.local_to_map(grid.to_local(_global_position))
+	return Vector2i(coordinate.x, coordinate.y)

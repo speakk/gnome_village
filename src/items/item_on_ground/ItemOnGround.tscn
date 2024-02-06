@@ -23,8 +23,7 @@ gradient = SubResource("Gradient_sqx7s")
 
 [sub_resource type="LabelSettings" id="LabelSettings_d3jp2"]
 
-[node name="ItemOnGround" type="Node2D" groups=["item_on_ground"]]
-z_index = 1
+[node name="ItemOnGround" type="Node3D" groups=["item_on_ground"]]
 script = ExtResource("1_j80v7")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -73,5 +72,3 @@ label_settings = SubResource("LabelSettings_d3jp2")
 [node name="ItemAmount" parent="." instance=ExtResource("6_ch2ij")]
 
 [node name="ConstructionInventory" parent="." instance=ExtResource("6_lqhr4")]
-
-[connection signal="amount_changed" from="ItemAmount" to="." method="_amount_changed"]

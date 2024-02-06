@@ -1,9 +1,9 @@
-class_name Main extends Node2D
+extends Node3D
 
 @onready var SETTLER := preload("res://src/settler/settler.tscn")
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-@onready var main_map: MainMap = $MainMap as MainMap
+@onready var main_map: MainMap3D = $MainMap3d as MainMap3D
 
 @export var daylight_amount: Curve
 @export var yellow_light_amount: Curve
@@ -17,18 +17,16 @@ func _ready() -> void:
 	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
 	Events.save_game_called.connect(func(save_dict: Dictionary) -> void: save(save_dict))
 	
-	Events.current_time_changed.connect(_current_time_changed)
+	#Events.current_time_changed.connect(_current_time_changed)
 	
 	var test_divider := 1
-	var map_size_real_x := MainMap.MAP_SIZE_X * 24 / test_divider
-	var map_size_real_y := MainMap.MAP_SIZE_Y * 24 / test_divider
+	var map_size_real_x := MainMap3D.MAP_SIZE_X * 24 / test_divider
+	var map_size_real_y := MainMap3D.MAP_SIZE_Y * 24 / test_divider
 	
 	print("Now spawning entities")
 	
-	%Water.scale = Vector2(MainMap.MAP_SIZE_X, MainMap.MAP_SIZE_Y) * Vector2(MainMap.CELL_SIZE) / %Water.texture.get_size()
-	
 	for i in TEST_TREES:
-		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
+		var random_position := Vector3(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y), 0)
 		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
@@ -43,7 +41,7 @@ func _ready() -> void:
 	var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone]
 
 	for i in TEST_RESOURCES:
-		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
+		var random_position := Vector3(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y), 0.0)
 		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
@@ -55,7 +53,7 @@ func _ready() -> void:
 	var settlers_to_place := TEST_SETTLERS
 	var attempts := 400
 	for i in attempts:
-		var random_position := Vector2(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y))
+		var random_position := Vector3(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y), 0)
 		var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
@@ -71,7 +69,7 @@ func _ready() -> void:
 		var decal := DECAL.instantiate()
 		var grid_position := Globals.get_map().get_random_coordinate()
 		var new_position := Globals.get_map().coordinate_to_global_position(grid_position)
-		decal.global_position = new_position + Vector2(randf_range(-6, 6), randf_range(-6, 6))
+		decal.global_position = new_position + Vector3(randf_range(-6, 6), randf_range(-6, 6), 0)
 		%Entities.add_child(decal)
 		
 
@@ -139,20 +137,20 @@ func save(save_dict: Dictionary) -> void:
 				#push_warning("Entity did not have save method defined: ", entity)
 	
 	save_dict["main_data"] = main_data
-
-func _current_time_changed(new_time: float) -> void:
-	var daylight_sampled := daylight_amount.sample(new_time)
-	var red_green := daylight_sampled
-	var yellow_amount := yellow_light_amount.sample(new_time)
-	#$CanvasModulate.color = Color(red_green, red_green - yellow_amount * 0.1, 1.0 - yellow_amount * 0.4)
-	var shaderNode := %ShadowSpriteShader as Sprite2D
-	shaderNode.material.set_shader_parameter("shadow_angle", - new_time * 360.0 * 2)
-	shaderNode.material.set_shader_parameter("shadow_length", 200 - daylight_sampled * 190)
-	shaderNode.material.set_shader_parameter("shadow_color", Color(Color.BLACK, maxf(0, daylight_sampled - 0.3)))
-	
-	var daylightNode := %DayLightSpriteShader as Sprite2D
-	daylightNode.material.set_shader_parameter("daylight_amount", daylight_sampled)
-	daylightNode.material.set_shader_parameter("yellow_amount", yellow_amount)
-	
-	#shaderNode.material.set("shader_param/angle", -sin(new_time) * 360.0)
-	#print("New time", new_time)
+#
+#func _current_time_changed(new_time: float) -> void:
+	#var daylight_sampled := daylight_amount.sample(new_time)
+	#var red_green := daylight_sampled
+	#var yellow_amount := yellow_light_amount.sample(new_time)
+	##$CanvasModulate.color = Color(red_green, red_green - yellow_amount * 0.1, 1.0 - yellow_amount * 0.4)
+	#var shaderNode := %ShadowSpriteShader as Sprite2D
+	#shaderNode.material.set_shader_parameter("shadow_angle", - new_time * 360.0 * 2)
+	#shaderNode.material.set_shader_parameter("shadow_length", 200 - daylight_sampled * 190)
+	#shaderNode.material.set_shader_parameter("shadow_color", Color(Color.BLACK, maxf(0, daylight_sampled - 0.3)))
+	#
+	#var daylightNode := %DayLightSpriteShader as Sprite2D
+	#daylightNode.material.set_shader_parameter("daylight_amount", daylight_sampled)
+	#daylightNode.material.set_shader_parameter("yellow_amount", yellow_amount)
+	#
+	##shaderNode.material.set("shader_param/angle", -sin(new_time) * 360.0)
+	##print("New time", new_time)

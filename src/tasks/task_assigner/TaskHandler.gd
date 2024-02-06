@@ -70,7 +70,7 @@ func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
 func get_available_settler(task: Variant) -> Settler:
 	var settlers := get_tree().get_nodes_in_group("settler") as Array[Node]
 	
-	var target: Vector2
+	var target: Vector3
 	
 	if "target_tile" in task:
 		var target_tile := task.target_tile as Vector2i

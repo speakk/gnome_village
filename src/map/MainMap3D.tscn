@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxfu88mnhmgb7"]
+
+[ext_resource type="Script" path="res://src/map/MainMap3D.gd" id="1_hry08"]
+
+[node name="MainMap3d" type="Node3D"]
+script = ExtResource("1_hry08")
+
+[node name="GridMap" type="GridMap" parent="."]

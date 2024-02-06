@@ -11,9 +11,9 @@ func prepare_for_load() -> void:
 	astar_grid = AStarGrid2D.new()
 	_map_ready(null)
 
-func _map_ready(_map: MainMap) -> void:
-	astar_grid.cell_size = MainMap.CELL_SIZE
-	astar_grid.region = Rect2i(0, 0, MainMap.MAP_SIZE_X, MainMap.MAP_SIZE_Y)
+func _map_ready(_map: MainMap3D) -> void:
+	astar_grid.cell_size = MainMap3D.CELL_SIZE
+	astar_grid.region = Rect2i(0, 0, MainMap3D.MAP_SIZE_X, MainMap3D.MAP_SIZE_Y)
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
 

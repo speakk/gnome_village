@@ -1,14 +1,14 @@
 extends Node
 
-var map: MainMap
+var map: MainMap3D
 
 func _ready() -> void:
 	Events.map_ready.connect(_map_ready)
 
-func _map_ready(_map: MainMap) -> void:
+func _map_ready(_map: MainMap3D) -> void:
 	map = _map
 
-func get_map() -> MainMap:
+func get_map() -> MainMap3D:
 	return map
 
 var control_has_focus: bool = false

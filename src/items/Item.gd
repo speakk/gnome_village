@@ -30,7 +30,7 @@ enum SpecialFeatures {
 @export_subgroup("Terrain")
 @export var terrain_set_id: int = 0
 @export var terrain_id: int = 0
-@export var target_layer: MainMap.Layers = MainMap.Layers.Blueprint
+@export var target_layer: MainMap3D.Layers = MainMap3D.Layers.Blueprint
 
 @export_category("Behaviour")
 @export var display_name: String = ""

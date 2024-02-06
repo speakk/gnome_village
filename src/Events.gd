@@ -12,15 +12,15 @@ signal debug_visuals_set(value: bool)
 
 signal task_finished(task: Task)
 
-signal map_ready(map: MainMap)
+signal map_ready(map: MainMap3D)
 signal solid_cell_placed(coordinate: Vector2i)
 signal solid_cell_removed(coordinate: Vector2i)
 signal map_changed(coordinate: Vector2i)
 
-signal terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
-						terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround)
-
-signal terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int)
+#signal terrain_placed(coordinate: Vector2i, target_layer: MainMap3D.Layers,
+						#terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround)
+#
+#signal terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int)
 
 #signal construction_selected(item_id: Items.Id)
 #signal dismantle_selected()

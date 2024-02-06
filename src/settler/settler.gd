@@ -1,4 +1,4 @@
-extends Node2D
+extends Node3D
 
 class_name Settler
 
@@ -8,7 +8,7 @@ class_name Settler
 
 @onready var inventory: Inventory = $Inventory
 
-const REACH_DISTANCE := MainMap.CELL_SIZE.x * 1.5
+const REACH_DISTANCE := MainMap3D.CELL_SIZE.x * 1.5
 const AT_DISTANCE := 10.0
 
 var walk_speed := 100.0
@@ -16,7 +16,7 @@ var build_speed := 0.3
 var dismantling_speed := 3
 var open_door_speed := 0.6
 
-var velocity := Vector2(0, 0)
+var velocity := Vector3(0, 0, 0)
 
 var current_task_actuator: TaskActuator
 
@@ -97,16 +97,16 @@ func _finished_path() -> void:
 
 func move_and_slide(delta: float) -> void:
 	global_position += velocity * delta
-
-func _process(delta: float) -> void:
-	$Line2D.global_position = get_parent().global_position
+#
+#func _process(delta: float) -> void:
+	#$Line2D.global_position = get_parent().global_position
 
 func _physics_process(delta: float) -> void:
 	if not current_task_actuator:
 		current_task_actuator = null
 		#clear_path()
 	
-	velocity = Vector2.ZERO
+	velocity = Vector3.ZERO
 	
 	process_actions(delta)
 	
@@ -179,10 +179,10 @@ func is_in_valid_position() -> bool:
 	return true
 	#return not PathFinder.is_position_solid(Globals.get_map().global_position_to_coordinate(global_position))
 
-func is_at_target(_target: Vector2) -> bool:
+func is_at_target(_target: Vector3) -> bool:
 	return global_position.distance_to(_target) <= AT_DISTANCE
 
-func can_reach_target(_target: Vector2) -> bool:
+func can_reach_target(_target: Vector3) -> bool:
 	return global_position.distance_to(_target) <= REACH_DISTANCE
 
 func get_action_range() -> float:

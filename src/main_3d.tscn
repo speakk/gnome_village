@@ -1,0 +1,37 @@
+[gd_scene load_steps=9 format=3 uid="uid://cdn5fwsgd0fpm"]
+
+[ext_resource type="Script" path="res://src/main_3d.gd" id="1_h0o83"]
+[ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://src/tasks/task_assigner/TaskHandler.tscn" id="1_lyh74"]
+[ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap3D.tscn" id="2_l8r3t"]
+[ext_resource type="PackedScene" uid="uid://du6ros11u7s0m" path="res://src/zones/ZoneManager.tscn" id="3_v025i"]
+[ext_resource type="PackedScene" uid="uid://dk7vrm018wwop" path="res://src/systems/day_night_cycle.tscn" id="5_gc7w6"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_g782x"]
+
+[sub_resource type="Sky" id="Sky_cc5fj"]
+sky_material = SubResource("ProceduralSkyMaterial_g782x")
+
+[sub_resource type="Environment" id="Environment_1katu"]
+background_mode = 2
+sky = SubResource("Sky_cc5fj")
+ambient_light_source = 3
+
+[node name="Main3D" type="Node3D"]
+script = ExtResource("1_h0o83")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1katu")
+
+[node name="TaskHandler" parent="." instance=ExtResource("1_lyh74")]
+unique_name_in_owner = true
+
+[node name="MainMap3d" parent="." instance=ExtResource("2_l8r3t")]
+
+[node name="ZoneManager" parent="." instance=ExtResource("3_v025i")]
+unique_name_in_owner = true
+
+[node name="DayNightCycle" parent="." instance=ExtResource("5_gc7w6")]
+unique_name_in_owner = true
+
+[node name="Entities" type="Node3D" parent="."]
+unique_name_in_owner = true
