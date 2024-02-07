@@ -1,6 +1,7 @@
 class_name MainMap3D extends Node3D
 
 @onready var grid: GridMap = $GridMap
+@onready var blueprint_grid: GridMap = $BlueprintGridMap
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
@@ -8,7 +9,7 @@ const MAP_SIZE_X: int = 40
 const MAP_SIZE_Y: int = 40
 const CELL_SIZE := Vector2i(1, 1)
 
-#@onready var map_tile_selector := $MapTileSelector as MapTileSelector
+@onready var map_tile_selector := $MapTileSelector as MapTileSelector
 
 var selected_ui_action: UiAction
 
@@ -27,6 +28,27 @@ enum Layers {
 }
 
 var map_entities := {} as Dictionary
+
+func prepare_blueprint_grid() -> void:
+	var original_mesh_library := grid.mesh_library
+	var mesh_ids := original_mesh_library.get_item_list()
+	
+	var blueprint_mesh_library := MeshLibrary.new()
+	
+	for mesh_id in mesh_ids:
+		var original_mesh := original_mesh_library.get_item_mesh(mesh_id)
+		var new_mesh := original_mesh.duplicate(true) as Mesh
+		var surface_count := new_mesh.get_surface_count()
+		for surface_id in surface_count:
+			var material := new_mesh.surface_get_material(surface_id) as BaseMaterial3D
+			material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			material.albedo_color = Color(0.6,0.6,1, 0.5)
+		
+		var item_id := blueprint_mesh_library.get_last_unused_item_id()
+		blueprint_mesh_library.create_item(item_id)
+		blueprint_mesh_library.set_item_mesh(item_id, new_mesh)
+	
+	blueprint_grid.mesh_library = blueprint_mesh_library
 
 func prepare_for_load() -> void:
 	map_entities.clear()
@@ -72,8 +94,8 @@ func _ready() -> void:
 	#
 	#set_layer_z_index(Layers.Building, 1)
 	
-	#map_tile_selector.tiles_selected.connect(_tiles_selected)
-	#map_tile_selector.tiles_selected_secondary.connect(_tiles_selected_secondary)
+	map_tile_selector.tiles_selected.connect(_tiles_selected)
+	map_tile_selector.tiles_selected_secondary.connect(_tiles_selected_secondary)
 
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
 
@@ -85,22 +107,24 @@ func _ready() -> void:
 	
 	#set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
 	
-	#Events.terrain_placed.connect(_terrain_placed)
-	#Events.terrain_cleared.connect(_terrain_cleared)
+	Events.terrain_placed.connect(_terrain_placed)
+	Events.terrain_cleared.connect(_terrain_cleared)
 	
-	#Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector3) -> void:
-			#var coordinate := global_position_to_coordinate(item_position)
-			#add_map_entity(coordinate, item)
-	#)
-	#
-	#Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:
-			#var coordinate := global_position_to_coordinate(item.global_position)
-			#remove_map_entity(coordinate, item)
-			#if item.item.is_solid:
-				#Events.solid_cell_removed.emit(coordinate)
-	#)
+	Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector3) -> void:
+			var coordinate := global_position_to_coordinate(item_position)
+			add_map_entity(coordinate, item)
+	)
+	
+	Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:
+			var coordinate := global_position_to_coordinate(item.global_position)
+			remove_map_entity(coordinate, item)
+			if item.item.is_solid:
+				Events.solid_cell_removed.emit(coordinate)
+	)
 	
 	Events.ui_action_selected.connect(_handle_ui_action_selection)
+	
+	prepare_blueprint_grid()
 	
 	Events.map_ready.emit(self)
 	
@@ -113,6 +137,7 @@ func _handle_ui_action_selection(new_ui_action: UiAction) -> void:
 	selected_ui_action = new_ui_action
 
 func _tiles_selected(coordinates: Array[Vector2i]) -> void:
+	print("Tiles selected called")
 	if selected_ui_action:
 		action_handlers[selected_ui_action.ui_action_id].call(coordinates)
 
@@ -137,12 +162,11 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 	var item_id := (selected_ui_action as UiAction.Build).item_id
 	for tile_position in coordinates:
 		if not is_coordinate_occupied(tile_position):
-			pass
-			#var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
-			#blueprint.global_position = coordinate_to_global_position(tile_position)
-			#get_tree().root.get_node("Main").get_node("Entities").add_child(blueprint)
-			#blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
-			#Events.blueprint_placed.emit(tile_position, blueprint)
+			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
+			get_tree().root.get_node("Main").get_node("Entities").add_child(blueprint)
+			blueprint.global_position = coordinate_to_global_position(tile_position)
+			blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
+			Events.blueprint_placed.emit(tile_position, blueprint)
 
 func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 	for coordinate in coordinates:
@@ -155,6 +179,19 @@ func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 #func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
 						#terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround) -> void:
 	#set_cells_terrain_connect(target_layer, [coordinate], terrain_set_id, terrain_id)
+
+func _terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, is_solid: bool, blueprint: bool) -> void:
+	var grid_map: GridMap = grid if not blueprint else blueprint_grid
+	grid_map.set_cell_item(Globals.extend_vec2i(coordinate), 0)
+	print("Set cell item", Globals.extend_vec2i(coordinate), mesh_id)
+	
+	print("Used cells in blueprint grid:", blueprint_grid.get_used_cells())
+
+func _terrain_cleared(coordinate: Vector2i, blueprint: bool) -> void:
+	var grid_map: GridMap = grid if not blueprint else blueprint_grid
+	print("Clearing from grid_map", grid_map)
+	grid_map.set_cell_item(Globals.extend_vec2i(coordinate), -1)
+
 #
 #func _terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int) -> void:
 	#set_cells_terrain_connect(target_layer, [coordinate], tileset_source_id, -1)

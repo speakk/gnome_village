@@ -21,7 +21,7 @@ ambient_light_source = 3
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6dum3"]
 
-[node name="Main3D" type="Node3D"]
+[node name="Main" type="Node3D"]
 script = ExtResource("1_h0o83")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

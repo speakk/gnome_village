@@ -44,6 +44,9 @@ data = {
 "cells": PackedInt32Array(1, 65534, 0, 2, 65534, 0, 3, 65534, 0, 5, 65534, 0, 5, 65535, 0, 5, 0, 0, 5, 1, 0, 4, 1, 0, 3, 1, 0, 65530, 0, 0, 65530, 65534, 0, 65530, 2, 0)
 }
 
+[node name="BlueprintGridMap" type="GridMap" parent="."]
+cell_size = Vector3(1, 1, 1)
+
 [node name="MapTileSelector" type="Node" parent="." node_paths=PackedStringArray("selection_draw")]
 script = ExtResource("2_k2ptl")
 selection_draw = NodePath("../SelectionDraw")

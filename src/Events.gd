@@ -21,6 +21,9 @@ signal mouse_hovered_on_map(hover_position: Vector3)
 
 #signal terrain_placed(coordinate: Vector2i, target_layer: MainMap3D.Layers,
 						#terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround)
+
+signal terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, is_solid: bool, blueprint: bool)
+signal terrain_cleared(coordinate: Vector2i, blueprint: bool)
 #
 #signal terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int)
 

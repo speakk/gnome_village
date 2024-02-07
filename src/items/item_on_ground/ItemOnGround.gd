@@ -59,7 +59,8 @@ func update_rendering() -> void:
 		occluder.position = (item.cast_shadow_origin * sprite_size)
 		
 	elif item.rendering_type == Item.RenderingType.Terrain:
-		Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+		#Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+		Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
 
 	if item.scene:
 		if item_scene:
@@ -78,8 +79,8 @@ func update_rendering() -> void:
 			
 		if item.rendering_type == Item.RenderingType.Terrain:
 			#print("Clearing terrain and adding to normal layer")
-			Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
-			Events.terrain_cleared.emit(coordinate, MainMap3D.Layers.Blueprint, item.terrain_set_id)
+			Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
+			Events.terrain_cleared.emit(coordinate, true)
 		elif item.rendering_type == Item.RenderingType.Sprite:
 			$Sprite2D.modulate = Color.WHITE
 		elif item.rendering_type == Item.RenderingType.None and item.scene:
@@ -89,8 +90,9 @@ func update_rendering() -> void:
 		#print("New state is blueprint!")
 		if item.rendering_type == Item.RenderingType.Terrain:
 			#print("Setting blueprint terrain")
-			Events.terrain_placed.emit(coordinate, MainMap3D.Layers.Blueprint, item.terrain_set_id, item.terrain_id, item.is_solid, self)
-			Events.terrain_cleared.emit(coordinate, item.target_layer, item.terrain_set_id)
+			#Events.terrain_placed.emit(coordinate, MainMap3D.Layers.Blueprint, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+			Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, true)
+			Events.terrain_cleared.emit(coordinate, false)
 		elif item.rendering_type == Item.RenderingType.Sprite:
 			$Sprite2D.modulate = Color(0.6, 0.6, 1.0, 0.5)
 		elif item.rendering_type == Item.RenderingType.None and item.scene:
@@ -194,8 +196,8 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	if item.rendering_type == Item.RenderingType.Terrain:
-		Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), item.target_layer, item.terrain_set_id)
-		Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), MainMap3D.Layers.Blueprint, item.terrain_set_id)
+		Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), false)
+		Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), true)
 	Events.item_removed_from_ground.emit(self)
 
 func reduce_durability(amount: float) -> void:

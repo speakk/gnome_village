@@ -71,8 +71,8 @@ func _ready() -> void:
 		var decal := DECAL.instantiate()
 		var grid_position := Globals.get_map().get_random_coordinate()
 		var new_position := Globals.get_map().coordinate_to_global_position(grid_position)
-		decal.global_position = new_position + Vector3(randf_range(-6, 6), randf_range(-6, 6), 0)
 		%Entities.add_child(decal)
+		decal.global_position = new_position + Vector3(randf_range(-6, 6), randf_range(-6, 6), 0)
 		
 
 var debug_visuals := false
