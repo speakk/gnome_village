@@ -4,7 +4,7 @@ class_name MainMap3D extends Node3D
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-const MAP_SIZE_X: int = 80
+const MAP_SIZE_X: int = 40
 const MAP_SIZE_Y: int = 40
 const CELL_SIZE := Vector2i(1, 1)
 
@@ -173,11 +173,11 @@ func get_random_coordinate(accept_occupied: bool = true) -> Vector2i:
 	return Vector2i(0, 0)
 
 func coordinate_to_global_position(coordinate: Vector2i) -> Vector3:
-	return grid.to_global(grid.map_to_local(Vector3(coordinate.x, coordinate.y, 0)))
+	return grid.to_global(grid.map_to_local(Vector3(coordinate.x, 0, coordinate.y)))
 
 func global_position_to_coordinate(_global_position: Vector3) -> Vector2i:
 	var coordinate: Vector3i = grid.local_to_map(grid.to_local(_global_position))
-	return Vector2i(coordinate.x, coordinate.y)
+	return Vector2i(coordinate.x, coordinate.z)
 
 #func get_local_mouse_position() -> Vector2:
 	#return grid.get_mou
