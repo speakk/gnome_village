@@ -177,6 +177,8 @@ func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemSta
 	
 	current_state = state
 	_initial_state = state
+	
+	Events.item_placed_on_ground.emit(self, global_position)
 		
 	return self
 	
@@ -192,7 +194,6 @@ func _amount_changed(new_amount: int) -> void:
 
 func _ready() -> void:
 	update_rendering()
-	Events.item_placed_on_ground.emit(self, global_position)
 
 func _exit_tree() -> void:
 	if item.rendering_type == Item.RenderingType.Terrain:
@@ -214,6 +215,10 @@ func generate_drops() -> void:
 			# TODO: Randomize position slightly
 			new_item_on_ground.global_position = global_position
 			get_parent().add_child(new_item_on_ground)
+
+func place_at_coordinate(coordinate: Vector2i) -> void:
+	global_position = Globals.get_map().coordinate_to_global_position(coordinate)
+	Events.item_placed_on_ground.emit(self, global_position)
 
 func _process(delta: float) -> void:
 	if _dirty:

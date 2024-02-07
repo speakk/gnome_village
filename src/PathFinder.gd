@@ -2,6 +2,8 @@ extends Node
 
 @onready var astar_grid := AStarGrid2D.new()
 
+const map_offset: Vector2i = Vector2i(MainMap3D.MAP_SIZE_X/2, MainMap3D.MAP_SIZE_Y/2)
+
 func _ready() -> void:
 	Events.map_ready.connect(_map_ready)
 	Events.solid_cell_placed.connect(_solid_cell_placed)
@@ -17,22 +19,19 @@ func _map_ready(_map: MainMap3D) -> void:
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
 
-func _solid_cell_placed(coordinates: Vector2i) -> void:
-	astar_grid.set_point_solid(coordinates)
-	Events.map_changed.emit(coordinates)
+func _solid_cell_placed(coordinate: Vector2i) -> void:
+	astar_grid.set_point_solid(coordinate - map_offset)
+	Events.map_changed.emit(coordinate)
 
-func _solid_cell_removed(coordinates: Vector2i) -> void:
-	astar_grid.set_point_solid(coordinates, false)
-	Events.map_changed.emit(coordinates)
+func _solid_cell_removed(coordinate: Vector2i) -> void:
+	astar_grid.set_point_solid(coordinate - map_offset, false)
+	Events.map_changed.emit(coordinate)
 
-func get_point_path(from: Vector2i, to: Vector2i) -> PackedVector2Array:
-	return astar_grid.get_point_path(from, to)
-
-func is_position_solid(coordinates: Vector2i) -> bool:
-	return astar_grid.is_point_solid(coordinates)
+func is_position_solid(coordinate: Vector2i) -> bool:
+	return astar_grid.is_point_solid(coordinate - map_offset)
 
 func is_valid_position(coordinate: Vector2i, check_for_solid: bool = true) -> bool:
-	return astar_grid.is_in_bounds(coordinate.x, coordinate.y) and (not check_for_solid or not is_position_solid(coordinate))
+	return astar_grid.is_in_bounds(coordinate.x - map_offset.x, coordinate.y - map_offset.y) and (not check_for_solid or not is_position_solid(coordinate))
 
 var all_directions: Array[Vector2i] = [
 	Vector2i(-1, -1),
@@ -94,9 +93,6 @@ func get_id_path_to_closest_point(from: Vector2i, to: Vector2i) -> PackedVector2
 				return new_path
 		
 	return found_path
-
-func get_point_position(id: Vector2i) -> Vector2:
-	return astar_grid.get_point_position(id)
 
 func set_coordinate_invalid(coordinate: Vector2i) -> void:
 	astar_grid.set_point_solid(coordinate)

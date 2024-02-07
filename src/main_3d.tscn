@@ -33,7 +33,7 @@ unique_name_in_owner = true
 
 [node name="MainMap3d" parent="." instance=ExtResource("2_l8r3t")]
 
-[node name="MapTileSelector" parent="MainMap3d" index="1" node_paths=PackedStringArray("selection_draw")]
+[node name="MapTileSelector" parent="MainMap3d" index="2" node_paths=PackedStringArray("selection_draw")]
 selection_draw = NodePath("../SelectionDraw")
 
 [node name="Entities" type="Node3D" parent="."]

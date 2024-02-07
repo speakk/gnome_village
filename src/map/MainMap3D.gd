@@ -76,6 +76,7 @@ func get_map_entities(coordinate: Vector2i) -> Array[ItemOnGround]:
 
 func is_coordinate_occupied(coordinate: Vector2i) -> bool:
 	if not map_entities.has(coordinate):
+		print("No entities at coordinate: ", coordinate)
 		return false
 	
 	var entities := map_entities[coordinate] as Array
@@ -113,6 +114,7 @@ func _ready() -> void:
 	Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector3) -> void:
 			var coordinate := global_position_to_coordinate(item_position)
 			add_map_entity(coordinate, item)
+			print("Adding map entity at coordinate based on position", coordinate, item_position)
 	)
 	
 	Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:

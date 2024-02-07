@@ -22,6 +22,7 @@ func update_path(actor: Settler) -> void:
 	var map_position_from := Globals.get_map().global_position_to_coordinate(actor.global_position)
 	var map_position_to := target_coordinate
 	path = PathFinder.get_id_path_to_closest_point(map_position_from, map_position_to)
+	print("Got path", path)
 	current_path_index = 0
 
 func process_action(actor: Settler, delta: float) -> void:
