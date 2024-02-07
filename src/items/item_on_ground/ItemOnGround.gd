@@ -190,6 +190,7 @@ func _amount_changed(new_amount: int) -> void:
 		queue_free()
 
 func _ready() -> void:
+	itemAmount.amount_changed.connect(_amount_changed)
 	update_rendering()
 
 func _exit_tree() -> void:

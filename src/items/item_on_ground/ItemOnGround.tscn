@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://f30j7nr3ioc4"]
+[gd_scene load_steps=10 format=3 uid="uid://f30j7nr3ioc4"]
 
 [ext_resource type="Script" path="res://src/items/item_on_ground/ItemOnGround.gd" id="1_j80v7"]
 [ext_resource type="Texture2D" uid="uid://dbembrglpom0n" path="res://assets/tree.png" id="3_n3puk"]
@@ -17,8 +17,6 @@ colors = PackedColorArray(0.492029, 0.550781, 0.333705, 1, 1, 0.936739, 0.577836
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_8n5hh"]
 gradient = SubResource("Gradient_sqx7s")
-
-[sub_resource type="LabelSettings" id="LabelSettings_d3jp2"]
 
 [node name="ItemOnGround" type="Node3D" groups=["item_on_ground"]]
 script = ExtResource("1_j80v7")
@@ -59,13 +57,14 @@ value = 0.2
 nine_patch_stretch = true
 texture_progress = SubResource("GradientTexture2D_8n5hh")
 
-[node name="ItemAmountLabel" type="Label" parent="."]
-offset_left = 9.0
-offset_top = 8.0
-offset_right = 43.0
-offset_bottom = 21.0
+[node name="ItemAmountLabel" type="Label3D" parent="."]
+pixel_size = 0.003
+billboard = 1
+fixed_size = true
+alpha_cut = 1
+texture_filter = 0
 text = "2"
-label_settings = SubResource("LabelSettings_d3jp2")
+font_size = 24
 
 [node name="ItemAmount" parent="." instance=ExtResource("6_ch2ij")]
 

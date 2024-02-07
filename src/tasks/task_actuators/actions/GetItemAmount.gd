@@ -16,5 +16,6 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		return FAILURE
 	
 	target_item.itemAmount.amount -= amount
+	print("Got amount, remaining amount:", amount, target_item.itemAmount.amount)
 	actor.inventory.add_item_amount(target_item.item_id, amount)
 	return SUCCESS
