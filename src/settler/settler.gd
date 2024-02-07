@@ -8,10 +8,10 @@ class_name Settler
 
 @onready var inventory: Inventory = $Inventory
 
-const REACH_DISTANCE := MainMap3D.CELL_SIZE.x * 1.5
-const AT_DISTANCE := 10.0
+const REACH_DISTANCE := MainMap3D.CELL_SIZE.x * 2.0
+const AT_DISTANCE := 1.5
 
-var walk_speed := 100.0
+var walk_speed := 5.0
 var build_speed := 0.3
 var dismantling_speed := 3
 var open_door_speed := 0.6
@@ -135,6 +135,7 @@ func get_current_task() -> TaskActuator:
 	return current_task_actuator
 
 func start_task(task: Task) -> void:
+	print("Starting task")
 	var task_actuator := Tasks.create_task_actuator(task)
 	task.tree_exited.connect(_clean_up_actuator)
 	task.failed.connect(_task_failed)
@@ -150,6 +151,7 @@ func _clean_up_actuator() -> void:
 		current_task_actuator = null
 
 func _task_failed(_task: Task) -> void:
+	print("Task failed oh no")
 	_clean_up_actuator()
 
 func finish_current_task() -> void:

@@ -81,7 +81,7 @@ func get_available_settler(task: Variant) -> Settler:
 	if "blueprint" in task:
 		target = task.blueprint.global_position
 	
-	print("Getting available settler", target)
+	#print("Getting available settler", target)
 	
 	if target:
 		var settlers_clone := settlers.duplicate()
@@ -94,13 +94,16 @@ func get_available_settler(task: Variant) -> Settler:
 		)
 		
 		if available.size() > 0:
+			print("Found aivalbe")
 			return available.front()
 		
 	else:
 		for settler in settlers:
 			if settler.is_available_for_work():
+				print("SETTLER AVIABLEB")
 				return settler
 	
+	print("NO setlters :(")
 	return null
 
 var task_process_timer := 0.0

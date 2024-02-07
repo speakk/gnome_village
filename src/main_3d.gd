@@ -8,8 +8,8 @@ extends Node3D
 @export var daylight_amount: Curve
 @export var yellow_light_amount: Curve
 
-const TEST_TREES = 1
-const TEST_RESOURCES = 2
+const TEST_TREES = 40
+const TEST_RESOURCES = 20
 const TEST_SETTLERS = 5
 const DECAL_AMOUNT = 2
 
@@ -25,35 +25,33 @@ func _ready() -> void:
 	
 	print("Now spawning entities")
 	
-	#for i in TEST_TREES:
-		#var random_position := Vector3(randf_range(0, map_size_real_x), 0, randf_range(0, map_size_real_y))
-		#var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
-		#var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
-		#if not PathFinder.is_position_solid(grid_position):
-			#var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
-			#%Entities.add_child(item_on_ground)
-			#item_on_ground.global_position = quantized_position
-			#item_on_ground.initialize(Items.Id.Tree)
-			#
-	#
-	#await get_tree().physics_frame
+	for i in TEST_TREES:
+		var grid_position := Globals.get_map().get_random_coordinate()
+		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
+		if not PathFinder.is_position_solid(grid_position):
+			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
+			%Entities.add_child(item_on_ground)
+			item_on_ground.global_position = quantized_position
+			item_on_ground.initialize(Items.Id.Tree)
+			
+	
+	await get_tree().physics_frame
 #
-	#var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone]
+	var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone]
 #
-	#for i in TEST_RESOURCES:
-		#var random_position := Vector3(randf_range(0, map_size_real_x), randf_range(0, map_size_real_y), 0.0)
-		#var grid_position := Globals.get_map().global_position_to_coordinate(random_position)
-		#var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
-		#if not PathFinder.is_position_solid(grid_position):
-			#var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
-			#%Entities.add_child(item_on_ground)
-			#item_on_ground.global_position = quantized_position
-			#item_on_ground.initialize(item_types.pick_random())
+	for i in TEST_RESOURCES:
+		var grid_position := Globals.get_map().get_random_coordinate()
+		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
+		if not PathFinder.is_position_solid(grid_position):
+			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
+			%Entities.add_child(item_on_ground)
+			item_on_ground.global_position = quantized_position
+			item_on_ground.initialize(item_types.pick_random())
 	
 	var settlers_to_place := TEST_SETTLERS
 	var attempts := 400
 	for i in attempts:
-		var grid_position := Vector2i(randi_range(0, map_size_real_x), randi_range(0, map_size_real_y))
+		var grid_position := Globals.get_map().get_random_coordinate()
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
 			var settler := SETTLER.instantiate()

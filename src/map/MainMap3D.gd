@@ -5,9 +5,9 @@ class_name MainMap3D extends Node3D
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-const MAP_SIZE_X: int = 40
-const MAP_SIZE_Y: int = 40
-const CELL_SIZE := Vector2i(1, 1)
+const MAP_SIZE_X: int = 100
+const MAP_SIZE_Y: int = 100
+const CELL_SIZE := Vector2(1, 1)
 
 @onready var map_tile_selector := $MapTileSelector as MapTileSelector
 
@@ -139,7 +139,6 @@ func _handle_ui_action_selection(new_ui_action: UiAction) -> void:
 	selected_ui_action = new_ui_action
 
 func _tiles_selected(coordinates: Array[Vector2i]) -> void:
-	print("Tiles selected called")
 	if selected_ui_action:
 		action_handlers[selected_ui_action.ui_action_id].call(coordinates)
 
@@ -205,7 +204,7 @@ func _terrain_cleared(coordinate: Vector2i, blueprint: bool) -> void:
 # TODO: Unholy
 func get_random_coordinate(accept_occupied: bool = true) -> Vector2i:
 	while(true):
-		var random_position := Vector2i(randi_range(1, MAP_SIZE_X-1), randi_range(1, MAP_SIZE_Y-1))
+		var random_position := Vector2i(randi_range(1, MAP_SIZE_X-1), randi_range(1, MAP_SIZE_Y-1)) - Vector2i(MAP_SIZE_X, MAP_SIZE_Y) / 2
 		if not PathFinder.is_position_solid(random_position):
 			return random_position
 	

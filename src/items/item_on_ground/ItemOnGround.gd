@@ -8,8 +8,7 @@ enum ItemState {
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-@onready var sprite := $Sprite2D as Sprite2D
-@onready var occluder := $LightOccluder2D as LightOccluder2D
+@onready var sprite := $Sprite3D as Sprite3D
 @onready var itemAmount := $ItemAmount as ItemAmount
 @onready var constructionInventory := $ConstructionInventory as Inventory
 
@@ -44,7 +43,6 @@ func update_rendering() -> void:
 	var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
 	
 	sprite.visible = false
-	occluder.visible = false
 	
 	if item.rendering_type == Item.RenderingType.Sprite:
 		sprite.visible = true
@@ -55,8 +53,7 @@ func update_rendering() -> void:
 		sprite.centered = false
 		var sprite_size := sprite.texture.get_size() / Vector2(sprite.hframes, sprite.vframes)
 		sprite.offset = (- item.origin * sprite_size) - Vector2(MainMap3D.CELL_SIZE / 2)
-		occluder.visible = item.cast_shadow_enabled
-		occluder.position = (item.cast_shadow_origin * sprite_size)
+		sprite.offset.y *= -1
 		
 	elif item.rendering_type == Item.RenderingType.Terrain:
 		#Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
@@ -82,7 +79,7 @@ func update_rendering() -> void:
 			Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
 			Events.terrain_cleared.emit(coordinate, true)
 		elif item.rendering_type == Item.RenderingType.Sprite:
-			$Sprite2D.modulate = Color.WHITE
+			$Sprite3D.modulate = Color.WHITE
 		elif item.rendering_type == Item.RenderingType.None and item.scene:
 			get_node("scene").modulate = Color.WHITE
 	
@@ -94,7 +91,7 @@ func update_rendering() -> void:
 			Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, true)
 			Events.terrain_cleared.emit(coordinate, false)
 		elif item.rendering_type == Item.RenderingType.Sprite:
-			$Sprite2D.modulate = Color(0.6, 0.6, 1.0, 0.5)
+			$Sprite3D.modulate = Color(0.6, 0.6, 1.0, 0.5)
 		elif item.rendering_type == Item.RenderingType.None and item.scene:
 			get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
 
@@ -179,7 +176,7 @@ func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemSta
 	_initial_state = state
 	
 	Events.item_placed_on_ground.emit(self, global_position)
-		
+
 	return self
 	
 func _amount_changed(new_amount: int) -> void:
@@ -227,7 +224,7 @@ func _process(delta: float) -> void:
 
 func finish_construction() -> void:
 	if not finish_emitted:
-		$Sprite2D.modulate = Color.WHITE
+		$Sprite3D.modulate = Color.WHITE
 		$ProgressBar.hide()
 		
 		await get_tree().process_frame
