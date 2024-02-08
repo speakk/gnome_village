@@ -1,18 +1,28 @@
-[gd_scene load_steps=13 format=3 uid="uid://cdn5fwsgd0fpm"]
+[gd_scene load_steps=16 format=3 uid="uid://cdn5fwsgd0fpm"]
 
 [ext_resource type="Script" path="res://src/main_3d.gd" id="1_h0o83"]
 [ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://src/tasks/task_assigner/TaskHandler.tscn" id="1_lyh74"]
 [ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap3D.tscn" id="2_l8r3t"]
+[ext_resource type="PackedScene" uid="uid://cs2fptc2k4veq" path="res://src/sky/Sky.tscn" id="2_vk0vx"]
 [ext_resource type="PackedScene" uid="uid://du6ros11u7s0m" path="res://src/zones/ZoneManager.tscn" id="3_v025i"]
 [ext_resource type="PackedScene" uid="uid://b1no50g6cjkhd" path="res://src/settler/settler.tscn" id="4_be8d2"]
 [ext_resource type="PackedScene" uid="uid://dk7vrm018wwop" path="res://src/systems/day_night_cycle.tscn" id="5_gc7w6"]
 [ext_resource type="PackedScene" uid="uid://w5t5a0o36hje" path="res://src/camera_3d.tscn" id="6_wahq5"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://src/gui/gui.tscn" id="7_vml5v"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_g782x"]
+[sub_resource type="Gradient" id="Gradient_oc6lu"]
+colors = PackedColorArray(0.101463, 0.102891, 0.316406, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_v02so"]
+gradient = SubResource("Gradient_oc6lu")
+fill_from = Vector2(0.496504, 0)
+fill_to = Vector2(0.503497, 1)
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_k5n52"]
+night_sky = SubResource("GradientTexture2D_v02so")
 
 [sub_resource type="Sky" id="Sky_cc5fj"]
-sky_material = SubResource("ProceduralSkyMaterial_g782x")
+sky_material = SubResource("PhysicalSkyMaterial_k5n52")
 
 [sub_resource type="Environment" id="Environment_1katu"]
 background_mode = 2
@@ -23,6 +33,10 @@ ambient_light_source = 3
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_h0o83")
+
+[node name="sky" parent="." instance=ExtResource("2_vk0vx")]
+sun_axis_rotation = Vector3(0.894427, 0, 0.447214)
+night_level_light = 0.58
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1katu")
@@ -51,7 +65,8 @@ unique_name_in_owner = true
 target = NodePath("../MainMap3d/GridMap")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.333182, 0.666705, 0.666705, 0, -0.707107, 0.707107, 0.942863, -0.235595, -0.235595, 0, 12.5409, 16.4982)
+transform = Transform3D(0.333182, 0.666705, 0.666704, -0.526942, -0.454702, 0.718038, 0.781871, -0.590552, 0.199816, 0, 12.5409, 16.4982)
+visible = false
 shadow_enabled = true
 
 [node name="GUI" parent="." instance=ExtResource("7_vml5v")]

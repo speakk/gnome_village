@@ -50,14 +50,24 @@ func update_rendering() -> void:
 		sprite.hframes = item.hframes
 		sprite.vframes = item.vframes
 		sprite.frame = item.frame
-		sprite.centered = false
+		#sprite.centered = false
+		# TODO: 3D rework
 		var sprite_size := sprite.texture.get_size() / Vector2(sprite.hframes, sprite.vframes)
-		sprite.offset = (- item.origin * sprite_size) - Vector2(MainMap3D.CELL_SIZE / 2)
-		sprite.offset.y *= -1
+		#sprite.offset = (- item.origin * sprite_size) - Vector2(MainMap3D.CELL_SIZE / 2)
+		sprite.offset.y = item.origin.y * sprite_size.y / 2
+		print("offset is", sprite.offset.y)
+		#sprite.offset.y *= -1
 		
 	elif item.rendering_type == Item.RenderingType.Terrain:
 		#Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
 		Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
+	
+	elif item.rendering_type == Item.RenderingType.Model:
+		if has_node("model"):
+			get_node("model").queue_free()
+		var model := item.model.instantiate()
+		model.name = "model"
+		add_child(model)
 
 	if item.scene:
 		if item_scene:
@@ -219,6 +229,8 @@ func place_at_coordinate(coordinate: Vector2i) -> void:
 	Events.item_placed_on_ground.emit(self, global_position)
 
 func _process(delta: float) -> void:
+	# TODO: 3D rework, fix this elsewhere
+	$Sprite3D.global_position.y = 0.5
 	if _dirty:
 		update_rendering()
 		_dirty = false

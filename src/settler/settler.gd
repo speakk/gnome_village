@@ -97,6 +97,8 @@ func _finished_path() -> void:
 
 func move_and_slide(delta: float) -> void:
 	global_position += velocity * delta
+	# 3D rework: Fix this elsewhere
+	global_position.y = 0.5
 #
 #func _process(delta: float) -> void:
 	#$Line2D.global_position = get_parent().global_position
@@ -135,7 +137,6 @@ func get_current_task() -> TaskActuator:
 	return current_task_actuator
 
 func start_task(task: Task) -> void:
-	print("Starting task")
 	var task_actuator := Tasks.create_task_actuator(task)
 	task.tree_exited.connect(_clean_up_actuator)
 	task.failed.connect(_task_failed)
@@ -151,7 +152,6 @@ func _clean_up_actuator() -> void:
 		current_task_actuator = null
 
 func _task_failed(_task: Task) -> void:
-	print("Task failed oh no")
 	_clean_up_actuator()
 
 func finish_current_task() -> void:

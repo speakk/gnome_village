@@ -22,6 +22,7 @@ gradient = SubResource("Gradient_sqx7s")
 script = ExtResource("1_j80v7")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
+cast_shadow = 0
 pixel_size = 0.05
 billboard = 1
 alpha_cut = 1

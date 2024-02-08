@@ -3,7 +3,7 @@ extends Resource
 class_name Item
 
 enum RenderingType {
-	Tile, Terrain, Sprite, None
+	Tile, Terrain, Sprite, None, Model
 }
 
 enum SpecialFeatures {
@@ -12,6 +12,9 @@ enum SpecialFeatures {
 
 @export_group("Visuals")
 @export var rendering_type: RenderingType = RenderingType.Sprite
+
+@export_subgroup("3D")
+@export var model: PackedScene
 
 @export_subgroup("Sprite")
 @export var texture: Texture2D = load("res://assets/materials.png")

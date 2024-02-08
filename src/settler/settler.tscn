@@ -75,7 +75,7 @@ _data = {
 }
 
 [node name="Settler" type="Node3D" groups=["settler"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.450692, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 script = ExtResource("1_ghp1u")
 
 [node name="Sprite" type="Sprite3D" parent="."]

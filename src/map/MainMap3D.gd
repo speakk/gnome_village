@@ -5,8 +5,8 @@ class_name MainMap3D extends Node3D
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-const MAP_SIZE_X: int = 100
-const MAP_SIZE_Y: int = 100
+const MAP_SIZE_X: int = 70
+const MAP_SIZE_Y: int = 60
 const CELL_SIZE := Vector2(1, 1)
 
 @onready var map_tile_selector := $MapTileSelector as MapTileSelector
@@ -52,6 +52,8 @@ func prepare_blueprint_grid() -> void:
 
 func prepare_for_load() -> void:
 	map_entities.clear()
+	grid.clear()
+	blueprint_grid.clear()
 	#clear_layer(Layers.Building)
 	#clear_layer(Layers.Blueprint)
 
@@ -82,7 +84,7 @@ func is_coordinate_occupied(coordinate: Vector2i) -> bool:
 	var entities := map_entities[coordinate] as Array
 	
 	for item_on_ground in entities as Array[ItemOnGround]:
-		if item_on_ground.item.can_be_constructed:
+		if item_on_ground.item.can_be_constructed or item_on_ground.item.is_solid:
 			return true
 	
 	return false
@@ -94,6 +96,8 @@ func _ready() -> void:
 	#add_layer(Layers.Blueprint)
 	#
 	#set_layer_z_index(Layers.Building, 1)
+	
+	prepare_for_load()
 	
 	map_tile_selector.tiles_selected.connect(_tiles_selected)
 	map_tile_selector.tiles_selected_secondary.connect(_tiles_selected_secondary)
@@ -211,7 +215,8 @@ func get_random_coordinate(accept_occupied: bool = true) -> Vector2i:
 	return Vector2i(0, 0)
 
 func coordinate_to_global_position(coordinate: Vector2i) -> Vector3:
-	return grid.to_global(grid.map_to_local(Vector3(coordinate.x, 0, coordinate.y)))
+	var original_grid_pos := grid.to_global(grid.map_to_local(Vector3(coordinate.x, 0, coordinate.y)))
+	return Vector3(original_grid_pos.x, 0, original_grid_pos.z)
 
 func global_position_to_coordinate(_global_position: Vector3) -> Vector2i:
 	var coordinate: Vector3i = grid.local_to_map(grid.to_local(_global_position))
