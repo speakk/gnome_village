@@ -64,44 +64,6 @@ bool SphereIntersect(lowp vec3 apos, lowp float arad, lowp vec3 ro, lowp vec3 rd
 	return true;
 }
 
-lowp float density(lowp vec3 pos, lowp vec3 offset)
-{
-	lowp vec3 p = pos * 0.02/SIZE + offset;
-	lowp float dens = get_noise(p,2.0+SOFTNESS);
-	dens *= smoothstep (COVERAGE, COVERAGE + .07, dens);
-	return clamp(dens, 0.0, 1.0);	
-}
-
-lowp vec4 clouds_3d(lowp vec3 ro, lowp vec3 rd, lowp vec3 wind)
-{
-	lowp vec3 apos=vec3(0, -450, 0);
-	lowp float arad=500.0;
-	lowp vec3 clouds = vec3(0.0);
-	lowp float alpha = 0.0;
-	lowp vec3 norm;
-	if(SphereIntersect(apos,arad,ro,rd,norm))
-	{
-		lowp int steps = STEPS;
-		lowp float march_step = THICKNESS / float(steps);
-		lowp vec3 dir_step = rd / rd.y * march_step;
-		lowp vec3 pos =norm;
-		lowp float T = 1.0;
-		for (int i = 0; i < steps; i++)
-			{
-			if (length(pos) > 1e3) break;
-			lowp float dens = density (pos, wind)*march_step;
-			lowp float T_i = exp(-ABSORPTION * dens);
-			T *= T_i;
-			if (T < .01) break;
-			lowp float h = float(i) / float(steps);
-			clouds += T * (exp(h)/2.0 ) *dens;
-			alpha += (1. - T_i) * (1. - alpha);
-			pos += dir_step;
-			}
-		}
-		return vec4(clouds,alpha);
-}
-
 lowp vec3 extra_cheap_atmosphere(vec3 raydir, vec3 sundir) //https://www.shadertoy.com/view/MtBcz1
 {
 	sundir.y = max(sundir.y, -0.07);
@@ -155,34 +117,21 @@ lowp vec3 draw_night_sky (lowp float sky_amount, lowp vec3 rd, lowp vec2 sky_coo
 void sky() {
 	vec3 rd = EYEDIR;
 	rd.x*=-1.0; //The x-axis is inverted on the godot scene for unknown reasons
-	lowp vec3 ro = vec3(0.0, -200.0*HEIGHT+40.0, 0.0); //This is the vector of displacement of the sphere relative to zero coordinates. Here you can set the height of the clouds. That is, to make a sphere with clouds higher or lower.
 	lowp vec4 cld;
-	bool quality_res_cloud;
 	if (AT_QUARTER_RES_PASS)
 	{
 		lowp float skyPow = dot(rd, vec3(0.0, -1.0, 0.0));
 		lowp float horizonPow =1.0-pow(1.0-abs(skyPow), 5.0);
 		lowp float horizon_line = clamp((1.0 - exp(-10. * pow(max((0.0), horizonPow), (2.6)))),0.0,1.0);//Here we dissolve the clouds in the horizon for a smooth transition to the horizon line.
-		if (rd.y>0.0) 
-			{cld=clouds_3d(ro,rd,WIND*TIME/SIZE);}
-		else
-			//{cld.rgb = cube_bot(rd,vec3(1.5,1.49,1.71), vec3(1.1,1.15,1.5),TIME); cld.a = 1.0;}
-			{cld.rgb = vec3(get_noise(rd+WIND*TIME,3.0));cld.a =1.0;;}
 		cld*=horizon_line;
 		COLOR = vec3(cld.r,cld.a,0.0);
 	}
 	else 
 	{
-	lowp vec4 clouds;
-	clouds.rgb = QUARTER_RES_COLOR.r*clouds_tint.rgb*attenuation;
-	clouds.a = QUARTER_RES_COLOR.g;
 	lowp vec3 sky;
 	sky = extra_cheap_atmosphere(rd,SUN_POS);
 	sky = mix (vec3(0.0),sky,smoothstep(-0.1,0.0,rd.y));
-	sky = max (sky,draw_night_sky(max(max(sky.b,sky.r),sky.g),rd,SKY_COORDS,clouds.a));
-	lowp float lighting = clamp (0.5+texture(moon,LIGHTING_POS.xz-rd.xz+0.5).g*smoothstep(0.6,0.3,length(LIGHTING_POS-rd)),0.0,1.0);
-	sky = mix (sky.rgb, vec3(lighting),lighting_strength); //flash of light in the sky simulates a lightning strike
-	sky = mix(sky, clouds.rgb/(0.0001+clouds.a), clouds.a);
+	sky = max (sky,draw_night_sky(max(max(sky.b,sky.r),sky.g),rd,SKY_COORDS,1.0));
 	COLOR = sky;	
 	}
 }

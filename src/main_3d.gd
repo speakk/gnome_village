@@ -11,7 +11,7 @@ extends Node3D
 @export var yellow_light_amount: Curve
 
 const TEST_TREES = 40
-const TEST_RESOURCES = 20
+const TEST_RESOURCES = 150
 const TEST_SETTLERS = 5
 const DECAL_AMOUNT = 2
 
@@ -89,7 +89,7 @@ func _process(delta: float) -> void:
 		Engine.time_scale = 2.0
 	
 	if Input.is_action_just_pressed("game_speed_3"):
-		Engine.time_scale = 5.0
+		Engine.time_scale = 9.0
 	
 # For now this is okay, but eventually Entities and
 # TaskHandler ought to have their own save methods

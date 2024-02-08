@@ -12,7 +12,7 @@ func initialize(params: Dictionary) -> void:
 	item_requirement = params["item_requirement"]
 	inventory_holder_entity = params["inventory_holder_entity"]
 	
-	assert(target_coordinate)
+	assert(target_coordinate != null)
 	assert(item_requirement)
 	assert(inventory_holder_entity)
 

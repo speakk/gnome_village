@@ -14,7 +14,12 @@
 script = ExtResource("1_h0o83")
 
 [node name="sky" parent="." instance=ExtResource("2_vk0vx")]
-sun_axis_rotation = Vector3(0.894427, 0, 0.447214)
+sun_pos_default = Vector3(-0.307602, -0.951515, 0)
+sun_axis_rotation = Vector3(-1, 0, 0)
+moon_tint = Color(0.706745, 0.764224, 1, 1)
+moon_light = Color(0.401003, 0.401307, 0.949219, 1)
+sunset_light = Color(0.871094, 0.6338, 0.466128, 1)
+day_light = Color(1, 0.950593, 0.887327, 1)
 night_level_light = 0.58
 
 [node name="TaskHandler" parent="." instance=ExtResource("1_lyh74")]

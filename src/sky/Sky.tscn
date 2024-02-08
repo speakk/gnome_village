@@ -8,7 +8,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tksbq"]
 shader = ExtResource("1_36bfg")
-shader_parameter/moon_tint = Color(1, 0.643137, 0.152941, 1)
+shader_parameter/moon_tint = Color(0.706745, 0.764224, 1, 1)
 shader_parameter/clouds_tint = Color(0.590625, 0.58125, 0.8, 1)
 shader_parameter/SCATERRING = false
 shader_parameter/SUN_POS = Vector3(-0.223607, -0.866025, 0.447214)
@@ -50,7 +50,6 @@ adjustment_saturation = 0.75
 [node name="sky" type="WorldEnvironment"]
 environment = SubResource("Environment_h6yc6")
 script = ExtResource("4_cuqt8")
-clouds_tint = Color(0.984375, 0.96875, 1, 1)
 moon_tint = Color(1, 0.674564, 0.338101, 1)
 day_light = Color(1, 0.949976, 0.982208, 1)
 
