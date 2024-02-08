@@ -1,5 +1,5 @@
 @tool
-extends WorldEnvironment
+class_name DayNightCycleSky extends WorldEnvironment
 
 @warning_ignore("untyped_declaration")
 

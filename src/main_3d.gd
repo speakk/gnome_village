@@ -5,6 +5,8 @@ extends Node3D
 
 @onready var main_map: MainMap3D = $MainMap3d as MainMap3D
 
+@onready var sky: DayNightCycleSky = $sky
+
 @export var daylight_amount: Curve
 @export var yellow_light_amount: Curve
 
@@ -17,7 +19,7 @@ func _ready() -> void:
 	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
 	Events.save_game_called.connect(func(save_dict: Dictionary) -> void: save(save_dict))
 	
-	#Events.current_time_changed.connect(_current_time_changed)
+	Events.current_time_changed.connect(_current_time_changed)
 	
 	var test_divider := 1
 	var map_size_real_x := MainMap3D.MAP_SIZE_X / test_divider
@@ -138,7 +140,9 @@ func save(save_dict: Dictionary) -> void:
 	
 	save_dict["main_data"] = main_data
 #
-#func _current_time_changed(new_time: float) -> void:
+func _current_time_changed(new_time: float) -> void:
+	#sky.set_time_of_day(new_time)
+	sky.time_of_day_setup = new_time
 	#var daylight_sampled := daylight_amount.sample(new_time)
 	#var red_green := daylight_sampled
 	#var yellow_amount := yellow_light_amount.sample(new_time)

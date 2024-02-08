@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cdn5fwsgd0fpm"]
+[gd_scene load_steps=10 format=3 uid="uid://cdn5fwsgd0fpm"]
 
 [ext_resource type="Script" path="res://src/main_3d.gd" id="1_h0o83"]
 [ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://src/tasks/task_assigner/TaskHandler.tscn" id="1_lyh74"]
@@ -10,37 +10,12 @@
 [ext_resource type="PackedScene" uid="uid://w5t5a0o36hje" path="res://src/camera_3d.tscn" id="6_wahq5"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://src/gui/gui.tscn" id="7_vml5v"]
 
-[sub_resource type="Gradient" id="Gradient_oc6lu"]
-colors = PackedColorArray(0.101463, 0.102891, 0.316406, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_v02so"]
-gradient = SubResource("Gradient_oc6lu")
-fill_from = Vector2(0.496504, 0)
-fill_to = Vector2(0.503497, 1)
-
-[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_k5n52"]
-night_sky = SubResource("GradientTexture2D_v02so")
-
-[sub_resource type="Sky" id="Sky_cc5fj"]
-sky_material = SubResource("PhysicalSkyMaterial_k5n52")
-
-[sub_resource type="Environment" id="Environment_1katu"]
-background_mode = 2
-sky = SubResource("Sky_cc5fj")
-ambient_light_source = 3
-
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6dum3"]
-
 [node name="Main" type="Node3D"]
 script = ExtResource("1_h0o83")
 
 [node name="sky" parent="." instance=ExtResource("2_vk0vx")]
 sun_axis_rotation = Vector3(0.894427, 0, 0.447214)
 night_level_light = 0.58
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_1katu")
-camera_attributes = SubResource("CameraAttributesPractical_6dum3")
 
 [node name="TaskHandler" parent="." instance=ExtResource("1_lyh74")]
 unique_name_in_owner = true
