@@ -39,7 +39,8 @@ background_mode = 2
 sky = SubResource("Sky_jusdg")
 ambient_light_color = Color(0.6, 0.6, 0.8, 1)
 ambient_light_sky_contribution = 0.0
-ambient_light_energy = 0.435
+ambient_light_energy = 0.44
+tonemap_mode = 3
 ssao_enabled = true
 ssil_enabled = true
 fog_light_color = Color(0.6, 0.6, 0.8, 1)
@@ -51,6 +52,7 @@ adjustment_saturation = 0.75
 environment = SubResource("Environment_h6yc6")
 script = ExtResource("4_cuqt8")
 moon_tint = Color(1, 0.674564, 0.338101, 1)
+sunset_light = Color(0.835938, 0.585156, 0.459766, 1)
 day_light = Color(1, 0.949976, 0.982208, 1)
 
 [node name="sun_moon" type="DirectionalLight3D" parent="."]

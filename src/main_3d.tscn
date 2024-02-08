@@ -42,6 +42,7 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="Camera3D" parent="." node_paths=PackedStringArray("target") instance=ExtResource("6_wahq5")]
+transform = Transform3D(1, 0, 0, 0, 0.790967, 0.611858, 0, -0.611858, 0.790967, 1.42875, 20.4385, 15.9813)
 target = NodePath("../MainMap3d/GridMap")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
