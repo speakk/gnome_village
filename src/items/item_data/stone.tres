@@ -1,23 +1,32 @@
-[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://bp5lv8puyb7kd"]
+[gd_resource type="Resource" script_class="Item" load_steps=4 format=3 uid="uid://bp5lv8puyb7kd"]
 
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_4s53r"]
+[ext_resource type="PackedScene" uid="uid://dna7s14tl0j7b" path="res://assets/blender_models/stone.blend" id="1_oplyr"]
 [ext_resource type="Texture2D" uid="uid://8s6yv2xyevt5" path="res://assets/materials.png" id="2_ivvoi"]
 
 [resource]
 script = ExtResource("1_4s53r")
-rendering_type = 2
+rendering_type = 4
+model = ExtResource("1_oplyr")
 texture = ExtResource("2_ivvoi")
 hframes = 2
 vframes = 1
 frame = 1
 origin = Vector2(0, 0)
+cast_shadow_enabled = false
+cast_shadow_origin = Vector2(0, 0)
 tileset_id = 0
 tile_id = 0
 terrain_set_id = 0
 terrain_id = 0
 target_layer = 0
+mesh_id = 0
 display_name = "Stone"
 can_be_picked = true
 can_be_constructed = false
+can_be_dismantled = false
 is_solid = false
+durability = 10
 crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
+special_features = Array[int]([])

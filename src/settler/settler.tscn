@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=10 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://src/settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="Texture2D" uid="uid://bgdpno3b05m2g" path="res://assets/settler.png" id="1_ryuwt"]
+[ext_resource type="PackedScene" uid="uid://d0bhvo3gwo2q8" path="res://assets/blender_models/settler.blend" id="4_j4bsq"]
 [ext_resource type="PackedScene" uid="uid://dnly7t4x7n0av" path="res://src/components/Inventory.tscn" id="4_qojkr"]
 
 [sub_resource type="Animation" id="Animation_tnvni"]
@@ -79,6 +80,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 script = ExtResource("1_ghp1u")
 
 [node name="Sprite" type="Sprite3D" parent="."]
+visible = false
 pixel_size = 0.05
 billboard = 1
 alpha_cut = 1
@@ -101,3 +103,6 @@ default_color = Color(0.798, 0.95, 0.9272, 0.0196078)
 [node name="CarryItemSprite" type="Sprite2D" parent="."]
 visible = false
 position = Vector2(0, -23)
+
+[node name="settler" parent="." instance=ExtResource("4_j4bsq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00430357, -0.5, -0.097248)

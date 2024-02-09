@@ -19,7 +19,7 @@ sun_axis_rotation = Vector3(-1, 0, 0)
 moon_tint = Color(0.706745, 0.764224, 1, 1)
 moon_light = Color(0.401003, 0.401307, 0.949219, 1)
 sunset_light = Color(0.871094, 0.6338, 0.466128, 1)
-day_light = Color(1, 0.950593, 0.887327, 1)
+day_light = Color(0.558594, 0.530995, 0.495655, 1)
 night_level_light = 0.58
 
 [node name="TaskHandler" parent="." instance=ExtResource("1_lyh74")]
@@ -42,7 +42,8 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="Camera3D" parent="." node_paths=PackedStringArray("target") instance=ExtResource("6_wahq5")]
-transform = Transform3D(1, 0, 0, 0, 0.790967, 0.611858, 0, -0.611858, 0.790967, 1.42875, 20.4385, 15.9813)
+transform = Transform3D(1, 0, 0, 0, 0.790967, 0.611858, 0, -0.611858, 0.790967, 1.42875, 35.3241, 23.6879)
+far = 139.14
 target = NodePath("../MainMap3d/GridMap")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]

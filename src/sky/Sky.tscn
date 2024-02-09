@@ -52,8 +52,7 @@ adjustment_saturation = 0.75
 environment = SubResource("Environment_h6yc6")
 script = ExtResource("4_cuqt8")
 moon_tint = Color(1, 0.674564, 0.338101, 1)
-sunset_light = Color(0.835938, 0.585156, 0.459766, 1)
-day_light = Color(1, 0.949976, 0.982208, 1)
+day_light = Color(0.644531, 0.626871, 0.601215, 1)
 
 [node name="sun_moon" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-1, 7.57104e-08, -4.37114e-08, 0, 0.500001, 0.866026, 8.74228e-08, 0.866026, -0.500001, 0, 0.866025, -0.5)

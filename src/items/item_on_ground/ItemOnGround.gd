@@ -12,7 +12,7 @@ enum ItemState {
 @onready var itemAmount := $ItemAmount as ItemAmount
 @onready var constructionInventory := $ConstructionInventory as Inventory
 
-var item_scene: Node2D
+var item_scene: Node3D
 var item: Item
 
 var _dirty: bool
@@ -74,7 +74,7 @@ func update_rendering() -> void:
 			remove_child(get_node("scene"))
 			item_scene.queue_free()
 			
-		var scene := item.scene.instantiate() as Node2D
+		var scene := item.scene.instantiate() as Node3D
 		scene.name = "scene"
 		add_child(scene)
 		item_scene = scene
@@ -91,7 +91,9 @@ func update_rendering() -> void:
 		elif item.rendering_type == Item.RenderingType.Sprite:
 			$Sprite3D.modulate = Color.WHITE
 		elif item.rendering_type == Item.RenderingType.None and item.scene:
-			get_node("scene").modulate = Color.WHITE
+			# 3D rendering TODO
+			pass
+			#get_node("scene").modulate = Color.WHITE
 	
 	if current_state == ItemState.Blueprint:
 		#print("New state is blueprint!")
@@ -103,7 +105,10 @@ func update_rendering() -> void:
 		elif item.rendering_type == Item.RenderingType.Sprite:
 			$Sprite3D.modulate = Color(0.6, 0.6, 1.0, 0.5)
 		elif item.rendering_type == Item.RenderingType.None and item.scene:
-			get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
+			# TODO: 3D rendering: Figure out how to modulate the scene
+			# (maybe a "render_as_blueprint" method contract
+			#get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
+			pass
 
 
 var max_durability: float = 10:

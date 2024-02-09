@@ -31,6 +31,7 @@ tile_id = 0
 terrain_set_id = 0
 terrain_id = 0
 target_layer = 3
+mesh_id = 0
 display_name = "Wooden Door"
 scene = ExtResource("3_nj775")
 can_be_picked = false
