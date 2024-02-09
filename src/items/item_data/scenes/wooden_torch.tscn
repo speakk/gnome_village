@@ -1,11 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://uqcgysgd2yqr"]
+[gd_scene load_steps=3 format=3 uid="uid://uqcgysgd2yqr"]
 
-[ext_resource type="Texture2D" uid="uid://cljj53wgt1j7" path="res://assets/items_sheet.png" id="1_4vkyx"]
+[ext_resource type="Script" path="res://src/items/item_data/scenes/wooden_torch.gd" id="1_grq6w"]
+[ext_resource type="PackedScene" uid="uid://c7vlpvn5eoky4" path="res://assets/blender_models/wooden_torch.blend" id="1_gscy7"]
 
-[node name="WoodenTorch" type="Node2D" groups=["radial_light"]]
+[node name="WoodenTorch" type="Node3D" groups=["radial_light"]]
+script = ExtResource("1_grq6w")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -4)
-texture = ExtResource("1_4vkyx")
-hframes = 30
-vframes = 30
+[node name="wooden_torch" parent="." instance=ExtResource("1_gscy7")]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.729958, 0)
+light_color = Color(0.949219, 0.678864, 0.458375, 1)
+shadow_enabled = true
+omni_range = 20.6026
