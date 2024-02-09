@@ -157,7 +157,7 @@ func ensure_valid_position() -> void:
 		var free_coordinate := PathFinder.get_closest_free_point(Globals.get_map().global_position_to_coordinate(global_position)) as Vector2i
 		if free_coordinate:
 			var new_position := Globals.get_map().coordinate_to_global_position(free_coordinate)
-			get_tree().create_tween().tween_property(self, "global_position", new_position, 0.5)
+			get_tree().create_tween().tween_property(self, "global_position", Vector3(new_position.x, 0.5, new_position.z), 0.5)
 			#global_position = new_position
 
 func is_in_valid_position() -> bool:
