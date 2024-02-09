@@ -1,6 +1,8 @@
 class_name ActorAction extends Node
 
+var _start_processed: bool
+
 signal finished(actor_action: ActorAction)
 
 func process_action(actor: Settler, delta: float) -> void:
-	push_error("Action process function is abstract - Forgot to implement it for an action?")
+	push_warning("ActorAction process_action called, did you forget to implement?")

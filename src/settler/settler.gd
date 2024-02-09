@@ -36,6 +36,7 @@ func _ready() -> void:
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
 	$Inventory.item_added.connect(_inventory_item_added)
 	$Inventory.item_removed.connect(_inventory_item_removed)
+	play_animation("Idle")
 	#
 	#var hair := hair_options.pick_random() as Texture2D
 	#if hair:
@@ -111,19 +112,6 @@ func _physics_process(delta: float) -> void:
 	velocity = Vector3.ZERO
 	
 	process_actions(delta)
-	
-	if velocity.length() > 0:
-		$AnimationPlayer.play("walk_still")
-		
-		if velocity.x > 0:
-			$Sprite.flip_h = false
-			#$HairSprite.flip_h = false
-		else:
-			$Sprite.flip_h = true
-			#$HairSprite.flip_h = true
-		
-	else:
-		$AnimationPlayer.play("idle")
 	
 	move_and_slide(delta)
 	
@@ -216,3 +204,11 @@ func _inventory_item_added(item_id: Variant, _amount: int) -> void:
 
 func _inventory_item_removed(_item_id: Variant, _amount: int) -> void:
 	_refresh_carry_item_sprite()
+
+func play_animation(animation_name: String) -> void:
+	if not $settler/AnimationPlayer.current_animation == animation_name:
+		$settler/AnimationPlayer.play(animation_name)
+
+func stop_animation() -> void:
+	$settler/AnimationPlayer.stop()
+	
