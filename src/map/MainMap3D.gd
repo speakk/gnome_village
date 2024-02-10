@@ -2,6 +2,7 @@ class_name MainMap3D extends Node3D
 
 @onready var grid: GridMap = $GridMap
 @onready var blueprint_grid: GridMap = $BlueprintGridMap
+@onready var ground_grid: GridMap = $GroundGrid
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
@@ -107,7 +108,7 @@ func _ready() -> void:
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
 			if world_center.distance_to(Vector2(x * CELL_SIZE.x, y * CELL_SIZE.y)) < 400:
-				pass
+				ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 0)
 				#set_cells_terrain_connect(Layers.Ground, [Vector2i(x, y)], 1, 0)
 	
 	#set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
