@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" path="res://src/zones/zone_renderer.gd" id="1_a52u5"]
 
-[node name="ZoneRenderer" type="Node2D"]
+[node name="ZoneRenderer" type="Node3D"]
 script = ExtResource("1_a52u5")

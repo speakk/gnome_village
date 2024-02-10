@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://6nppyvym3g1r"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c5g6j"]
+transparency = 1
+albedo_color = Color(0.602926, 0.878906, 0.555016, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jfdr3"]
+material = SubResource("StandardMaterial3D_c5g6j")
+size = Vector3(1, 0.1, 1)
+
+[node name="ZoneTileIndicator" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0550662, 0)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_jfdr3")
