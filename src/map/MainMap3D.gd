@@ -5,8 +5,8 @@ class_name MainMap3D extends Node3D
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-const MAP_SIZE_X: int = 70
-const MAP_SIZE_Y: int = 60
+const MAP_SIZE_X: int = 200
+const MAP_SIZE_Y: int = 150
 const CELL_SIZE := Vector2(1, 1)
 
 @onready var map_tile_selector := $MapTileSelector as MapTileSelector
@@ -118,7 +118,6 @@ func _ready() -> void:
 	Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector3) -> void:
 			var coordinate := global_position_to_coordinate(item_position)
 			add_map_entity(coordinate, item)
-			print("Adding map entity at coordinate based on position", coordinate, item_position)
 	)
 	
 	Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:
@@ -180,7 +179,6 @@ func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 		for entity in entities:
 			if entity.current_state == ItemOnGround.ItemState.Blueprint:
 				Events.blueprint_cancel_issued.emit(entity)
-				print("Removing at: ", coordinate)
 
 #func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
 						#terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround) -> void:
@@ -189,13 +187,9 @@ func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 func _terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, is_solid: bool, blueprint: bool) -> void:
 	var grid_map: GridMap = grid if not blueprint else blueprint_grid
 	grid_map.set_cell_item(Globals.extend_vec2i(coordinate), 0)
-	print("Set cell item", Globals.extend_vec2i(coordinate), mesh_id)
-	
-	print("Used cells in blueprint grid:", blueprint_grid.get_used_cells())
 
 func _terrain_cleared(coordinate: Vector2i, blueprint: bool) -> void:
 	var grid_map: GridMap = grid if not blueprint else blueprint_grid
-	print("Clearing from grid_map", grid_map)
 	grid_map.set_cell_item(Globals.extend_vec2i(coordinate), -1)
 
 #
