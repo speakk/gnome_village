@@ -104,11 +104,19 @@ func _ready() -> void:
 	map_tile_selector.tiles_selected_secondary.connect(_tiles_selected_secondary)
 
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
+	var water_area_y_size := 40;
+	var shore_wave_frequency := 0.05;
+	var shore_wave_depth := 6;
 
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
-			if world_center.distance_to(Vector2(x * CELL_SIZE.x, y * CELL_SIZE.y)) < 400:
+			#if world_center.distance_to(Vector2(x * CELL_SIZE.x, y * CELL_SIZE.y)) < 400:
+			if y < MAP_SIZE_Y - water_area_y_size - sin(x * shore_wave_frequency) * shore_wave_depth:
 				ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 0)
+			else:
+				ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 1)
+				
+			
 				#set_cells_terrain_connect(Layers.Ground, [Vector2i(x, y)], 1, 0)
 	
 	#set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
