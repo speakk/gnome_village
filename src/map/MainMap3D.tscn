@@ -1,9 +1,9 @@
-[gd_scene load_steps=22 format=3 uid="uid://cxfu88mnhmgb7"]
+[gd_scene load_steps=15 format=3 uid="uid://cxfu88mnhmgb7"]
 
 [ext_resource type="Script" path="res://src/map/MainMap3D.gd" id="1_hry08"]
 [ext_resource type="Script" path="res://src/map/MapTileSelector.gd" id="2_k2ptl"]
 [ext_resource type="MeshLibrary" uid="uid://cpsm4h5sl5dg6" path="res://src/map/map_mesh_library.tres" id="2_nprxo"]
-[ext_resource type="Shader" path="res://src/map/water.gdshader" id="3_gjaol"]
+[ext_resource type="Material" uid="uid://602vpw2ulgrn" path="res://src/map/water_material_1.material" id="3_i6c31"]
 [ext_resource type="PackedScene" uid="uid://c67ua8jdle4ma" path="res://src/map/SelectionDraw.tscn" id="4_u51vp"]
 
 [sub_resource type="Gradient" id="Gradient_gpv11"]
@@ -35,59 +35,8 @@ uv1_world_triplanar = true
 [sub_resource type="BoxMesh" id="BoxMesh_6cvuo"]
 material = SubResource("StandardMaterial3D_44mkl")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_tuhaw"]
-noise_type = 3
-frequency = 0.0038
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_c4wm0"]
-width = 1600
-height = 1600
-seamless = true
-as_normal_map = true
-bump_strength = 1.5
-noise = SubResource("FastNoiseLite_tuhaw")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_10or4"]
-seed = 5
-frequency = 0.0032
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rwfq6"]
-width = 1600
-height = 1600
-seamless = true
-as_normal_map = true
-bump_strength = 1.5
-noise = SubResource("FastNoiseLite_10or4")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_3udjs"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_jfgbk"]
-seamless = true
-noise = SubResource("FastNoiseLite_3udjs")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7xqs8"]
-render_priority = 0
-shader = ExtResource("3_gjaol")
-shader_parameter/albedo = Color(0.265743, 0.338789, 0.609375, 1)
-shader_parameter/albedo2 = Color(0.329148, 0.546053, 0.621094, 1)
-shader_parameter/metallic = 0.031
-shader_parameter/roughness = 0.297
-shader_parameter/wave_direction = Vector2(2, 0)
-shader_parameter/wave_direction2 = Vector2(2, 0)
-shader_parameter/time_scale = 0.025
-shader_parameter/noise_scale = 10.0
-shader_parameter/height_scale = 0.2
-shader_parameter/light_start = 0.244
-shader_parameter/light_end = 0.355
-shader_parameter/top_color = Color(1, 1, 1, 1)
-shader_parameter/texture_normal = SubResource("NoiseTexture2D_c4wm0")
-shader_parameter/texture_normal2 = SubResource("NoiseTexture2D_rwfq6")
-shader_parameter/wave = SubResource("NoiseTexture2D_jfgbk")
-
 [sub_resource type="PlaneMesh" id="PlaneMesh_8eryo"]
-material = SubResource("ShaderMaterial_7xqs8")
+material = ExtResource("3_i6c31")
 size = Vector2(1, 1)
 subdivide_width = 2
 subdivide_depth = 2

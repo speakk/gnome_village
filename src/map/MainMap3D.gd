@@ -104,9 +104,9 @@ func _ready() -> void:
 	map_tile_selector.tiles_selected_secondary.connect(_tiles_selected_secondary)
 
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
-	var water_area_y_size := 40;
-	var shore_wave_frequency := 0.05;
-	var shore_wave_depth := 6;
+	var water_area_y_size := 40
+	var shore_wave_frequency := 0.05
+	var shore_wave_depth := 6
 
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
@@ -115,6 +115,7 @@ func _ready() -> void:
 				ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 0)
 			else:
 				ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 1)
+				
 				
 			
 				#set_cells_terrain_connect(Layers.Ground, [Vector2i(x, y)], 1, 0)
@@ -142,10 +143,12 @@ func _ready() -> void:
 	
 	Events.map_ready.emit(self)
 	
-	#for x in MAP_SIZE_X:
-		#for y in MAP_SIZE_Y:
-			#if get_cell_source_id(Layers.Ground, Vector2i(x, y)) < 0:
-				#PathFinder.set_coordinate_invalid(Vector2i(x, y))
+	for x in MAP_SIZE_X:
+		for y in MAP_SIZE_Y:
+			var final_x: int = x - MAP_SIZE_X/2
+			var final_y: int = y - MAP_SIZE_Y/2
+			if ground_grid.get_cell_item(Vector3i(final_x, 0, final_y)) != 0:
+				PathFinder.set_coordinate_invalid(Vector2i(final_x, final_y))
 
 func _handle_ui_action_selection(new_ui_action: UiAction) -> void:
 	selected_ui_action = new_ui_action

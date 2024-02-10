@@ -1,7 +1,23 @@
-[gd_scene load_steps=3 format=3 uid="uid://uqcgysgd2yqr"]
+[gd_scene load_steps=7 format=3 uid="uid://uqcgysgd2yqr"]
 
 [ext_resource type="Script" path="res://src/items/item_data/scenes/wooden_torch.gd" id="1_grq6w"]
 [ext_resource type="PackedScene" uid="uid://c7vlpvn5eoky4" path="res://assets/blender_models/wooden_torch.blend" id="1_gscy7"]
+
+[sub_resource type="Curve" id="Curve_ie0t3"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_sfrdn"]
+curve = SubResource("Curve_ie0t3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_r1nn7"]
+emission_shape = 1
+emission_sphere_radius = 0.07
+gravity = Vector3(0, 0.5, 0)
+scale_curve = SubResource("CurveTexture_sfrdn")
+
+[sub_resource type="BoxMesh" id="BoxMesh_ix2gd"]
+size = Vector3(0.03, 0.03, 0.03)
 
 [node name="WoodenTorch" type="Node3D" groups=["radial_light"]]
 script = ExtResource("1_grq6w")
@@ -13,3 +29,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.729958, 0)
 light_color = Color(0.949219, 0.678864, 0.458375, 1)
 shadow_enabled = true
 omni_range = 20.6026
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.576111, 0)
+cast_shadow = 0
+amount_ratio = 0.6025
+lifetime = 1.76
+randomness = 0.78
+process_material = SubResource("ParticleProcessMaterial_r1nn7")
+draw_pass_1 = SubResource("BoxMesh_ix2gd")
