@@ -6,6 +6,8 @@ albedo_color = Color(0.425391, 0.945312, 0.564036, 0.372549)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6fb6p"]
 material = SubResource("StandardMaterial3D_jpfia")
+size = Vector3(1, 0.2, 1)
 
 [node name="TileIndicator" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.103731, 0)
 mesh = SubResource("BoxMesh_6fb6p")

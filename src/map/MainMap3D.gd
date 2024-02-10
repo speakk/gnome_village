@@ -149,7 +149,8 @@ func _tiles_selected(coordinates: Array[Vector2i]) -> void:
 func _tiles_selected_secondary(coordinates: Array[Vector2i]) -> void:
 	print("Secondary called", coordinates)
 	if selected_ui_action:
-		secondary_action_handlers[selected_ui_action.ui_action_id].call(coordinates)
+		if secondary_action_handlers.has(selected_ui_action.ui_action_id):
+			secondary_action_handlers[selected_ui_action.ui_action_id].call(coordinates)
 
 func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 	for tile_position in coordinates:

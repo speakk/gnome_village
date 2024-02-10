@@ -33,7 +33,7 @@ func redraw() -> void:
 			#print("tile position", tile_position)
 			var tile_indicator := TILE_INDICATOR.instantiate() as MeshInstance3D
 			%TileIndicators.add_child(tile_indicator)
-			tile_indicator.global_position = tile_position
+			tile_indicator.global_position = Vector3(tile_position.x, 0, tile_position.z)
 #
 	#if selection_rectangle:
 		#
