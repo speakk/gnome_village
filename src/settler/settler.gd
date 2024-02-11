@@ -103,9 +103,8 @@ func move_and_slide(delta: float) -> void:
 	# 3D rework: Fix this elsewhere
 	global_position.y = 0.5
 #
-func _process(delta: float) -> void:
-	print("Settler global position", global_position)
-	#$Line2D.global_position = get_parent().global_position
+#func _process(delta: float) -> void:
+	##$Line2D.global_position = get_parent().global_position
 
 func _physics_process(delta: float) -> void:
 	if not current_task_actuator:
