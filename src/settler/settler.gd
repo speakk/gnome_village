@@ -8,6 +8,8 @@ class_name Settler
 
 @onready var inventory: Inventory = $Inventory
 
+@onready var animation_player_audio: AnimationPlayer = $AnimationPlayerAudio
+
 const REACH_DISTANCE := MainMap3D.CELL_SIZE.x * 2.0
 const AT_DISTANCE := 1.5
 
@@ -101,7 +103,8 @@ func move_and_slide(delta: float) -> void:
 	# 3D rework: Fix this elsewhere
 	global_position.y = 0.5
 #
-#func _process(delta: float) -> void:
+func _process(delta: float) -> void:
+	print("Settler global position", global_position)
 	#$Line2D.global_position = get_parent().global_position
 
 func _physics_process(delta: float) -> void:
@@ -209,6 +212,20 @@ func play_animation(animation_name: String) -> void:
 	if not $settler/AnimationPlayer.current_animation == animation_name:
 		$settler/AnimationPlayer.play(animation_name)
 
+		# Test code for continous Build sound
+		#await get_tree().create_timer(randf_range(0.5, 2)).timeout
+		#$AnimationPlayerAudio.play("Build")
+		
+		if $AnimationPlayerAudio.has_animation(animation_name):
+			$AnimationPlayerAudio.play(animation_name)
+		else:
+			$AnimationPlayerAudio.stop()
+	
 func stop_animation() -> void:
 	$settler/AnimationPlayer.stop()
+	$AnimationPlayerAudio.stop()
+
+func play_hammer_sound() -> void:
+	var player := $HammerSounds.get_children().pick_random() as AudioStreamPlayer3D
+	player.play()
 	

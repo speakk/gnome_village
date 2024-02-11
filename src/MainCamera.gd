@@ -19,12 +19,34 @@ func _process(delta: float) -> void:
 			movement_vector += Vector2(1, 0)
 
 	position += Vector3(movement_vector.x, 0, movement_vector.y).normalized() * CAMERA_SPEED * delta / Engine.time_scale
-
-	_hover_target(get_viewport().get_mouse_position())
-
+	
+	var ray_result: Variant = _get_ray_result(get_viewport().get_mouse_position())
+	if ray_result is Vector3:
+		Events.mouse_hovered_on_map.emit(ray_result)
+	
+	var rectpos: Vector2 = get_viewport().get_visible_rect().size / 2
+	var ray_result2: Variant = _get_ray_result(rectpos)
+	if ray_result2 is Vector3:
+		#$MeshInstance3D.global_position = Vector3(ray_result2.x, 0.5, ray_result2.z)
+		$AudioListener3D.global_position = Vector3(ray_result2.x, $AudioListener3D.global_position.y, ray_result2.z)
+		
 var max_zoom_in := 4.0
 var max_zoom_out := 1.5
 var zoom_step := 2.5
+
+var min_size := 7.0
+var max_size := 77.0
+var default_size := 37.0
+
+var reverb_multiplier_max:float = 0.7
+
+func _ready() -> void:
+	_set_size(default_size)
+
+func _set_size(new_size: float) -> void:
+	size = new_size
+	$AudioListener3D.position.y = new_size * 1.2 - min_size
+	AudioServer.get_bus_effect(1, 0).wet = size / max_size * 0.2
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -34,15 +56,16 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				size -= zoom_step
+				_set_size(size - zoom_step)
 				#zoom = (zoom + Vector2(0.5, 0.5)).clamp(Vector2(max_zoom_out, max_zoom_out), Vector2(max_zoom_in, max_zoom_in))
 			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				size += zoom_step
+				_set_size(size + zoom_step)
 				#zoom = (zoom - Vector2(0.5, 0.5)).clamp(Vector2(max_zoom_out, max_zoom_out), Vector2(max_zoom_in, max_zoom_in))
 		
 
 
-func _hover_target(hover_position: Vector2) -> void:
+@warning_ignore("untyped_declaration")
+func _get_ray_result(hover_position: Vector2):
 	var from := project_ray_origin(hover_position)
 	var to := from + project_ray_normal(hover_position)*6000
 	var space_state := get_world_3d().direct_space_state
@@ -52,7 +75,11 @@ func _hover_target(hover_position: Vector2) -> void:
 	#ray_query.collision_mask = 0b00000000_00000000_00000000_00000010
 	var raycast_result := space_state.intersect_ray(ray_query)
 	if raycast_result.has("position"):
-		Events.mouse_hovered_on_map.emit(raycast_result.get("position") as Vector3)
+		return raycast_result.get("position") as Vector3
+	
+		#print("HOVER POS")
+		#Events.mouse_hovered_on_map.emit(raycast_result.get("position") as Vector3)
+	
 
 func _select_target(click_position: Vector2) -> void:
 	var from := project_ray_origin(click_position)
@@ -63,6 +90,6 @@ func _select_target(click_position: Vector2) -> void:
 	ray_query.collide_with_bodies = false
 	#ray_query.collision_mask = 0b00000000_00000000_00000000_00000010
 	var raycast_result := space_state.intersect_ray(ray_query)
-	print("Result", raycast_result)
+	#print("Result", raycast_result)
 	if raycast_result.has("position"):
 		Events.mouse_clicked_on_map.emit(raycast_result.get("position") as Vector3)
