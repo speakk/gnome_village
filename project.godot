@@ -25,6 +25,7 @@ PathFinder="*res://src/PathFinder.gd"
 Items="*res://src/items/Items.gd"
 SaveSystem="*res://src/SaveSystem.gd"
 Tasks="*res://src/tasks/Tasks.gd"
+Plants="*res://src/plants/plant_data/Plants.gd"
 
 [debug]
 

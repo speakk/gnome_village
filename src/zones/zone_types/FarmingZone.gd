@@ -17,3 +17,7 @@ func tick_zone() -> void:
 			farm_plot.global_position = Globals.get_map().coordinate_to_global_position(coordinate)
 			farm_plot.initialize(Items.Id.FarmPlot, 1, ItemOnGround.ItemState.Blueprint)
 			Events.blueprint_placed.emit(coordinate, farm_plot)
+		else:
+			for entity in entities:
+				if entity.current_state == ItemOnGround.ItemState.Normal:
+					entity.item_scene.start_growing_plant(Plants.Id.Potato)

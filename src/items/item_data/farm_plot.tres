@@ -1,13 +1,12 @@
 [gd_resource type="Resource" script_class="Item" load_steps=4 format=3 uid="uid://dulsru7myeyi4"]
 
+[ext_resource type="PackedScene" uid="uid://b7ce8cn4so175" path="res://src/items/item_data/scenes/farm_plot.tscn" id="1_833cc"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_am7fa"]
-[ext_resource type="PackedScene" uid="uid://cddq71md6hpru" path="res://assets/blender_models/farm_plot.blend" id="1_nrtsb"]
 [ext_resource type="Texture2D" uid="uid://b7mqhkshlqi01" path="res://assets/farm_plot.png" id="2_jys86"]
 
 [resource]
 script = ExtResource("1_am7fa")
-rendering_type = 4
-model = ExtResource("1_nrtsb")
+rendering_type = 3
 texture = ExtResource("2_jys86")
 hframes = 1
 vframes = 1
@@ -22,6 +21,7 @@ terrain_id = 0
 target_layer = 2
 mesh_id = 0
 display_name = "Farm Plot"
+scene = ExtResource("1_833cc")
 can_be_picked = false
 can_be_constructed = true
 can_be_dismantled = true
