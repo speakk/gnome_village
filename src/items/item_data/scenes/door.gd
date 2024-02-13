@@ -2,6 +2,8 @@ extends Node3D
 
 @onready var original_rotation := rotation_degrees
 
+const WOODEN_DOOR_MESH := preload("res://src/items/item_data/scenes/extra_meshes/wooden_door_mesh.tres")
+
 const SELF_CLOSE_DELAY := 2.0
 const SELF_CLOSE_SPEED := 1.2
 var self_close_timer := 0.0
@@ -64,3 +66,16 @@ func _physics_process(delta: float) -> void:
 			open_amount -= SELF_CLOSE_SPEED * delta
 
 	self_close_timer -= delta
+
+func set_as_blueprint(is_blueprint: bool) -> void:
+	if is_blueprint:
+		Globals.apply_blueprint_material(self)
+	else:
+		var original_transform: Transform3D = $MeshInstance3D.transform
+		$MeshInstance3D.queue_free()
+		var new_scene := MeshInstance3D.new()
+		new_scene.name = "$MeshInstance3D"
+		new_scene.mesh = WOODEN_DOOR_MESH
+		add_child(new_scene)
+		new_scene.transform = original_transform
+		print("Added ye old")

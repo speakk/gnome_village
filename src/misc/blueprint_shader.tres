@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cwh311wwj8b6s"]
+
+[ext_resource type="Shader" path="res://src/misc/blueprint_shader.gdshader" id="1_nfak7"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_nfak7")

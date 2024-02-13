@@ -53,4 +53,6 @@ shadow_enabled = true
 
 [node name="GUI" parent="." instance=ExtResource("7_vml5v")]
 
+[node name="SubViewport" type="SubViewport" parent="."]
+
 [editable path="MainMap3d"]

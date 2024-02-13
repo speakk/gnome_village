@@ -45,3 +45,50 @@ func truncate_vec3i(vector: Vector3i) -> Vector2i:
 
 func extend_vec2i(vector: Vector2i) -> Vector3i:
 	return Vector3i(vector.x, 0, vector.y)
+
+func apply_blueprint_material(scene: Node3D) -> void:
+	var meshes := scene.find_children("*","MeshInstance3D")
+	for mesh_instance: MeshInstance3D in meshes:
+		var mesh: Mesh = mesh_instance.mesh.duplicate(true)
+		mesh_instance.mesh = mesh
+		for surface in mesh.get_surface_count():
+			var orig_prev := mesh.surface_get_material(surface)
+			var prev := orig_prev.duplicate() as StandardMaterial3D
+			mesh.surface_set_material(surface, prev)
+			prev.albedo_color = Color(0.4, 0.5, 1.0, 0.4)
+			prev.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+
+var next_pass := preload("res://src/misc/blueprint_shader.tres") as ShaderMaterial
+#func apply_blueprint_shader(scene: Node3D) -> void:
+	#var meshes := scene.find_children("*","MeshInstance3D")
+	#for mesh_instance: MeshInstance3D in meshes:
+		#var mesh: Mesh = mesh_instance.mesh
+		#for surface in mesh.get_surface_count():
+			#print("Doing the thing")
+			#var orig_prev := mesh.surface_get_material(surface)
+			#var prev := orig_prev.duplicate()
+			#mesh.surface_set_material(surface, prev)
+			#var next: Material = prev.next_pass
+			#while next:
+				#prev = next
+				#next = next.next_pass
+			#if prev == next_pass:
+				#continue
+			#print("Assigning next pass")
+			#prev.next_pass = next_pass
+
+func clear_blueprint_shader(scene: Node3D) -> void:
+	var meshes := scene.find_children("*","MeshInstance3D")
+	for mesh_instance: MeshInstance3D in meshes:
+		var mesh: Mesh = mesh_instance.mesh
+		for surface in mesh.get_surface_count():
+			print("Doing the thing")
+			var prev := mesh.surface_get_material(surface)
+			var next := prev.next_pass
+			while next:
+				if next == next_pass:
+					next.next_pass = null
+					print("Set next pass as null??")
+				prev = next
+				next = next.next_pass
+				

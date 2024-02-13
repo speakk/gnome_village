@@ -70,14 +70,24 @@ func update_rendering() -> void:
 		add_child(model)
 
 	if item.scene:
-		if item_scene:
-			remove_child(get_node("scene"))
-			item_scene.queue_free()
-			
-		var scene := item.scene.instantiate() as Node3D
-		scene.name = "scene"
-		add_child(scene)
-		item_scene = scene
+		#if item_scene:
+			#remove_child(get_node("scene"))
+			#item_scene.queue_free()
+		
+		if not item_scene:
+			var scene := item.scene.instantiate() as Node3D
+			scene.name = "scene"
+			add_child(scene)
+			item_scene = scene
+		
+		if current_state == ItemState.Normal:
+			if item_scene.has_method("set_as_blueprint"):
+				item_scene.set_as_blueprint(false)
+		elif current_state == ItemState.Blueprint:
+			if item_scene.has_method("deactivate"):
+				item_scene.deactivate()
+			if item_scene.has_method("set_as_blueprint"):
+				item_scene.set_as_blueprint(true)
 
 	if current_state == ItemState.Normal:
 		# TODO: Rendering really shouldn't update the solid_cell thing
@@ -134,9 +144,8 @@ var build_progress := 0.0:
 			$ProgressBar.hide()
 		else:
 			$ProgressBar.show()
-			
+		
 		build_progress = new_value
-
 
 var reserved_for_picking := false
 var reserved_for_dismantling := false:
@@ -249,6 +258,9 @@ func finish_construction() -> void:
 				
 		finish_emitted = true
 		Events.construction_finished.emit(self)
+		
+		if item_scene and item_scene.has_method("activate"):
+			item_scene.activate()
 
 func increase_build_progress(amount: float) -> void:
 	build_progress += amount
