@@ -192,13 +192,16 @@ func process_actions(delta: float) -> void:
 
 func _refresh_carry_item_sprite() -> void:
 	var items := inventory.get_items()
+	for child in $CarryItemNode.get_children():
+		child.queue_free()
+		
 	if items.size() > 0:
 		var first_item_amount := items[0]
 		var item := Items.get_by_id(first_item_amount.id)
 		Items.copy_item_properties_to_sprite(item, $CarryItemSprite)
-		$CarryItemSprite.show()
-	else:
-		$CarryItemSprite.hide()
+		var item_render_scene := Items.get_item_render_scene(item)
+		if item_render_scene:
+			$CarryItemNode.add_child(item_render_scene)
 		
 
 func _inventory_item_added(item_id: Variant, _amount: int) -> void:

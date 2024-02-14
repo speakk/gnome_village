@@ -47,6 +47,9 @@ default_color = Color(0.798, 0.95, 0.9272, 0.0196078)
 visible = false
 position = Vector2(0, -23)
 
+[node name="CarryItemNode" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.822335, 0)
+
 [node name="settler" parent="." instance=ExtResource("4_j4bsq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00430357, -0.5, -0.097248)
 

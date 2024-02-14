@@ -35,3 +35,10 @@ func copy_item_properties_to_sprite(item: Item, sprite: Sprite2D) -> void:
 	sprite.hframes = item.hframes
 	sprite.vframes = item.vframes
 	sprite.frame = item.frame
+
+func get_item_render_scene(item: Item) -> Node3D:
+	if item.rendering_type == Item.RenderingType.Model:
+		var scene := item.model.instantiate()
+		return scene
+	
+	return null
