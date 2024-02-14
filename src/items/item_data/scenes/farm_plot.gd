@@ -13,7 +13,7 @@ func _physics_process(delta: float) -> void:
 
 func _ready() -> void:
 	# TODO: Test add some water to growth spot
-	growth_spot.increase_growth_requirement(GrowthRequirement.Id.Water, 10)
+	growth_spot.increase_growth_requirement(Items.Id.Water, 10)
 
 func start_growing_plant(plant_id: Plants.Id) -> void:
 	if not planted_plant:

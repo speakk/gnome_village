@@ -6,4 +6,4 @@ class_name Plant extends Resource
 @export var growth_stage_length: float = 2.0
 @export var growth_stages: Array[GrowthStage]
 
-@export var growth_requirements: Array[GrowthRequirementAmount]
+@export var growth_requirements: Array[ItemRequirement]

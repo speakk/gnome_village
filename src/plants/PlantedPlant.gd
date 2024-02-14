@@ -26,8 +26,8 @@ func has_growth_requirements() -> bool:
 		
 	for growth_requirement in plant.growth_requirements:
 		var satisfies_requirement := false
-		for growth_provided in grows_in.provides_growth_requirements:
-			if growth_provided.growth_requirement_id == growth_requirement.growth_requirement_id \
+		for growth_provided: ItemAmount in grows_in.growth_requirement_inventory.get_items():
+			if growth_provided.id == growth_requirement.item_id \
 			and growth_provided.amount >= growth_requirement.amount:
 				satisfies_requirement = true
 				break
@@ -39,7 +39,7 @@ func has_growth_requirements() -> bool:
 
 func consume_growth_requirements() -> void:
 	for growth_requirement in plant.growth_requirements:
-		grows_in.consume_growth_requirement(growth_requirement.growth_requirement_id, growth_requirement.amount)
+		grows_in.consume_growth_requirement(growth_requirement.item_id, growth_requirement.amount)
 
 func advance_growth_stage() -> void:
 	if not is_mature():
