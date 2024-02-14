@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bocaaugqt281d"]
+
+[ext_resource type="Script" path="res://src/components/GrowthSpot.gd" id="1_hn88a"]
+
+[node name="GrowthSpot" type="Node"]
+script = ExtResource("1_hn88a")

@@ -19,5 +19,6 @@ func tick_zone() -> void:
 			Events.blueprint_placed.emit(coordinate, farm_plot)
 		else:
 			for entity in entities:
-				if entity.current_state == ItemOnGround.ItemState.Normal:
+				if entity.current_state == ItemOnGround.ItemState.Normal \
+				and entity.is_finished():
 					entity.item_scene.start_growing_plant(Plants.Id.Potato)
