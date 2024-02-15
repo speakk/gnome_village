@@ -14,13 +14,11 @@ func _ready() -> void:
 		if _blueprint == blueprint:
 			print("Cleaning up after finishing contruction")
 			clean_up()
-			#blueprint.call_deferred("queue_free")
 	)
 	
 	Events.blueprint_cancel_issued.connect(func(_blueprint: ItemOnGround) -> void:
 		if _blueprint == blueprint:
 			clean_up()
-			#blueprint.call_deferred("queue_free")
 			blueprint.queue_free()
 	)
 	
@@ -37,19 +35,15 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 		bring_resources.name = "Bring_Resources_Parallel"
 		
 		for material_requirement in material_requirements as Array[ItemRequirement]:
-			#var bring_resource_task := 
 			var bring_resource_leaf := TaskTreeLeaf.new()
 			bring_resource_leaf.name = "Bring_Resource_Leaf"
 			var task := BRING_RESOURCE_TASK.instantiate() as BringResourceTask
 			task.initialize({
 				target_coordinate = tile_target,
 				item_requirement = material_requirement,
-				inventory_holder_entity = blueprint
+				inventory = blueprint.constructionInventory
 			})
 			task.failed.connect(_handle_task_failure)
-			#bring_resource_leaf.set_task(Tasks.TaskId.BringResource, {
-				#tile_target: tile_target, material_requirement: material_requirement, blueprint: blueprint
-			#})
 			bring_resource_leaf.set_task(task)
 			bring_resources.add_child(bring_resource_leaf)
 		
@@ -87,11 +81,7 @@ func save() -> Dictionary:
 	return save_dict
 
 func load_save(save_dict: Dictionary) -> void:
-	
-	#SaveSystem.register_load_reference(self, "blueprint", save_dict["blueprint_id"])
 	blueprint = SaveSystem.get_saved_entity(save_dict["blueprint_id"])
-	
-	#SaveSystem.register_load_reference(build_leaf, "task", save_dict["Build_Leaf_Task_Id"])
 	
 	var bring_resources := TaskTreeBranch.new()
 	bring_resources.order_type = TaskTreeBranch.OrderType.Parallel

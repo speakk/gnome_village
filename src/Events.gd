@@ -50,3 +50,5 @@ signal zone_list_changed
 signal zone_selected(zone: Zone)
 signal zone_updated(zone: Zone)
 signal zone_menu_hidden()
+
+signal farm_plot_plant_lacks_growth_requirement(farm_plot: ItemOnGround)

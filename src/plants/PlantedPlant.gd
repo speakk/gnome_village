@@ -1,6 +1,5 @@
 class_name PlantedPlant extends Node3D
 
-
 signal matured
 
 var current_growth_timer: float = 0.0
@@ -12,7 +11,7 @@ signal satisfies_growth_requirements
 signal lacks_growth_requirements
 
 var plant: Plant
-var grows_in: GrowthSpot
+var grows_in: Variant
 
 func set_plant_id(plant_id: Plants.Id) -> void:
 	plant = Plants.get_plant_by_id(plant_id)
@@ -54,23 +53,27 @@ func advance_growth_stage() -> void:
 		
 		if is_mature():
 			matured.emit()
-	
+
+var lacks_growth_requirements_emitted := false
+
 func _physics_process(delta: float) -> void:
 	if not plant:
 		return
 		
 	if has_growth_requirements():
+		lacks_growth_requirements_emitted = false
 		satisfies_growth_requirements.emit()
 		current_growth_timer += delta
 		if current_growth_timer > plant.growth_stage_length:
 			advance_growth_stage()
 			consume_growth_requirements()
 			current_growth_timer = 0
-	else:
+	elif not lacks_growth_requirements_emitted:
+		lacks_growth_requirements_emitted = true
 		lacks_growth_requirements.emit()
 
 static func create_from_id(plant_id: Plants.Id) -> PlantedPlant:
-	var PLANTED_PLANT := preload("res://src/plants/PlantedPlant.tscn")
+	var PLANTED_PLANT := load("res://src/plants/PlantedPlant.tscn") as PackedScene
 	var planted_plant := PLANTED_PLANT.instantiate()
 	planted_plant.set_plant_id(plant_id)
 	return planted_plant

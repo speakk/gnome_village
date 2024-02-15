@@ -1,4 +1,4 @@
-extends Node3D
+class_name FarmPlot extends Node3D
 
 @onready var growth_spot: GrowthSpot = $GrowthSpot
 
@@ -25,6 +25,7 @@ func start_growing_plant(plant_id: Plants.Id) -> void:
 
 func _lacks_growth_requirements() -> void:
 	$LacksGrowthRequirementIndicator.show()
+	Events.farm_plot_plant_lacks_growth_requirement.emit(self.get_parent())
 
 func _satisfies_growth_requirements() -> void:
 	$LacksGrowthRequirementIndicator.hide()

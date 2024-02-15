@@ -3,16 +3,17 @@ extends Node
 class_name TaskHandler
 
 @onready var BLUEPRINT_TREE := preload("res://src/tasks/task_assigner/trees/BlueprintTree.tscn")
+@onready var FEED_PLANTS_TREE := preload("res://src/tasks/task_assigner/trees/FeedPlantsTree.tscn")
 @onready var DISMANTLE_TREE := preload("res://src/tasks/task_assigner/trees/DismantleTree.tscn")
 
 @onready var debug_ui_tree := %Tree as Tree
 
 func _ready() -> void:
 	Events.blueprint_placed.connect(_blueprint_placed)
+	Events.farm_plot_plant_lacks_growth_requirement.connect(_farm_plot_plant_lacks_growth_requirement)
 	Events.dismantle_issued.connect(_dismantle_issued)
 	$Tasks.child_entered_tree.connect(_tasks_changed)
 	$Tasks.child_exiting_tree.connect(_tasks_changed)
-	$Tasks.child_order_changed.connect(func() -> void: if $Tasks: _refresh_debug_tree($Tasks.get_children()))
 	Events.task_finished.connect(func(_task: Task) -> void: _refresh_debug_tree($Tasks.get_children()))
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void: %DebugUI.visible = new_value)
 
@@ -61,6 +62,11 @@ func _blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround) -> void
 	var task_tree := (BLUEPRINT_TREE.instantiate() as BlueprintTree) as TaskTreeBranch
 	$Tasks.add_child(task_tree)
 	task_tree.initialize(tile_position, blueprint)
+	
+func _farm_plot_plant_lacks_growth_requirement(farm_plot: ItemOnGround) -> void:
+	var task_tree := FEED_PLANTS_TREE.instantiate() as FeedPlantsTree
+	$Tasks.add_child(task_tree)
+	task_tree.initialize(farm_plot)
 
 func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
 	var task_tree := (DISMANTLE_TREE.instantiate() as DismantleTree)

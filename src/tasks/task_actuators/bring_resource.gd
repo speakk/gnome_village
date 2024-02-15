@@ -42,9 +42,14 @@ func start_work() -> void:
 	%GetItemFromGround.target_item = _material
 	%GetItemFromGround.amount = task.item_requirement.amount
 	
-	%GoToBlueprint.target_coordinate = task.target_coordinate
+	if task.target_coordinate:
+		%GoToBlueprint.target_coordinate = task.target_coordinate
+	else:
+		%GoToBlueprint.target_coordinate = Globals.get_map().global_position_to_coordinate(task.inventory.global_position)
 	
-	%PutItemToBlueprint.target_inventory = task.inventory_holder_entity.get_node("ConstructionInventory")
+	
+	# TODO: Support for just placing items down instead of adding to inventory
+	%PutItemToBlueprint.target_inventory = task.inventory
 	%PutItemToBlueprint.item_id = task.item_requirement.item_id
 	%PutItemToBlueprint.amount = task.item_requirement.amount
 	
