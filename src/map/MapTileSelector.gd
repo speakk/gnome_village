@@ -89,7 +89,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _mouse_hovered(mouse_position: Vector3) -> void:
-	var tile_position:  Vector2i = Globals.truncate_vec3i(Globals.get_map().grid.local_to_map(mouse_position))
+	# TODO: -0.42 is a magic number, works as (2d) "Y" offset to center the mouse
+	# Probably has to do with angle of camera truncating the "y" axis by a percentage
+	var tile_position:  Vector2i = Globals.truncate_vec3i(Globals.get_map().grid.local_to_map(mouse_position + Vector3(0, 0, -0.42)))
 	#print("Tile position", tile_position)
 	
 	if not Input.is_action_pressed("line_draw_modifier"):
