@@ -1,10 +1,11 @@
-[gd_resource type="Resource" script_class="Plant" load_steps=9 format=3 uid="uid://wmeqv26wkqqx"]
+[gd_resource type="Resource" script_class="Plant" load_steps=11 format=3 uid="uid://wmeqv26wkqqx"]
 
 [ext_resource type="PackedScene" uid="uid://bixhtyrioc70i" path="res://assets/blender_models/plants/potato_1.blend" id="1_0f5aa"]
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_4s603"]
 [ext_resource type="Script" path="res://src/plants/plant_data/Plant.gd" id="1_wt1f2"]
 [ext_resource type="Script" path="res://src/plants/GrowthStage.gd" id="2_dcmbe"]
 [ext_resource type="PackedScene" uid="uid://c1begy6tfpitx" path="res://assets/blender_models/plants/potato_2.blend" id="3_ljqs2"]
+[ext_resource type="PackedScene" uid="uid://dn6ucdyd7505e" path="res://assets/blender_models/plants/potato_3.blend" id="5_hwxqb"]
 
 [sub_resource type="Resource" id="Resource_r2ov4"]
 script = ExtResource("1_4s603")
@@ -19,9 +20,13 @@ mesh_scene = ExtResource("1_0f5aa")
 script = ExtResource("2_dcmbe")
 mesh_scene = ExtResource("3_ljqs2")
 
+[sub_resource type="Resource" id="Resource_fnory"]
+script = ExtResource("2_dcmbe")
+mesh_scene = ExtResource("5_hwxqb")
+
 [resource]
 script = ExtResource("1_wt1f2")
 display_name = "Potato"
 growth_stage_length = 2.0
-growth_stages = Array[ExtResource("2_dcmbe")]([SubResource("Resource_8xuia"), SubResource("Resource_xueih")])
+growth_stages = Array[ExtResource("2_dcmbe")]([SubResource("Resource_8xuia"), SubResource("Resource_xueih"), SubResource("Resource_fnory")])
 growth_requirements = Array[ExtResource("1_4s603")]([SubResource("Resource_r2ov4")])

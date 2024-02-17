@@ -16,8 +16,11 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		var current_path_index := blackboard.get_value("current_path_index") as int
 		#print("Making new goto action with current_path_index", current_path_index)
 		var path := blackboard.get_value("path") as PackedVector2Array
+		
+		
+		
 		#print("Path size: ", path.size())
-		if current_path_index <= path.size() - 1:
+		if current_path_index < path.size():
 			#print("Path index was undex size, proceeding")
 			var current_target_coordinate := path[current_path_index]
 			

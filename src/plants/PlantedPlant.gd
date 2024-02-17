@@ -52,6 +52,7 @@ func advance_growth_stage() -> void:
 		add_child(current_growth_scene)
 		
 		if is_mature():
+			$ParticlesMatured.emitting = true
 			matured.emit()
 
 var lacks_growth_requirements_emitted := false
@@ -59,18 +60,19 @@ var lacks_growth_requirements_emitted := false
 func _physics_process(delta: float) -> void:
 	if not plant:
 		return
-		
-	if has_growth_requirements():
-		lacks_growth_requirements_emitted = false
-		satisfies_growth_requirements.emit()
-		current_growth_timer += delta
-		if current_growth_timer > plant.growth_stage_length:
-			advance_growth_stage()
-			consume_growth_requirements()
-			current_growth_timer = 0
-	elif not lacks_growth_requirements_emitted:
-		lacks_growth_requirements_emitted = true
-		lacks_growth_requirements.emit()
+	
+	if not is_mature():
+		if has_growth_requirements():
+			lacks_growth_requirements_emitted = false
+			satisfies_growth_requirements.emit()
+			current_growth_timer += delta
+			if current_growth_timer > plant.growth_stage_length:
+				advance_growth_stage()
+				consume_growth_requirements()
+				current_growth_timer = 0
+		elif not lacks_growth_requirements_emitted:
+			lacks_growth_requirements_emitted = true
+			lacks_growth_requirements.emit()
 
 static func create_from_id(plant_id: Plants.Id) -> PlantedPlant:
 	var PLANTED_PLANT := load("res://src/plants/PlantedPlant.tscn") as PackedScene

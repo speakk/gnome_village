@@ -64,9 +64,16 @@ func get_surrounding_coordinates(center_coordinate: Vector2i, include_diagonals:
 	return surrounding
 
 # TODO: This only checks immediate surrounding tiles, no further
-func get_closest_free_point(coordinate: Vector2i) -> Variant:
+func get_closest_free_point(coordinate: Vector2i, bias_towards_target: Variant = null) -> Variant:
 	var surrounding_coordinates := get_surrounding_coordinates(coordinate)
-	surrounding_coordinates.shuffle()
+	if bias_towards_target is Vector3:
+		var map := Globals.get_map()
+		surrounding_coordinates.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+			return map.coordinate_to_global_position(a).distance_to(bias_towards_target) < map.coordinate_to_global_position(b).distance_to(bias_towards_target)
+		)
+	else:
+		surrounding_coordinates.shuffle()
+	
 	for surrounding_coordinate in surrounding_coordinates:
 		if not is_position_solid(surrounding_coordinate):
 			return surrounding_coordinate

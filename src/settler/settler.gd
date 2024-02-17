@@ -10,8 +10,8 @@ class_name Settler
 
 @onready var animation_player_audio: AnimationPlayer = $AnimationPlayerAudio
 
-const REACH_DISTANCE := MainMap3D.CELL_SIZE.x * 2.0
-const AT_DISTANCE := 1.5
+const REACH_DISTANCE := 2.5
+const AT_DISTANCE := 1.0
 
 var walk_speed := 5.0
 var build_speed := 0.3
