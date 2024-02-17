@@ -25,5 +25,5 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		target_item.inventory.remove_item_reservation(requirement_item_id, amount)
 	
 	print("Got amount, remaining amount:", amount, target_item.itemAmount.amount)
-	actor.inventory.add_item_amount(target_item.item_id, amount)
+	actor.inventory.add_item_amount(requirement_item_id, amount)
 	return SUCCESS

@@ -1,4 +1,4 @@
-class_name GrowthSpot extends Node
+class_name GrowthSpot extends Node3D
 
 @onready var growth_requirement_inventory: Inventory = $Inventory
 

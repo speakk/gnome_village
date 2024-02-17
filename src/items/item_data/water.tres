@@ -28,3 +28,4 @@ durability = 10
 crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
 special_features = Array[int]([])
+provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])

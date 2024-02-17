@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://src/components/GrowthSpot.gd" id="1_hn88a"]
 [ext_resource type="PackedScene" uid="uid://dnly7t4x7n0av" path="res://src/components/Inventory.tscn" id="2_i053q"]
 
-[node name="GrowthSpot" type="Node"]
+[node name="GrowthSpot" type="Node3D"]
 script = ExtResource("1_hn88a")
 
 [node name="Inventory" parent="." instance=ExtResource("2_i053q")]
