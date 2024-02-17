@@ -70,3 +70,5 @@ font_size = 24
 [node name="ItemAmount" parent="." instance=ExtResource("6_ch2ij")]
 
 [node name="ConstructionInventory" parent="." instance=ExtResource("6_lqhr4")]
+
+[node name="Inventory" parent="." instance=ExtResource("6_lqhr4")]

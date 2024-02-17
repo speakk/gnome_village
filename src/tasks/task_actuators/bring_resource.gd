@@ -8,7 +8,8 @@ var _material: ItemOnGround
 func find_closest_material(_item_requirement: ItemRequirement) -> ItemOnGround:
 	var materials_on_ground := get_tree().get_nodes_in_group("item_on_ground") as Array[Node]
 	var correct_materials := materials_on_ground.filter(func(material: ItemOnGround) -> bool:
-		return material.item_id == _item_requirement.item_id and not material.reserved_for_picking
+		return (material.item_id == _item_requirement.item_id and not material.reserved_for_picking) \
+		or material.inventory.has_item_requirement(_item_requirement)
 	)
 	
 	var closest_distance := 99999999.0
@@ -35,17 +36,21 @@ func start_work() -> void:
 	
 		_material = material
 	
-	_material.reserved_for_picking = true
+	if _material.item_id == task.item_requirement.item_id:
+		_material.reserved_for_picking = true
+	else:
+		_material.inventory.reserve_item_requirement(task.item_requirement)
 	
 	%GoToResource.target_coordinate = Globals.get_map().global_position_to_coordinate(_material.global_position)
 	
 	%GetItemFromGround.target_item = _material
+	%GetItemFromGround.requirement_item_id = task.item_requirement.item_id
 	%GetItemFromGround.amount = task.item_requirement.amount
 	
 	if task.target_coordinate:
 		%GoToBlueprint.target_coordinate = task.target_coordinate
 	else:
-		%GoToBlueprint.target_coordinate = Globals.get_map().global_position_to_coordinate(task.inventory.global_position)
+		%GoToBlueprint.target_coordinate = Globals.get_map().global_position_to_coordinate(task.inventory.get_parent().global_position)
 	
 	
 	# TODO: Support for just placing items down instead of adding to inventory

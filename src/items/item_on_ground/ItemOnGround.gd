@@ -11,6 +11,7 @@ enum ItemState {
 @onready var sprite := $Sprite3D as Sprite3D
 @onready var itemAmount := $ItemAmount as ItemAmount
 @onready var constructionInventory := $ConstructionInventory as Inventory
+@onready var inventory: Inventory = $Inventory
 
 var item_scene: Node3D
 var item: Item
@@ -195,6 +196,9 @@ func load_save(save_dict: Dictionary) -> void:
 func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemState.Normal) -> ItemOnGround:
 	item_id = _item_id
 	$ItemAmount.amount = _amount
+	
+	for provides_item: ItemRequirement in item.provides:
+		inventory.add_item_amount(provides_item.item_id, provides_item.amount)
 	
 	current_state = state
 	_initial_state = state

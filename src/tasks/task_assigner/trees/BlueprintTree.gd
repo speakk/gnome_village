@@ -35,17 +35,20 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 		bring_resources.name = "Bring_Resources_Parallel"
 		
 		for material_requirement in material_requirements as Array[ItemRequirement]:
-			var bring_resource_leaf := TaskTreeLeaf.new()
-			bring_resource_leaf.name = "Bring_Resource_Leaf"
-			var task := BRING_RESOURCE_TASK.instantiate() as BringResourceTask
-			task.initialize({
-				target_coordinate = tile_target,
-				item_requirement = material_requirement,
-				inventory = blueprint.constructionInventory
-			})
-			task.failed.connect(_handle_task_failure)
-			bring_resource_leaf.set_task(task)
-			bring_resources.add_child(bring_resource_leaf)
+			for i in material_requirement.amount:
+				var bring_resource_leaf := TaskTreeLeaf.new()
+				bring_resource_leaf.name = "Bring_Resource_Leaf"
+				var task := BRING_RESOURCE_TASK.instantiate() as BringResourceTask
+				var requirement := ItemRequirement.new()
+				requirement.item_id = material_requirement.item_id
+				requirement.amount = 1
+				task.initialize({
+					item_requirement = requirement,
+					inventory = blueprint.constructionInventory
+				})
+				task.failed.connect(_handle_task_failure)
+				bring_resource_leaf.set_task(task)
+				bring_resources.add_child(bring_resource_leaf)
 		
 		add_child(bring_resources)
 	

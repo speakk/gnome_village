@@ -118,10 +118,12 @@ func _process(delta: float) -> void:
 		#for task_tree in task_trees:
 		for task_tree in $Tasks.get_children() as Array[TaskTreeBranch]:
 			if task_tree:
-				var next_available_task: Variant = get_next_available_task(task_tree)
-				if next_available_task:
+				var result: NodeResult = give_task(task_tree)
+				if result.status == NodeStatus.FoundTask:
+					var next_available_task: Task = result.node.task
 					var available_settler := get_available_settler(next_available_task)
 					if available_settler:
+						next_available_task.is_being_worked_on = true
 						available_settler.start_task(next_available_task)
 				
 		task_process_timer = 0
@@ -131,6 +133,94 @@ enum TaskTreeStatus {
 	Initial, Running, Finished, Failed
 }
 
+enum NodeStatus {
+	Unfinished, Finished, FoundTask
+}
+
+class NodeResult:
+	var node: Variant
+	var status: NodeStatus
+	
+	func _init(_node: Variant, _status: NodeStatus) -> void:
+		node = _node
+		status = _status    
+
+func give_task(node: Variant) -> NodeResult:
+	if node is TaskTreeBranch and node.order_type == TaskTreeBranch.OrderType.Sequence:
+		for sub_node: Variant in node.get_children():
+			var result: Variant = give_task(sub_node)
+			if result.status == NodeStatus.Unfinished:
+				return NodeResult.new(null, NodeStatus.Unfinished)
+			
+			if result.node is TaskTreeLeaf:
+				var task: Variant = result.node.task
+				if task and not task.is_finished:
+					if task.is_being_worked_on:
+						# Sequence is occupied
+						return NodeResult.new(null, NodeStatus.Unfinished)
+					return NodeResult.new(result.node, NodeStatus.FoundTask)
+			
+		# Node is done
+		return NodeResult.new(null, NodeStatus.Finished)
+	elif node is TaskTreeBranch and node.order_type == TaskTreeBranch.OrderType.Parallel:
+		var all_children_finished := true
+		for sub_node: Variant in node.get_children():
+			var result: NodeResult = give_task(sub_node)
+			if result.node is TaskTreeLeaf:
+				var task: Variant = result.node.task
+				if task:
+					if task.is_finished:
+						continue
+					
+					if task.is_being_worked_on:
+						all_children_finished = false
+					else:
+						return NodeResult.new(result.node, NodeStatus.FoundTask)
+				# Every task is being done
+				
+		if all_children_finished:
+			return NodeResult.new(null, NodeStatus.Finished)
+		else:
+			return NodeResult.new(null, NodeStatus.Unfinished)
+	# Leaf
+	return NodeResult.new(node, NodeStatus.FoundTask)
+
+func get_next_task(object: Variant) -> Variant:
+	if object is TaskTreeLeaf:
+		if not object.task.is_being_worked_on and not object.task.is_finished:
+			return object.task
+	
+	if object is TaskTreeBranch:
+		if object.order_type == TaskTreeBranch.OrderType.Sequence:
+			for sub_node: Variant in object.get_children():
+				var child: Variant = get_next_task(sub_node)
+					
+				if child is Task:
+					if child.is_being_worked_on:
+						return null
+					elif child.is_finished:
+						continue
+					else:
+						return child
+				elif child is TaskTreeBranch:
+					return get_next_task(child)
+					
+					
+		elif object.order_type == TaskTreeBranch.OrderType.Parallel:
+			for sub_node: Variant in object.get_children():
+				var child: Variant = get_next_task(sub_node)
+				if child is Task:
+					if child.is_being_worked_on or child.is_finished:
+						continue
+					else:
+						return child
+						
+				elif child is TaskTreeBranch:
+					return get_next_task(child)
+	
+	return null
+		
+
 func get_next_available_task(object: Variant) -> Variant:
 	#print("Entering get_next_available task with: ", object.name)
 	if object is TaskTreeLeaf:
@@ -139,6 +229,8 @@ func get_next_available_task(object: Variant) -> Variant:
 	
 	if object is TaskTreeBranch:
 		#print("Loop through children in: ", object.name, " is order type: ", object.order_type)
+		var has_unfinished_children := false
+		
 		for child: Variant in (object.get_children() as Array[Variant]):
 			#print("Going through child in object ", child.name, " parent: ", object.name)
 			var result: Variant = get_next_available_task(child)

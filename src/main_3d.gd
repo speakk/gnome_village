@@ -12,7 +12,7 @@ extends Node3D
 
 const TEST_TREES = 40
 const TEST_RESOURCES = 150
-const TEST_SETTLERS = 5
+const TEST_SETTLERS = 10
 const DECAL_AMOUNT = 2
 
 func _ready() -> void:

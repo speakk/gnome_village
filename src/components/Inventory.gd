@@ -4,6 +4,8 @@ class_name Inventory
 
 var item_amounts: Dictionary = {}
 
+var reservations: Dictionary = {}
+
 signal item_added(item_id: Variant, amount: int)
 signal item_removed(item_id: Variant, amount: int)
 
@@ -13,6 +15,19 @@ func add_item_amount(item_id: Variant, amount: int) -> void:
 		
 	item_amounts[item_id].amount += amount
 	item_added.emit(item_id, amount)
+
+func reserve_item_amount(item_id: Variant, amount: int) -> void:
+	if not reservations.has(item_id):
+		reservations[item_id] = ItemAmount.new(0, item_id)
+	
+	reservations[item_id].amount += amount
+
+func remove_item_reservation(item_id: Variant, amount: int) -> void:
+	if not reservations.has(item_id):
+		reservations[item_id] = ItemAmount.new(0, item_id)
+	reservations[item_id].amount -= amount
+	if reservations[item_id].amount <= 0:
+		reservations.erase(item_id)
 
 func remove_item_amount(item_id: Variant, amount: int) -> void:
 	if not item_amounts.has(item_id):
@@ -26,7 +41,17 @@ func has_item_amount(item_id: Variant, amount: int) -> bool:
 	if not item_amounts.has(item_id):
 		return false
 	
-	return item_amounts[item_id].amount >= amount
+	var reserved: int = 0
+	if reservations.has(item_id):
+		reserved += reservations.get(item_id).amount
+	
+	return item_amounts[item_id].amount - reserved >= amount
+
+func has_item_requirement(item_requirement: ItemRequirement) -> bool:
+	return has_item_amount(item_requirement.item_id, item_requirement.amount)
+
+func reserve_item_requirement(item_requirement: ItemRequirement) -> void:
+	reserve_item_amount(item_requirement.item_id, item_requirement.amount)
 
 func get_items() -> Array[ItemAmount]:
 	var items: Array[ItemAmount]

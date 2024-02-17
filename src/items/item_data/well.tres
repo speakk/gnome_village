@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="Item" load_steps=6 format=3 uid="uid://cpc18p56jv8bs"]
+
+[ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_gybae"]
+[ext_resource type="Script" path="res://src/items/Item.gd" id="1_ygcvd"]
+[ext_resource type="PackedScene" uid="uid://cdo3s14lusgmm" path="res://assets/blender_models/well.blend" id="2_icdf7"]
+
+[sub_resource type="Resource" id="Resource_4i162"]
+script = ExtResource("1_gybae")
+item_id = 1
+amount = 2
+
+[sub_resource type="Resource" id="Resource_d1pfs"]
+script = ExtResource("1_gybae")
+item_id = 7
+amount = 2000
+
+[resource]
+script = ExtResource("1_ygcvd")
+rendering_type = 4
+model = ExtResource("2_icdf7")
+hframes = 2
+vframes = 1
+frame = 0
+origin = Vector2(0, 0)
+cast_shadow_enabled = false
+cast_shadow_origin = Vector2(0, 0)
+tileset_id = 0
+tile_id = 0
+terrain_set_id = 0
+terrain_id = 0
+target_layer = 2
+mesh_id = 0
+display_name = "Water Well"
+can_be_picked = true
+can_be_constructed = true
+can_be_dismantled = true
+is_solid = true
+durability = 10
+crafting_requirements = Array[ExtResource("1_gybae")]([SubResource("Resource_4i162")])
+item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
+special_features = Array[int]([])
+provides = Array[ExtResource("1_gybae")]([SubResource("Resource_d1pfs")])

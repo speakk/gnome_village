@@ -15,5 +15,5 @@ func process_action(actor: Settler, delta: float) -> void:
 	actor.velocity = direction * actor.walk_speed
 	
 	var look_at_target := Vector3(target_position.x, actor.global_position.y, target_position.z)
-	if look_at_target != actor.global_position:
+	if look_at_target.distance_squared_to(actor.global_position) > 0.01:
 		actor.look_at(look_at_target, Vector3.UP, true)
