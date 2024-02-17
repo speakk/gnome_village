@@ -128,11 +128,6 @@ func _process(delta: float) -> void:
 				
 		task_process_timer = 0
 
-
-enum TaskTreeStatus {
-	Initial, Running, Finished, Failed
-}
-
 enum NodeStatus {
 	Unfinished, Finished, FoundTask
 }
@@ -184,77 +179,3 @@ func give_task(node: Variant) -> NodeResult:
 			return NodeResult.new(null, NodeStatus.Unfinished)
 	# Leaf
 	return NodeResult.new(node, NodeStatus.FoundTask)
-
-func get_next_task(object: Variant) -> Variant:
-	if object is TaskTreeLeaf:
-		if not object.task.is_being_worked_on and not object.task.is_finished:
-			return object.task
-	
-	if object is TaskTreeBranch:
-		if object.order_type == TaskTreeBranch.OrderType.Sequence:
-			for sub_node: Variant in object.get_children():
-				var child: Variant = get_next_task(sub_node)
-					
-				if child is Task:
-					if child.is_being_worked_on:
-						return null
-					elif child.is_finished:
-						continue
-					else:
-						return child
-				elif child is TaskTreeBranch:
-					return get_next_task(child)
-					
-					
-		elif object.order_type == TaskTreeBranch.OrderType.Parallel:
-			for sub_node: Variant in object.get_children():
-				var child: Variant = get_next_task(sub_node)
-				if child is Task:
-					if child.is_being_worked_on or child.is_finished:
-						continue
-					else:
-						return child
-						
-				elif child is TaskTreeBranch:
-					return get_next_task(child)
-	
-	return null
-		
-
-func get_next_available_task(object: Variant) -> Variant:
-	#print("Entering get_next_available task with: ", object.name)
-	if object is TaskTreeLeaf:
-		#print("Returning task as hit leaf")
-		return object.task
-	
-	if object is TaskTreeBranch:
-		#print("Loop through children in: ", object.name, " is order type: ", object.order_type)
-		var has_unfinished_children := false
-		
-		for child: Variant in (object.get_children() as Array[Variant]):
-			#print("Going through child in object ", child.name, " parent: ", object.name)
-			var result: Variant = get_next_available_task(child)
-			
-			if result is Task:
-				#print("is_being_worked on & finished: ", result.is_being_worked_on, " & ", result.is_finished)
-				if object.order_type == TaskTreeBranch.OrderType.Sequence:
-					if result.is_finished:
-						#print("In sequence, was finished so continue")
-						continue
-					if result.is_being_worked_on and not result.is_finished:
-						#print("In sequence, is being worked on already and not finished, so return null")
-						return null
-					
-					#print("In sequence, had available task in it so returning result: ", result)
-					return result
-				
-				if object.order_type == TaskTreeBranch.OrderType.Parallel:
-					if not result.is_being_worked_on:
-						#print("Parallel and returning task because not being worked on")
-						return result
-			elif object.order_type == TaskTreeBranch.OrderType.Sequence:
-				#print("Breaking", result)
-				break
-				
-	#print("Hit final null guard")
-	return null
