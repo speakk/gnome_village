@@ -1,10 +1,11 @@
-[gd_resource type="Resource" script_class="Item" load_steps=9 format=3 uid="uid://bpws0cgrpa471"]
+[gd_resource type="Resource" script_class="Item" load_steps=10 format=3 uid="uid://bpws0cgrpa471"]
 
 [ext_resource type="Resource" uid="uid://b1sibj1nnyom1" path="res://src/components/data/Selectable.tres" id="1_6ja6j"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_jxdwe"]
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_oubrg"]
 [ext_resource type="Script" path="res://src/items/ItemDrop.gd" id="2_4hitp"]
 [ext_resource type="Resource" uid="uid://dfdsdoejomj51" path="res://src/components/data/Door.tres" id="2_mhm4l"]
+[ext_resource type="Resource" uid="uid://c2iey841tfqyg" path="res://src/components/data/WorldPosition.tres" id="3_j1lyy"]
 [ext_resource type="PackedScene" uid="uid://cac2htxxa8jhx" path="res://src/items/item_data/scenes/wooden_door.tscn" id="3_nj775"]
 
 [sub_resource type="Resource" id="Resource_22b5m"]
@@ -34,4 +35,4 @@ durability = 10
 crafting_requirements = Array[ExtResource("1_oubrg")]([SubResource("Resource_22b5m")])
 item_drops = Array[ExtResource("2_4hitp")]([SubResource("Resource_w4qcp")])
 provides = Array[ExtResource("1_oubrg")]([])
-components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_6ja6j"), ExtResource("2_mhm4l")])
+components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_6ja6j"), ExtResource("2_mhm4l"), ExtResource("3_j1lyy")])

@@ -173,7 +173,9 @@ func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemSta
 	current_state = state
 	_initial_state = state
 	
-	Events.item_placed_on_ground.emit(self, global_position)
+	set_item_components()
+	
+	#Events.item_placed_on_ground.emit(self, global_position)
 
 	return self
 	
@@ -188,8 +190,14 @@ func _amount_changed(new_amount: int) -> void:
 		queue_free()
 
 func _ready() -> void:
+	set_notify_transform(true)
 	itemAmount.amount_changed.connect(_amount_changed)
 	update_rendering()
+
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_TRANSFORM_CHANGED:
+			_dirty = true
 
 func _exit_tree() -> void:
 	if item.rendering_type == Item.RenderingType.Terrain:
@@ -210,17 +218,19 @@ func generate_drops() -> void:
 			var new_item_on_ground := ITEM_ON_GROUND.instantiate() as ItemOnGround
 			# TODO: Randomize position slightly
 			get_parent().add_child(new_item_on_ground)
-			new_item_on_ground.global_position = global_position
 			new_item_on_ground.initialize(item_drop.item_id, amount)
-
+			var position_component: WorldPosition = new_item_on_ground.component_container.get_component_instance(Components.Id.WorldPosition)
+			position_component.current_position = global_position
+			WorldPosition.set_world_position(new_item_on_ground, global_position)
+			
 func place_at_coordinate(coordinate: Vector2i) -> void:
-	global_position = Globals.get_map().coordinate_to_global_position(coordinate)
-	Events.item_placed_on_ground.emit(self, global_position)
+	var new_position := Globals.get_map().coordinate_to_global_position(coordinate)
+	WorldPosition.set_world_position(self, new_position)
+	#Events.item_placed_on_ground.emit(self, global_position)
 
 func _process(delta: float) -> void:
 	if _dirty:
 		update_rendering()
-		set_item_components()
 		_dirty = false
 
 func finish_construction() -> void:

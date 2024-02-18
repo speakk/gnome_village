@@ -11,8 +11,8 @@ func tick_zone() -> void:
 		if entities.size() == 0:
 			var farm_plot := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			get_tree().root.get_node("Main").get_node("Entities").add_child(farm_plot)
-			farm_plot.global_position = Globals.get_map().coordinate_to_global_position(coordinate)
 			farm_plot.initialize(Items.Id.FarmPlot, 1, ItemOnGround.ItemState.Blueprint)
+			WorldPosition.set_world_position(farm_plot, Globals.get_map().coordinate_to_global_position(coordinate))
 			Events.blueprint_placed.emit(coordinate, farm_plot)
 		else:
 			for entity in entities:

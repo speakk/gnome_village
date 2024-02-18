@@ -33,9 +33,8 @@ func _ready() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			%Entities.add_child(item_on_ground)
-			item_on_ground.global_position = quantized_position
 			item_on_ground.initialize(Items.Id.Tree)
-			
+			WorldPosition.set_world_position(item_on_ground, quantized_position)
 	
 	await get_tree().physics_frame
 #
@@ -47,8 +46,9 @@ func _ready() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			%Entities.add_child(item_on_ground)
-			item_on_ground.global_position = quantized_position
 			item_on_ground.initialize(item_types.pick_random())
+			WorldPosition.set_world_position(item_on_ground, quantized_position)
+			
 	
 	var settlers_to_place := TEST_SETTLERS
 	var attempts := 400
@@ -58,7 +58,7 @@ func _ready() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var settler := SETTLER.instantiate()
 			%Entities.add_child(settler)
-			settler.global_position = quantized_position
+			WorldPosition.set_world_position(settler, quantized_position)
 			
 			print("Settler placed at", settler.global_position)
 			

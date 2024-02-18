@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="Item" load_steps=7 format=3 uid="uid://pbbjelty00sx"]
+[gd_resource type="Resource" script_class="Item" load_steps=8 format=3 uid="uid://pbbjelty00sx"]
 
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_3k661"]
 [ext_resource type="Resource" uid="uid://b1sibj1nnyom1" path="res://src/components/data/Selectable.tres" id="1_fxdux"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="2_3a7ng"]
+[ext_resource type="Resource" uid="uid://c2iey841tfqyg" path="res://src/components/data/WorldPosition.tres" id="2_kvsd8"]
 [ext_resource type="Script" path="res://src/items/ItemDrop.gd" id="2_y8a2u"]
 
 [sub_resource type="Resource" id="Resource_8qi6u"]
@@ -31,4 +32,4 @@ durability = 10
 crafting_requirements = Array[ExtResource("1_3k661")]([SubResource("Resource_8qi6u")])
 item_drops = Array[ExtResource("2_y8a2u")]([SubResource("Resource_l4oxn")])
 provides = Array[ExtResource("1_3k661")]([])
-components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_fxdux")])
+components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_fxdux"), ExtResource("2_kvsd8")])

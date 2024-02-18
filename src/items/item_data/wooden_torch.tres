@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="Item" load_steps=5 format=3 uid="uid://qp3qm2tlm81y"]
+[gd_resource type="Resource" script_class="Item" load_steps=7 format=3 uid="uid://qp3qm2tlm81y"]
 
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_4j5er"]
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_mpu1o"]
+[ext_resource type="Resource" uid="uid://b1sibj1nnyom1" path="res://src/components/data/Selectable.tres" id="1_yvccx"]
+[ext_resource type="Resource" uid="uid://c2iey841tfqyg" path="res://src/components/data/WorldPosition.tres" id="2_3p57l"]
 [ext_resource type="PackedScene" uid="uid://uqcgysgd2yqr" path="res://src/items/item_data/scenes/wooden_torch.tscn" id="2_ueooe"]
 
 [sub_resource type="Resource" id="Resource_gkdgp"]
@@ -23,5 +25,5 @@ is_solid = false
 durability = 10
 crafting_requirements = Array[ExtResource("1_mpu1o")]([SubResource("Resource_gkdgp")])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
-special_features = Array[int]([])
 provides = Array[ExtResource("1_mpu1o")]([])
+components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_yvccx"), ExtResource("2_3p57l")])

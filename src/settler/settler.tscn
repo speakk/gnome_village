@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=11 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://src/settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="PackedScene" uid="uid://d0bhvo3gwo2q8" path="res://assets/blender_models/settler.blend" id="4_j4bsq"]
@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://clv6mpeajwoxr" path="res://assets/sounds/hammer2.ogg" id="5_o8chs"]
 [ext_resource type="AudioStream" uid="uid://daeuw4k6aohh7" path="res://assets/sounds/hammer3.ogg" id="6_b2h8r"]
 [ext_resource type="AudioStream" uid="uid://xh8if5kkhpyk" path="res://assets/sounds/hammer4.ogg" id="7_4xo23"]
+[ext_resource type="PackedScene" uid="uid://cyfiey6xlcs1q" path="res://src/components/component_container.tscn" id="8_jtegl"]
 
 [sub_resource type="Animation" id="Animation_qwdft"]
 resource_name = "Build"
@@ -92,3 +93,5 @@ attenuation_filter_db = -9.1
 libraries = {
 "": SubResource("AnimationLibrary_tjr5p")
 }
+
+[node name="ComponentContainer" parent="." instance=ExtResource("8_jtegl")]

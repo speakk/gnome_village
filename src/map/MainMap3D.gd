@@ -58,19 +58,19 @@ func prepare_for_load() -> void:
 	#clear_layer(Layers.Building)
 	#clear_layer(Layers.Blueprint)
 
-func add_map_entity(coordinate: Vector2i, item_on_ground: ItemOnGround) -> void:
+func add_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:
 	if not map_entities.has(coordinate):
 		map_entities[coordinate] = []
 	
 	if not map_entities[coordinate].has(item_on_ground):
 		map_entities[coordinate].append(item_on_ground)
 
-func remove_map_entity(coordinate: Vector2i, item_on_ground: ItemOnGround) -> void:
+func remove_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:
 	if map_entities.has(coordinate):
 		map_entities[coordinate].erase(item_on_ground)
 
-func get_map_entities(coordinate: Vector2i) -> Array[ItemOnGround]:
-	var result: Array[ItemOnGround]
+func get_map_entities(coordinate: Vector2i) -> Array[Node3D]:
+	var result: Array[Node3D]
 	if not map_entities.has(coordinate):
 		return result
 		
@@ -125,10 +125,19 @@ func _ready() -> void:
 	Events.terrain_placed.connect(_terrain_placed)
 	Events.terrain_cleared.connect(_terrain_cleared)
 	
-	Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector3) -> void:
-			var coordinate := global_position_to_coordinate(item_position)
-			add_map_entity(coordinate, item)
-	)
+	#Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector3) -> void:
+			#var coordinate := global_position_to_coordinate(item_position)
+			#add_map_entity(coordinate, item)
+	#)
+
+	Events.world_position_changed.connect(func(entity: Node3D, old_position: Vector3, new_position: Vector3) -> void:
+			var coordinate := global_position_to_coordinate(new_position)
+			add_map_entity(coordinate, entity)
+			
+			var old_coordinate := global_position_to_coordinate(old_position)
+			remove_map_entity(old_coordinate, entity)
+			)
+		
 	
 	Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:
 			var coordinate := global_position_to_coordinate(item.global_position)
@@ -181,8 +190,8 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 		if not is_coordinate_occupied(tile_position):
 			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			get_tree().root.get_node("Main").get_node("Entities").add_child(blueprint)
-			blueprint.global_position = coordinate_to_global_position(tile_position)
 			blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
+			WorldPosition.set_world_position(blueprint, coordinate_to_global_position(tile_position))
 			Events.blueprint_placed.emit(tile_position, blueprint)
 
 func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:

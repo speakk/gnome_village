@@ -10,6 +10,13 @@ func has_component(component_id: Components.Id) -> bool:
 		).size() > 0
 		
 
+func get_component_instance(component_id: Components.Id) -> ComponentInstance:
+	return get_children().filter(func(child: Node) -> bool:
+		if child is ComponentInstance:
+			return child.id == component_id
+		return false
+		)[0]
+
 func add_component(component: Component) -> void:
 	var component_instance := ComponentInstance.create_instance(component, component_owner)
 	add_child(component_instance)

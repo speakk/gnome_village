@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://b26vtx6b8lip2"]
+[gd_resource type="Resource" script_class="Item" load_steps=5 format=3 uid="uid://b26vtx6b8lip2"]
 
+[ext_resource type="Resource" uid="uid://b1sibj1nnyom1" path="res://src/components/data/Selectable.tres" id="1_bp460"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_oi3ex"]
 [ext_resource type="PackedScene" uid="uid://coq0jscwmqbi7" path="res://assets/blender_models/wood.blend" id="1_xxm8b"]
+[ext_resource type="Resource" uid="uid://c2iey841tfqyg" path="res://src/components/data/WorldPosition.tres" id="2_dbrbf"]
 
 [resource]
 script = ExtResource("1_oi3ex")
@@ -17,5 +19,5 @@ is_solid = false
 durability = 10
 crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
-special_features = Array[int]([])
 provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_bp460"), ExtResource("2_dbrbf")])
