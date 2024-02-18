@@ -45,7 +45,6 @@ func update_rendering() -> void:
 	
 	if item.rendering_type == Item.RenderingType.Terrain:
 		Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
-	
 	elif item.rendering_type == Item.RenderingType.Model:
 		if has_node("model"):
 			get_node("model").queue_free()
@@ -208,10 +207,11 @@ func generate_drops() -> void:
 	for item_drop in item.item_drops:
 		if randf() <= item_drop.probability:
 			var amount := randi_range(item_drop.amount_min, item_drop.amount_max)
-			var new_item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround).initialize(item_drop.item_id, amount)
+			var new_item_on_ground := ITEM_ON_GROUND.instantiate() as ItemOnGround
 			# TODO: Randomize position slightly
-			new_item_on_ground.global_position = global_position
 			get_parent().add_child(new_item_on_ground)
+			new_item_on_ground.global_position = global_position
+			new_item_on_ground.initialize(item_drop.item_id, amount)
 
 func place_at_coordinate(coordinate: Vector2i) -> void:
 	global_position = Globals.get_map().coordinate_to_global_position(coordinate)

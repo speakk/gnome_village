@@ -33,6 +33,5 @@ is_solid = false
 durability = 10
 crafting_requirements = Array[ExtResource("1_oubrg")]([SubResource("Resource_22b5m")])
 item_drops = Array[ExtResource("2_4hitp")]([SubResource("Resource_w4qcp")])
-special_features = Array[int]([0])
 provides = Array[ExtResource("1_oubrg")]([])
 components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_6ja6j"), ExtResource("2_mhm4l")])
