@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="Component" load_steps=2 format=3 uid="uid://dfdsdoejomj51"]
+
+[ext_resource type="Script" path="res://src/components/Component.gd" id="1_ckn32"]
+
+[resource]
+script = ExtResource("1_ckn32")
+id = 1

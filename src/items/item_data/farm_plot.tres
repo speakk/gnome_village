@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://dulsru7myeyi4"]
+[gd_resource type="Resource" script_class="Item" load_steps=4 format=3 uid="uid://dulsru7myeyi4"]
 
 [ext_resource type="PackedScene" uid="uid://b7ce8cn4so175" path="res://src/items/item_data/scenes/farm_plot.tscn" id="1_833cc"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_am7fa"]
+[ext_resource type="Resource" uid="uid://b1sibj1nnyom1" path="res://src/components/data/Selectable.tres" id="1_n8a11"]
 
 [resource]
 script = ExtResource("1_am7fa")
@@ -19,3 +20,4 @@ crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([]
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
 special_features = Array[int]([1])
 provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_n8a11")])

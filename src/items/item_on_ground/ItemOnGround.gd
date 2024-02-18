@@ -12,6 +12,8 @@ enum ItemState {
 @onready var constructionInventory := $ConstructionInventory as Inventory
 @onready var inventory: Inventory = $Inventory
 
+@onready var component_container: ComponentContainer = $ComponentContainer
+
 var item_scene: Node3D
 var item: Item
 
@@ -23,7 +25,7 @@ var item_id: Items.Id:
 		item = Items.get_by_id(item_id)
 		current_durability = item.durability
 		max_durability = item.durability
-#		
+		
 		_dirty = true
 
 var current_state: ItemState:
@@ -218,6 +220,7 @@ func place_at_coordinate(coordinate: Vector2i) -> void:
 func _process(delta: float) -> void:
 	if _dirty:
 		update_rendering()
+		set_item_components()
 		_dirty = false
 
 func finish_construction() -> void:
@@ -240,6 +243,11 @@ func increase_build_progress(amount: float) -> void:
 
 	if is_finished():
 		finish_construction()
+
+func set_item_components() -> void:
+	component_container.clear()
+	for component in item.components:
+		component_container.add_component(component)
 
 func is_finished() -> bool:
 	return build_progress >= 1.0

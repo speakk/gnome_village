@@ -30,5 +30,5 @@ enum SpecialFeatures {
 @export var durability: int = 10
 @export var crafting_requirements: Array[ItemRequirement] = []
 @export var item_drops: Array[ItemDrop] = []
-@export var special_features: Array[SpecialFeatures]
 @export var provides: Array[ItemRequirement]
+@export var components: Array[Component] = [preload("res://src/components/data/Selectable.tres")]

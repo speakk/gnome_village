@@ -26,6 +26,7 @@ Items="*res://src/items/Items.gd"
 SaveSystem="*res://src/SaveSystem.gd"
 Tasks="*res://src/tasks/Tasks.gd"
 Plants="*res://src/plants/plant_data/Plants.gd"
+Components="*res://src/components/Components.gd"
 
 [debug]
 

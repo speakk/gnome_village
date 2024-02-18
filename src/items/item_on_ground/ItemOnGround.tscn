@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://f30j7nr3ioc4"]
+[gd_scene load_steps=10 format=3 uid="uid://f30j7nr3ioc4"]
 
 [ext_resource type="Script" path="res://src/items/item_on_ground/ItemOnGround.gd" id="1_j80v7"]
 [ext_resource type="Texture2D" uid="uid://bw1pf7p1ry4gq" path="res://assets/dismantle_indicator.png" id="4_xl2yw"]
+[ext_resource type="PackedScene" uid="uid://cyfiey6xlcs1q" path="res://src/components/component_container.tscn" id="5_3dtg2"]
 [ext_resource type="PackedScene" uid="uid://4uoik2g4sk5c" path="res://src/components/ItemAmount.tscn" id="6_ch2ij"]
 [ext_resource type="PackedScene" uid="uid://dnly7t4x7n0av" path="res://src/components/Inventory.tscn" id="6_lqhr4"]
 
@@ -63,3 +64,5 @@ font_size = 24
 [node name="ConstructionInventory" parent="." instance=ExtResource("6_lqhr4")]
 
 [node name="Inventory" parent="." instance=ExtResource("6_lqhr4")]
+
+[node name="ComponentContainer" parent="." instance=ExtResource("5_3dtg2")]

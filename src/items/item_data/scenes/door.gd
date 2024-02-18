@@ -15,6 +15,9 @@ var open_amount := 0.0:
 		open_amount = new_amount
 
 func correct_orientation() -> void:
+	if not $MeshInstance3D:
+		return
+		
 	var self_coordinate := (Globals.get_map() as MainMap3D).global_position_to_coordinate(global_position)
 	var surrounding_coordinates := PathFinder.get_surrounding_coordinates(self_coordinate, false)
 	for coordinate in surrounding_coordinates:
