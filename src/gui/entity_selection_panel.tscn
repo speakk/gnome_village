@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c13wfhh44yr61"]
+
+[ext_resource type="Script" path="res://src/gui/entity_selection_panel.gd" id="1_m08ad"]
+[ext_resource type="PackedScene" uid="uid://cjx3xwhwv7wru" path="res://src/gui/entity_info_display.tscn" id="2_82th5"]
+
+[node name="EntitySelectionPanel" type="PanelContainer"]
+script = ExtResource("1_m08ad")
+
+[node name="EntityInfoDisplays" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EntityInfoDisplay" parent="." instance=ExtResource("2_82th5")]
+layout_mode = 2

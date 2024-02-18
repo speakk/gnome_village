@@ -1,7 +1,7 @@
 extends Node
 
 enum Id {
-	Selectable, Door, WorldPosition
+	Selectable, Door, WorldPosition, DisplayName
 }
 
 var component_by_id: Dictionary
@@ -12,7 +12,13 @@ func _ready() -> void:
 	var file_name := data_dir.get_next()
 	while file_name != "":
 		if not data_dir.current_is_dir():
-			var component_data: Component = load("res://src/components/data/%s" % file_name)
+			var data := load("res://src/components/data/%s" % file_name)
+			var component_data: Component
+			if data is Component:
+				component_data = data
+			if data is Script:
+				component_data = data.new()
+				
 			if component_by_id.has(component_data.id):
 				push_error("Component Id duplicate found: ", component_data.id, file_name)
 			component_by_id[component_data.id] = component_data

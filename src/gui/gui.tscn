@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://cynniosvk7y2r"]
+[gd_scene load_steps=15 format=3 uid="uid://cynniosvk7y2r"]
 
 [ext_resource type="Script" path="res://src/gui/gui.gd" id="1_jqq6f"]
 [ext_resource type="StyleBox" uid="uid://1n0ehwbrxwuy" path="res://src/gui/main_button_pressed.tres" id="2_f1s78"]
 [ext_resource type="PackedScene" uid="uid://ctd6ytjbkrp06" path="res://src/gui/build_menu.tscn" id="2_fxugl"]
 [ext_resource type="PackedScene" uid="uid://dfgpr3b7vmlcy" path="res://src/zones/gui/zone_menu.tscn" id="4_jp28f"]
 [ext_resource type="PackedScene" uid="uid://d3hc65n7bfkm3" path="res://src/gui/day_night_cycle_indicator.tscn" id="5_dfwll"]
+[ext_resource type="PackedScene" uid="uid://c13wfhh44yr61" path="res://src/gui/entity_selection_panel.tscn" id="6_uim4i"]
 
 [sub_resource type="InputEventAction" id="InputEventAction_fsw66"]
 action = &"toggle_menu_1"
@@ -141,6 +142,13 @@ theme_override_constants/margin_right = 100
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+
+[node name="MarginContainer3" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="EntitySelectionPanel" parent="MarginContainer3" instance=ExtResource("6_uim4i")]
+layout_mode = 2
 
 [connection signal="pressed" from="PanelContainer/MainButtons/BuildButton" to="." method="_on_build_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MainButtons/PlantButton" to="." method="_on_plant_button_pressed"]
