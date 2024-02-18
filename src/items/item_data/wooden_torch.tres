@@ -11,18 +11,9 @@ amount = 1
 
 [resource]
 script = ExtResource("1_4j5er")
-rendering_type = 3
-hframes = 2
-vframes = 1
-frame = 0
-origin = Vector2(0, 0)
-cast_shadow_enabled = false
-cast_shadow_origin = Vector2(0, 0)
-tileset_id = 0
-tile_id = 0
-terrain_set_id = 0
-terrain_id = 0
+rendering_type = 1
 target_layer = 2
+mesh_id = 0
 display_name = "Wooden Torch"
 scene = ExtResource("2_ueooe")
 can_be_picked = true
@@ -33,3 +24,4 @@ durability = 10
 crafting_requirements = Array[ExtResource("1_mpu1o")]([SubResource("Resource_gkdgp")])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
 special_features = Array[int]([])
+provides = Array[ExtResource("1_mpu1o")]([])

@@ -8,7 +8,6 @@ enum ItemState {
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-@onready var sprite := $Sprite3D as Sprite3D
 @onready var itemAmount := $ItemAmount as ItemAmount
 @onready var constructionInventory := $ConstructionInventory as Inventory
 @onready var inventory: Inventory = $Inventory
@@ -34,7 +33,6 @@ var current_state: ItemState:
 		_dirty = true
 
 func update_rendering() -> void:
-	# Not _ready yet if no sprite available
 	if not item:
 		visible = false
 		return
@@ -43,24 +41,7 @@ func update_rendering() -> void:
 	
 	var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
 	
-	sprite.visible = false
-	
-	if item.rendering_type == Item.RenderingType.Sprite:
-		sprite.visible = true
-		sprite.texture = item.texture
-		sprite.hframes = item.hframes
-		sprite.vframes = item.vframes
-		sprite.frame = item.frame
-		#sprite.centered = false
-		# TODO: 3D rework
-		var sprite_size := sprite.texture.get_size() / Vector2(sprite.hframes, sprite.vframes)
-		#sprite.offset = (- item.origin * sprite_size) - Vector2(MainMap3D.CELL_SIZE / 2)
-		sprite.offset.y = item.origin.y * sprite_size.y / 2
-		print("offset is", sprite.offset.y)
-		#sprite.offset.y *= -1
-		
-	elif item.rendering_type == Item.RenderingType.Terrain:
-		#Events.terrain_placed.emit(coordinate, item.target_layer, item.terrain_set_id, item.terrain_id, item.is_solid, self)
+	if item.rendering_type == Item.RenderingType.Terrain:
 		Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
 	
 	elif item.rendering_type == Item.RenderingType.Model:
@@ -71,10 +52,6 @@ func update_rendering() -> void:
 		add_child(model)
 
 	if item.scene:
-		#if item_scene:
-			#remove_child(get_node("scene"))
-			#item_scene.queue_free()
-		
 		if not item_scene:
 			var scene := item.scene.instantiate() as Node3D
 			scene.name = "scene"
@@ -99,22 +76,14 @@ func update_rendering() -> void:
 			#print("Clearing terrain and adding to normal layer")
 			Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
 			Events.terrain_cleared.emit(coordinate, true)
-		elif item.rendering_type == Item.RenderingType.Sprite:
-			$Sprite3D.modulate = Color.WHITE
 		elif item.rendering_type == Item.RenderingType.None and item.scene:
 			# 3D rendering TODO
 			pass
-			#get_node("scene").modulate = Color.WHITE
 	
 	if current_state == ItemState.Blueprint:
-		#print("New state is blueprint!")
 		if item.rendering_type == Item.RenderingType.Terrain:
-			#print("Setting blueprint terrain")
-			#Events.terrain_placed.emit(coordinate, MainMap3D.Layers.Blueprint, item.terrain_set_id, item.terrain_id, item.is_solid, self)
 			Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, true)
 			Events.terrain_cleared.emit(coordinate, false)
-		elif item.rendering_type == Item.RenderingType.Sprite:
-			$Sprite3D.modulate = Color(0.6, 0.6, 1.0, 0.5)
 		elif item.rendering_type == Item.RenderingType.None and item.scene:
 			# TODO: 3D rendering: Figure out how to modulate the scene
 			# (maybe a "render_as_blueprint" method contract
@@ -247,15 +216,12 @@ func place_at_coordinate(coordinate: Vector2i) -> void:
 	Events.item_placed_on_ground.emit(self, global_position)
 
 func _process(delta: float) -> void:
-	# TODO: 3D rework, fix this elsewhere
-	$Sprite3D.global_position.y = 0.5
 	if _dirty:
 		update_rendering()
 		_dirty = false
 
 func finish_construction() -> void:
 	if not finish_emitted:
-		$Sprite3D.modulate = Color.WHITE
 		$ProgressBar.hide()
 		
 		await get_tree().process_frame

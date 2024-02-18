@@ -16,18 +16,8 @@ amount = 2000
 
 [resource]
 script = ExtResource("1_ygcvd")
-rendering_type = 4
+rendering_type = 2
 model = ExtResource("2_icdf7")
-hframes = 2
-vframes = 1
-frame = 0
-origin = Vector2(0, 0)
-cast_shadow_enabled = false
-cast_shadow_origin = Vector2(0, 0)
-tileset_id = 0
-tile_id = 0
-terrain_set_id = 0
-terrain_id = 0
 target_layer = 2
 mesh_id = 0
 display_name = "Water Well"

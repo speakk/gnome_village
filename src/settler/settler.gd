@@ -90,7 +90,7 @@ func load_save(save_dict: Dictionary) -> void:
 	#add_child(inventory)
 	#inventory.name = "Inventory"
 
-	_refresh_carry_item_sprite()
+	_refresh_carry_item()
 	
 	#if save_dict.has("current_task_save_id"):
 	#	SaveSystem.register_load_reference(self, "current_task_actuator", save_dict["current_task_save_id"], true)
@@ -190,7 +190,7 @@ func process_actions(delta: float) -> void:
 	for action in actions:
 		action.process_action(self, delta)
 
-func _refresh_carry_item_sprite() -> void:
+func _refresh_carry_item() -> void:
 	var items := inventory.get_items()
 	for child in $CarryItemNode.get_children():
 		child.queue_free()
@@ -198,17 +198,16 @@ func _refresh_carry_item_sprite() -> void:
 	if items.size() > 0:
 		var first_item_amount := items[0]
 		var item := Items.get_by_id(first_item_amount.id)
-		Items.copy_item_properties_to_sprite(item, $CarryItemSprite)
 		var item_render_scene := Items.get_item_render_scene(item)
 		if item_render_scene:
 			$CarryItemNode.add_child(item_render_scene)
 		
 
 func _inventory_item_added(item_id: Variant, _amount: int) -> void:
-	_refresh_carry_item_sprite()
+	_refresh_carry_item()
 
 func _inventory_item_removed(_item_id: Variant, _amount: int) -> void:
-	_refresh_carry_item_sprite()
+	_refresh_carry_item()
 
 func play_animation(animation_name: String) -> void:
 	if not $settler/AnimationPlayer.current_animation == animation_name:

@@ -32,12 +32,6 @@ func get_crafting_requirements(item_id: Id) -> Array[ItemRequirement]:
 	var item := get_by_id(item_id)
 	return item.crafting_requirements
 
-func copy_item_properties_to_sprite(item: Item, sprite: Sprite2D) -> void:
-	sprite.texture = item.texture
-	sprite.hframes = item.hframes
-	sprite.vframes = item.vframes
-	sprite.frame = item.frame
-
 func get_item_render_scene(item: Item) -> Node3D:
 	if item.rendering_type == Item.RenderingType.Model:
 		var scene := item.model.instantiate()

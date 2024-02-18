@@ -19,17 +19,7 @@ probability = 1.0
 
 [resource]
 script = ExtResource("1_jxdwe")
-rendering_type = 3
-hframes = 2
-vframes = 1
-frame = 0
-origin = Vector2(0, 0.5)
-cast_shadow_enabled = false
-cast_shadow_origin = Vector2(0, 0)
-tileset_id = 0
-tile_id = 0
-terrain_set_id = 0
-terrain_id = 0
+rendering_type = 1
 target_layer = 3
 mesh_id = 0
 display_name = "Wooden Door"
@@ -42,3 +32,4 @@ durability = 10
 crafting_requirements = Array[ExtResource("1_oubrg")]([SubResource("Resource_22b5m")])
 item_drops = Array[ExtResource("2_4hitp")]([SubResource("Resource_w4qcp")])
 special_features = Array[int]([0])
+provides = Array[ExtResource("1_oubrg")]([])
