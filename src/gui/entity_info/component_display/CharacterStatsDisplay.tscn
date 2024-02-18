@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cjs82pqfrl6oq"]
+[gd_scene load_steps=3 format=3 uid="uid://cjs82pqfrl6oq"]
 
 [ext_resource type="Script" path="res://src/gui/entity_info/component_display/CharacterStatsDisplay.gd" id="1_eov7g"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gvcqp"]
 
 [node name="CharacterStatsDisplay" type="MarginContainer"]
 anchors_preset = 15
@@ -10,5 +12,26 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_eov7g")
 
-[node name="Stats" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Status:"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxEmpty_gvcqp")
+
+[node name="Stats" type="VBoxContainer" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20

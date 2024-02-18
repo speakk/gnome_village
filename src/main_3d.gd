@@ -52,8 +52,9 @@ func _ready() -> void:
 	
 	var settlers_to_place := TEST_SETTLERS
 	var attempts := 400
+	var settler_radius_modifier := 0.3
 	for i in attempts:
-		var grid_position := Globals.get_map().get_random_coordinate()
+		var grid_position := Globals.get_map().get_random_coordinate() * settler_radius_modifier
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
 			var settler := SETTLER.instantiate()

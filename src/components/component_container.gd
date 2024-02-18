@@ -29,3 +29,8 @@ func add_component(component: Component) -> void:
 func clear() -> void:
 	for child in get_children():
 		child.queue_free()
+
+func _process(delta: float) -> void:
+	for component_instance in get_all():
+		if component_instance.data.has_method("process_component"):
+			component_instance.data.process_component(delta)

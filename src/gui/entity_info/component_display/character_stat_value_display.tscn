@@ -1,9 +1,25 @@
-[gd_scene load_steps=2 format=3 uid="uid://b7v7f55s4haww"]
+[gd_scene load_steps=4 format=3 uid="uid://b7v7f55s4haww"]
 
 [ext_resource type="Script" path="res://src/gui/entity_info/component_display/character_stat_value_display.gd" id="1_f5osd"]
 
+[sub_resource type="Gradient" id="Gradient_3omeq"]
+colors = PackedColorArray(0.859375, 0.859375, 0.859375, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_n10af"]
+gradient = SubResource("Gradient_3omeq")
+
 [node name="CharacterStatValueDisplay" type="MarginContainer"]
+custom_minimum_size = Vector2(150, 0)
 script = ExtResource("1_f5osd")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+layout_mode = 2
+max_value = 1.0
+step = 0.001
+nine_patch_stretch = true
+texture_progress = SubResource("GradientTexture1D_n10af")
+tint_progress = Color(0.753906, 0.528263, 0.389636, 1)
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
+horizontal_alignment = 1
