@@ -131,11 +131,12 @@ func _ready() -> void:
 	#)
 
 	Events.world_position_changed.connect(func(entity: Node3D, old_position: Vector3, new_position: Vector3) -> void:
-			var coordinate := global_position_to_coordinate(new_position)
-			add_map_entity(coordinate, entity)
-			
 			var old_coordinate := global_position_to_coordinate(old_position)
 			remove_map_entity(old_coordinate, entity)
+			
+			var coordinate := global_position_to_coordinate(new_position)
+			print("Adding map entity", coordinate, entity)
+			add_map_entity(coordinate, entity)
 			)
 		
 	

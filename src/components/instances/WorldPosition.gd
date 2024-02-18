@@ -2,7 +2,8 @@ class_name WorldPosition extends ComponentInstance
 
 var current_position: Vector3:
 	set(new_value):
-		Events.world_position_changed.emit(component_owner, current_position, new_value)
+		if current_position.distance_to(new_value) > 0.01:
+			Events.world_position_changed.emit(component_owner, current_position, new_value)
 		current_position = new_value
 		component_owner.global_position = new_value
 

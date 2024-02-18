@@ -42,6 +42,10 @@ func _ready() -> void:
 	play_animation("Idle")
 	
 	component_container.add_component(Components.create_component_by_id(Components.Id.WorldPosition))
+	component_container.add_component(Components.create_component_by_id(Components.Id.Selectable))
+	component_container.add_component(Components.create_component_by_id(Components.Id.DisplayName))
+	component_container.get_component_instance(Components.Id.DisplayName).data.display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
+	
 	
 	#
 	#var hair := hair_options.pick_random() as Texture2D
@@ -173,8 +177,9 @@ func ensure_valid_position() -> void:
 func is_in_valid_position() -> bool:
 	var entities := Globals.get_map().get_map_entities(Globals.get_map().global_position_to_coordinate(global_position))
 	for entity in entities:
-		if entity.item.is_solid:
-			return false
+		if entity is ItemOnGround:
+			if entity.item.is_solid:
+				return false
 	
 	return true
 	#return not PathFinder.is_position_solid(Globals.get_map().global_position_to_coordinate(global_position))

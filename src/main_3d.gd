@@ -60,7 +60,7 @@ func _ready() -> void:
 			%Entities.add_child(settler)
 			WorldPosition.set_world_position(settler, quantized_position)
 			
-			print("Settler placed at", settler.global_position)
+			print("Settler placed at", grid_position)
 			
 			settlers_to_place -= 1
 			if settlers_to_place <= 0:
