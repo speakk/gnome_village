@@ -45,6 +45,8 @@ func _ready() -> void:
 	component_container.add_component(Components.create_component_by_id(Components.Id.Selectable))
 	component_container.add_component(Components.create_component_by_id(Components.Id.DisplayName))
 	component_container.get_component_instance(Components.Id.DisplayName).data.display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
+	component_container.add_component(Components.create_component_by_id(Components.Id.CharacterStats))
+	
 	
 	
 	#

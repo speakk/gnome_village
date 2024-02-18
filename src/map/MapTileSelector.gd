@@ -71,30 +71,59 @@ func clear_rectangle_selection() -> void:
 	rect_tile_coords = []
 	selection_draw.selection_rectangle = null
 
-var mouse_pressed_1 := false
-var mouse_pressed_2 := false
-
-var mouse_released_1 := false
-
-# TODO: You could use an Area2D and the input_event in that to handle this instead
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.is_pressed():
-			if event.button_index == 1:
-				mouse_pressed_1 = true
-			else:
-				mouse_pressed_2 = true
-		else:
-			mouse_pressed_1 = false
-			mouse_pressed_2 = false
+#var mouse_pressed_1 := false
+#var mouse_pressed_2 := false
+#
+#var mouse_released_1 := false
+#
+var last_mouse_position: Vector3
+#
+## TODO: You could use an Area2D and the input_event in that to handle this instead
+#func _unhandled_input(event: InputEvent) -> void:
+	#if event is InputEventMouseButton:
+		#if event.is_pressed():
+			#if event.button_index == 1:
+				#mouse_pressed_1 = true
+			#else:
+				#mouse_pressed_2 = true
+		#else:
+			#mouse_pressed_1 = false
+			#mouse_pressed_2 = false
 		
 
-
 func _mouse_hovered(mouse_position: Vector3) -> void:
+	last_mouse_position = mouse_position
+
+#func _mouse_hovered(mouse_position: Vector3) -> void:
+
+var previous_pressed_state_1: bool = false
+var previous_pressed_state_2: bool = false
+
+class EmitInformation:
+	var signal_type: Signal
+	var coords: Array[Vector2i]
+	
+	func _init(_signal_type: Signal, _coords: Array[Vector2i]) -> void:
+		signal_type = _signal_type
+		coords = _coords
+
+var info_to_emit: EmitInformation
+
+var mouse_latch: bool = false
+
+func _process(_delta: float) -> void:
 	# TODO: -0.42 is a magic number, works as (2d) "Y" offset to center the mouse
 	# Probably has to do with angle of camera truncating the "y" axis by a percentage
-	var tile_position:  Vector2i = Globals.truncate_vec3i(Globals.get_map().grid.local_to_map(mouse_position + Vector3(0, 0, -0.42)))
+	var tile_position:  Vector2i = Globals.truncate_vec3i(Globals.get_map().grid.local_to_map(last_mouse_position + Vector3(0, 0, -0.42)))
 	#print("Tile position", tile_position)
+	
+	var mouse_pressed_1 := Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+	var just_released_1 := false
+	if not mouse_pressed_1 and previous_pressed_state_1:
+		just_released_1 = true
+	
+	previous_pressed_state_1 = mouse_pressed_1
+	var mouse_pressed_2 := Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
 	
 	if not Input.is_action_pressed("line_draw_modifier"):
 		line_start = null
@@ -107,55 +136,67 @@ func _mouse_hovered(mouse_position: Vector3) -> void:
 	
 	var check_for_solid: bool = selected_ui_action.ui_action_id == UiAction.UiActionId.Build if selected_ui_action else true
 	
-	#if PathFinder.is_valid_position(tile_position, check_for_solid):
-	if true:
-		selection_draw.line_coords = [tile_position]
-		
-		var signal_to_emit := tiles_selected
-		
-		if mouse_pressed_2:
-			print("Setting secondary cause mouse2 pressed")
-			signal_to_emit = tiles_selected_secondary
-		
-		if mouse_pressed_1 or mouse_pressed_2:
-			if Input.is_action_pressed("line_draw_modifier"):
-				if not line_start:
-					set_line_start(tile_position)
-				
-				set_line_end(tile_position)
-				selection_draw.line_coords = get_tile_line(line_start, line_end)
-			elif not Input.is_action_pressed("rectangle_select_modifier"):
-				signal_to_emit.emit([tile_position] as Array[Vector2i])
-				#build_issued.emit(tile_position, item_id)
-				line_start = null
-				line_end = null
-				
-			if Input.is_action_pressed("rectangle_select_modifier"):
-				if not rect_start:
-					rect_start = tile_position
-				
-				rect_end = tile_position
-				
-				#var hollow := selected_ui_action.ui_action_id == UiAction.UiActionId.Build
-				var hollow := false
-				if selected_ui_action:
-					if selected_ui_action.ui_action_id == UiAction.UiActionId.Build:
-						hollow = true
-				
-				_set_rectangle_selection(rect_start, rect_end, hollow)
-			elif not Input.is_action_pressed("line_draw_modifier"):
-				signal_to_emit.emit([tile_position] as Array[Vector2i])
-		else:
-			if rect_start and rect_end:
-				signal_to_emit.emit(rect_tile_coords)
-				clear_rectangle_selection()
+	selection_draw.line_coords = [tile_position]
+	
+	var signal_to_emit := tiles_selected
+	
+	if mouse_pressed_2:
+		print("Setting secondary cause mouse2 pressed")
+		signal_to_emit = tiles_selected_secondary
+	
+	if (mouse_pressed_1 or mouse_pressed_2) and not mouse_latch:
+		mouse_latch = 1
+		if Input.is_action_pressed("line_draw_modifier"):
+			if not line_start:
+				set_line_start(tile_position)
 			
-			if line_start and line_end:
-				var line_coords := get_tile_line(line_start, line_end)
-				signal_to_emit.emit(line_coords)
+			set_line_end(tile_position)
+			selection_draw.line_coords = get_tile_line(line_start, line_end)
+		elif not Input.is_action_pressed("rectangle_select_modifier"):
+			#signal_to_emit.emit([tile_position] as Array[Vector2i])
+			info_to_emit = EmitInformation.new(signal_to_emit, [tile_position] as Array[Vector2i])
+			#build_issued.emit(tile_position, item_id)
+			line_start = null
+			line_end = null
 			
-				line_start = null
-				line_end = null
+		if Input.is_action_pressed("rectangle_select_modifier"):
+			if not rect_start:
+				rect_start = tile_position
+			
+			rect_end = tile_position
+			
+			#var hollow := selected_ui_action.ui_action_id == UiAction.UiActionId.Build
+			var hollow := false
+			if selected_ui_action:
+				if selected_ui_action.ui_action_id == UiAction.UiActionId.Build:
+					hollow = true
+			
+			_set_rectangle_selection(rect_start, rect_end, hollow)
+		elif not Input.is_action_pressed("line_draw_modifier"):
+			#signal_to_emit.emit([tile_position] as Array[Vector2i])
+			info_to_emit = EmitInformation.new(signal_to_emit, [tile_position] as Array[Vector2i])
+			
+	else:
+		if rect_start and rect_end:
+			#signal_to_emit.emit(rect_tile_coords)
+			info_to_emit = EmitInformation.new(signal_to_emit, rect_tile_coords as Array[Vector2i])
+			clear_rectangle_selection()
+		
+		if line_start and line_end:
+			var line_coords := get_tile_line(line_start, line_end)
+			info_to_emit = EmitInformation.new(signal_to_emit, line_coords as Array[Vector2i])
+			#signal_to_emit.emit(line_coords)
+		
+			line_start = null
+			line_end = null
+	
+	if just_released_1:
+		print("JUST RELEASED")
+		mouse_latch = false
+	
+	if info_to_emit:
+		info_to_emit.signal_type.emit(info_to_emit.coords)
+		info_to_emit = null
 
 #func _process(delta: float) -> void:
 	#var tile_position: Vector2i = Globals.get_map().local_to_map(Globals.get_map().get_local_mouse_position())

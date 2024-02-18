@@ -1,7 +1,7 @@
 extends Node
 
 enum Id {
-	Selectable, Door, WorldPosition, DisplayName
+	Selectable, Door, WorldPosition, DisplayName, CharacterStats
 }
 
 var component_by_id: Dictionary

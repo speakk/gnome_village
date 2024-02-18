@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7v7f55s4haww"]
+
+[ext_resource type="Script" path="res://src/gui/entity_info/component_display/character_stat_value_display.gd" id="1_f5osd"]
+
+[node name="CharacterStatValueDisplay" type="MarginContainer"]
+script = ExtResource("1_f5osd")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2

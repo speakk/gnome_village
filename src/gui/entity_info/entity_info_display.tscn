@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjx3xwhwv7wru"]
+
+[ext_resource type="Script" path="res://src/gui/entity_info/entity_info_display.gd" id="1_wrtty"]
+
+[node name="EntityInfoDisplay" type="PanelContainer"]
+script = ExtResource("1_wrtty")
+
+[node name="ComponentInfos" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2

@@ -17,6 +17,11 @@ func get_component_instance(component_id: Components.Id) -> ComponentInstance:
 		return false
 		)[0]
 
+func get_all() -> Array[ComponentInstance]:
+	var all: Array[ComponentInstance]
+	all.assign(get_children())
+	return all
+
 func add_component(component: Component) -> void:
 	var component_instance := ComponentInstance.create_instance(component, component_owner)
 	add_child(component_instance)

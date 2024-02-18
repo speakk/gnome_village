@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjs82pqfrl6oq"]
+
+[ext_resource type="Script" path="res://src/gui/entity_info/component_display/CharacterStatsDisplay.gd" id="1_eov7g"]
+
+[node name="CharacterStatsDisplay" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_eov7g")
+
+[node name="Stats" type="VBoxContainer" parent="."]
+layout_mode = 2
