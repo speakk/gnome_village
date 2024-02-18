@@ -165,6 +165,40 @@ func _handle_ui_action_selection(new_ui_action: UiAction) -> void:
 func _tiles_selected(coordinates: Array[Vector2i]) -> void:
 	if selected_ui_action:
 		action_handlers[selected_ui_action.ui_action_id].call(coordinates)
+	else:
+		select_next_entity(coordinates)
+
+func clear_selections() -> void:
+	for entities: Array in map_entities.values():
+		for entity: Variant in entities:
+			if entity.component_container.has_component(Components.Id.Selectable):
+				entity.component_container.get_component_instance(Components.Id.Selectable).selected = false
+
+func select_next_entity(coordinates: Array[Vector2i]) -> void:
+	if coordinates.size() == 1:
+		var entity_to_select: Node3D
+		var coordinate := coordinates[0]
+		var entities := get_map_entities(coordinate)
+		for entity in entities:
+			if entity.component_container.has_component(Components.Id.Selectable):
+				if not entity.component_container.get_component_instance(Components.Id.Selectable).selected:
+					entity_to_select = entity
+					break
+		
+		clear_selections()
+		if not entity_to_select and entities.size() > 0:
+			entity_to_select = entities[0]
+		
+		if entity_to_select:
+			entity_to_select.component_container.get_component_instance(Components.Id.Selectable).selected = true
+	
+	else:
+		clear_selections()
+		for coordinate in coordinates:
+			var entities := get_map_entities(coordinate)
+			for entity in entities:
+				if entity.component_container.has_component(Components.Id.Selectable):
+					entity.component_container.get_component_instance(Components.Id.Selectable).selected = true
 
 func _tiles_selected_secondary(coordinates: Array[Vector2i]) -> void:
 	print("Secondary called", coordinates)

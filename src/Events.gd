@@ -37,6 +37,9 @@ signal item_removed_from_ground(item: ItemOnGround, item_position: Vector2)
 signal item_state_changed(item_on_ground: ItemOnGround, previous_state: ItemOnGround.ItemState, new_state: ItemOnGround.ItemState)
 
 signal world_position_changed(entity: Node3D, old_position: Vector3, new_position: Vector3)
+signal entity_selected(entity: Node3D)
+signal entity_deselected(entity: Node3D)
+
 
 signal load_game_called(save_dict: Dictionary)
 signal save_game_called(save_dict: Dictionary)
