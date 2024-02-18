@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://58s8ouhd1j86"]
+
+[ext_resource type="Script" path="res://src/map/EntitySelectionDraw.gd" id="1_jmckk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6n1ky"]
+albedo_color = Color(0.460999, 0.851562, 0.287914, 1)
+rim_enabled = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_vam14"]
+material = SubResource("StandardMaterial3D_6n1ky")
+size = Vector2(1, 1)
+
+[node name="EntitySelectionDraw" type="Node3D"]
+script = ExtResource("1_jmckk")
+entity_selection_mesh = SubResource("PlaneMesh_vam14")

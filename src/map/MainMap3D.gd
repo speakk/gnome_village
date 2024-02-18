@@ -176,11 +176,14 @@ func clear_selections() -> void:
 
 func select_next_entity(coordinates: Array[Vector2i]) -> void:
 	if coordinates.size() == 1:
+		print("Select next entity")
 		var entity_to_select: Node3D
 		var coordinate := coordinates[0]
 		var entities := get_map_entities(coordinate)
 		for entity in entities:
+			print("Going though entity", entity)
 			if entity.component_container.has_component(Components.Id.Selectable):
+				print("Had selectable")
 				if not entity.component_container.get_component_instance(Components.Id.Selectable).selected:
 					entity_to_select = entity
 					break
@@ -190,6 +193,7 @@ func select_next_entity(coordinates: Array[Vector2i]) -> void:
 			entity_to_select = entities[0]
 		
 		if entity_to_select:
+			print("Setting as selected")
 			entity_to_select.component_container.get_component_instance(Components.Id.Selectable).selected = true
 	
 	else:

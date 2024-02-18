@@ -74,6 +74,8 @@ func clear_rectangle_selection() -> void:
 var mouse_pressed_1 := false
 var mouse_pressed_2 := false
 
+var mouse_released_1 := false
+
 # TODO: You could use an Area2D and the input_event in that to handle this instead
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -135,7 +137,10 @@ func _mouse_hovered(mouse_position: Vector3) -> void:
 				rect_end = tile_position
 				
 				#var hollow := selected_ui_action.ui_action_id == UiAction.UiActionId.Build
-				var hollow := selected_ui_action.ui_action_id == UiAction.UiActionId.Build if selected_ui_action else true
+				var hollow := false
+				if selected_ui_action:
+					if selected_ui_action.ui_action_id == UiAction.UiActionId.Build:
+						hollow = true
 				
 				_set_rectangle_selection(rect_start, rect_end, hollow)
 			elif not Input.is_action_pressed("line_draw_modifier"):

@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://cxfu88mnhmgb7"]
+[gd_scene load_steps=16 format=3 uid="uid://cxfu88mnhmgb7"]
 
 [ext_resource type="Script" path="res://src/map/MainMap3D.gd" id="1_hry08"]
 [ext_resource type="Script" path="res://src/map/MapTileSelector.gd" id="2_k2ptl"]
 [ext_resource type="MeshLibrary" uid="uid://cpsm4h5sl5dg6" path="res://src/map/map_mesh_library.tres" id="2_nprxo"]
 [ext_resource type="Material" uid="uid://602vpw2ulgrn" path="res://src/map/water_material_1.material" id="3_i6c31"]
 [ext_resource type="PackedScene" uid="uid://c67ua8jdle4ma" path="res://src/map/SelectionDraw.tscn" id="4_u51vp"]
+[ext_resource type="PackedScene" uid="uid://58s8ouhd1j86" path="res://src/map/EntitySelectionDraw.tscn" id="6_tt6bd"]
 
 [sub_resource type="Gradient" id="Gradient_gpv11"]
 colors = PackedColorArray(0.675781, 0.675781, 0.675781, 1, 1, 1, 1, 1)
@@ -97,3 +98,5 @@ shape = SubResource("BoxShape3D_bylo6")
 [node name="GroundPlane" type="MeshInstance3D" parent="."]
 visible = false
 mesh = SubResource("PlaneMesh_y0iy8")
+
+[node name="EntitySelectionDraw" parent="." instance=ExtResource("6_tt6bd")]
