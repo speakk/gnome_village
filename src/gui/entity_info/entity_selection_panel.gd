@@ -35,7 +35,7 @@ func redraw() -> void:
 	var panel_offset: float = 300
 	if selected_entities.size() == 0:
 		create_tween().tween_property($PanelContainer, "position", Vector2(), 0)
-		await create_tween().tween_property($PanelContainer, "position", Vector2(panel_offset, 0), 0.3).set_delay(0.01).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_IN).finished
+		await create_tween().tween_property($PanelContainer, "position", Vector2(panel_offset, 0), 0.15).set_delay(0.01).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN).finished
 		for child in %EntityInfoDisplays.get_children():
 			child.queue_free()
 	else:
