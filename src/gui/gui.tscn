@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" path="res://src/gui/gui.gd" id="1_jqq6f"]
 [ext_resource type="FontFile" uid="uid://4nfdi1tps2fv" path="res://assets/fonts/ThaleahFat.ttf" id="2_egltv"]
-[ext_resource type="StyleBox" uid="uid://1n0ehwbrxwuy" path="res://src/gui/main_button_pressed.tres" id="2_f1s78"]
 [ext_resource type="PackedScene" uid="uid://ctd6ytjbkrp06" path="res://src/gui/build_menu.tscn" id="2_fxugl"]
 [ext_resource type="PackedScene" uid="uid://dfgpr3b7vmlcy" path="res://src/zones/gui/zone_menu.tscn" id="4_jp28f"]
 [ext_resource type="PackedScene" uid="uid://d3hc65n7bfkm3" path="res://src/gui/day_night_cycle_indicator.tscn" id="5_dfwll"]
@@ -10,8 +9,29 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oammu"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yurui"]
-bg_color = Color(0.394531, 0.216371, 0.305789, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sgnyy"]
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 15.0
+content_margin_bottom = 10.0
+bg_color = Color(0.730469, 0.312936, 0.384159, 1)
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.339844, 0.193215, 0.205909, 1)
+border_blend = true
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v1b5j"]
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 15.0
+content_margin_bottom = 10.0
+bg_color = Color(0.53125, 0.22759, 0.279388, 1)
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.339844, 0.193215, 0.205909, 1)
+border_blend = true
 corner_radius_top_left = 15
 corner_radius_top_right = 15
 
@@ -65,8 +85,8 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.984375, 0.441396, 0.58267, 1)
 theme_override_fonts/font = ExtResource("2_egltv")
 theme_override_font_sizes/font_size = 32
-theme_override_styles/pressed = ExtResource("2_f1s78")
-theme_override_styles/normal = SubResource("StyleBoxFlat_yurui")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sgnyy")
+theme_override_styles/normal = SubResource("StyleBoxFlat_v1b5j")
 toggle_mode = true
 shortcut = SubResource("Shortcut_00krf")
 text = "Build"
@@ -78,8 +98,8 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.984375, 0.441396, 0.58267, 1)
 theme_override_fonts/font = ExtResource("2_egltv")
 theme_override_font_sizes/font_size = 32
-theme_override_styles/pressed = ExtResource("2_f1s78")
-theme_override_styles/normal = SubResource("StyleBoxFlat_yurui")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sgnyy")
+theme_override_styles/normal = SubResource("StyleBoxFlat_v1b5j")
 toggle_mode = true
 shortcut = SubResource("Shortcut_uyf65")
 text = "Plant
@@ -93,8 +113,8 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.984375, 0.441396, 0.58267, 1)
 theme_override_fonts/font = ExtResource("2_egltv")
 theme_override_font_sizes/font_size = 32
-theme_override_styles/pressed = ExtResource("2_f1s78")
-theme_override_styles/normal = SubResource("StyleBoxFlat_yurui")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sgnyy")
+theme_override_styles/normal = SubResource("StyleBoxFlat_v1b5j")
 toggle_mode = true
 shortcut = SubResource("Shortcut_q38xj")
 text = "Orders"
@@ -107,8 +127,9 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.984375, 0.441396, 0.58267, 1)
 theme_override_fonts/font = ExtResource("2_egltv")
 theme_override_font_sizes/font_size = 32
-theme_override_styles/pressed = ExtResource("2_f1s78")
-theme_override_styles/normal = SubResource("StyleBoxFlat_yurui")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sgnyy")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxFlat_v1b5j")
+theme_override_styles/normal = SubResource("StyleBoxFlat_v1b5j")
 toggle_mode = true
 shortcut = SubResource("Shortcut_x0bax")
 text = "Zones"
