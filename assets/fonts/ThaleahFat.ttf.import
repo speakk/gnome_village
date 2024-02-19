@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/ThaleahFat.ttf-30939efb8f03cbdeb9a27a85b43bab
 [params]
 
 Rendering=null
-antialiasing=1
+antialiasing=0
 generate_mipmaps=false
 multichannel_signed_distance_field=false
 msdf_pixel_range=8

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/gui/build_menu.gd" id="1_buu25"]
 
-[node name="BuildMenu" type="PanelContainer"]
+[node name="BuildMenu" type="MarginContainer"]
 script = ExtResource("1_buu25")
 
 [node name="BuildOptions" type="VBoxContainer" parent="."]

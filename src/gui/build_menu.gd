@@ -1,4 +1,4 @@
-extends PanelContainer
+extends MarginContainer
 
 func _ready() -> void:
 	var constructable_ids := Items.get_constructable_item_ids()

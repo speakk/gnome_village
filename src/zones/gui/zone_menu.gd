@@ -1,4 +1,4 @@
-extends PanelContainer
+extends MarginContainer
 
 var ZONE_TYPE_TAB := preload("res://src/zones/gui/zone_type_tab.tscn")
 

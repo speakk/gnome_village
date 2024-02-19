@@ -12,6 +12,8 @@ func _on_order_button_pressed() -> void:
 func _on_zone_button_pressed() -> void:
 	show_submenu(%ZoneMenu, %ZoneButton)
 
+var orig_offset: Vector2
+
 func show_submenu(menu: Node, button: Node) -> void:
 	for child in %MainButtons.get_children():
 		child.button_pressed = false
@@ -20,6 +22,11 @@ func show_submenu(menu: Node, button: Node) -> void:
 	if not visibility:
 		menu.show()
 		%SubMenuContainer.show()
+		#orig_offset = %SubMenuContainer.position
+		menu.position = Vector2()
+		var tween := create_tween().bind_node(self)
+		tween.tween_property(menu, "position", Vector2(0, 200), 0)
+		tween.tween_property(menu, "position", Vector2(), 0.2).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
 		button.button_pressed = true
 
 func hide_submenu() -> void:

@@ -3,13 +3,14 @@
 [ext_resource type="Script" path="res://src/zones/gui/zone_menu.gd" id="1_du6ay"]
 [ext_resource type="PackedScene" uid="uid://cbhoj3jx6o47v" path="res://src/zones/gui/zone_type_tab.tscn" id="2_nvvs5"]
 
-[node name="ZoneMenu" type="PanelContainer"]
+[node name="ZoneMenu" type="MarginContainer"]
 custom_minimum_size = Vector2(300, 0)
 script = ExtResource("1_du6ay")
 
 [node name="ZoneTypesTabs" type="TabContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
+current_tab = 0
 
 [node name="ZoneTypeTab" parent="ZoneTypesTabs" instance=ExtResource("2_nvvs5")]
 layout_mode = 2

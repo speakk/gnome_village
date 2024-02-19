@@ -1,11 +1,19 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bxfimxuvv4v2s"]
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://bxfimxuvv4v2s"]
 
 [ext_resource type="FontFile" uid="uid://dtfb4n2n8qq7m" path="res://assets/fonts/m5x7.ttf" id="1_7prsm"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_12m7h"]
+bg_color = Color(0.47, 0.2867, 0.43945, 0.501961)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+shadow_size = 4
+shadow_offset = Vector2(3, 3)
+
 [resource]
 default_font = ExtResource("1_7prsm")
-default_font_size = 24
+default_font_size = 32
 MarginContainer/constants/margin_bottom = 10
 MarginContainer/constants/margin_left = 10
 MarginContainer/constants/margin_right = 10
 MarginContainer/constants/margin_top = 10
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_12m7h")

@@ -25,16 +25,13 @@ func _clear_entity_selections() -> void:
 	redraw()
 
 func redraw() -> void:
-	if selected_entities.size() == 0:
-		$EntityInfoDisplay.hide()
-	else:
-		$EntityInfoDisplay.show()
-	
 	for child in %EntityInfoDisplays.get_children():
 		child.queue_free()
 	
 	for entity in selected_entities:
 		var entity_info_display := ENTITY_INFO_DISPLAY.instantiate()
 		%EntityInfoDisplays.add_child(entity_info_display)
+		create_tween().tween_property($PanelContainer, "position", Vector2(entity_info_display.get_rect().size.x, 0), 0.0)
+		create_tween().tween_property($PanelContainer, "position", Vector2(), 0.3).set_delay(0.01).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
 		entity_info_display.set_entity(entity)
 
