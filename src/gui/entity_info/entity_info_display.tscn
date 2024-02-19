@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/gui/entity_info/entity_info_display.gd" id="1_wrtty"]
 
-[node name="EntityInfoDisplay" type="PanelContainer"]
+[node name="EntityInfoDisplay" type="MarginContainer"]
 script = ExtResource("1_wrtty")
 
 [node name="ComponentInfos" type="VBoxContainer" parent="."]

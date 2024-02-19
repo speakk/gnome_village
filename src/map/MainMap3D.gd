@@ -69,12 +69,15 @@ func remove_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:
 	if map_entities.has(coordinate):
 		map_entities[coordinate].erase(item_on_ground)
 
-func get_map_entities(coordinate: Vector2i) -> Array[Node3D]:
+func get_map_entities(coordinate: Vector2i, items_only: bool = false) -> Array[Node3D]:
 	var result: Array[Node3D]
-	if not map_entities.has(coordinate):
-		return result
-		
-	result.assign(map_entities[coordinate])
+	if map_entities.has(coordinate):
+		result.assign(map_entities[coordinate])
+		result = result.filter(func(entity: Node3D) -> bool:
+			if items_only:
+				return entity is ItemOnGround
+			return true
+			)
 	return result
 
 func is_coordinate_occupied(coordinate: Vector2i) -> bool:

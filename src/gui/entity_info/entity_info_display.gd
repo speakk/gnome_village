@@ -1,4 +1,4 @@
-extends PanelContainer
+extends MarginContainer
 
 var component_ui_priority_list: Array[Components.Id] = [Components.Id.DisplayName, Components.Id.CharacterStats]
 
