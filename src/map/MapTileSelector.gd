@@ -144,8 +144,8 @@ func _process(_delta: float) -> void:
 		print("Setting secondary cause mouse2 pressed")
 		signal_to_emit = tiles_selected_secondary
 	
-	if (mouse_pressed_1 or mouse_pressed_2) and not mouse_latch:
-		mouse_latch = 1
+	if mouse_pressed_1 or mouse_pressed_2:
+		mouse_latch = true
 		if Input.is_action_pressed("line_draw_modifier"):
 			if not line_start:
 				set_line_start(tile_position)
@@ -194,9 +194,9 @@ func _process(_delta: float) -> void:
 		print("JUST RELEASED")
 		mouse_latch = false
 	
-	if info_to_emit:
-		info_to_emit.signal_type.emit(info_to_emit.coords)
-		info_to_emit = null
+		if info_to_emit:
+			info_to_emit.signal_type.emit(info_to_emit.coords)
+			info_to_emit = null
 
 #func _process(delta: float) -> void:
 	#var tile_position: Vector2i = Globals.get_map().local_to_map(Globals.get_map().get_local_mouse_position())

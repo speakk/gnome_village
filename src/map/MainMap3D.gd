@@ -88,7 +88,7 @@ func is_coordinate_occupied(coordinate: Vector2i) -> bool:
 	var entities := map_entities[coordinate] as Array
 	
 	for item_on_ground in entities as Array[ItemOnGround]:
-		if item_on_ground.item.can_be_constructed or item_on_ground.item.is_solid:
+		if item_on_ground is ItemOnGround and (item_on_ground.item.can_be_constructed or item_on_ground.item.is_solid):
 			return true
 	
 	return false
