@@ -1,3 +1,4 @@
+@tool
 extends Resource
 
 class_name Item
@@ -35,4 +36,12 @@ enum SpecialFeatures {
 	preload("res://src/components/data/DisplayName.tres"),
 	preload("res://src/components/data/Selectable.tres"),
 	preload("res://src/components/data/WorldPosition.tres"),
-	]
+	]:
+		set(new_value):
+			var new_array: Array[Component]
+			for component in new_value:
+				if component:
+					new_array.append(component.duplicate())
+				else:
+					new_array.append(component)
+			components = new_array

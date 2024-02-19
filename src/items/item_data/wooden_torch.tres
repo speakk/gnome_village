@@ -1,10 +1,28 @@
-[gd_resource type="Resource" script_class="Item" load_steps=7 format=3 uid="uid://qp3qm2tlm81y"]
+[gd_resource type="Resource" script_class="Item" load_steps=12 format=3 uid="uid://qp3qm2tlm81y"]
 
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_4j5er"]
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_mpu1o"]
-[ext_resource type="Resource" uid="uid://b1sibj1nnyom1" path="res://src/components/data/Selectable.tres" id="1_yvccx"]
-[ext_resource type="Resource" uid="uid://c2iey841tfqyg" path="res://src/components/data/WorldPosition.tres" id="2_3p57l"]
+[ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="1_nsitm"]
+[ext_resource type="Script" path="res://src/components/instances/Selectable.gd" id="2_8u2bl"]
 [ext_resource type="PackedScene" uid="uid://uqcgysgd2yqr" path="res://src/items/item_data/scenes/wooden_torch.tscn" id="2_ueooe"]
+[ext_resource type="Script" path="res://src/components/Component.gd" id="3_8r6bh"]
+[ext_resource type="Script" path="res://src/components/instances/WorldPosition.gd" id="4_2xh36"]
+
+[sub_resource type="Resource" id="Resource_calu8"]
+resource_local_to_scene = true
+script = ExtResource("1_nsitm")
+display_name = "Wooden Torch"
+id = 3
+
+[sub_resource type="Resource" id="Resource_wvf7l"]
+script = ExtResource("3_8r6bh")
+id = 0
+instance = ExtResource("2_8u2bl")
+
+[sub_resource type="Resource" id="Resource_j8vg3"]
+script = ExtResource("3_8r6bh")
+id = 2
+instance = ExtResource("4_2xh36")
 
 [sub_resource type="Resource" id="Resource_gkdgp"]
 script = ExtResource("1_mpu1o")
@@ -26,4 +44,4 @@ durability = 10
 crafting_requirements = Array[ExtResource("1_mpu1o")]([SubResource("Resource_gkdgp")])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
 provides = Array[ExtResource("1_mpu1o")]([])
-components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_yvccx"), ExtResource("2_3p57l")])
+components = Array[ExtResource("3_8r6bh")]([SubResource("Resource_calu8"), SubResource("Resource_wvf7l"), SubResource("Resource_j8vg3")])

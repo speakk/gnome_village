@@ -16,12 +16,9 @@ func _ready() -> void:
 			var component_data: Component
 			if data is Component:
 				component_data = data
-			if data is Script:
-				component_data = data.new()
-				
-			if component_by_id.has(component_data.id):
-				push_error("Component Id duplicate found: ", component_data.id, file_name)
-			component_by_id[component_data.id] = component_data
+				if component_by_id.has(component_data.id):
+					push_error("Component Id duplicate found: ", component_data.id, file_name)
+				component_by_id[component_data.id] = component_data
 		file_name = data_dir.get_next()
 
 func create_component_by_id(id: Id) -> Component:

@@ -1,7 +1,27 @@
-[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://bp5lv8puyb7kd"]
+[gd_resource type="Resource" script_class="Item" load_steps=10 format=3 uid="uid://bp5lv8puyb7kd"]
 
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_4s53r"]
+[ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="1_iayup"]
 [ext_resource type="PackedScene" uid="uid://dna7s14tl0j7b" path="res://assets/blender_models/stone.blend" id="1_oplyr"]
+[ext_resource type="Script" path="res://src/components/instances/Selectable.gd" id="2_artwi"]
+[ext_resource type="Script" path="res://src/components/Component.gd" id="3_66aop"]
+[ext_resource type="Script" path="res://src/components/instances/WorldPosition.gd" id="4_ci0cp"]
+
+[sub_resource type="Resource" id="Resource_dy5eb"]
+resource_local_to_scene = true
+script = ExtResource("1_iayup")
+display_name = "Stone"
+id = 3
+
+[sub_resource type="Resource" id="Resource_bglx0"]
+script = ExtResource("3_66aop")
+id = 0
+instance = ExtResource("2_artwi")
+
+[sub_resource type="Resource" id="Resource_e6fh7"]
+script = ExtResource("3_66aop")
+id = 2
+instance = ExtResource("4_ci0cp")
 
 [resource]
 script = ExtResource("1_4s53r")
@@ -17,5 +37,5 @@ is_solid = false
 durability = 10
 crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
-special_features = Array[int]([])
 provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+components = Array[ExtResource("3_66aop")]([SubResource("Resource_dy5eb"), SubResource("Resource_bglx0"), SubResource("Resource_e6fh7")])
