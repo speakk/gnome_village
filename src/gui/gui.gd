@@ -15,6 +15,7 @@ func _on_zone_button_pressed() -> void:
 var orig_offset: Vector2
 
 func show_submenu(menu: Node, button: Node) -> void:
+	$ClickSoundPlayer.play()
 	for child in %MainButtons.get_children():
 		child.button_pressed = false
 	var visibility := menu.visible as bool
@@ -45,6 +46,8 @@ func _ready() -> void:
 	for child in %MainButtons.get_children():
 		child.button_pressed = false
 	hide_submenu()
+	
+	Events.entity_selected.connect(func(_entity: Node3D) -> void: $ClickSoundPlayer.play())
 
 
 func _process(delta: float) -> void:

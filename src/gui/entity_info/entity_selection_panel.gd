@@ -10,28 +10,43 @@ func _ready() -> void:
 	Events.clear_entity_selections.connect(_clear_entity_selections)
 	redraw()
 
+var queue_redraw := false
+
+func _process(delta: float) -> void:
+	if queue_redraw:
+		redraw()
+		queue_redraw = false
+
 func _entity_selected(entity: Node3D) -> void:
 	if not selected_entities.has(entity):
 		selected_entities.append(entity)
-		redraw()
+		queue_redraw = true
 
 func _entity_deselected(entity: Node3D) -> void:
 	if selected_entities.has(entity):
 		selected_entities.erase(entity)
-		redraw()
+		queue_redraw = true
 
 func _clear_entity_selections() -> void:
 	selected_entities.clear()
-	redraw()
+	queue_redraw = true
 
 func redraw() -> void:
-	for child in %EntityInfoDisplays.get_children():
-		child.queue_free()
-	
-	for entity in selected_entities:
-		var entity_info_display := ENTITY_INFO_DISPLAY.instantiate()
-		%EntityInfoDisplays.add_child(entity_info_display)
-		create_tween().tween_property($PanelContainer, "position", Vector2(entity_info_display.get_rect().size.x, 0), 0.0)
+	var panel_offset: float = 300
+	if selected_entities.size() == 0:
+		create_tween().tween_property($PanelContainer, "position", Vector2(), 0)
+		await create_tween().tween_property($PanelContainer, "position", Vector2(panel_offset, 0), 0.3).set_delay(0.01).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_IN).finished
+		for child in %EntityInfoDisplays.get_children():
+			child.queue_free()
+	else:
+		for child in %EntityInfoDisplays.get_children():
+			child.queue_free()
+		
+		for entity in selected_entities:
+			var entity_info_display := ENTITY_INFO_DISPLAY.instantiate()
+			%EntityInfoDisplays.add_child(entity_info_display)
+			entity_info_display.set_entity(entity)
+		
+		create_tween().tween_property($PanelContainer, "position", Vector2(panel_offset, 0), 0.0)
 		create_tween().tween_property($PanelContainer, "position", Vector2(), 0.3).set_delay(0.01).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
-		entity_info_display.set_entity(entity)
 

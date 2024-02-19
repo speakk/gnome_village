@@ -191,9 +191,14 @@ func select_next_entity(coordinates: Array[Vector2i]) -> void:
 					entity_to_select = entity
 					break
 		
+		
+		if not entity_to_select:
+			if entities.size() > 1:
+				entity_to_select = entities[0]
+			elif entities.size() == 1:
+				return
+		
 		clear_selections()
-		if not entity_to_select and entities.size() > 0:
-			entity_to_select = entities[0]
 		
 		if entity_to_select:
 			print("Setting as selected")
