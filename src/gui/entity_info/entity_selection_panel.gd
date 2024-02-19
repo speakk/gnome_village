@@ -7,6 +7,7 @@ var selected_entities: Array[Node3D]
 func _ready() -> void:
 	Events.entity_selected.connect(_entity_selected)
 	Events.entity_deselected.connect(_entity_deselected)
+	Events.clear_entity_selections.connect(_clear_entity_selections)
 	redraw()
 
 func _entity_selected(entity: Node3D) -> void:
@@ -18,6 +19,10 @@ func _entity_deselected(entity: Node3D) -> void:
 	if selected_entities.has(entity):
 		selected_entities.erase(entity)
 		redraw()
+
+func _clear_entity_selections() -> void:
+	selected_entities.clear()
+	redraw()
 
 func redraw() -> void:
 	if selected_entities.size() == 0:

@@ -7,6 +7,11 @@ var selected_entities: Array[Node3D]
 func _ready() -> void:
 	Events.entity_selected.connect(_entity_selected)
 	Events.entity_deselected.connect(_entity_deselected)
+	Events.clear_entity_selections.connect(_clear_entity_selections)
+
+func _clear_entity_selections() -> void:
+	selected_entities.clear()
+	redraw()
 
 func _entity_selected(entity: Node3D) -> void:
 	selected_entities.append(entity)

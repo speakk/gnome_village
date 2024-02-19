@@ -44,3 +44,4 @@ func _process(delta: float) -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		hide_submenu()
 		Events.ui_action_selected.emit(null)
+		Events.clear_entity_selections.emit()
