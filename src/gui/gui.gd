@@ -39,4 +39,8 @@ func _ready() -> void:
 		child.button_pressed = false
 	hide_submenu()
 
-	
+
+func _process(delta: float) -> void:
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+		hide_submenu()
+		Events.ui_action_selected.emit(null)

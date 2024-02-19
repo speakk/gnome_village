@@ -138,7 +138,6 @@ func _ready() -> void:
 			remove_map_entity(old_coordinate, entity)
 			
 			var coordinate := global_position_to_coordinate(new_position)
-			print("Adding map entity", coordinate, entity)
 			add_map_entity(coordinate, entity)
 			)
 		

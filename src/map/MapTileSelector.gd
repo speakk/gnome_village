@@ -71,23 +71,23 @@ func clear_rectangle_selection() -> void:
 	rect_tile_coords = []
 	selection_draw.selection_rectangle = null
 
-#var mouse_pressed_1 := false
+var mouse_pressed_1 := false
 #var mouse_pressed_2 := false
 #
 #var mouse_released_1 := false
 #
 var last_mouse_position: Vector3
 #
-## TODO: You could use an Area2D and the input_event in that to handle this instead
-#func _unhandled_input(event: InputEvent) -> void:
-	#if event is InputEventMouseButton:
-		#if event.is_pressed():
-			#if event.button_index == 1:
-				#mouse_pressed_1 = true
+# TODO: You could use an Area2D and the input_event in that to handle this instead
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.is_pressed():
+			if event.button_index == 1:
+				mouse_pressed_1 = true
 			#else:
 				#mouse_pressed_2 = true
-		#else:
-			#mouse_pressed_1 = false
+		else:
+			mouse_pressed_1 = false
 			#mouse_pressed_2 = false
 		
 
@@ -117,7 +117,7 @@ func _process(_delta: float) -> void:
 	var tile_position:  Vector2i = Globals.truncate_vec3i(Globals.get_map().grid.local_to_map(last_mouse_position + Vector3(0, 0, -0.42)))
 	#print("Tile position", tile_position)
 	
-	var mouse_pressed_1 := Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+	#var mouse_pressed_1 := Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 	var just_released_1 := false
 	if not mouse_pressed_1 and previous_pressed_state_1:
 		just_released_1 = true
@@ -140,11 +140,12 @@ func _process(_delta: float) -> void:
 	
 	var signal_to_emit := tiles_selected
 	
-	if mouse_pressed_2:
-		print("Setting secondary cause mouse2 pressed")
+	if Input.is_action_pressed("secondary_action_modifier"):
 		signal_to_emit = tiles_selected_secondary
+	#if mouse_pressed_2:
+		#signal_to_emit = tiles_selected_secondary
 	
-	if mouse_pressed_1 or mouse_pressed_2:
+	if mouse_pressed_1:
 		mouse_latch = true
 		if Input.is_action_pressed("line_draw_modifier"):
 			if not line_start:
