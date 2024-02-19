@@ -31,4 +31,8 @@ enum SpecialFeatures {
 @export var crafting_requirements: Array[ItemRequirement] = []
 @export var item_drops: Array[ItemDrop] = []
 @export var provides: Array[ItemRequirement]
-@export var components: Array[Component] = [preload("res://src/components/data/Selectable.tres"), preload("res://src/components/data/WorldPosition.tres")]
+@export var components: Array[Component] = [
+	preload("res://src/components/data/DisplayName.tres"),
+	preload("res://src/components/data/Selectable.tres"),
+	preload("res://src/components/data/WorldPosition.tres"),
+	]

@@ -7,7 +7,8 @@
 [ext_resource type="Resource" uid="uid://c2iey841tfqyg" path="res://src/components/data/WorldPosition.tres" id="2_ud1jq"]
 [ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="3_drbu6"]
 
-[sub_resource type="Resource" id="Resource_ivih3"]
+[sub_resource type="Resource" id="Resource_oxrg4"]
+resource_local_to_scene = true
 script = ExtResource("3_drbu6")
 display_name = "Tree"
 id = 3
@@ -34,4 +35,4 @@ durability = 10
 crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 item_drops = Array[ExtResource("1_3s5ki")]([SubResource("Resource_851nl")])
 provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
-components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_bir5y"), ExtResource("2_ud1jq"), SubResource("Resource_ivih3")])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_oxrg4"), ExtResource("1_bir5y"), ExtResource("2_ud1jq")])

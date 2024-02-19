@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DisplayNameComponent" load_steps=2 format=3 uid="uid://1scxew40a3ut"]
+
+[ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="1_7wm8h"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_7wm8h")
+display_name = ""
+id = 3

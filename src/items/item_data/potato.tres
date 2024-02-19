@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="Item" load_steps=7 format=3 uid="uid://dwd3eipdpm2w"]
+
+[ext_resource type="PackedScene" uid="uid://mkox0g6jfmf7" path="res://assets/blender_models/plants/potato_harvested.blend" id="1_2u3uu"]
+[ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="1_bmymo"]
+[ext_resource type="Resource" uid="uid://b1sibj1nnyom1" path="res://src/components/data/Selectable.tres" id="1_hxt6j"]
+[ext_resource type="Resource" uid="uid://c2iey841tfqyg" path="res://src/components/data/WorldPosition.tres" id="2_so3ef"]
+[ext_resource type="Script" path="res://src/items/Item.gd" id="3_k0g8r"]
+
+[sub_resource type="Resource" id="Resource_127if"]
+resource_local_to_scene = true
+script = ExtResource("1_bmymo")
+display_name = "Potato"
+id = 3
+
+[resource]
+script = ExtResource("3_k0g8r")
+rendering_type = 2
+model = ExtResource("1_2u3uu")
+target_layer = 2
+mesh_id = 0
+display_name = "Potato"
+can_be_picked = true
+can_be_constructed = false
+can_be_dismantled = false
+is_solid = false
+durability = 10
+crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
+provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_127if"), ExtResource("1_hxt6j"), ExtResource("2_so3ef")])
