@@ -29,7 +29,6 @@ func _process(delta: float) -> void:
 	
 	var ray_result: Variant = _get_ray_result(get_viewport().get_mouse_position())
 	if ray_result is Vector3:
-		print("MOUSE POS: ", ray_result)
 		Events.mouse_hovered_on_map.emit(ray_result)
 	
 	_position_audio_listener()
@@ -72,7 +71,6 @@ func _position_audio_listener() -> void:
 	var rectpos: Vector2 = get_viewport().get_visible_rect().size / 2
 	var ray_result2: Variant = _get_ray_result(rectpos)
 	if ray_result2 is Vector3:
-		print("CAMERA CENTER: ", ray_result2)
 		$AudioListener3D.global_position = Vector3(ray_result2.x, $AudioListener3D.global_position.y, ray_result2.z)
 
 func _ready() -> void:
