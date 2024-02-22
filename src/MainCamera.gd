@@ -1,8 +1,10 @@
 extends Camera3D
 
-const CAMERA_SPEED: float = 70
+const CAMERA_SPEED: float = 15
+const MAX_SPEED: float = 2
 
-@export var target: Node3D
+var position_target: Vector3
+var velocity: Vector3
 
 @onready var ray := $RayCast3D
 
@@ -18,7 +20,14 @@ func _process(delta: float) -> void:
 		if Input.is_action_pressed("pan_camera_right"):
 			movement_vector += Vector2(1, 0)
 
-	position += Vector3(movement_vector.x, 0, movement_vector.y).normalized() * CAMERA_SPEED * delta / Engine.time_scale
+	velocity += Vector3(movement_vector.x, 0, movement_vector.y).normalized() * CAMERA_SPEED * delta / Engine.time_scale
+	velocity = velocity.limit_length(MAX_SPEED)
+	
+	var size_speed_multiplier: float = size / max_size
+	position += velocity * size_speed_multiplier
+	
+	velocity = velocity.move_toward(Vector3(), delta * 10)
+	
 	
 	var ray_result: Variant = _get_ray_result(get_viewport().get_mouse_position())
 	if ray_result is Vector3:
@@ -30,10 +39,7 @@ func _process(delta: float) -> void:
 		#$MeshInstance3D.global_position = Vector3(ray_result2.x, 0.5, ray_result2.z)
 		$AudioListener3D.global_position = Vector3(ray_result2.x, $AudioListener3D.global_position.y, ray_result2.z)
 		
-var max_zoom_in := 4.0
-var max_zoom_out := 1.5
 var zoom_step := 2.5
-
 var min_size := 7.0
 var max_size := 77.0
 var default_size := 37.0
@@ -42,6 +48,7 @@ var reverb_multiplier_max:float = 0.7
 
 func _ready() -> void:
 	_set_size(default_size)
+	position_target = global_position
 
 func _set_size(new_size: float) -> void:
 	size = new_size
