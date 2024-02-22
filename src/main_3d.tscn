@@ -14,6 +14,7 @@
 script = ExtResource("1_h0o83")
 
 [node name="sky" parent="." instance=ExtResource("2_vk0vx")]
+time_of_day_setup = 0.685
 sun_pos_default = Vector3(-0.307602, -0.951515, 0)
 sun_axis_rotation = Vector3(-1, 0, 0)
 moon_tint = Color(0.706745, 0.764224, 1, 1)
@@ -26,6 +27,7 @@ night_level_light = 0.58
 unique_name_in_owner = true
 
 [node name="MainMap3d" parent="." instance=ExtResource("2_l8r3t")]
+clear_on_load = true
 
 [node name="MapTileSelector" parent="MainMap3d" index="3" node_paths=PackedStringArray("selection_draw")]
 selection_draw = NodePath("../SelectionDraw")

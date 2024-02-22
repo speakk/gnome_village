@@ -1,5 +1,7 @@
 class_name MainMap3D extends Node3D
 
+@export var clear_on_load: bool = false
+
 @onready var grid: GridMap = $GridMap
 @onready var blueprint_grid: GridMap = $BlueprintGridMap
 @onready var ground_grid: GridMap = $GroundGrid
@@ -52,11 +54,23 @@ func prepare_blueprint_grid() -> void:
 	blueprint_grid.mesh_library = blueprint_mesh_library
 
 func prepare_for_load() -> void:
-	map_entities.clear()
-	grid.clear()
-	blueprint_grid.clear()
-	#clear_layer(Layers.Building)
-	#clear_layer(Layers.Blueprint)
+	if clear_on_load:
+		map_entities.clear()
+		grid.clear()
+		blueprint_grid.clear()
+		
+		
+		var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
+		var water_area_y_size := 40
+		var shore_wave_frequency := 0.05
+		var shore_wave_depth := 6
+		
+		for x in MAP_SIZE_X:
+			for y in MAP_SIZE_Y:
+				if y < MAP_SIZE_Y - water_area_y_size - sin(x * shore_wave_frequency) * shore_wave_depth:
+					ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 0)
+				else:
+					ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 1)
 
 func add_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:
 	if not map_entities.has(coordinate):
@@ -95,44 +109,14 @@ func is_coordinate_occupied(coordinate: Vector2i) -> bool:
 	
 
 func _ready() -> void:
-	#add_layer(Layers.Ground)
-	#add_layer(Layers.Building)
-	#add_layer(Layers.Blueprint)
-	#
-	#set_layer_z_index(Layers.Building, 1)
-	
 	prepare_for_load()
 	
 	map_tile_selector.tiles_selected.connect(_tiles_selected)
 	map_tile_selector.tiles_selected_secondary.connect(_tiles_selected_secondary)
 
-	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
-	var water_area_y_size := 40
-	var shore_wave_frequency := 0.05
-	var shore_wave_depth := 6
-
-	for x in MAP_SIZE_X:
-		for y in MAP_SIZE_Y:
-			#if world_center.distance_to(Vector2(x * CELL_SIZE.x, y * CELL_SIZE.y)) < 400:
-			if y < MAP_SIZE_Y - water_area_y_size - sin(x * shore_wave_frequency) * shore_wave_depth:
-				ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 0)
-			else:
-				ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 1)
-				
-				
-			
-				#set_cells_terrain_connect(Layers.Ground, [Vector2i(x, y)], 1, 0)
-	
-	#set_layer_modulate(Layers.Blueprint, Color(0.5, 0.5, 1.0, 0.5))
-	
 	Events.terrain_placed.connect(_terrain_placed)
 	Events.terrain_cleared.connect(_terrain_cleared)
 	
-	#Events.item_placed_on_ground.connect(func(item: ItemOnGround, item_position: Vector3) -> void:
-			#var coordinate := global_position_to_coordinate(item_position)
-			#add_map_entity(coordinate, item)
-	#)
-
 	Events.world_position_changed.connect(func(entity: Node3D, old_position: Vector3, new_position: Vector3) -> void:
 			var old_coordinate := global_position_to_coordinate(old_position)
 			remove_map_entity(old_coordinate, entity)
@@ -141,7 +125,6 @@ func _ready() -> void:
 			add_map_entity(coordinate, entity)
 			)
 		
-	
 	Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:
 			var coordinate := global_position_to_coordinate(item.global_position)
 			remove_map_entity(coordinate, item)

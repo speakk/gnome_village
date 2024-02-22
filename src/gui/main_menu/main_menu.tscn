@@ -1,0 +1,138 @@
+[gd_scene load_steps=14 format=3 uid="uid://coa800xi7xgd2"]
+
+[ext_resource type="Script" path="res://src/gui/main_menu/main_menu.gd" id="1_ojpbv"]
+[ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap3D.tscn" id="1_rn6i6"]
+[ext_resource type="PackedScene" uid="uid://cs2fptc2k4veq" path="res://src/sky/Sky.tscn" id="2_30k6m"]
+[ext_resource type="PackedScene" uid="uid://uqcgysgd2yqr" path="res://src/items/item_data/scenes/wooden_torch.tscn" id="3_kks4n"]
+[ext_resource type="Shader" path="res://src/sky/sky.gdshader" id="3_tj2dn"]
+[ext_resource type="Texture2D" uid="uid://skgrbq3iahcg" path="res://src/sky/moon.png" id="4_y78nw"]
+[ext_resource type="Texture2D" uid="uid://5c1w1lvrch1i" path="res://src/sky/starfield.png" id="5_fom0y"]
+[ext_resource type="PackedScene" uid="uid://o53a82tupq4h" path="res://src/gui/main_menu/main_menu_button.tscn" id="5_wk6eu"]
+[ext_resource type="PackedScene" uid="uid://b1no50g6cjkhd" path="res://src/settler/settler.tscn" id="9_5dbc7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tksbq"]
+shader = ExtResource("3_tj2dn")
+shader_parameter/moon_tint = Color(0.706745, 0.764224, 1, 1)
+shader_parameter/clouds_tint = Color(0.590625, 0.58125, 0.8, 1)
+shader_parameter/SCATERRING = false
+shader_parameter/SUN_POS = Vector3(-0.307602, -0.0378541, 0.950762)
+shader_parameter/MOON_POS = Vector3(0, 0.0397829, 0.999208)
+shader_parameter/MOON_TEX_POS = Vector3(0, -0.692899, 0.721035)
+shader_parameter/LIGHTING_POS = Vector3(0, 1, 0)
+shader_parameter/lighting_strength = 0.0
+shader_parameter/MOON_PHASE = 1.0
+shader_parameter/moon_size = 0.05
+shader_parameter/attenuation = 0.58
+shader_parameter/WIND = Vector3(0.1, 0, 0)
+shader_parameter/SIZE = 2.0
+shader_parameter/SOFTNESS = 2.0
+shader_parameter/COVERAGE = 0.5
+shader_parameter/HEIGHT = 0.5
+shader_parameter/THICKNESS = 15.0
+shader_parameter/ABSORPTION = 1.25
+shader_parameter/STEPS = 20
+shader_parameter/star_sky = ExtResource("5_fom0y")
+shader_parameter/moon = ExtResource("4_y78nw")
+
+[sub_resource type="Sky" id="Sky_jusdg"]
+sky_material = SubResource("ShaderMaterial_tksbq")
+radiance_size = 0
+
+[sub_resource type="Environment" id="Environment_y37ep"]
+background_mode = 2
+sky = SubResource("Sky_jusdg")
+ambient_light_color = Color(0.547074, 0.473549, 0.799108, 1)
+ambient_light_sky_contribution = 0.0
+ambient_light_energy = 0.58
+tonemap_mode = 3
+ssao_enabled = true
+ssil_enabled = true
+glow_intensity = 8.0
+glow_strength = 0.75
+glow_bloom = 0.58
+glow_hdr_threshold = 1.56
+glow_hdr_scale = 1.55
+glow_hdr_luminance_cap = 88.29
+glow_map_strength = 0.39
+fog_light_color = Color(0.547074, 0.473549, 0.799108, 1)
+volumetric_fog_albedo = Color(0.547074, 0.473549, 0.799108, 1)
+volumetric_fog_emission = Color(0.296088, 0.4375, 0.20045, 1)
+volumetric_fog_length = 11.48
+adjustment_enabled = true
+adjustment_saturation = 0.75
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_7omme"]
+dof_blur_far_enabled = true
+dof_blur_far_transition = -1.0
+
+[node name="MainMenu" type="Node3D"]
+script = ExtResource("1_ojpbv")
+
+[node name="sky" parent="." instance=ExtResource("2_30k6m")]
+environment = SubResource("Environment_y37ep")
+camera_attributes = SubResource("CameraAttributesPractical_7omme")
+time_of_day_setup = 0.327
+sun_pos_default = Vector3(-0.307602, -0.951515, 0)
+sun_axis_rotation = Vector3(-1, 0, 0)
+moon_tint = Color(0.706745, 0.764224, 1, 1)
+moon_light = Color(0.401003, 0.401307, 0.949219, 1)
+sunset_light = Color(0.871094, 0.6338, 0.466128, 1)
+day_light = Color(0.558594, 0.530995, 0.495655, 1)
+night_level_light = 0.58
+
+[node name="MainMap3d" parent="." instance=ExtResource("1_rn6i6")]
+
+[node name="GridMap" parent="MainMap3d" index="0"]
+data = {
+"cells": PackedInt32Array(5, 65534, 0, 5, 65535, 0, 5, 0, 0, 65530, 0, 0, 65530, 65534, 0, 65530, 2, 0, 5, 65533, 0, 5, 65532, 0)
+}
+
+[node name="GroundGrid" parent="MainMap3d" index="2"]
+data = {
+"cells": PackedInt32Array(3, 65533, 0, 3, 65534, 0, 3, 65535, 0, 3, 0, 0, 3, 1, 0, 3, 2, 0, 2, 2, 0, 2, 1, 0, 2, 65535, 0, 2, 65533, 0, 2, 65532, 0, 1, 65534, 0, 1, 65535, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 65535, 4, 0, 65534, 3, 0, 65534, 2, 0, 65534, 1, 0, 65534, 0, 0, 65534, 65535, 0, 65534, 65533, 0, 65534, 65532, 0, 65534, 65531, 1, 65534, 65530, 1, 65535, 65533, 0, 65535, 65534, 0, 65535, 0, 0, 65535, 1, 0, 65535, 2, 0, 1, 4, 0, 1, 3, 0, 1, 2, 0, 1, 65533, 0, 1, 65532, 0, 1, 65531, 1, 1, 65530, 1, 1, 65529, 1, 2, 65530, 1, 2, 65531, 1, 1, 5, 1, 2, 5, 1, 2, 4, 0, 2, 3, 0, 3, 65532, 0, 3, 65531, 0, 4, 0, 0, 4, 1, 0, 4, 2, 0, 4, 3, 0, 3, 4, 0, 4, 65535, 0, 4, 65534, 0, 4, 65533, 0, 5, 65533, 0, 5, 65532, 0, 5, 65534, 0, 1, 65528, 1, 0, 65528, 1, 0, 65529, 1, 65535, 65530, 1, 65535, 65532, 0, 65533, 3, 0, 65533, 2, 0, 65532, 1, 0, 65531, 0, 0, 65531, 65535, 0, 65530, 65533, 0, 65530, 65532, 0, 65529, 65531, 0, 65529, 65530, 0, 65529, 65529, 0, 65528, 65530, 0, 65528, 65531, 0, 65529, 65532, 0, 65529, 65533, 0, 65529, 0, 0, 65529, 1, 0, 65529, 3, 0, 65530, 3, 0, 65531, 3, 0, 65531, 2, 0, 65531, 1, 0, 65532, 65535, 0, 65533, 65533, 0, 65533, 65531, 1, 65534, 65529, 0, 65534, 65528, 0, 65534, 4, 1, 65534, 5, 1, 65534, 6, 1, 65535, 6, 1, 65535, 7, 1, 65535, 5, 1, 65535, 3, 0, 65535, 65531, 0, 65535, 65535, 0, 0, 7, 1, 1, 7, 1, 2, 7, 1, 3, 7, 1, 65533, 6, 1, 65532, 6, 1, 65530, 5, 1, 65531, 5, 1, 65532, 5, 1, 65533, 5, 1, 1, 6, 1, 4, 7, 1, 65530, 4, 0, 65531, 4, 0, 65532, 4, 1, 2, 6, 1, 5, 7, 1, 6, 8, 0, 5, 8, 0, 3, 9, 0, 1, 9, 1, 65533, 9, 0, 65532, 9, 1, 65535, 8, 1, 4, 6, 1, 5, 6, 1, 0, 6, 1, 0, 5, 1, 3, 5, 1, 5, 5, 1, 6, 5, 1, 3, 6, 1, 4, 5, 1, 7, 8, 1, 8, 8, 1, 6, 9, 0, 4, 10, 0, 2, 11, 0, 65535, 11, 1, 65532, 12, 1, 65531, 12, 1, 65533, 11, 1, 65534, 10, 1, 0, 9, 1, 3, 8, 1, 6, 7, 1, 0, 10, 0, 65531, 11, 1, 65528, 11, 1, 65527, 11, 1, 65529, 10, 1, 0, 8, 1, 5, 9, 0, 65532, 10, 1, 4, 9, 0, 2, 9, 0, 65533, 8, 1, 65532, 7, 1, 65533, 7, 1, 65534, 7, 1, 65535, 10, 1, 65535, 9, 1, 4, 8, 1, 2, 8, 1, 5, 10, 0, 2, 10, 0, 1, 8, 1, 3, 10, 0, 1, 11, 0, 0, 11, 0, 7, 5, 1, 3, 3, 0, 5, 3, 0, 6, 3, 0, 7, 3, 0, 6, 4, 0, 5, 4, 0, 4, 4, 0, 7, 4, 1, 8, 3, 0, 6, 2, 0, 7, 2, 0, 8, 2, 0, 5, 1, 0, 6, 1, 0, 7, 1, 0, 8, 1, 0, 5, 0, 1, 6, 0, 0, 5, 2, 0, 5, 65535, 0, 1, 65527, 1, 1, 65526, 0, 1, 65525, 0, 2, 65526, 0, 2, 65527, 0, 2, 65528, 1, 3, 65528, 0, 3, 65529, 0, 4, 65530, 0, 4, 65531, 0, 4, 65532, 0, 3, 65530, 0, 2, 65529, 1, 0, 65526, 1, 0, 65527, 1, 0, 65530, 1, 65535, 65529, 0, 65535, 65528, 0, 0, 65531, 1, 0, 65532, 0, 65534, 65526, 0, 65534, 65525, 0, 65534, 65527, 0, 65533, 65525, 0, 65533, 65524, 0, 65532, 65524, 0, 65531, 65524, 0, 65530, 65524, 0, 65529, 65524, 0, 65535, 65525, 0, 65532, 65525, 0, 65531, 65527, 0, 65530, 65526, 0, 65533, 65527, 0, 65535, 65527, 1, 65532, 65527, 0, 65531, 65526, 0, 65532, 65528, 0, 65531, 65528, 0, 65532, 65529, 0, 65531, 65529, 0, 65533, 65529, 0, 65530, 65529, 0, 65530, 65530, 0, 65531, 65530, 0, 65532, 65530, 0, 65530, 65531, 0, 65531, 65531, 0, 65532, 65531, 0, 65533, 65532, 1, 65532, 65532, 1, 65531, 65532, 0, 65531, 65533, 0, 65528, 65533, 0, 65533, 65534, 0, 65534, 65534, 0, 65532, 65534, 0, 65530, 65535, 0, 65529, 65535, 0, 65531, 65534, 1, 65530, 65534, 0, 65532, 65533, 1, 65533, 65535, 0, 65532, 0, 0, 65532, 2, 0, 65532, 3, 0, 65533, 1, 0, 65533, 0, 0, 65534, 9, 1, 65534, 8, 1, 65533, 4, 1, 65530, 6, 1, 65528, 7, 1, 65527, 7, 1, 65528, 8, 1, 65529, 8, 1, 65533, 10, 1, 65530, 10, 1, 65528, 10, 1, 65527, 10, 1, 65528, 9, 1, 65529, 9, 1, 65530, 9, 1, 65532, 8, 1, 65531, 9, 1, 65531, 8, 1, 65530, 8, 1, 65527, 8, 1, 65531, 7, 1, 65529, 7, 1, 65529, 6, 1, 65531, 6, 1, 65530, 7, 1, 65532, 11, 1, 65534, 11, 1, 65534, 12, 1, 65533, 12, 0, 1, 10, 0, 65535, 65526, 1, 0, 0, 0, 0, 65533, 0, 0, 65534, 0, 0, 65535, 0, 2, 0, 0, 2, 65534, 0, 65528, 6, 1, 65528, 5, 1, 65529, 5, 1, 65529, 4, 0, 65528, 3, 0, 65528, 4, 1, 65528, 12, 1, 65529, 12, 1, 65530, 12, 1, 65530, 11, 1, 65531, 10, 1, 65531, 13, 1, 65531, 14, 1, 65530, 15, 1, 65530, 16, 1, 65529, 16, 1, 65528, 16, 1, 65529, 15, 1, 65532, 14, 1, 65532, 13, 1, 65530, 14, 1, 65529, 14, 1, 65528, 15, 1, 65527, 16, 1, 65528, 14, 1, 65528, 13, 1, 65529, 13, 1, 65530, 13, 1, 65529, 11, 1, 65527, 12, 1, 65527, 9, 1, 65526, 11, 1, 65525, 12, 1, 65525, 13, 1, 65525, 11, 1, 65525, 10, 1, 65526, 9, 1, 65526, 8, 1, 65526, 7, 1, 65527, 6, 1, 6, 6, 1, 65535, 12, 1, 65535, 13, 1, 65534, 13, 1, 65533, 13, 1, 8, 5, 1, 9, 6, 1, 9, 5, 1, 8, 4, 1, 8, 6, 1, 8, 7, 1, 8, 9, 1, 7, 7, 1, 7, 6, 1, 9, 3, 1, 9, 4, 1, 9, 7, 1, 9, 8, 1, 9, 9, 1, 9, 10, 1, 8, 10, 1, 8, 11, 1, 7, 11, 1, 7, 10, 1, 7, 9, 1, 6, 11, 1, 6, 12, 1, 10, 7, 1, 65530, 1, 0, 65529, 2, 0)
+}
+
+[node name="MapTileSelector" parent="MainMap3d" index="3" node_paths=PackedStringArray("selection_draw")]
+selection_draw = NodePath("../SelectionDraw")
+
+[node name="SelectionDraw" parent="MainMap3d" index="4"]
+visible = false
+
+[node name="EntitySelectionDraw" parent="MainMap3d" index="7"]
+visible = false
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.997253, 0, -0.0740736, 0, 1, 0, 0.0740736, 0, -0.997253, -0.108888, 1.20222, -2.91661)
+current = true
+fov = 65.7
+far = 57.56
+
+[node name="SceneObjects" type="Node3D" parent="."]
+
+[node name="Settler" parent="SceneObjects" instance=ExtResource("9_5dbc7")]
+transform = Transform3D(-0.763413, 0, 0.645911, 0, 1, 0, -0.645911, 0, -0.763413, -1.57347, 0.481627, 0.753459)
+
+[node name="WoodenTorch" parent="SceneObjects" instance=ExtResource("3_kks4n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.24711, 0, -3.15991)
+
+[node name="WoodenTorch2" parent="SceneObjects" instance=ExtResource("3_kks4n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.28819, 0, 1.48183)
+
+[node name="WoodenTorch3" parent="SceneObjects" instance=ExtResource("3_kks4n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.33294, 0, 1.48183)
+
+[node name="Menu" type="Node3D" parent="."]
+
+[node name="MainMenuButton" parent="Menu" instance=ExtResource("5_wk6eu")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 1, 2, 0)
+text = "New Game"
+
+[node name="MainMenuButton2" parent="Menu" instance=ExtResource("5_wk6eu")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 1, 1.3087, 0)
+text = "Settings"
+
+[node name="MainMenuButton3" parent="Menu" instance=ExtResource("5_wk6eu")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 1, 0.605485, 0)
+text = "Quit"
+
+[editable path="MainMap3d"]

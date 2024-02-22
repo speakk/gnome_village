@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://o53a82tupq4h"]
+
+[ext_resource type="Script" path="res://src/gui/main_menu/main_menu_button.gd" id="1_shjgq"]
+[ext_resource type="PackedScene" uid="uid://bi84k15uy1o4h" path="res://assets/blender_models/main_menu/button.blend" id="1_ubtyk"]
+[ext_resource type="FontFile" uid="uid://4nfdi1tps2fv" path="res://assets/fonts/ThaleahFat.ttf" id="3_tnhw2"]
+[ext_resource type="AudioStream" uid="uid://g1f6rs6xy8io" path="res://assets/sounds/ui/click.ogg" id="4_oddb4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vvsyt"]
+size = Vector3(1.99951, 0.52063, 1)
+
+[node name="MainMenuButton" type="Node3D"]
+script = ExtResource("1_shjgq")
+original_color = Color(0.359375, 0.268274, 0.187284, 1)
+hover_color = Color(0.679688, 0.384223, 0.276333, 1)
+
+[node name="button" parent="." instance=ExtResource("1_ubtyk")]
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.181561)
+texture_filter = 0
+modulate = Color(0.722656, 0.573157, 0.524089, 1)
+text = "New game"
+font = ExtResource("3_tnhw2")
+font_size = 64
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00170898, 6.10352e-05, 0)
+shape = SubResource("BoxShape3D_vvsyt")
+
+[node name="ClickSoundPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_oddb4")
+volume_db = -15.63
+
+[connection signal="input_event" from="Area3D" to="." method="_on_area_3d_input_event"]
+[connection signal="mouse_entered" from="Area3D" to="." method="_on_area_3d_mouse_entered"]
+[connection signal="mouse_exited" from="Area3D" to="." method="_on_area_3d_mouse_exited"]

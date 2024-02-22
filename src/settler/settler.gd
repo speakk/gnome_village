@@ -41,20 +41,16 @@ func _ready() -> void:
 	$Inventory.item_removed.connect(_inventory_item_removed)
 	play_animation("Idle")
 	
+	var original_position := global_position
+	
 	component_container.add_component(Components.create_component_by_id(Components.Id.WorldPosition))
 	component_container.add_component(Components.create_component_by_id(Components.Id.Selectable))
 	component_container.add_component(Components.create_component_by_id(Components.Id.DisplayName))
 	component_container.get_component_instance(Components.Id.DisplayName).data.display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
 	component_container.add_component(Components.create_component_by_id(Components.Id.CharacterStats))
+	component_container.get_component_instance(Components.Id.WorldPosition).current_position = original_position
 	
-	
-	
-	#
-	#var hair := hair_options.pick_random() as Texture2D
-	#if hair:
-		#$HairSprite.texture = hair
-	#else:
-		#$HairSprite.visible = false
+
 
 func save() -> Dictionary:
 	var save_dict := {
