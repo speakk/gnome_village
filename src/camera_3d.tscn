@@ -13,8 +13,6 @@ near = 0.001
 far = 59.44
 script = ExtResource("1_55w6w")
 
-[node name="RayCast3D" type="RayCast3D" parent="."]
-
 [node name="AudioListener3D" type="AudioListener3D" parent="."]
 top_level = true
 current = true
