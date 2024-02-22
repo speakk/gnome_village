@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cxfu88mnhmgb7"]
+[gd_scene load_steps=22 format=3 uid="uid://cxfu88mnhmgb7"]
 
 [ext_resource type="Script" path="res://src/map/MainMap3D.gd" id="1_hry08"]
 [ext_resource type="Script" path="res://src/map/MapTileSelector.gd" id="2_k2ptl"]
@@ -24,9 +24,45 @@ seamless = true
 color_ramp = SubResource("Gradient_gpv11")
 noise = SubResource("FastNoiseLite_qhp3q")
 
+[sub_resource type="Gradient" id="Gradient_om7vy"]
+offsets = PackedFloat32Array(0, 0.709524, 0.747619, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.17619, 1, 1, 1, 0.891959, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lsl4g"]
+noise_type = 0
+seed = 3
+frequency = 0.0038
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gnsfy"]
+seamless = true
+color_ramp = SubResource("Gradient_om7vy")
+noise = SubResource("FastNoiseLite_lsl4g")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_npf8i"]
+seed = 1
+frequency = 0.044
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hw8tb"]
+seamless = true
+as_normal_map = true
+bump_strength = 0.3
+noise = SubResource("FastNoiseLite_npf8i")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dfy3p"]
+transparency = 1
+albedo_color = Color(0.33396, 0.66, 0.2838, 0.545098)
+albedo_texture = SubResource("NoiseTexture2D_gnsfy")
+normal_texture = SubResource("NoiseTexture2D_hw8tb")
+uv1_scale = Vector3(0.005, 0.005, 0.005)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_44mkl"]
+next_pass = SubResource("StandardMaterial3D_dfy3p")
 albedo_color = Color(0.75, 0.558289, 0.401478, 1)
 albedo_texture = SubResource("NoiseTexture2D_gyv7a")
+normal_texture = SubResource("NoiseTexture2D_hw8tb")
 uv1_scale = Vector3(0.01, 0.01, 0.01)
 uv1_triplanar = true
 uv1_world_triplanar = true
