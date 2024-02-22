@@ -13,9 +13,13 @@ script = ExtResource("1_shjgq")
 original_color = Color(0.359375, 0.268274, 0.187284, 1)
 hover_color = Color(0.679688, 0.384223, 0.276333, 1)
 
-[node name="button" parent="." instance=ExtResource("1_ubtyk")]
+[node name="Node3D" type="Node3D" parent="."]
 
-[node name="Label3D" type="Label3D" parent="."]
+[node name="button" parent="Node3D" instance=ExtResource("1_ubtyk")]
+unique_name_in_owner = true
+
+[node name="Label3D" type="Label3D" parent="Node3D"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.181561)
 texture_filter = 0
 modulate = Color(0.722656, 0.573157, 0.524089, 1)
