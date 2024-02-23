@@ -41,6 +41,7 @@ signal entity_selected(entity: Node3D)
 signal entity_deselected(entity: Node3D)
 signal clear_entity_selections()
 
+signal scene_change_requested(new_scene_id: SceneManager.SceneId)
 
 signal load_game_called(save_dict: Dictionary)
 signal save_game_called(save_dict: Dictionary)

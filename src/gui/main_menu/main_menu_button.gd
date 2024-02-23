@@ -1,10 +1,12 @@
 @tool
-extends Node3D
+class_name MainMenuButton extends Node3D
 
 var hovered := false
 
 @export var original_color: Color
 @export var hover_color: Color
+
+signal pressed
 
 @export var text: String:
 	set(new_value):
@@ -21,9 +23,10 @@ func on_hover() -> void:
 
 
 func _on_area_3d_input_event(camera: Node, event: InputEvent, position: Vector3, normal: Vector3, shape_idx: int) -> void:
-	#print("EVENT", event)
-	pass
-
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			pressed.emit()
+			#Events.scene_change_requested.emit(target_scene)
 
 func _on_area_3d_mouse_entered() -> void:
 	hovered = true

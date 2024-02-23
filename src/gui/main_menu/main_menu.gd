@@ -2,8 +2,16 @@ extends Node3D
 
 @onready var camera_3d: Camera3D = $Camera3D
 
+@onready var new_game_button: MainMenuButton = %NewGameButton
+@onready var options_button: MainMenuButton = %OptionsButton
+@onready var quit_button: MainMenuButton = %QuitButton
+
+
 func _ready() -> void:
 	$sky.time_of_day = 0.327
+	new_game_button.pressed.connect(func() -> void: Events.scene_change_requested.emit(SceneManager.SceneId.InGame))
+	#new_game_button.pressed.connect(func() -> void: Events.scene_change_requested(SceneManager.SceneId.InGame))
+	quit_button.pressed.connect(func() -> void: get_tree().quit())
 
 func _process(delta: float) -> void:
 	var ray_result: Variant = _get_ray_result(get_viewport().get_mouse_position())
