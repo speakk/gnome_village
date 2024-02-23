@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dh81vo68ekn1p"]
+[gd_scene load_steps=11 format=3 uid="uid://dh81vo68ekn1p"]
 
 [ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://src/tasks/task_actuators/TaskActuator.tscn" id="1_fm161"]
 [ext_resource type="Script" path="res://src/tasks/task_actuators/bring_resource.gd" id="2_2s8wd"]
@@ -9,38 +9,45 @@
 [ext_resource type="Script" path="res://src/tasks/task_actuators/actions/FinishTask.gd" id="5_78qgj"]
 [ext_resource type="Script" path="res://src/tasks/task_actuators/actions/GetItemAmount.gd" id="5_d8kge"]
 [ext_resource type="Script" path="res://src/tasks/task_actuators/actions/PutItemToInventory.gd" id="6_rapg4"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/FailTask.gd" id="10_u0xiw"]
 
 [node name="BringResourceTask" instance=ExtResource("1_fm161")]
 script = ExtResource("2_2s8wd")
 
 [node name="BeehaveTree" parent="." index="0" node_paths=PackedStringArray("blackboard")]
-blackboard = NodePath("@Node@17556")
+blackboard = NodePath("@Node@28505")
 
-[node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0"]
-script = ExtResource("3_06fow")
-
-[node name="GetItemSelector" type="Node" parent="BeehaveTree/SequenceComposite" index="0"]
+[node name="SelectorComposite" type="Node" parent="BeehaveTree" index="0"]
 script = ExtResource("4_t3tmc")
 
-[node name="HasItemRequirement" parent="BeehaveTree/SequenceComposite/GetItemSelector" index="0" instance=ExtResource("5_1yofc")]
-unique_name_in_owner = true
-
-[node name="GetItemSequence" type="Node" parent="BeehaveTree/SequenceComposite/GetItemSelector" index="1"]
+[node name="SequenceComposite" type="Node" parent="BeehaveTree/SelectorComposite" index="0"]
 script = ExtResource("3_06fow")
 
-[node name="GoToResource" parent="BeehaveTree/SequenceComposite/GetItemSelector/GetItemSequence" index="0" instance=ExtResource("4_7mp0k")]
+[node name="GetItemSelector" type="Node" parent="BeehaveTree/SelectorComposite/SequenceComposite" index="0"]
+script = ExtResource("4_t3tmc")
+
+[node name="HasItemRequirement" parent="BeehaveTree/SelectorComposite/SequenceComposite/GetItemSelector" index="0" instance=ExtResource("5_1yofc")]
 unique_name_in_owner = true
 
-[node name="GetItemFromGround" type="Node" parent="BeehaveTree/SequenceComposite/GetItemSelector/GetItemSequence" index="1"]
+[node name="GetItemSequence" type="Node" parent="BeehaveTree/SelectorComposite/SequenceComposite/GetItemSelector" index="1"]
+script = ExtResource("3_06fow")
+
+[node name="GoToResource" parent="BeehaveTree/SelectorComposite/SequenceComposite/GetItemSelector/GetItemSequence" index="0" instance=ExtResource("4_7mp0k")]
+unique_name_in_owner = true
+
+[node name="GetItemFromGround" type="Node" parent="BeehaveTree/SelectorComposite/SequenceComposite/GetItemSelector/GetItemSequence" index="1"]
 unique_name_in_owner = true
 script = ExtResource("5_d8kge")
 
-[node name="GoToBlueprint" parent="BeehaveTree/SequenceComposite" index="1" instance=ExtResource("4_7mp0k")]
+[node name="GoToBlueprint" parent="BeehaveTree/SelectorComposite/SequenceComposite" index="1" instance=ExtResource("4_7mp0k")]
 unique_name_in_owner = true
 
-[node name="PutItemToBlueprint" type="Node" parent="BeehaveTree/SequenceComposite" index="2"]
+[node name="PutItemToBlueprint" type="Node" parent="BeehaveTree/SelectorComposite/SequenceComposite" index="2"]
 unique_name_in_owner = true
 script = ExtResource("6_rapg4")
 
-[node name="FinishTask" type="Node" parent="BeehaveTree/SequenceComposite" index="3"]
+[node name="FinishTask" type="Node" parent="BeehaveTree/SelectorComposite/SequenceComposite" index="3"]
 script = ExtResource("5_78qgj")
+
+[node name="FailTask" type="Node" parent="BeehaveTree/SelectorComposite" index="1"]
+script = ExtResource("10_u0xiw")

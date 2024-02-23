@@ -10,8 +10,8 @@
 [node name="DismantleTask" instance=ExtResource("1_fm161")]
 script = ExtResource("1_6vuxa")
 
-[node name="BeehaveTree" parent="." index="1" node_paths=PackedStringArray("blackboard")]
-blackboard = NodePath("@Node@17474")
+[node name="BeehaveTree" parent="." index="0" node_paths=PackedStringArray("blackboard")]
+blackboard = NodePath("@Node@28837")
 
 [node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0"]
 script = ExtResource("2_a2kab")

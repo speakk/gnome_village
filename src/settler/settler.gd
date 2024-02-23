@@ -157,6 +157,10 @@ func finish_current_task() -> void:
 	current_task_actuator.finish()
 	_clean_up_actuator()
 
+func fail_current_task() -> void:
+	current_task_actuator.fail()
+	_clean_up_actuator()
+
 func is_available_for_work() -> bool:
 	return current_task_actuator == null or not current_task_actuator
 

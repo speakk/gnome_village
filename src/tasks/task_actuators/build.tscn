@@ -12,7 +12,7 @@
 script = ExtResource("2_42ej0")
 
 [node name="BeehaveTree" parent="." index="0" node_paths=PackedStringArray("blackboard")]
-blackboard = NodePath("@Node@27396")
+blackboard = NodePath("@Node@29127")
 
 [node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0"]
 script = ExtResource("3_d45j8")

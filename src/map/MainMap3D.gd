@@ -205,9 +205,9 @@ func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 	for tile_position in coordinates:
 		var entities := get_map_entities(tile_position)
 		for entity in entities as Array[Node]:
-			entity as ItemOnGround
-			if entity.item.can_be_dismantled and not entity.reserved_for_dismantling:
-				Events.dismantle_issued.emit(entity)
+			if entity is ItemOnGround:
+				if entity.item.can_be_dismantled and not entity.reserved_for_dismantling:
+					Events.dismantle_issued.emit(entity)
 
 func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
 	var zone := (selected_ui_action as UiAction.ZoneAddTiles).zone
@@ -218,7 +218,7 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 	for tile_position in coordinates:
 		if not is_coordinate_occupied(tile_position):
 			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
-			get_tree().root.get_node("Main").get_node("Entities").add_child(blueprint)
+			Events.request_entity_add.emit(blueprint)
 			blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
 			WorldPosition.set_world_position(blueprint, coordinate_to_global_position(tile_position))
 			Events.blueprint_placed.emit(tile_position, blueprint)

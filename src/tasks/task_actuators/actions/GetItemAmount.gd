@@ -12,8 +12,9 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	# inventory is because we reserved it
 	# Fixes not being able to get last amount from inventory
 	# TODO: Make reservations objects and add "reserved_by" to it along with amount
-	if (not target_item or target_item.itemAmount.amount < amount) \
-	and (not target_item.inventory.has_item_amount(requirement_item_id, amount * 2)):
+	if not target_item or \
+	(target_item.itemAmount.amount < amount) \
+	or (not target_item and not target_item.inventory.has_item_amount(requirement_item_id, amount * 2)):
 		print("FAILED at GetItemAmount", target_item, name)
 		return FAILURE
 	

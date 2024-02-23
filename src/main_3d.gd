@@ -4,6 +4,7 @@ extends Node3D
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
 @onready var main_map: MainMap3D = $MainMap3d as MainMap3D
+@onready var entities: Node3D = %Entities
 
 @onready var sky: DayNightCycleSky = $sky
 
@@ -18,6 +19,8 @@ const DECAL_AMOUNT = 2
 func _ready() -> void:
 	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
 	Events.save_game_called.connect(func(save_dict: Dictionary) -> void: save(save_dict))
+	
+	Events.request_entity_add.connect(func(entity: Node) -> void: entities.add_child(entity))
 	
 	Events.current_time_changed.connect(_current_time_changed)
 	

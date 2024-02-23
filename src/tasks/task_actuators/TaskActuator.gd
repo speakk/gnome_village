@@ -36,3 +36,10 @@ func finish() -> void:
 	if task:
 		task.is_being_worked_on = false
 		task.is_finished = true
+
+func fail() -> void:
+	if task:
+		task.failed.emit(task)
+		task.has_failed = true
+		task.is_being_worked_on = false
+		task.is_finished = false
