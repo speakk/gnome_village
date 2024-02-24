@@ -256,6 +256,8 @@ func increase_build_progress(amount: float) -> void:
 
 func set_item_components() -> void:
 	component_container.clear()
+	_add_default_components()
+	
 	for component in item.components:
 		component_container.add_component(component)
 
@@ -271,3 +273,14 @@ func has_materials() -> bool:
 			return false
 	
 	return true
+
+func _add_default_components() -> void:
+	var display_name := DisplayNameComponent.new()
+	display_name.display_name = item.display_name
+	
+	var selectable := SelectableComponent.new()
+	var world_position := WorldPositionComponent.new()
+	
+	component_container.add_component(display_name)
+	component_container.add_component(selectable)
+	component_container.add_component(world_position)

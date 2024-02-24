@@ -43,11 +43,10 @@ func _ready() -> void:
 	
 	var original_position := global_position
 	
-	component_container.add_component(Components.create_component_by_id(Components.Id.WorldPosition))
-	component_container.add_component(Components.create_component_by_id(Components.Id.Selectable))
-	component_container.add_component(Components.create_component_by_id(Components.Id.DisplayName))
-	component_container.get_component_instance(Components.Id.DisplayName).data.display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
-	component_container.add_component(Components.create_component_by_id(Components.Id.CharacterStats))
+	component_container.add_component(WorldPositionComponent.new())
+	component_container.add_component(SelectableComponent.new())
+	component_container.add_component(DisplayNameComponent.new(["Fred", "Mary", "Bob", "Susanne"].pick_random()))
+	component_container.add_component(CharacterStatsComponent.new())
 	component_container.get_component_instance(Components.Id.WorldPosition).current_position = original_position
 	
 

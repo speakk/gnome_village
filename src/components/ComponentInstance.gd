@@ -1,10 +1,13 @@
 class_name ComponentInstance extends Node3D
 
 var id: Components.Id
-var data: Component
-var component_owner: Node3D
+@export var data: Component
+@export var component_owner: Node3D
 
 signal owner_set(new_owner: Node3D)
+
+func _ready() -> void:
+	id = data.id
 
 static func create_instance(component: Component, new_owner: Node3D = null) -> ComponentInstance:
 	var instance: ComponentInstance

@@ -1,5 +1,7 @@
 class_name PlantedPlant extends Node3D
 
+@onready var component_container: ComponentContainer = $ComponentContainer
+
 signal matured
 
 var current_growth_timer: float = 0.0

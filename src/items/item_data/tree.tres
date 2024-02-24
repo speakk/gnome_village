@@ -1,17 +1,8 @@
-[gd_resource type="Resource" script_class="Item" load_steps=9 format=3 uid="uid://bb3p11lw17xsw"]
+[gd_resource type="Resource" script_class="Item" load_steps=5 format=3 uid="uid://bb3p11lw17xsw"]
 
 [ext_resource type="Script" path="res://src/items/ItemDrop.gd" id="1_3s5ki"]
-[ext_resource type="Resource" uid="uid://b1sibj1nnyom1" path="res://src/components/data/Selectable.tres" id="1_bir5y"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_ql27c"]
 [ext_resource type="PackedScene" uid="uid://bis6a6e7qxyt8" path="res://assets/blender_models/tree.blend" id="2_8bqks"]
-[ext_resource type="Resource" uid="uid://c2iey841tfqyg" path="res://src/components/data/WorldPosition.tres" id="2_ud1jq"]
-[ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="3_drbu6"]
-
-[sub_resource type="Resource" id="Resource_oxrg4"]
-resource_local_to_scene = true
-script = ExtResource("3_drbu6")
-display_name = "Tree"
-id = 3
 
 [sub_resource type="Resource" id="Resource_851nl"]
 script = ExtResource("1_3s5ki")
@@ -35,4 +26,4 @@ durability = 10
 crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 item_drops = Array[ExtResource("1_3s5ki")]([SubResource("Resource_851nl")])
 provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_oxrg4"), ExtResource("1_bir5y"), ExtResource("2_ud1jq")])
+components = Array[Resource("res://src/components/Component.gd")]([])

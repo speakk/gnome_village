@@ -1,9 +1,7 @@
-[gd_resource type="Resource" script_class="Item" load_steps=5 format=3 uid="uid://10hahtgmxe11"]
+[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://10hahtgmxe11"]
 
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_apqiq"]
 [ext_resource type="PackedScene" uid="uid://dqk5jjprgn28n" path="res://assets/blender_models/water_bucket.blend" id="1_nty6t"]
-[ext_resource type="Resource" uid="uid://b1sibj1nnyom1" path="res://src/components/data/Selectable.tres" id="1_p3hqh"]
-[ext_resource type="Resource" uid="uid://c2iey841tfqyg" path="res://src/components/data/WorldPosition.tres" id="2_3xypj"]
 
 [resource]
 script = ExtResource("1_apqiq")
@@ -20,4 +18,4 @@ durability = 10
 crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
 provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
-components = Array[Resource("res://src/components/Component.gd")]([ExtResource("1_p3hqh"), ExtResource("2_3xypj")])
+components = Array[Resource("res://src/components/Component.gd")]([])
