@@ -47,7 +47,7 @@ func _ready() -> void:
 	component_container.add_component(SelectableComponent.new())
 	component_container.add_component(DisplayNameComponent.new(["Fred", "Mary", "Bob", "Susanne"].pick_random()))
 	component_container.add_component(CharacterStatsComponent.new())
-	component_container.get_component_instance(Components.Id.WorldPosition).current_position = original_position
+	component_container.get_by_id(Components.Id.WorldPosition).current_position = original_position
 	
 
 
@@ -72,7 +72,7 @@ func save() -> Dictionary:
 	return save_dict
 
 func load_save(save_dict: Dictionary) -> void:
-	var position_component: WorldPosition = component_container.get_component_instance(Components.Id.WorldPosition)
+	var position_component: WorldPositionComponent = component_container.get_by_id(Components.Id.WorldPosition)
 	position_component.current_position = Vector3(save_dict["position_x"], 0.5, save_dict["position_y"])
 	walk_speed = save_dict["walk_speed"]
 	build_speed = save_dict["build_speed"]
@@ -104,7 +104,7 @@ func _finished_path() -> void:
 	pass
 
 func move_and_slide(delta: float) -> void:
-	var position_component: WorldPosition = component_container.get_component_instance(Components.Id.WorldPosition)
+	var position_component: WorldPositionComponent = component_container.get_by_id(Components.Id.WorldPosition)
 	position_component.current_position += velocity * delta
 	position_component.current_position.y = 0.5
 	#global_position += velocity * delta
@@ -171,7 +171,7 @@ func ensure_valid_position() -> void:
 		var free_coordinate := PathFinder.get_closest_free_point(Globals.get_map().global_position_to_coordinate(global_position)) as Vector2i
 		if free_coordinate:
 			var new_position := Globals.get_map().coordinate_to_global_position(free_coordinate)
-			var position_component: WorldPosition = component_container.get_component_instance(Components.Id.WorldPosition)
+			var position_component: WorldPositionComponent = component_container.get_by_id(Components.Id.WorldPosition)
 			get_tree().create_tween().tween_property(position_component, "current_position", Vector3(new_position.x, 0.5, new_position.z), 0.5)
 			#global_position = new_position
 

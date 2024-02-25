@@ -158,7 +158,7 @@ func clear_selections() -> void:
 	for entities: Array in map_entities.values():
 		for entity: Variant in entities:
 			if entity.component_container.has_component(Components.Id.Selectable):
-				entity.component_container.get_component_instance(Components.Id.Selectable).selected = false
+				entity.component_container.get_by_id(Components.Id.Selectable).selected = false
 
 func select_next_entity(coordinates: Array[Vector2i]) -> void:
 	if coordinates.size() == 1:
@@ -170,7 +170,7 @@ func select_next_entity(coordinates: Array[Vector2i]) -> void:
 			print("Going though entity", entity)
 			if entity.component_container.has_component(Components.Id.Selectable):
 				print("Had selectable")
-				if not entity.component_container.get_component_instance(Components.Id.Selectable).selected:
+				if not entity.component_container.get_by_id(Components.Id.Selectable).selected:
 					entity_to_select = entity
 					break
 		
@@ -185,7 +185,7 @@ func select_next_entity(coordinates: Array[Vector2i]) -> void:
 		
 		if entity_to_select:
 			print("Setting as selected")
-			entity_to_select.component_container.get_component_instance(Components.Id.Selectable).selected = true
+			entity_to_select.component_container.get_by_id(Components.Id.Selectable).selected = true
 	
 	else:
 		clear_selections()
@@ -193,7 +193,7 @@ func select_next_entity(coordinates: Array[Vector2i]) -> void:
 			var entities := get_map_entities(coordinate)
 			for entity in entities:
 				if entity.component_container.has_component(Components.Id.Selectable):
-					entity.component_container.get_component_instance(Components.Id.Selectable).selected = true
+					entity.component_container.get_by_id(Components.Id.Selectable).selected = true
 
 func _tiles_selected_secondary(coordinates: Array[Vector2i]) -> void:
 	print("Secondary called", coordinates)
@@ -220,7 +220,7 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			Events.request_entity_add.emit(blueprint)
 			blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
-			WorldPosition.set_world_position(blueprint, coordinate_to_global_position(tile_position))
+			WorldPositionComponent.set_world_position(blueprint, coordinate_to_global_position(tile_position))
 			Events.blueprint_placed.emit(tile_position, blueprint)
 
 func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:

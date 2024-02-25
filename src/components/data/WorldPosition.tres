@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="Component" load_steps=3 format=3 uid="uid://c2iey841tfqyg"]
-
-[ext_resource type="Script" path="res://src/components/Component.gd" id="1_k565g"]
-[ext_resource type="Script" path="res://src/components/instances/WorldPosition.gd" id="1_qja8t"]
-
-[resource]
-script = ExtResource("1_k565g")
-id = 2
-instance = ExtResource("1_qja8t")

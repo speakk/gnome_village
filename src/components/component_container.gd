@@ -1,36 +1,36 @@
 class_name ComponentContainer extends Node3D
 
 @onready var component_owner := get_parent()
+@export var default_components: Array[Component]
+
+var _components: Array[Component]
+
+func _ready() -> void:
+	_components.append_array(default_components)
 
 func has_component(component_id: Components.Id) -> bool:
-	return get_children().filter(func(child: Node) -> bool:
-		if child is ComponentInstance:
-			return child.id == component_id
-		return false
-		).size() > 0
+	return _components.filter(func(component: Component) -> bool:
+		return component.id == component_id
+	).size() > 0
 		
+func get_by_id(component_id: Components.Id) -> Component:
+	return _components.filter(func(component: Component) -> bool:
+		return component.id == component_id
+	)[0]
 
-func get_component_instance(component_id: Components.Id) -> ComponentInstance:
-	return get_children().filter(func(child: Node) -> bool:
-		if child is ComponentInstance:
-			return child.id == component_id
-		return false
-		)[0]
-
-func get_all() -> Array[ComponentInstance]:
-	var all: Array[ComponentInstance]
-	all.assign(get_children())
+func get_all() -> Array[Component]:
+	var all: Array[Component]
+	all.assign(_components)
 	return all
 
 func add_component(component: Component) -> void:
-	var component_instance := ComponentInstance.create_instance(component, component_owner)
-	add_child(component_instance)
+	component.set_owner(component_owner)
+	_components.append(component)
 
 func clear() -> void:
-	for child in get_children():
-		child.queue_free()
+	_components.clear()
 
 func _process(delta: float) -> void:
-	for component_instance in get_all():
-		if component_instance.data.has_method("process_component"):
-			component_instance.data.process_component(delta)
+	for component in get_all():
+		if component.has_method("process_component"):
+			component.process_component(delta)

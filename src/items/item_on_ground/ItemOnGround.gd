@@ -219,13 +219,13 @@ func generate_drops() -> void:
 			# TODO: Randomize position slightly
 			get_parent().add_child(new_item_on_ground)
 			new_item_on_ground.initialize(item_drop.item_id, amount)
-			var position_component: WorldPosition = new_item_on_ground.component_container.get_component_instance(Components.Id.WorldPosition)
+			var position_component: WorldPositionComponent = new_item_on_ground.component_container.get_by_id(Components.Id.WorldPosition)
 			position_component.current_position = global_position
-			WorldPosition.set_world_position(new_item_on_ground, global_position)
+			WorldPositionComponent.set_world_position(new_item_on_ground, global_position)
 			
 func place_at_coordinate(coordinate: Vector2i) -> void:
 	var new_position := Globals.get_map().coordinate_to_global_position(coordinate)
-	WorldPosition.set_world_position(self, new_position)
+	WorldPositionComponent.set_world_position(self, new_position)
 	#Events.item_placed_on_ground.emit(self, global_position)
 
 func _process(delta: float) -> void:

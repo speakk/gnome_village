@@ -12,7 +12,7 @@ func tick_zone() -> void:
 			var farm_plot := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			Events.request_entity_add.emit(farm_plot)
 			farm_plot.initialize(Items.Id.FarmPlot, 1, ItemOnGround.ItemState.Blueprint)
-			WorldPosition.set_world_position(farm_plot, Globals.get_map().coordinate_to_global_position(coordinate))
+			WorldPositionComponent.set_world_position(farm_plot, Globals.get_map().coordinate_to_global_position(coordinate))
 			Events.blueprint_placed.emit(coordinate, farm_plot)
 		else:
 			for entity in entities:
