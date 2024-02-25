@@ -16,6 +16,9 @@ func add_item_amount(item_id: Variant, amount: int) -> void:
 	item_amounts[item_id].amount += amount
 	item_added.emit(item_id, amount)
 
+func get_item_amount(item_id: Items.Id) -> ItemAmountComponent:
+	return item_amounts[item_id]
+
 func reserve_item_amount(item_id: Variant, amount: int) -> void:
 	if not reservations.has(item_id):
 		reservations[item_id] = ItemAmountComponent.new(0, item_id)

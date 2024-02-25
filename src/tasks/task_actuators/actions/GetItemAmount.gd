@@ -2,9 +2,8 @@ extends ActionLeaf
 
 class_name GetItemAmount
 
-var target_item: ItemOnGround
-var requirement_item_id: Items.Id
-var amount: int
+var item_amount_component: ItemAmountComponent
+var item_requirement: ItemRequirement
 
 @warning_ignore("untyped_declaration")
 func tick(actor: Node, blackboard: Blackboard) -> int:
@@ -12,23 +11,11 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	# inventory is because we reserved it
 	# Fixes not being able to get last amount from inventory
 	# TODO: Make reservations objects and add "reserved_by" to it along with amount
-	if not target_item or \
-	(target_item.item_amount.amount < amount) \
-	or (not target_item and not target_item.inventory.has_item_amount(requirement_item_id, amount * 2)):
-		print("FAILED at GetItemAmount", target_item, name)
+	if not item_amount_component or item_amount_component.amount * 2 < item_requirement.amount:
+		print("FAILED at GetItemAmount", item_amount_component, name)
 		return FAILURE
 	
-	if not actor.can_reach_target(target_item.global_position):
-		print("Failed at GetItemAmount")
-		return FAILURE
+	item_amount_component.amount -= item_requirement.amount
 	
-	if target_item.item_id == requirement_item_id:
-		target_item.item_amount.amount -= amount
-		target_item.reserved_for_picking = false
-	else:
-		target_item.inventory.remove_item_amount(requirement_item_id, amount)
-		target_item.inventory.remove_item_reservation(requirement_item_id, amount)
-	
-	print("Got amount, remaining amount:", amount, target_item.item_amount.amount)
-	actor.inventory.add_item_amount(requirement_item_id, amount)
+	actor.inventory.add_item_amount(item_requirement.item_id, item_requirement.amount)
 	return SUCCESS

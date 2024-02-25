@@ -2,7 +2,7 @@ extends TaskActuator
 
 class_name BringResourceActuator
 
-var _material: ItemOnGround
+var _item_amount_component: ItemAmountComponent
 
 # TODO: Handle amounts
 func find_closest_material(_item_requirement: ItemRequirement) -> ItemOnGround:
@@ -28,24 +28,24 @@ func initialize(_task: BringResourceTask) -> BringResourceActuator:
 
 func start_work() -> void:
 	super.start_work()
-	if not _material:
+	if not _item_amount_component:
 		var material := find_closest_material(task.item_requirement)
 		if not material:
 			task.has_failed = true
 			return
+		
+		if material.item_id == task.item_requirement.item_id:
+			_item_amount_component = material.item_amount
+		else:
+			_item_amount_component = material.inventory.get_item_amount(task.item_requirement.item_id)
 	
-		_material = material
+		var reservation := ItemAmountReservation.new(tree.actor, task.item_requirement.amount)
+		_item_amount_component.add_reservation(reservation)
+		
+	%GoToResource.target_coordinate = Globals.get_map().global_position_to_coordinate(_item_amount_component.get_owner().global_position)
 	
-	if _material.item_id == task.item_requirement.item_id:
-		_material.reserved_for_picking = true
-	else:
-		_material.inventory.reserve_item_requirement(task.item_requirement)
-	
-	%GoToResource.target_coordinate = Globals.get_map().global_position_to_coordinate(_material.global_position)
-	
-	%GetItemFromGround.target_item = _material
-	%GetItemFromGround.requirement_item_id = task.item_requirement.item_id
-	%GetItemFromGround.amount = task.item_requirement.amount
+	%GetItemFromGround.item_amount_component = _item_amount_component
+	%GetItemFromGround.item_requirement = task.item_requirement
 	
 	if task.target_coordinate:
 		%GoToBlueprint.target_coordinate = task.target_coordinate
@@ -64,18 +64,19 @@ func _ready() -> void:
 	super._ready()
 
 func clean_up() -> void:
-	if _material:
-		_material.reserved_for_picking = false
+	if _item_amount_component:
+		var reservation := ItemAmountReservation.new(tree.actor, task.item_requirement.amount)
+		_item_amount_component.remove_reservation(reservation)
 
 func save() -> Dictionary:
 	var save_dict := super.save()
-	if _material:
-		save_dict["_material_save_id"] = SaveSystem.save_entity(_material)
+	if _item_amount_component:
+		save_dict["_item_amount_component_id"] = SaveSystem.save_entity(_item_amount_component)
 	
 	return save_dict
 
 func load_save(save_dict: Dictionary) -> void:
 	super.load_save(save_dict)
 	
-	if save_dict.has("_material_save_id"):
-		_material = SaveSystem.get_saved_entity(save_dict["_material_save_id"])
+	if save_dict.has("_item_amount_component_id"):
+		_item_amount_component = SaveSystem.get_saved_entity(save_dict["_item_amount_component_id"])
