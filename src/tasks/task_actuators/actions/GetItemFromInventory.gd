@@ -2,7 +2,7 @@ extends ActionLeaf
 
 class_name GetItemFromInventory
 
-var target_inventory: Inventory
+var target_inventory: InventoryComponent
 var item_id: Variant
 var amount: int
 

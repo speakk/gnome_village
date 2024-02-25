@@ -1,6 +1,9 @@
-class_name GrowthSpot extends Node3D
+class_name GrowthSpotComponent extends Component
 
-@onready var growth_requirement_inventory: Inventory = $Inventory
+var growth_requirement_inventory: InventoryComponent
+
+func _init() -> void:
+	id = Components.Id.GrowthSpot
 
 func consume_growth_requirement(growth_requirement_id: Items.Id, amount: int) -> void:
 	growth_requirement_inventory.remove_item_amount(growth_requirement_id, amount)

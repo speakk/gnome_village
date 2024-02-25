@@ -27,7 +27,7 @@ func has_growth_requirements() -> bool:
 		
 	for growth_requirement in plant.growth_requirements:
 		var satisfies_requirement := false
-		for growth_provided: ItemAmount in grows_in.growth_requirement_inventory.get_items():
+		for growth_provided: ItemAmountComponent in grows_in.growth_requirement_inventory.get_items():
 			if growth_provided.id == growth_requirement.item_id \
 			and growth_provided.amount >= growth_requirement.amount:
 				satisfies_requirement = true

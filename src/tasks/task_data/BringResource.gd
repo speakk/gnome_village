@@ -2,7 +2,7 @@ class_name BringResourceTask extends Task
 
 var target_coordinate: Vector2i
 var item_requirement: ItemRequirement
-var inventory: Inventory
+var inventory: InventoryComponent
 
 func _init() -> void:
 	task_id = Tasks.TaskId.BringResource

@@ -1,16 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://b7ce8cn4so175"]
+[gd_scene load_steps=4 format=3 uid="uid://b7ce8cn4so175"]
 
 [ext_resource type="PackedScene" uid="uid://cddq71md6hpru" path="res://assets/blender_models/farm_plot.blend" id="1_cssvc"]
 [ext_resource type="Script" path="res://src/items/item_data/scenes/farm_plot.gd" id="1_xx4ou"]
-[ext_resource type="PackedScene" uid="uid://bocaaugqt281d" path="res://src/components/GrowthSpot.tscn" id="3_mjxnl"]
 [ext_resource type="FontFile" uid="uid://dtfb4n2n8qq7m" path="res://assets/fonts/m5x7.ttf" id="4_o5n8e"]
 
 [node name="FarmPlot" type="Node3D"]
 script = ExtResource("1_xx4ou")
 
 [node name="farm_plot" parent="." instance=ExtResource("1_cssvc")]
-
-[node name="GrowthSpot" parent="." instance=ExtResource("3_mjxnl")]
 
 [node name="LacksGrowthRequirementIndicator" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.350581, 0.0927965, 0.184697)

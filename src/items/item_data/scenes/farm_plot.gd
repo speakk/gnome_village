@@ -1,6 +1,6 @@
 class_name FarmPlot extends Node3D
 
-@onready var growth_spot: GrowthSpot = $GrowthSpot
+@onready var growth_spot: GrowthSpotComponent = get_parent().component_container.get_by_id(Components.Id.GrowthSpot)
 
 const FARM_PLOT := preload("res://assets/blender_models/farm_plot.blend")
 

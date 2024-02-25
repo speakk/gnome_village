@@ -50,7 +50,7 @@ func start_work() -> void:
 	if task.target_coordinate:
 		%GoToBlueprint.target_coordinate = task.target_coordinate
 	else:
-		%GoToBlueprint.target_coordinate = Globals.get_map().global_position_to_coordinate(task.inventory.get_parent().global_position)
+		%GoToBlueprint.target_coordinate = Globals.get_map().global_position_to_coordinate(task.inventory.get_owner().global_position)
 	
 	
 	# TODO: Support for just placing items down instead of adding to inventory

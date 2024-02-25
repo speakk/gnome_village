@@ -44,7 +44,7 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 				requirement.amount = 1
 				task.initialize({
 					item_requirement = requirement,
-					inventory = blueprint.constructionInventory
+					inventory = blueprint.construction_inventory
 				})
 				task.failed.connect(_handle_task_failure)
 				bring_resource_leaf.set_task(task)

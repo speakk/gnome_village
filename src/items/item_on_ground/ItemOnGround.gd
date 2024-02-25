@@ -8,11 +8,11 @@ enum ItemState {
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-@onready var itemAmount := $ItemAmount as ItemAmount
-@onready var constructionInventory := $ConstructionInventory as Inventory
-@onready var inventory: Inventory = $Inventory
-
 @onready var component_container: ComponentContainer = $ComponentContainer
+@onready var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
+@onready var construction_inventory: ConstructionInventoryComponent = component_container.get_by_id(Components.Id.ConstructionInventory)
+@onready var inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
+
 
 var item_scene: Node3D
 var item: Item
@@ -140,8 +140,8 @@ func save() -> Dictionary:
 		"max_durability" = max_durability,
 		"build_progress" = build_progress,
 		"current_state" = current_state,
-		"item_amount" = itemAmount.save(),
-		"construction_inventory" = constructionInventory.save(),
+		"item_amount" = item_amount.save(),
+		"construction_inventory" = construction_inventory.save(),
 		"item_id" = item_id,
 	}
 	
@@ -158,14 +158,14 @@ func load_save(save_dict: Dictionary) -> void:
 	item_id = save_dict["item_id"]
 	max_durability = save_dict["max_durability"]
 	current_state = save_dict["current_state"]
-	$ItemAmount.load_save(save_dict["item_amount"])
+	item_amount.load_save(save_dict["item_amount"])
 	$ConstructionInventory.load_save(save_dict["construction_inventory"])
 
 	Events.item_placed_on_ground.emit(self, global_position)
 
 func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemState.Normal) -> ItemOnGround:
 	item_id = _item_id
-	$ItemAmount.amount = _amount
+	item_amount.amount = _amount
 	
 	for provides_item: ItemRequirement in item.provides:
 		inventory.add_item_amount(provides_item.item_id, provides_item.amount)
@@ -191,7 +191,7 @@ func _amount_changed(new_amount: int) -> void:
 
 func _ready() -> void:
 	set_notify_transform(true)
-	itemAmount.amount_changed.connect(_amount_changed)
+	item_amount.amount_changed.connect(_amount_changed)
 	update_rendering()
 
 func _notification(what: int) -> void:
@@ -255,11 +255,7 @@ func increase_build_progress(amount: float) -> void:
 		finish_construction()
 
 func set_item_components() -> void:
-	component_container.clear()
-	_add_default_components()
-	
-	for component in item.components:
-		component_container.add_component(component)
+	component_container.get_by_id(Components.Id.DisplayName).display_name = item.display_name
 
 func is_finished() -> bool:
 	return build_progress >= 1.0
@@ -268,19 +264,8 @@ func has_materials() -> bool:
 	var material_requirements := Items.get_crafting_requirements(item_id)
 	
 	for requirement in material_requirements:
-		var deposited := $ConstructionInventory.get_items().find(func(depo: ItemAmount) -> bool: return depo.id == requirement.item_id) as ItemAmount
-		if deposited.amount < requirement.amount:
+		var has_requirement := construction_inventory.has_item_requirement(requirement)
+		if not has_requirement:
 			return false
 	
 	return true
-
-func _add_default_components() -> void:
-	var display_name := DisplayNameComponent.new()
-	display_name.display_name = item.display_name
-	
-	var selectable := SelectableComponent.new()
-	var world_position := WorldPositionComponent.new()
-	
-	component_container.add_component(display_name)
-	component_container.add_component(selectable)
-	component_container.add_component(world_position)

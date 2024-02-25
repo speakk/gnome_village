@@ -6,10 +6,11 @@ class_name Settler
 	#preload("res://assets/settler_hair_1.png"), preload("res://assets/settler_hair_2.png"), null
 #]
 
-@onready var inventory: Inventory = $Inventory
 
 @onready var animation_player_audio: AnimationPlayer = $AnimationPlayerAudio
 @onready var component_container: ComponentContainer = $ComponentContainer
+@onready var inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
+
 
 const REACH_DISTANCE := 2.5
 const AT_DISTANCE := 1.0
@@ -37,18 +38,14 @@ enum TaskResult {
 func _ready() -> void:
 	name = "Settler"
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
-	$Inventory.item_added.connect(_inventory_item_added)
-	$Inventory.item_removed.connect(_inventory_item_removed)
+	inventory.item_added.connect(_inventory_item_added)
+	inventory.item_removed.connect(_inventory_item_removed)
 	play_animation("Idle")
 	
 	var original_position := global_position
 	
-	component_container.add_component(WorldPositionComponent.new())
-	component_container.add_component(SelectableComponent.new())
-	component_container.add_component(DisplayNameComponent.new(["Fred", "Mary", "Bob", "Susanne"].pick_random()))
-	component_container.add_component(CharacterStatsComponent.new())
-	component_container.get_by_id(Components.Id.WorldPosition).current_position = original_position
-	
+	component_container.get_by_id(Components.Id.DisplayName).display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
+	WorldPositionComponent.set_world_position(self, original_position)
 
 
 func save() -> Dictionary:
@@ -63,7 +60,7 @@ func save() -> Dictionary:
 		"velocity_y" = velocity.y,
 	}
 	
-	save_dict["inventory_id"] = SaveSystem.save_entity($Inventory)
+	save_dict["inventory_id"] = SaveSystem.save_entity(inventory)
 	
 	if current_task_actuator:
 		#save_dict["current_task_actuator_id"] = SaveSystem.save_entity(current_task_actuator)
@@ -90,10 +87,6 @@ func load_save(save_dict: Dictionary) -> void:
 		start_task(task)
 	
 	inventory = SaveSystem.get_saved_entity(save_dict["inventory_id"])
-	#$Inventory.queue_free()
-	#$Inventory.name = "old_inventory"
-	#add_child(inventory)
-	#inventory.name = "Inventory"
 
 	_refresh_carry_item()
 	
@@ -210,8 +203,8 @@ func _refresh_carry_item() -> void:
 		child.queue_free()
 		
 	if items.size() > 0:
-		var first_item_amount := items[0]
-		var item := Items.get_by_id(first_item_amount.id)
+		var first_item_amount: ItemAmountComponent = items[0]
+		var item := Items.get_by_id(first_item_amount.item_id)
 		var item_render_scene := Items.get_item_render_scene(item)
 		if item_render_scene:
 			$CarryItemNode.add_child(item_render_scene)

@@ -2,7 +2,7 @@ extends ActionLeaf
 
 class_name PutItemToInventory
 
-var target_inventory: Inventory
+var target_inventory: InventoryComponent
 var item_id: Variant
 var amount: int
 
@@ -12,7 +12,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		print("No target inventory, FAILED")
 		return FAILURE
 		
-	if not actor.can_reach_target(target_inventory.get_parent().global_position):
+	if not actor.can_reach_target(target_inventory.get_owner().global_position):
 		print("Can't reach target, PUTITEM FAILED")
 		return FAILURE
 		

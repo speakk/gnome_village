@@ -6,7 +6,8 @@ class_name ComponentContainer extends Node3D
 var _components: Array[Component]
 
 func _ready() -> void:
-	_components.append_array(default_components)
+	for component in default_components:
+		add_component(component)
 
 func has_component(component_id: Components.Id) -> bool:
 	return _components.filter(func(component: Component) -> bool:
@@ -24,8 +25,9 @@ func get_all() -> Array[Component]:
 	return all
 
 func add_component(component: Component) -> void:
-	component.set_owner(component_owner)
-	_components.append(component)
+	var duplicated := component.duplicate()
+	duplicated.set_owner(component_owner)
+	_components.append(duplicated)
 
 func clear() -> void:
 	_components.clear()
