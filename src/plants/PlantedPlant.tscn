@@ -1,7 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://571gjxsauigd"]
+[gd_scene load_steps=12 format=3 uid="uid://571gjxsauigd"]
 
 [ext_resource type="Script" path="res://src/plants/PlantedPlant.gd" id="1_gs4dw"]
 [ext_resource type="PackedScene" uid="uid://cyfiey6xlcs1q" path="res://src/components/component_container.tscn" id="2_te207"]
+[ext_resource type="Script" path="res://src/components/data/Selectable.gd" id="3_670kb"]
+[ext_resource type="Script" path="res://src/components/data/WorldPosition.gd" id="4_to7qu"]
+[ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="5_3jp4s"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4y5jm"]
 emission_shape = 1
@@ -24,6 +27,16 @@ grow_amount = 0.454
 material = SubResource("StandardMaterial3D_r6mba")
 size = Vector3(0.02, 0.02, 0.02)
 
+[sub_resource type="Resource" id="Resource_cexdc"]
+script = ExtResource("3_670kb")
+
+[sub_resource type="Resource" id="Resource_7j21g"]
+script = ExtResource("4_to7qu")
+
+[sub_resource type="Resource" id="Resource_ba5id"]
+script = ExtResource("5_3jp4s")
+display_name = ""
+
 [node name="Plant" type="Node3D"]
 script = ExtResource("1_gs4dw")
 
@@ -38,3 +51,4 @@ process_material = SubResource("ParticleProcessMaterial_4y5jm")
 draw_pass_1 = SubResource("BoxMesh_bh653")
 
 [node name="ComponentContainer" parent="." instance=ExtResource("2_te207")]
+default_components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_cexdc"), SubResource("Resource_7j21g"), SubResource("Resource_ba5id")])

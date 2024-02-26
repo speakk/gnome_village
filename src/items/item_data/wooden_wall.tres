@@ -1,8 +1,18 @@
-[gd_resource type="Resource" script_class="Item" load_steps=6 format=3 uid="uid://pbbjelty00sx"]
+[gd_resource type="Resource" script_class="Item" load_steps=9 format=3 uid="uid://pbbjelty00sx"]
 
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_3k661"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="2_3a7ng"]
+[ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="2_unt6m"]
 [ext_resource type="Script" path="res://src/items/ItemDrop.gd" id="2_y8a2u"]
+
+[sub_resource type="Resource" id="Resource_vnter"]
+script = ExtResource("1_3k661")
+item_id = 1
+amount = 1
+
+[sub_resource type="Resource" id="Resource_apa45"]
+script = ExtResource("2_unt6m")
+requirements = Array[ExtResource("1_3k661")]([SubResource("Resource_vnter")])
 
 [sub_resource type="Resource" id="Resource_8qi6u"]
 script = ExtResource("1_3k661")
@@ -30,4 +40,4 @@ durability = 10
 crafting_requirements = Array[ExtResource("1_3k661")]([SubResource("Resource_8qi6u")])
 item_drops = Array[ExtResource("2_y8a2u")]([SubResource("Resource_l4oxn")])
 provides = Array[ExtResource("1_3k661")]([])
-components = Array[Resource("res://src/components/Component.gd")]([])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_apa45")])

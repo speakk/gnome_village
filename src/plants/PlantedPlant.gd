@@ -13,10 +13,11 @@ signal satisfies_growth_requirements
 signal lacks_growth_requirements
 
 var plant: Plant
-var grows_in: Variant
+var grows_in: GrowthSpotComponent
 
 func set_plant_id(plant_id: Plants.Id) -> void:
 	plant = Plants.get_plant_by_id(plant_id)
+	component_container.get_by_id(Components.Id.DisplayName).display_name = plant.display_name
 
 func is_mature() -> bool:
 	return current_growth_stage_index >= plant.growth_stages.size() - 1

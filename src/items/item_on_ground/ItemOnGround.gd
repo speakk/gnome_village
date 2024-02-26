@@ -10,9 +10,7 @@ enum ItemState {
 
 @onready var component_container: ComponentContainer = $ComponentContainer
 @onready var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
-@onready var construction_inventory: ConstructionInventoryComponent = component_container.get_by_id(Components.Id.ConstructionInventory)
 @onready var inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
-
 
 var item_scene: Node3D
 var item: Item
@@ -141,7 +139,6 @@ func save() -> Dictionary:
 		"build_progress" = build_progress,
 		"current_state" = current_state,
 		"item_amount" = item_amount.save(),
-		"construction_inventory" = construction_inventory.save(),
 		"item_id" = item_id,
 	}
 	
@@ -159,7 +156,6 @@ func load_save(save_dict: Dictionary) -> void:
 	max_durability = save_dict["max_durability"]
 	current_state = save_dict["current_state"]
 	item_amount.load_save(save_dict["item_amount"])
-	$ConstructionInventory.load_save(save_dict["construction_inventory"])
 
 	Events.item_placed_on_ground.emit(self, global_position)
 
@@ -233,39 +229,31 @@ func _process(delta: float) -> void:
 		update_rendering()
 		_dirty = false
 
-func finish_construction() -> void:
-	if not finish_emitted:
-		$ProgressBar.hide()
-		
-		await get_tree().process_frame
-				
-		finish_emitted = true
-		Events.construction_finished.emit(self)
-		
-		if item_scene and item_scene.has_method("activate"):
-			item_scene.activate()
+#func finish_construction() -> void:
+	#if not finish_emitted:
+		#$ProgressBar.hide()
+		#
+		#await get_tree().process_frame
+				#
+		#finish_emitted = true
+		#Events.construction_finished.emit(self)
+		#
+		#if item_scene and item_scene.has_method("activate"):
+			#item_scene.activate()
 
-func increase_build_progress(amount: float) -> void:
-	build_progress += amount
-	if build_progress > 0:
-		if current_state != ItemState.Normal:
-			current_state = ItemState.Normal
-
-	if is_finished():
-		finish_construction()
+#func increase_build_progress(amount: float) -> void:
+	#build_progress += amount
+	#if build_progress > 0:
+		#if current_state != ItemState.Normal:
+			#current_state = ItemState.Normal
+#
+	#if is_finished():
+		#finish_construction()
 
 func set_item_components() -> void:
 	component_container.get_by_id(Components.Id.DisplayName).display_name = item.display_name
+	for component in item.components:
+		component_container.add_component(component)
 
-func is_finished() -> bool:
-	return build_progress >= 1.0
-
-func has_materials() -> bool:
-	var material_requirements := Items.get_crafting_requirements(item_id)
-	
-	for requirement in material_requirements:
-		var has_requirement := construction_inventory.has_item_requirement(requirement)
-		if not has_requirement:
-			return false
-	
-	return true
+#func is_finished() -> bool:
+	#return build_progress >= 1.0

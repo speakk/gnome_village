@@ -27,7 +27,8 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 	blueprint = _blueprint
 	
 	var item_id := blueprint.item_id
-	var material_requirements := Items.get_crafting_requirements(item_id)
+	var constructable_component: ConstructableComponent = _blueprint.component_container.get_by_id(Components.Id.Constructable)
+	var material_requirements := constructable_component.requirements
 	
 	if material_requirements.size() > 0:
 		var bring_resources := TaskTreeBranch.new()
@@ -44,7 +45,7 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 				requirement.amount = 1
 				task.initialize({
 					item_requirement = requirement,
-					inventory = blueprint.construction_inventory
+					constructable_component = constructable_component
 				})
 				task.failed.connect(_handle_task_failure)
 				bring_resource_leaf.set_task(task)
@@ -55,7 +56,7 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 	var build_leaf := TaskTreeLeaf.new()
 	var build_task := BUILD_TASK.instantiate() as BuildTask
 	build_task.initialize({
-		blueprint = blueprint
+		constructable_component = constructable_component
 	})
 	build_task.failed.connect(_handle_task_failure)
 	build_leaf.set_task(build_task)
