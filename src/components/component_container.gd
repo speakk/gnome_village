@@ -34,6 +34,9 @@ func add_component(component: Component) -> void:
 	duplicated.set_owner(component_owner)
 	_components.append(duplicated)
 	Events.component.added.emit(self, duplicated)
+	
+	if duplicated.has_method("on_enter"):
+		duplicated.on_enter()
 
 func remove_component(component_id: Components.Id) -> void:
 	var matching_all: Array[Component] = _components.filter(func(component: Component) -> bool:

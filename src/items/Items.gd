@@ -23,7 +23,13 @@ func get_constructable_item_ids() -> Array[Id]:
 	var result: Array[Id] = []
 	for id in list.keys() as Array[Id]:
 		var data := get_by_id(id)
-		if data.can_be_constructed:
+		var has_constructable := false
+		for component in data.components:
+			if component is ConstructableComponent:
+				has_constructable = true
+				break
+		
+		if has_constructable:
 			result.push_back(id)
 	
 	return result

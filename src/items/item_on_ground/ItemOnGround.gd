@@ -41,8 +41,6 @@ func update_rendering() -> void:
 	
 	var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
 	
-	#if item.rendering_type == Item.RenderingType.Terrain:
-	#	Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
 	if item.rendering_type == Item.RenderingType.Model:
 		if has_node("model"):
 			get_node("model").queue_free()
@@ -56,39 +54,11 @@ func update_rendering() -> void:
 			scene.name = "scene"
 			add_child(scene)
 			item_scene = scene
-		
-		if current_state == ItemState.Normal:
-			if item_scene.has_method("set_as_blueprint"):
-				item_scene.set_as_blueprint(false)
-		elif current_state == ItemState.Blueprint:
-			if item_scene.has_method("deactivate"):
-				item_scene.deactivate()
-			if item_scene.has_method("set_as_blueprint"):
-				item_scene.set_as_blueprint(true)
 
 	if current_state == ItemState.Normal:
 		# TODO: Rendering really shouldn't update the solid_cell thing
 		if item.is_solid:
 			Events.solid_cell_placed.emit(coordinate)
-			#
-		#if item.rendering_type == Item.RenderingType.Terrain:
-			##print("Clearing terrain and adding to normal layer")
-			#Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
-			#Events.terrain_cleared.emit(coordinate, true)
-		#elif item.rendering_type == Item.RenderingType.None and item.scene:
-			## 3D rendering TODO
-			#pass
-	
-	#if current_state == ItemState.Blueprint:
-		#if item.rendering_type == Item.RenderingType.Terrain:
-			#Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, true)
-			#Events.terrain_cleared.emit(coordinate, false)
-		#elif item.rendering_type == Item.RenderingType.None and item.scene:
-			## TODO: 3D rendering: Figure out how to modulate the scene
-			## (maybe a "render_as_blueprint" method contract
-			##get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
-			#pass
-
 
 var max_durability: float = 10:
 	set(new_value):
@@ -191,9 +161,6 @@ func _notification(what: int) -> void:
 			_dirty = true
 
 func _exit_tree() -> void:
-	#if item.rendering_type == Item.RenderingType.Terrain:
-		#Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), false)
-		#Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), true)
 	Events.item_removed_from_ground.emit(self)
 
 func reduce_durability(amount: float) -> void:
@@ -217,38 +184,13 @@ func generate_drops() -> void:
 func place_at_coordinate(coordinate: Vector2i) -> void:
 	var new_position := Globals.get_map().coordinate_to_global_position(coordinate)
 	WorldPositionComponent.set_world_position(self, new_position)
-	#Events.item_placed_on_ground.emit(self, global_position)
 
 func _process(delta: float) -> void:
 	if _dirty:
 		update_rendering()
 		_dirty = false
 
-#func finish_construction() -> void:
-	#if not finish_emitted:
-		#$ProgressBar.hide()
-		#
-		#await get_tree().process_frame
-				#
-		#finish_emitted = true
-		#Events.construction_finished.emit(self)
-		#
-		#if item_scene and item_scene.has_method("activate"):
-			#item_scene.activate()
-
-#func increase_build_progress(amount: float) -> void:
-	#build_progress += amount
-	#if build_progress > 0:
-		#if current_state != ItemState.Normal:
-			#current_state = ItemState.Normal
-#
-	#if is_finished():
-		#finish_construction()
-
 func set_item_components() -> void:
 	component_container.get_by_id(Components.Id.DisplayName).display_name = item.display_name
 	for component in item.components:
 		component_container.add_component(component)
-
-#func is_finished() -> bool:
-	#return build_progress >= 1.0
