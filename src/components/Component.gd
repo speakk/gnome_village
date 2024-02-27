@@ -9,3 +9,6 @@ func set_owner(_new_owner: Node3D) -> void:
 
 func get_owner() -> Node3D:
 	return component_owner
+
+func get_container() -> ComponentContainer:
+	return component_owner.component_container

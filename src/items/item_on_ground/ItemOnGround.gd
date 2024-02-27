@@ -41,9 +41,9 @@ func update_rendering() -> void:
 	
 	var coordinate := Globals.get_map().global_position_to_coordinate(global_position)
 	
-	if item.rendering_type == Item.RenderingType.Terrain:
-		Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
-	elif item.rendering_type == Item.RenderingType.Model:
+	#if item.rendering_type == Item.RenderingType.Terrain:
+	#	Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
+	if item.rendering_type == Item.RenderingType.Model:
 		if has_node("model"):
 			get_node("model").queue_free()
 		var model := item.model.instantiate()
@@ -70,24 +70,24 @@ func update_rendering() -> void:
 		# TODO: Rendering really shouldn't update the solid_cell thing
 		if item.is_solid:
 			Events.solid_cell_placed.emit(coordinate)
-			
-		if item.rendering_type == Item.RenderingType.Terrain:
-			#print("Clearing terrain and adding to normal layer")
-			Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
-			Events.terrain_cleared.emit(coordinate, true)
-		elif item.rendering_type == Item.RenderingType.None and item.scene:
-			# 3D rendering TODO
-			pass
+			#
+		#if item.rendering_type == Item.RenderingType.Terrain:
+			##print("Clearing terrain and adding to normal layer")
+			#Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, current_state == ItemState.Blueprint)
+			#Events.terrain_cleared.emit(coordinate, true)
+		#elif item.rendering_type == Item.RenderingType.None and item.scene:
+			## 3D rendering TODO
+			#pass
 	
-	if current_state == ItemState.Blueprint:
-		if item.rendering_type == Item.RenderingType.Terrain:
-			Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, true)
-			Events.terrain_cleared.emit(coordinate, false)
-		elif item.rendering_type == Item.RenderingType.None and item.scene:
-			# TODO: 3D rendering: Figure out how to modulate the scene
-			# (maybe a "render_as_blueprint" method contract
-			#get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
-			pass
+	#if current_state == ItemState.Blueprint:
+		#if item.rendering_type == Item.RenderingType.Terrain:
+			#Events.terrain_placed.emit(coordinate, item.mesh_id, item.is_solid, true)
+			#Events.terrain_cleared.emit(coordinate, false)
+		#elif item.rendering_type == Item.RenderingType.None and item.scene:
+			## TODO: 3D rendering: Figure out how to modulate the scene
+			## (maybe a "render_as_blueprint" method contract
+			##get_node("scene").modulate = Color(0.6, 0.6, 1.0, 0.5)
+			#pass
 
 
 var max_durability: float = 10:
@@ -159,19 +159,14 @@ func load_save(save_dict: Dictionary) -> void:
 
 	Events.item_placed_on_ground.emit(self, global_position)
 
-func initialize(_item_id: Items.Id, _amount: int = 1, state: ItemState = ItemState.Normal) -> ItemOnGround:
+func initialize(_item_id: Items.Id, _amount: int = 1) -> ItemOnGround:
 	item_id = _item_id
 	item_amount.amount = _amount
 	
 	for provides_item: ItemRequirement in item.provides:
 		inventory.add_item_amount(provides_item.item_id, provides_item.amount)
 	
-	current_state = state
-	_initial_state = state
-	
 	set_item_components()
-	
-	#Events.item_placed_on_ground.emit(self, global_position)
 
 	return self
 	
@@ -196,9 +191,9 @@ func _notification(what: int) -> void:
 			_dirty = true
 
 func _exit_tree() -> void:
-	if item.rendering_type == Item.RenderingType.Terrain:
-		Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), false)
-		Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), true)
+	#if item.rendering_type == Item.RenderingType.Terrain:
+		#Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), false)
+		#Events.terrain_cleared.emit(Globals.get_map().global_position_to_coordinate(global_position), true)
 	Events.item_removed_from_ground.emit(self)
 
 func reduce_durability(amount: float) -> void:

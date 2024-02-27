@@ -8,6 +8,9 @@ signal progress_changed(new_value: float)
 signal finished
 signal started
 
+var _started_emitted := false
+var _finished_emitted := false
+
 func _init() -> void:
 	id = Components.Id.Constructable
 
@@ -21,11 +24,16 @@ var _current_progress: float:
 		_current_progress = new_value
 		
 		if _current_progress > 0:
-			started.emit()
+			if not _started_emitted:
+				Events.construction_started.emit(get_container())
+				started.emit()
+				_started_emitted = true
 		
 		if _current_progress >= 1.0:
-			Events.construction_finished.emit(get_owner())
-			finished.emit()
+			if not _finished_emitted:
+				Events.construction_finished.emit(get_owner())
+				finished.emit()
+				_finished_emitted = true
 
 func has_requirements() -> bool:
 	for requirement in requirements:

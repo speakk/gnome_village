@@ -1,7 +1,14 @@
 extends Node
 
+var component := ComponentEvents.new()
+
+class ComponentEvents:
+	signal added(container: ComponentContainer, component: Component)
+	signal removed(container: ComponentContainer, component: Component)
+
 signal blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround)
 signal construction_finished(item: ItemOnGround)
+signal construction_started(container: ComponentContainer)
 signal blueprint_cancel_issued(blueprint: ItemOnGround)
 
 signal dismantle_issued(item_on_ground: ItemOnGround)
@@ -22,7 +29,7 @@ signal mouse_hovered_on_map(hover_position: Vector3)
 #signal terrain_placed(coordinate: Vector2i, target_layer: MainMap3D.Layers,
 						#terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround)
 
-signal terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, is_solid: bool, blueprint: bool)
+signal terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, blueprint: bool)
 signal terrain_cleared(coordinate: Vector2i, blueprint: bool)
 #
 #signal terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int)

@@ -2,7 +2,8 @@ extends Node
 
 enum Id {
 	Selectable, Door, WorldPosition, DisplayName, CharacterStats, Inventory,
-	GrowthSpot, ConstructionInventory, ItemAmount, Constructable
+	GrowthSpot, ConstructionInventory, ItemAmount, Constructable, Terrain,
+	Blueprint
 }
 
 var component_by_id: Dictionary

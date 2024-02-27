@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cdn5fwsgd0fpm"]
+[gd_scene load_steps=11 format=3 uid="uid://cdn5fwsgd0fpm"]
 
 [ext_resource type="Script" path="res://src/main_3d.gd" id="1_h0o83"]
 [ext_resource type="PackedScene" uid="uid://spi7wrmylhj0" path="res://src/tasks/task_assigner/TaskHandler.tscn" id="1_lyh74"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://hewmqp1k1i03" path="res://src/zones/zone_renderer.tscn" id="6_limgy"]
 [ext_resource type="PackedScene" uid="uid://w5t5a0o36hje" path="res://src/camera_3d.tscn" id="6_wahq5"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://src/gui/gui.tscn" id="7_vml5v"]
+[ext_resource type="Script" path="res://src/systems/BlueprintSystem.gd" id="10_4jc10"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_h0o83")
@@ -55,5 +56,10 @@ shadow_enabled = true
 [node name="GUI" parent="." instance=ExtResource("7_vml5v")]
 
 [node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="Systems" type="Node" parent="."]
+
+[node name="BlueprintSystem" type="Node" parent="Systems"]
+script = ExtResource("10_4jc10")
 
 [editable path="MainMap3d"]

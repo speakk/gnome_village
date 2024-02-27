@@ -219,8 +219,9 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 		if not is_coordinate_occupied(tile_position):
 			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			Events.request_entity_add.emit(blueprint)
-			blueprint.initialize(item_id, 1, ItemOnGround.ItemState.Blueprint)
+			blueprint.initialize(item_id, 1)
 			WorldPositionComponent.set_world_position(blueprint, coordinate_to_global_position(tile_position))
+			blueprint.component_container.add_component(BlueprintComponent.new())
 			Events.blueprint_placed.emit(tile_position, blueprint)
 
 func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
@@ -234,7 +235,7 @@ func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 						#terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround) -> void:
 	#set_cells_terrain_connect(target_layer, [coordinate], terrain_set_id, terrain_id)
 
-func _terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, is_solid: bool, blueprint: bool) -> void:
+func _terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, blueprint: bool) -> void:
 	var grid_map: GridMap = grid if not blueprint else blueprint_grid
 	grid_map.set_cell_item(Globals.extend_vec2i(coordinate), 0)
 
