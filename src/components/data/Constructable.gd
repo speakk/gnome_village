@@ -5,6 +5,8 @@ class_name ConstructableComponent extends Component
 
 var _inventory: InventoryComponent = InventoryComponent.new()
 
+var is_finished := false
+
 signal progress_changed(new_value: float)
 signal finished
 signal started
@@ -35,6 +37,7 @@ var _current_progress: float:
 				Events.construction_finished.emit(get_owner())
 				finished.emit()
 				_finished_emitted = true
+				is_finished = true
 
 func has_requirements() -> bool:
 	for requirement in requirements:

@@ -11,6 +11,7 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	for component in _components:
+		Events.component.removed.emit(self, component)
 		if component.has_method("on_exit"):
 			component.on_exit()
 

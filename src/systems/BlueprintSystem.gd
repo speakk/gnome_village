@@ -11,7 +11,10 @@ func _component_added(container: ComponentContainer, new_component: Component) -
 			if component.has_method("set_blueprint"):
 				component.set_blueprint(true)
 
-func _component_removed(container: ComponentContainer, new_component: Component) -> void:
+func _component_removed(container: ComponentContainer, removed_component: Component) -> void:
+	if removed_component is BlueprintComponent:
+		Events.blueprint_cancel_issued.emit(removed_component.get_owner())
+		
 	var has_blueprint := container.has_component(Components.Id.Blueprint)
 	if not has_blueprint:
 		for component: Component in container.get_all():

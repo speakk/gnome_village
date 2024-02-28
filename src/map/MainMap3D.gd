@@ -228,8 +228,9 @@ func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 	for coordinate in coordinates:
 		var entities := get_map_entities(coordinate)
 		for entity in entities:
-			if entity.current_state == ItemOnGround.ItemState.Blueprint:
-				Events.blueprint_cancel_issued.emit(entity)
+			if entity.component_container.has_component(Components.Id.Blueprint):
+				#Events.blueprint_cancel_issued.emit(entity)
+				entity.queue_free()
 
 #func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
 						#terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround) -> void:

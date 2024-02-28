@@ -11,10 +11,14 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		var next_coordinate := path[current_path_index + 1]
 		var entities := Globals.get_map().get_map_entities(next_coordinate)
 		for entity in entities:
-			if entity.component_container.has_component(Components.Id.Door) and entity.current_state != ItemOnGround.ItemState.Blueprint and not entity.item_scene.is_open():
-				blackboard.set_value("blocking_door", entity)
-				print("DID have door in IsBlockedByDoor")
-				return SUCCESS
+			var container: ComponentContainer = entity.component_container
+			if container.has_component(Components.Id.Door):
+				if not container.has_component(Components.Id.Blueprint):
+					var door: DoorComponent = entity.component_container.get_by_id(Components.Id.Door)
+					if not door.is_open():
+						blackboard.set_value("blocking_door", entity)
+						print("DID have door in IsBlockedByDoor")
+						return SUCCESS
 	
 	
 	#print("No door in IsBlockedByDoor")

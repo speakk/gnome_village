@@ -17,6 +17,7 @@ func tick_zone() -> void:
 			Events.blueprint_placed.emit(coordinate, farm_plot)
 		else:
 			for entity in entities:
-				if entity.current_state == ItemOnGround.ItemState.Normal \
-				and entity.is_finished():
-					entity.item_scene.start_growing_plant(Plants.Id.Potato)
+				if not entity.component_container.has_component(Components.Id.Blueprint):
+					var constructable: ConstructableComponent = entity.component_container.get_by_id(Components.Id.Constructable)
+					if constructable.is_finished:
+						entity.item_scene.start_growing_plant(Plants.Id.Potato)

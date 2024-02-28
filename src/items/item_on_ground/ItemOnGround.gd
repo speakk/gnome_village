@@ -2,10 +2,6 @@ extends Node3D
 
 class_name ItemOnGround
 
-enum ItemState {
-	Blueprint, Normal
-}
-
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
 @onready var component_container: ComponentContainer = $ComponentContainer
