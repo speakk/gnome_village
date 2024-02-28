@@ -1,10 +1,11 @@
-[gd_resource type="Resource" script_class="Item" load_steps=11 format=3 uid="uid://pbbjelty00sx"]
+[gd_resource type="Resource" script_class="Item" load_steps=13 format=3 uid="uid://pbbjelty00sx"]
 
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_3k661"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="2_3a7ng"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="2_unt6m"]
 [ext_resource type="Script" path="res://src/items/ItemDrop.gd" id="2_y8a2u"]
 [ext_resource type="Script" path="res://src/components/data/Terrain.gd" id="3_sp55h"]
+[ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="4_sc1l6"]
 
 [sub_resource type="Resource" id="Resource_vnter"]
 script = ExtResource("1_3k661")
@@ -14,11 +15,15 @@ amount = 1
 [sub_resource type="Resource" id="Resource_apa45"]
 script = ExtResource("2_unt6m")
 requirements = Array[ExtResource("1_3k661")]([SubResource("Resource_vnter")])
+solid_when_started = true
 
 [sub_resource type="Resource" id="Resource_cq5ta"]
 script = ExtResource("3_sp55h")
 target_layer = 1
 mesh_id = 0
+
+[sub_resource type="Resource" id="Resource_gifqu"]
+script = ExtResource("4_sc1l6")
 
 [sub_resource type="Resource" id="Resource_8qi6u"]
 script = ExtResource("1_3k661")
@@ -46,4 +51,4 @@ durability = 10
 crafting_requirements = Array[ExtResource("1_3k661")]([SubResource("Resource_8qi6u")])
 item_drops = Array[ExtResource("2_y8a2u")]([SubResource("Resource_l4oxn")])
 provides = Array[ExtResource("1_3k661")]([])
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_apa45"), SubResource("Resource_cq5ta")])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_apa45"), SubResource("Resource_cq5ta"), SubResource("Resource_gifqu")])

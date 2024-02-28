@@ -1,6 +1,7 @@
 class_name ConstructableComponent extends Component
 
 @export var requirements: Array[ItemRequirement]
+@export var solid_when_started := false
 
 var _inventory: InventoryComponent = InventoryComponent.new()
 
