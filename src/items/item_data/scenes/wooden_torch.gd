@@ -5,7 +5,7 @@ extends Node3D
 func _ready() -> void:
 	$wooden_torch/Torch.cast_shadow = true
 
-func set_as_blueprint(is_blueprint: bool) -> void:
+func set_blueprint(is_blueprint: bool) -> void:
 	print("Set as blueprint: ", is_blueprint)
 	if is_blueprint:
 		Globals.apply_blueprint_material($wooden_torch)
@@ -16,10 +16,10 @@ func set_as_blueprint(is_blueprint: bool) -> void:
 		add_child(new_scene)
 		print("Added ye old")
 
-func activate() -> void:
-	$OmniLight3D.visible = true
-	$GPUParticles3D.visible = true
-
-func deactivate() -> void:
-	$OmniLight3D.visible = false
-	$GPUParticles3D.visible = false
+func set_active(active: bool) -> void:
+	if active:
+		$OmniLight3D.visible = true
+		$GPUParticles3D.visible = true
+	else:
+		$OmniLight3D.visible = false
+		$GPUParticles3D.visible = false
