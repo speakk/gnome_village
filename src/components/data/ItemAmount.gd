@@ -23,6 +23,15 @@ func remove_reservation(item_amount_reservation: ItemAmountReservation) -> void:
 				_reservations.erase(reservation)
 				break
 
+func has_item_amount(_item_id: Variant, _amount: int) -> bool:
+	if item_id != _item_id:
+		return false
+	
+	return amount >= _amount
+
+func has_item_requirement(item_requirement: ItemRequirement) -> bool:
+	return has_item_amount(item_requirement.item_id, item_requirement.amount)
+
 func _init(_amount: int = 0, _item_id: Items.Id = Items.Id.Wood) -> void:
 	amount = _amount
 	item_id = _item_id

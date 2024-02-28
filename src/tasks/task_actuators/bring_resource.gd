@@ -7,8 +7,10 @@ var _item_amount_component: ItemAmountComponent
 # TODO: Handle amounts
 func find_closest_material(_item_requirement: ItemRequirement) -> ItemOnGround:
 	var materials_on_ground := get_tree().get_nodes_in_group("item_on_ground") as Array[Node]
+	
+	# TODO: Doesn't handle reservations yet with material.item_amount
 	var correct_materials := materials_on_ground.filter(func(material: ItemOnGround) -> bool:
-		return (material.item_id == _item_requirement.item_id and not material.reserved_for_picking) \
+		return (material.item_id == _item_requirement.item_id and material.item_amount.has_item_amount(_item_requirement.item_id, _item_requirement.amount)) \
 		or material.inventory.has_item_requirement(_item_requirement)
 	)
 	
