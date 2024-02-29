@@ -8,7 +8,6 @@ func initialize(params: Variant) -> ActorAction:
 	return self
 
 func process_action(actor: Settler, delta: float) -> void:
-	print("Processing build action")
 	constructable_component.increase_progress(actor.build_speed * delta)
 	
 	var target_position: Vector3 = constructable_component.get_owner().global_position

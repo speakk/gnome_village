@@ -128,8 +128,6 @@ func _ready() -> void:
 	Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:
 			var coordinate := global_position_to_coordinate(item.global_position)
 			remove_map_entity(coordinate, item)
-			if item.item.is_solid:
-				Events.solid_cell_removed.emit(coordinate)
 	)
 	
 	Events.ui_action_selected.connect(_handle_ui_action_selection)

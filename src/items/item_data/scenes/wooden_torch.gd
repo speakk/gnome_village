@@ -10,6 +10,8 @@ func set_blueprint(is_blueprint: bool) -> void:
 	if is_blueprint:
 		Globals.apply_blueprint_material($wooden_torch)
 	else:
+		if not $wooden_torch:
+			return
 		$wooden_torch.queue_free()
 		var new_scene := MODEL_SCENE.instantiate()
 		new_scene.name = "wooden_torch"

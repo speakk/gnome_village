@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Item" load_steps=13 format=3 uid="uid://pbbjelty00sx"]
+[gd_resource type="Resource" script_class="Item" load_steps=12 format=3 uid="uid://pbbjelty00sx"]
 
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_3k661"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="2_3a7ng"]
@@ -25,11 +25,6 @@ mesh_id = 0
 [sub_resource type="Resource" id="Resource_gifqu"]
 script = ExtResource("4_sc1l6")
 
-[sub_resource type="Resource" id="Resource_8qi6u"]
-script = ExtResource("1_3k661")
-item_id = 1
-amount = 1
-
 [sub_resource type="Resource" id="Resource_l4oxn"]
 script = ExtResource("2_y8a2u")
 item_id = 1
@@ -39,16 +34,7 @@ probability = 1.0
 
 [resource]
 script = ExtResource("2_3a7ng")
-rendering_type = 0
-target_layer = 1
-mesh_id = 0
 display_name = "Wooden wall"
-can_be_picked = false
-can_be_constructed = true
-can_be_dismantled = true
-is_solid = true
-durability = 10
-crafting_requirements = Array[ExtResource("1_3k661")]([SubResource("Resource_8qi6u")])
 item_drops = Array[ExtResource("2_y8a2u")]([SubResource("Resource_l4oxn")])
 provides = Array[ExtResource("1_3k661")]([])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_apa45"), SubResource("Resource_cq5ta"), SubResource("Resource_gifqu")])

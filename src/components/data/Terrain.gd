@@ -18,7 +18,6 @@ func _on_position_changed(_old_position: Vector3, _global_position: Vector3, old
 	Events.terrain_cleared.emit(old_coordinate, _blueprint_status)
 
 func set_blueprint(status: bool) -> void:
-	print("Setting blueprint with new status: ", status)
 	var coordinate := Globals.get_map().global_position_to_coordinate(get_owner().global_position)
 	_blueprint_status = status
 	Events.terrain_placed.emit(coordinate, mesh_id, status)

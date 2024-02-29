@@ -15,22 +15,6 @@ var item_id: Items.Id:
 	set(new_item_id):
 		item_id = new_item_id
 		item = Items.get_by_id(item_id)
-		current_durability = item.durability
-		max_durability = item.durability
-
-var max_durability: float = 10:
-	set(new_value):
-		$DurabilityProgressBar.max_value = new_value
-		max_durability = new_value
-		
-var current_durability: float = 10:
-	set(new_value):
-		$DurabilityProgressBar.value = new_value
-		current_durability = new_value
-		if current_durability < max_durability:
-			$DurabilityProgressBar.show()
-		else:
-			$DurabilityProgressBar.hide()
 
 var _initial_state: Variant
 
@@ -38,8 +22,6 @@ func save() -> Dictionary:
 	var save_dict := {
 		"position_x" = global_position.x,
 		"position_y" = global_position.y,
-		"current_durability" = current_durability,
-		"max_durability" = max_durability,
 		"item_amount" = item_amount.save(),
 		"item_id" = item_id,
 	}
@@ -49,9 +31,7 @@ func save() -> Dictionary:
 func load_save(save_dict: Dictionary) -> void:
 	global_position.x = save_dict["position_x"]
 	global_position.y = save_dict["position_y"]
-	current_durability = save_dict["current_durability"]
 	item_id = save_dict["item_id"]
-	max_durability = save_dict["max_durability"]
 	item_amount.load_save(save_dict["item_amount"])
 
 	Events.item_placed_on_ground.emit(self, global_position)
@@ -83,12 +63,6 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	Events.item_removed_from_ground.emit(self)
-
-func reduce_durability(amount: float) -> void:
-	current_durability -= amount
-
-func has_durability_left() -> bool:
-	return current_durability > 0
 
 func generate_drops() -> void:
 	for item_drop in item.item_drops:

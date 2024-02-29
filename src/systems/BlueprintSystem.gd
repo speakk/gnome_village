@@ -26,4 +26,5 @@ func _component_removed(container: ComponentContainer, removed_component: Compon
 func _construction_started(container: ComponentContainer) -> void:
 	container.remove_component(Components.Id.Blueprint)
 	if container.get_by_id(Components.Id.Constructable).solid_when_started:
+		print("Adding solid")
 		container.add_component(SolidComponent.new())

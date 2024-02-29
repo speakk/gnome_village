@@ -39,8 +39,13 @@ func get_crafting_requirements(item_id: Id) -> Array[ItemRequirement]:
 	return item.crafting_requirements
 
 func get_item_render_scene(item: Item) -> Node3D:
-	if item.rendering_type == Item.RenderingType.Model:
-		var scene := item.model.instantiate()
+	var results := item.components.filter(func(component: Component) -> bool:
+		return component.id == Components.Id.Scene
+		)
+	
+	if results.size() > 0:
+		var scene_component: SceneComponent = results[0]
+		var scene := scene_component.scene.instantiate()
 		return scene
 	
 	return null

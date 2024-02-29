@@ -165,13 +165,7 @@ func ensure_valid_position() -> void:
 
 func is_in_valid_position() -> bool:
 	var entities := Globals.get_map().get_map_entities(Globals.get_map().global_position_to_coordinate(global_position))
-	for entity in entities:
-		if entity is ItemOnGround:
-			if entity.item.is_solid:
-				return false
-	
-	return true
-	#return not PathFinder.is_position_solid(Globals.get_map().global_position_to_coordinate(global_position))
+	return not PathFinder.is_position_solid(component_container.get_by_id(Components.Id.WorldPosition).coordinate)
 
 func is_at_target(_target: Vector3) -> bool:
 	return global_position.distance_to(_target) <= AT_DISTANCE
