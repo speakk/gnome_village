@@ -5,6 +5,8 @@ class_name ComponentContainer extends Node3D
 
 var _components: Array[Component]
 
+var _subscriptions: Array[Subscription]
+
 func _ready() -> void:
 	for component in default_components:
 		add_component(component)
@@ -38,6 +40,16 @@ func add_component(component: Component) -> void:
 	
 	if duplicated.has_method("on_enter"):
 		duplicated.on_enter()
+	
+	for subscription: Subscription in duplicated.get_subscriptions():
+		if has_component(subscription.target_id):
+			var matching := get_by_id(subscription.target_id)
+			subscription.callable.call(matching)
+	
+	for existing_component in _components:
+		for subscription: Subscription in existing_component.get_subscriptions():
+			if subscription.target_id == duplicated.id:
+				subscription.callable.call(duplicated)
 
 func remove_component(component_id: Components.Id) -> void:
 	var matching_all: Array[Component] = _components.filter(func(component: Component) -> bool:
@@ -47,7 +59,9 @@ func remove_component(component_id: Components.Id) -> void:
 	for matching in matching_all:
 		_components.erase(matching)
 		Events.component.removed.emit(self, matching)
-		
+
+func subscribe(subscriber_id: Components.Id, target_id: Components.Id, callable: Callable) -> void:
+	_subscriptions.append(Subscription.new(subscriber_id, target_id, callable))
 
 func clear() -> void:
 	_components.clear()
