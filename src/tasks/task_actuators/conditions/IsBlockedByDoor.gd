@@ -16,7 +16,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 				if not container.has_component(Components.Id.Blueprint):
 					var door: DoorComponent = entity.component_container.get_by_id(Components.Id.Door)
 					if not door.is_open():
-						blackboard.set_value("blocking_door", entity)
+						blackboard.set_value("blocking_door", door)
 						print("DID have door in IsBlockedByDoor")
 						return SUCCESS
 	

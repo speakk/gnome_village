@@ -1,7 +1,40 @@
-[gd_resource type="Resource" script_class="Item" load_steps=4 format=3 uid="uid://bpws0cgrpa471"]
+[gd_resource type="Resource" script_class="Item" load_steps=17 format=3 uid="uid://bpws0cgrpa471"]
 
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_jxdwe"]
+[ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_oubrg"]
 [ext_resource type="Script" path="res://src/items/ItemDrop.gd" id="2_4hitp"]
+[ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="2_28vem"]
+[ext_resource type="Script" path="res://src/components/data/Door.gd" id="3_f5sd8"]
+[ext_resource type="PackedScene" uid="uid://cac2htxxa8jhx" path="res://src/items/item_data/scenes/wooden_door.tscn" id="3_nj775"]
+[ext_resource type="Script" path="res://src/components/StringSubscription.gd" id="4_p81hu"]
+[ext_resource type="Script" path="res://src/components/data/Scene.gd" id="5_ahr5j"]
+[ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="6_j3cak"]
+
+[sub_resource type="Resource" id="Resource_1qa2l"]
+script = ExtResource("1_oubrg")
+item_id = 1
+amount = 1
+
+[sub_resource type="Resource" id="Resource_soltd"]
+script = ExtResource("2_28vem")
+requirements = Array[ExtResource("1_oubrg")]([SubResource("Resource_1qa2l")])
+solid_when_started = false
+
+[sub_resource type="Resource" id="Resource_7rghg"]
+script = ExtResource("4_p81hu")
+target_id = 1
+method_name = "set_door"
+
+[sub_resource type="Resource" id="Resource_oxxp4"]
+script = ExtResource("5_ahr5j")
+scene = ExtResource("3_nj775")
+custom_subscriptions = Array[ExtResource("4_p81hu")]([SubResource("Resource_7rghg")])
+
+[sub_resource type="Resource" id="Resource_q3d0i"]
+script = ExtResource("3_f5sd8")
+
+[sub_resource type="Resource" id="Resource_llxvv"]
+script = ExtResource("6_j3cak")
 
 [sub_resource type="Resource" id="Resource_w4qcp"]
 script = ExtResource("2_4hitp")
@@ -14,5 +47,5 @@ probability = 1.0
 script = ExtResource("1_jxdwe")
 display_name = "Wooden Door"
 item_drops = Array[ExtResource("2_4hitp")]([SubResource("Resource_w4qcp")])
-provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
-components = Array[Resource("res://src/components/Component.gd")]([])
+provides = Array[ExtResource("1_oubrg")]([])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_soltd"), SubResource("Resource_oxxp4"), SubResource("Resource_q3d0i"), SubResource("Resource_llxvv")])
