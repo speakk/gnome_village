@@ -13,7 +13,9 @@ func _component_added(container: ComponentContainer, new_component: Component) -
 
 func _component_removed(container: ComponentContainer, removed_component: Component) -> void:
 	if removed_component is BlueprintComponent:
-		Events.blueprint_cancel_issued.emit(removed_component.get_owner())
+		if container.has_component(Components.Id.Constructable):
+			if not container.get_by_id(Components.Id.Constructable).is_started:
+				Events.blueprint_cancel_issued.emit(removed_component.get_owner())
 		
 	var has_blueprint := container.has_component(Components.Id.Blueprint)
 	if not has_blueprint:

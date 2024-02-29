@@ -16,9 +16,8 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		return FAILURE
 	
 	if not _action:
-		print("Alright adding build action")
 		_action = ACTION.new().initialize({ constructable_component = target })
-		_action.finished.connect(func(__action: ActorAction) -> void: _done = true)
+		target.finished.connect(func() -> void: _done = true)
 		actor.add_action(_action)
 		
 	return RUNNING

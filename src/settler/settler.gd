@@ -2,11 +2,6 @@ extends Node3D
 
 class_name Settler
 
-#@onready var hair_options: Array[Texture2D] = [
-	#preload("res://assets/settler_hair_1.png"), preload("res://assets/settler_hair_2.png"), null
-#]
-
-
 @onready var animation_player_audio: AnimationPlayer = $AnimationPlayerAudio
 @onready var component_container: ComponentContainer = $ComponentContainer
 @onready var inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)

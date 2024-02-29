@@ -13,9 +13,6 @@ func _init() -> void:
 			)
 	]
 
-func subscribe() -> void:
-	get_container().subscribe_to(Components.Id.WorldPosition, "position_changed", _on_position_changed)
-
 func _on_position_changed(_old_position: Vector3, _global_position: Vector3, old_coordinate: Vector2i, coordinate: Vector2i) -> void:
 	Events.terrain_placed.emit(coordinate, mesh_id, _blueprint_status)
 	Events.terrain_cleared.emit(old_coordinate, _blueprint_status)
