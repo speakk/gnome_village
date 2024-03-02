@@ -33,13 +33,16 @@ func get_all() -> Array[Component]:
 	return all
 
 func add_component(component: Component) -> void:
-	var duplicated := component.duplicate()
+	var duplicated: Component = component.duplicate()
 	duplicated.set_owner(component_owner)
 	_components.append(duplicated)
 	Events.component.added.emit(self, duplicated)
 	
 	if duplicated.has_method("on_enter"):
 		duplicated.on_enter()
+	
+	if duplicated.id == Components.Id.PlantScene:
+		print("Adding plantscenecompoennt with subs: %s" % duplicated.subscriptions.size())
 	
 	for subscription: Subscription in duplicated.get_subscriptions():
 		if has_component(subscription.target_id):

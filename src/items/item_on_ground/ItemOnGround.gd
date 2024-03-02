@@ -2,7 +2,7 @@ extends Node3D
 
 class_name ItemOnGround
 
-@onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
+@onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
 
 @onready var component_container: ComponentContainer = $ComponentContainer
 @onready var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
@@ -38,7 +38,10 @@ func load_save(save_dict: Dictionary) -> void:
 
 func initialize(_item_id: Items.Id, _amount: int = 1) -> ItemOnGround:
 	item_id = _item_id
-	item_amount.amount = _amount
+	
+	# TODO: Get rid of item_amount default component
+	if item_amount:
+		item_amount.amount = _amount
 	
 	for provides_item: ItemRequirement in item.provides:
 		inventory.add_item_amount(provides_item.item_id, provides_item.amount)
@@ -81,6 +84,7 @@ func place_at_coordinate(coordinate: Vector2i) -> void:
 	WorldPositionComponent.set_world_position(self, new_position)
 
 func set_item_components() -> void:
-	component_container.get_by_id(Components.Id.DisplayName).display_name = item.display_name
 	for component in item.components:
 		component_container.add_component(component)
+
+	component_container.get_by_id(Components.Id.DisplayName).display_name = item.display_name

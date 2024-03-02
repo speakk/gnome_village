@@ -42,15 +42,10 @@ func _ready() -> void:
 # TODO: Some kind of bigger cells/quadtree instead of literally
 # doing this for every door on the whole map
 func _map_changed(coordinate: Vector2i) -> void:
-	print("map change clalled")
-	print("Global position of ours", global_position)
-	print("Global position of panret", get_parent_node_3d().global_position)
-	print("Coordinate global poset", Globals.get_map().coordinate_to_global_position(coordinate))
 	if get_parent_node_3d().global_position.distance_to(Globals.get_map().coordinate_to_global_position(coordinate)) < MainMap3D.CELL_SIZE.x * 2:
 		correct_orientation()
 
 func set_door(door_component: DoorComponent) -> void:
-	print("SETTING AS DOOR")
 	door_component.open_amount_changed.connect(func(new_amount: float) -> void:
 			rotation_degrees = Vector3(0, original_rotation.y + new_amount * 90, 0)
 			)
@@ -70,4 +65,3 @@ func set_blueprint(is_blueprint: bool) -> void:
 		add_child(new_scene)
 		new_scene.transform = original_transform
 		mesh_instance_3d = new_scene
-		print("Added ye old")

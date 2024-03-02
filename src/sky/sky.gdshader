@@ -4,7 +4,7 @@ uniform sampler2D star_sky;
 uniform sampler2D moon;
 uniform vec4 moon_tint: source_color;
 uniform vec4 clouds_tint: source_color;
-uniform bool SCATERRING; 
+uniform bool SCATERRING;
 uniform vec3 SUN_POS; //normalize this vector in script!
 uniform vec3 MOON_POS; //normalize this vector in script
 uniform vec3 MOON_TEX_POS; //normalize this vector in script!!
@@ -81,7 +81,7 @@ lowp vec3 extra_cheap_atmosphere(vec3 raydir, vec3 sundir) //https://www.shadert
 	sun=pow(sun_dist,2048.0);//smoothstep(0.998, 0.99999, sun_dist);//sun_disk
 	sky += sun;
 	return clamp(sky,0.0,1.0);
-} 
+}
 
 lowp vec2 uv_sphere(lowp vec3 rd, lowp vec3 pos, lowp float scale) //someone else's code, there are problems with the movement of the moon on y-axis
 {
@@ -95,14 +95,14 @@ lowp vec2 uv_sphere(lowp vec3 rd, lowp vec3 pos, lowp float scale) //someone els
 	return uv;
 }
 
-lowp vec2 draw_moon(lowp vec3 rd) 
+lowp vec2 draw_moon(lowp vec3 rd)
 {
 	lowp vec2 uv=uv_sphere(rd,MOON_TEX_POS,moon_size);
 	lowp float moon_amount = texture(moon,uv).r;
 	moon_amount *= 1.0-smoothstep(moon_size*1.0,moon_size*1.4,length(MOON_POS-rd));//+min(pow(max(dot(rd, MOON_POS), 0.0), 500.0/moon_radius) * 100.0, 1.0);
 	lowp float moon_mask = moon_amount;
 	moon_amount*=1.0 - attenuation; //attenuation of the brightness of the moon (for sunrise and sunset).
-	moon_amount = clamp(mix (0.0,moon_amount,smoothstep(0.9,1.0,(1.0-moon_size)*0.5+length(MOON_POS-rd+MOON_PHASE)*(1.0-moon_size*0.75))),0.001,1.0);//here we cast a shadow on the moon. moon phase. 	
+	moon_amount = clamp(mix (0.0,moon_amount,smoothstep(0.9,1.0,(1.0-moon_size)*0.5+length(MOON_POS-rd+MOON_PHASE)*(1.0-moon_size*0.75))),0.001,1.0);//here we cast a shadow on the moon. moon phase.
 	return vec2(moon_amount,moon_mask);
 }
 
@@ -126,12 +126,12 @@ void sky() {
 		cld*=horizon_line;
 		COLOR = vec3(cld.r,cld.a,0.0);
 	}
-	else 
+	else
 	{
 	lowp vec3 sky;
 	sky = extra_cheap_atmosphere(rd,SUN_POS);
 	sky = mix (vec3(0.0),sky,smoothstep(-0.1,0.0,rd.y));
 	sky = max (sky,draw_night_sky(max(max(sky.b,sky.r),sky.g),rd,SKY_COORDS,1.0));
-	COLOR = sky;	
+	COLOR = sky;
 	}
 }

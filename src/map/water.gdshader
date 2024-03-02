@@ -41,15 +41,15 @@ void vertex() {
 void fragment() {
 	vec2 time = (TIME * wave_direction) * time_scale;
 	vec2 time2 = (TIME * wave_direction2) * time_scale;
-	
+
 	float fresnel = fresnel(5.0, NORMAL, VIEW);
 	vec3 surface_color = mix(albedo, albedo2, fresnel);
-	
-	
+
+
 	vec3 normal_blend = mix(texture(texture_normal, world_pos.xz + time).rgb, texture(texture_normal2, world_pos.xz + time2).rgb, 0.5);
 	vec3 dist_normal = texture(texture_normal, world_pos.xz * 0.05 + time * 0.4).rgb;
 	vec3 dist_normal2 = texture(texture_normal2, world_pos.xz * 0.1 - time * 0.3).rgb;
-	
+
 	vec3 top_light = smoothstep(light_start, light_end, dist_normal.r * dist_normal2.r) * top_color;
 	//ALPHA = 1.0;
 	//ALBEDO = soft_light(_screen, surface_color);

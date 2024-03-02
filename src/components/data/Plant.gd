@@ -1,8 +1,12 @@
-extends Node3D
-
-@onready var component_container: ComponentContainer = $ComponentContainer
+class_name PlantComponent extends Component
 
 signal matured
+
+## How long does it take to progress to next growth stage (in seconds)
+@export var growth_stage_time: float = 2.0
+@export var growth_stages: Array[GrowthStage]
+
+@export var growth_requirements: Array[ItemRequirement]
 
 var current_growth_timer: float = 0.0
 var current_growth_stage_index: int = -1
@@ -11,22 +15,21 @@ var current_growth_scene: Variant
 
 signal satisfies_growth_requirements
 signal lacks_growth_requirements
+signal advanced_growth_stage(new_stage_index: int)
 
-var plant: Plant
 var grows_in: GrowthSpotComponent
 
-func set_plant_id(plant_id: Plants.Id) -> void:
-	plant = Plants.get_plant_by_id(plant_id)
-	component_container.get_by_id(Components.Id.DisplayName).display_name = plant.display_name
+func _init() -> void:
+	id = Components.Id.Plant
 
 func is_mature() -> bool:
-	return current_growth_stage_index >= plant.growth_stages.size() - 1
+	return current_growth_stage_index >= growth_stages.size() - 1
 
 func has_growth_requirements() -> bool:
 	if not grows_in:
 		return false
 		
-	for growth_requirement in plant.growth_requirements:
+	for growth_requirement in growth_requirements:
 		var satisfies_requirement := false
 		for growth_provided: ItemAmountComponent in grows_in.growth_requirement_inventory.get_items():
 			if growth_provided.id == growth_requirement.item_id \
@@ -40,45 +43,33 @@ func has_growth_requirements() -> bool:
 	return true
 
 func consume_growth_requirements() -> void:
-	for growth_requirement in plant.growth_requirements:
+	for growth_requirement in growth_requirements:
 		grows_in.consume_growth_requirement(growth_requirement.item_id, growth_requirement.amount)
 
 func advance_growth_stage() -> void:
 	if not is_mature():
 		current_growth_stage_index += 1
-		
-		if current_growth_scene:
-			current_growth_scene.queue_free()
-		
-		var growth_stage_scene := plant.growth_stages[current_growth_stage_index].mesh_scene.instantiate()
-		current_growth_scene = growth_stage_scene
-		add_child(current_growth_scene)
+		advanced_growth_stage.emit(current_growth_stage_index)
 		
 		if is_mature():
-			$ParticlesMatured.emitting = true
 			matured.emit()
 
 var lacks_growth_requirements_emitted := false
 
-func _physics_process(delta: float) -> void:
-	if not plant:
-		return
-	
+func process_component(delta: float) -> void:
+	#print("Processing plant")
 	if not is_mature():
+		#print("Not mature")
 		if has_growth_requirements():
+			#print("Had growth requirements")
 			lacks_growth_requirements_emitted = false
 			satisfies_growth_requirements.emit()
 			current_growth_timer += delta
-			if current_growth_timer > plant.growth_stage_length:
+			if current_growth_timer > growth_stage_time:
 				advance_growth_stage()
 				consume_growth_requirements()
 				current_growth_timer = 0
 		elif not lacks_growth_requirements_emitted:
+			#print("Emitting lacks")
 			lacks_growth_requirements_emitted = true
 			lacks_growth_requirements.emit()
-
-static func create_from_id(plant_id: Plants.Id) -> PlantedPlant:
-	var PLANTED_PLANT := load("res://src/plants/PlantedPlant.tscn") as PackedScene
-	var planted_plant := PLANTED_PLANT.instantiate()
-	planted_plant.set_plant_id(plant_id)
-	return planted_plant

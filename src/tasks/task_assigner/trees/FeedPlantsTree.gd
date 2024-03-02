@@ -11,7 +11,7 @@ func initialize(_farm_plot: ItemOnGround) -> FeedPlantsTree:
 	order_type = TaskTreeBranch.OrderType.Parallel
 	farm_plot = _farm_plot
 	
-	var growth_requirements := (_farm_plot.item_scene as FarmPlot).planted_plant.plant.growth_requirements
+	var growth_requirements := (_farm_plot.item_scene as FarmPlot).plant_component.growth_requirements
 	
 	if growth_requirements.size() > 0:
 		var bring_resources := TaskTreeBranch.new()

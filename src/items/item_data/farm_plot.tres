@@ -1,25 +1,31 @@
-[gd_resource type="Resource" script_class="Item" load_steps=5 format=3 uid="uid://dulsru7myeyi4"]
+[gd_resource type="Resource" script_class="Item" load_steps=11 format=3 uid="uid://dulsru7myeyi4"]
 
-[ext_resource type="PackedScene" uid="uid://b7ce8cn4so175" path="res://src/items/item_data/scenes/farm_plot.tscn" id="1_833cc"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_am7fa"]
+[ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="1_sxubs"]
 [ext_resource type="Script" path="res://src/components/data/GrowthSpot.gd" id="1_yxf7r"]
+[ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="3_4i3tg"]
+[ext_resource type="PackedScene" uid="uid://b7ce8cn4so175" path="res://src/items/item_data/scenes/farm_plot.tscn" id="4_or0nf"]
+[ext_resource type="Script" path="res://src/components/data/Scene.gd" id="5_5qdnr"]
+
+[sub_resource type="Resource" id="Resource_h10c2"]
+script = ExtResource("1_sxubs")
+requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+solid_when_started = false
 
 [sub_resource type="Resource" id="Resource_egpa4"]
 script = ExtResource("1_yxf7r")
 
+[sub_resource type="Resource" id="Resource_x6j1b"]
+script = ExtResource("3_4i3tg")
+
+[sub_resource type="Resource" id="Resource_wo3jf"]
+script = ExtResource("5_5qdnr")
+scene = ExtResource("4_or0nf")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+
 [resource]
 script = ExtResource("1_am7fa")
-rendering_type = 1
-target_layer = 2
-mesh_id = 0
 display_name = "Farm Plot"
-scene = ExtResource("1_833cc")
-can_be_picked = false
-can_be_constructed = true
-can_be_dismantled = true
-is_solid = false
-durability = 10
-crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
 provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_egpa4")])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_h10c2"), SubResource("Resource_egpa4"), SubResource("Resource_x6j1b"), SubResource("Resource_wo3jf")])

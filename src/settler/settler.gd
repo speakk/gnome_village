@@ -161,12 +161,9 @@ func ensure_valid_position() -> void:
 			var new_position := Globals.get_map().coordinate_to_global_position(free_coordinate)
 			var position_component: WorldPositionComponent = component_container.get_by_id(Components.Id.WorldPosition)
 			get_tree().create_tween().tween_property(position_component, "current_position", Vector3(new_position.x, 0.5, new_position.z), 0.5)
-			#global_position = new_position
 
 func is_in_valid_position() -> bool:
-	#var entities := Globals.get_map().get_map_entities(Globals.get_map().global_position_to_coordinate(global_position))
 	return not Globals.get_map().is_coordinate_occupied(component_container.get_by_id(Components.Id.WorldPosition).coordinate)
-	#return not PathFinder.is_position_solid(component_container.get_by_id(Components.Id.WorldPosition).coordinate)
 
 func is_at_target(_target: Vector3) -> bool:
 	return global_position.distance_to(_target) <= AT_DISTANCE

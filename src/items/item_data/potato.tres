@@ -1,21 +1,10 @@
-[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://dwd3eipdpm2w"]
+[gd_resource type="Resource" script_class="Item" load_steps=2 format=3 uid="uid://dwd3eipdpm2w"]
 
-[ext_resource type="PackedScene" uid="uid://mkox0g6jfmf7" path="res://assets/blender_models/plants/potato_harvested.blend" id="1_2u3uu"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="3_k0g8r"]
 
 [resource]
 script = ExtResource("3_k0g8r")
-rendering_type = 2
-model = ExtResource("1_2u3uu")
-target_layer = 2
-mesh_id = 0
 display_name = "Potato"
-can_be_picked = true
-can_be_constructed = false
-can_be_dismantled = false
-is_solid = false
-durability = 10
-crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
 provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 components = Array[Resource("res://src/components/Component.gd")]([])

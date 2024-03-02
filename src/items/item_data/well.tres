@@ -1,13 +1,29 @@
-[gd_resource type="Resource" script_class="Item" load_steps=6 format=3 uid="uid://cpc18p56jv8bs"]
+[gd_resource type="Resource" script_class="Item" load_steps=12 format=3 uid="uid://cpc18p56jv8bs"]
 
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_gybae"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_ygcvd"]
 [ext_resource type="PackedScene" uid="uid://cdo3s14lusgmm" path="res://assets/blender_models/well.blend" id="2_icdf7"]
+[ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_xr12o"]
+[ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="3_2xuh5"]
+[ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="4_grm6k"]
 
-[sub_resource type="Resource" id="Resource_4i162"]
+[sub_resource type="Resource" id="Resource_4aj6r"]
+script = ExtResource("2_xr12o")
+scene = ExtResource("2_icdf7")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+
+[sub_resource type="Resource" id="Resource_e2ftl"]
 script = ExtResource("1_gybae")
 item_id = 1
-amount = 2
+amount = 1
+
+[sub_resource type="Resource" id="Resource_lrock"]
+script = ExtResource("3_2xuh5")
+requirements = Array[ExtResource("1_gybae")]([SubResource("Resource_e2ftl")])
+solid_when_started = true
+
+[sub_resource type="Resource" id="Resource_anuje"]
+script = ExtResource("4_grm6k")
 
 [sub_resource type="Resource" id="Resource_d1pfs"]
 script = ExtResource("1_gybae")
@@ -16,17 +32,7 @@ amount = 2000
 
 [resource]
 script = ExtResource("1_ygcvd")
-rendering_type = 2
-model = ExtResource("2_icdf7")
-target_layer = 2
-mesh_id = 0
 display_name = "Water Well"
-can_be_picked = true
-can_be_constructed = true
-can_be_dismantled = true
-is_solid = true
-durability = 10
-crafting_requirements = Array[ExtResource("1_gybae")]([SubResource("Resource_4i162")])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
 provides = Array[ExtResource("1_gybae")]([SubResource("Resource_d1pfs")])
-components = Array[Resource("res://src/components/Component.gd")]([])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_4aj6r"), SubResource("Resource_lrock"), SubResource("Resource_anuje")])

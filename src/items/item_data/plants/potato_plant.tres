@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="Item" load_steps=14 format=3 uid="uid://chsq0nuk6ur1i"]
+
+[ext_resource type="Script" path="res://src/items/Item.gd" id="1_d5r2t"]
+[ext_resource type="PackedScene" uid="uid://bixhtyrioc70i" path="res://assets/blender_models/plants/potato_1.blend" id="1_x7iew"]
+[ext_resource type="Script" path="res://src/plants/GrowthStage.gd" id="2_8mldj"]
+[ext_resource type="PackedScene" uid="uid://c1begy6tfpitx" path="res://assets/blender_models/plants/potato_2.blend" id="3_qk5iu"]
+[ext_resource type="PackedScene" uid="uid://dn6ucdyd7505e" path="res://assets/blender_models/plants/potato_3.blend" id="4_o6kgs"]
+[ext_resource type="Script" path="res://src/components/data/Plant.gd" id="5_wr52w"]
+[ext_resource type="PackedScene" uid="uid://cpjoxtonfq1qp" path="res://src/items/item_data/scenes/Plant.tscn" id="6_mvecv"]
+[ext_resource type="Script" path="res://src/components/data/PlantScene.gd" id="6_qtyxv"]
+
+[sub_resource type="Resource" id="Resource_rruwe"]
+script = ExtResource("2_8mldj")
+mesh_scene = ExtResource("1_x7iew")
+
+[sub_resource type="Resource" id="Resource_ixuw2"]
+script = ExtResource("2_8mldj")
+mesh_scene = ExtResource("3_qk5iu")
+
+[sub_resource type="Resource" id="Resource_rifwq"]
+script = ExtResource("2_8mldj")
+mesh_scene = ExtResource("4_o6kgs")
+
+[sub_resource type="Resource" id="Resource_lciqt"]
+script = ExtResource("5_wr52w")
+growth_stage_time = 2.0
+growth_stages = Array[ExtResource("2_8mldj")]([SubResource("Resource_rruwe"), SubResource("Resource_ixuw2"), SubResource("Resource_rifwq")])
+growth_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+
+[sub_resource type="Resource" id="Resource_kiexp"]
+script = ExtResource("6_qtyxv")
+scene = ExtResource("6_mvecv")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+
+[resource]
+script = ExtResource("1_d5r2t")
+display_name = "Potato Plant"
+item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
+provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_lciqt"), SubResource("Resource_kiexp")])
