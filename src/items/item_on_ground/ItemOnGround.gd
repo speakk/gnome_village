@@ -36,8 +36,20 @@ func initialize(_item_id: Items.Id, _amount: int = 1) -> ItemOnGround:
 	item_id = _item_id
 	
 	set_item_components()
-	component_container.get_by_id(Components.Id.ItemAmount).amount = _amount
-
+	var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
+	item_amount.amount_changed.connect(func(new_amount: int) -> void:
+		if new_amount > 1:
+			$ItemAmountLabel.text = new_amount
+			$ItemAmountLabel.show()
+		else:
+			$ItemAmountLabel.hide()
+		
+		if new_amount <= 0:
+			queue_free()
+		)
+	item_amount.amount = _amount
+	
+	
 	return self
 	
 func _amount_changed(new_amount: int) -> void:

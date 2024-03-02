@@ -1,6 +1,7 @@
-[gd_scene load_steps=18 format=3 uid="uid://f30j7nr3ioc4"]
+[gd_scene load_steps=19 format=3 uid="uid://f30j7nr3ioc4"]
 
 [ext_resource type="Script" path="res://src/items/item_on_ground/ItemOnGround.gd" id="1_j80v7"]
+[ext_resource type="FontFile" uid="uid://dtfb4n2n8qq7m" path="res://assets/fonts/m5x7.ttf" id="3_s7v4j"]
 [ext_resource type="Texture2D" uid="uid://bw1pf7p1ry4gq" path="res://assets/dismantle_indicator.png" id="4_xl2yw"]
 [ext_resource type="PackedScene" uid="uid://cyfiey6xlcs1q" path="res://src/components/component_container.tscn" id="5_3dtg2"]
 [ext_resource type="Script" path="res://src/components/data/WorldPosition.gd" id="6_cx06m"]
@@ -72,13 +73,16 @@ nine_patch_stretch = true
 texture_progress = SubResource("GradientTexture2D_8n5hh")
 
 [node name="ItemAmountLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196012, 0)
 pixel_size = 0.003
 billboard = 1
+no_depth_test = true
 fixed_size = true
-alpha_cut = 1
 texture_filter = 0
 text = "2"
-font_size = 24
+font = ExtResource("3_s7v4j")
+font_size = 16
+outline_size = 8
 
 [node name="ComponentContainer" parent="." instance=ExtResource("5_3dtg2")]
 default_components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_beipl"), SubResource("Resource_otqls"), SubResource("Resource_pf2j7"), SubResource("Resource_g38ir"), SubResource("Resource_ki78u")])
