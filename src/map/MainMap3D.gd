@@ -96,7 +96,6 @@ func get_map_entities(coordinate: Vector2i, items_only: bool = false) -> Array[N
 
 func is_coordinate_occupied(coordinate: Vector2i) -> bool:
 	if not map_entities.has(coordinate):
-		print("No entities at coordinate: ", coordinate)
 		return false
 	
 	var entities := map_entities[coordinate] as Array
@@ -215,20 +214,34 @@ func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
 
 func _create_placement_juice(item_on_ground: ItemOnGround, index: int) -> void:
 	var container: ComponentContainer = item_on_ground.component_container
+	var node: Node3D
+	var removed_component: Component
+	var position_correction := Vector3(0, 0, 0)
 	if container.has_component(Components.Id.Terrain):
 		var terrain_component: TerrainComponent = container.get_by_id(Components.Id.Terrain)
-		await get_tree().create_timer(float(index) * 0.04).timeout
 		container.remove_component(Components.Id.Terrain)
-		var juice_mesh := MeshInstance3D.new()
-		juice_mesh.mesh = blueprint_grid.mesh_library.get_item_mesh(terrain_component.mesh_id)
-		add_child(juice_mesh)
-		var pos: Vector3 = container.get_by_id(Components.Id.WorldPosition).current_position + Vector3(0, 0.5, 0)
-		juice_mesh.global_position = pos + Vector3(0, 1.0, 0)
-		$PlacementJuicePlayer.pitch_scale = 1 + randf_range(-0.1, 0.1)
-		$PlacementJuicePlayer.play()
-		await create_tween().tween_property(juice_mesh, "global_position", pos, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BOUNCE).finished
-		juice_mesh.queue_free()
-		container.add_component(terrain_component)
+		node = MeshInstance3D.new()
+		node.mesh = blueprint_grid.mesh_library.get_item_mesh(terrain_component.mesh_id)
+		removed_component = terrain_component
+		position_correction = Vector3(0, 0.5, 0)
+	elif container.has_component(Components.Id.Scene):
+		var scene_component: SceneComponent = container.get_by_id(Components.Id.Scene)
+		container.remove_component(Components.Id.Scene)
+		node = scene_component.scene.instantiate()
+		removed_component = scene_component
+	
+	if not node:
+		return
+	
+	await get_tree().create_timer(float(index) * 0.03).timeout
+	add_child(node)
+	var pos: Vector3 = container.get_by_id(Components.Id.WorldPosition).current_position + position_correction
+	node.global_position = pos + Vector3(0, 1.0, 0)
+	$PlacementJuicePlayer.pitch_scale = 1 + randf_range(-0.1, 0.1)
+	$PlacementJuicePlayer.play()
+	await create_tween().tween_property(node, "global_position", pos, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BOUNCE).finished
+	node.queue_free()
+	container.add_component(removed_component)
 
 func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 	var item_id := (selected_ui_action as UiAction.Build).item_id

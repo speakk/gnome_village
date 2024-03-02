@@ -1,6 +1,7 @@
 class_name FarmPlot extends Node3D
 
-@onready var growth_spot: GrowthSpotComponent = get_parent().component_container.get_by_id(Components.Id.GrowthSpot)
+#@onready var growth_spot: GrowthSpotComponent = get_parent().component_container.get_by_id(Components.Id.GrowthSpot)
+var growth_spot: GrowthSpotComponent
 
 const FARM_PLOT := preload("res://assets/blender_models/farm_plot.blend")
 
@@ -9,13 +10,6 @@ var growth_rate: float = 0.1
 var planted_plant: ItemOnGround
 var plant_component: PlantComponent
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
-
-func _physics_process(delta: float) -> void:
-	pass
-
-func _ready() -> void:
-	# TODO: Test add some water to growth spot
-	growth_spot.plant_id_set.connect(_plant_id_set)
 
 func _plant_id_set(plant_id: Items.Id) -> void:
 	if not planted_plant:
@@ -26,6 +20,10 @@ func _plant_id_set(plant_id: Items.Id) -> void:
 		plant_component.grows_in = growth_spot
 		plant_component.lacks_growth_requirements.connect(_lacks_growth_requirements)
 		plant_component.satisfies_growth_requirements.connect(_satisfies_growth_requirements)
+
+func set_growth_spot(_growth_spot: GrowthSpotComponent) -> void:
+	growth_spot = _growth_spot
+	growth_spot.plant_id_set.connect(_plant_id_set)
 
 func _lacks_growth_requirements() -> void:
 	$LacksGrowthRequirementIndicator.show()

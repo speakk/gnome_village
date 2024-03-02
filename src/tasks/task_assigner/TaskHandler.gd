@@ -15,13 +15,18 @@ func _ready() -> void:
 	$Tasks.child_entered_tree.connect(_tasks_changed)
 	$Tasks.child_exiting_tree.connect(_tasks_changed)
 	Events.task_finished.connect(func(_task: Task) -> void: _refresh_debug_tree($Tasks.get_children()))
-	Events.debug_visuals_set.connect(func(new_value: bool) -> void: %DebugUI.visible = new_value)
+	Events.debug_visuals_set.connect(func(new_value: bool) -> void:
+		if new_value:
+			_refresh_debug_tree($Tasks.get_children())
+		%DebugUI.visible = new_value
+	)
 
 func _tasks_changed(_node: Node) -> void:
 	_refresh_debug_tree($Tasks.get_children())
 	
 func _refresh_debug_tree(tasks: Array[Node]) -> void:
-	await get_tree().physics_frame
+	if not %DebugUI.visible:
+		return
 	debug_ui_tree.clear()
 	var root := debug_ui_tree.create_item()
 	
