@@ -11,7 +11,9 @@ func initialize(_farm_plot: ItemOnGround) -> FeedPlantsTree:
 	order_type = TaskTreeBranch.OrderType.Parallel
 	farm_plot = _farm_plot
 	
-	var growth_requirements := (_farm_plot.item_scene as FarmPlot).plant_component.growth_requirements
+	var growth_spot: GrowthSpotComponent = _farm_plot.component_container.get_by_id(Components.Id.GrowthSpot)
+	var plant_component: PlantComponent = growth_spot.plant_component
+	var growth_requirements := plant_component.growth_requirements
 	
 	if growth_requirements.size() > 0:
 		var bring_resources := TaskTreeBranch.new()
@@ -24,7 +26,7 @@ func initialize(_farm_plot: ItemOnGround) -> FeedPlantsTree:
 			var task := BRING_RESOURCE_TASK.instantiate() as BringResourceTask
 			task.initialize({
 				item_requirement = growth_requirement,
-				inventory = (_farm_plot.item_scene as FarmPlot).growth_spot.growth_requirement_inventory
+				inventory_component = growth_spot.growth_requirement_inventory
 			})
 			task.failed.connect(_handle_task_failure)
 			bring_resource_leaf.set_task(task)
