@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_d5r2t"]
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_tunl2"]
 [ext_resource type="PackedScene" uid="uid://bixhtyrioc70i" path="res://assets/blender_models/plants/potato_1.blend" id="1_x7iew"]
-[ext_resource type="Script" path="res://src/plants/GrowthStage.gd" id="2_8mldj"]
+[ext_resource type="Script" path="res://src/items/plants/GrowthStage.gd" id="2_8mldj"]
 [ext_resource type="PackedScene" uid="uid://c1begy6tfpitx" path="res://assets/blender_models/plants/potato_2.blend" id="3_qk5iu"]
 [ext_resource type="PackedScene" uid="uid://dn6ucdyd7505e" path="res://assets/blender_models/plants/potato_3.blend" id="4_o6kgs"]
 [ext_resource type="Script" path="res://src/components/data/Plant.gd" id="5_wr52w"]
