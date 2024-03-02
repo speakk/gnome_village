@@ -213,8 +213,26 @@ func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
 	var zone := (selected_ui_action as UiAction.ZoneAddTiles).zone
 	zone.add_coordinates(coordinates)
 
+func _create_placement_juice(item_on_ground: ItemOnGround, index: int) -> void:
+	var container: ComponentContainer = item_on_ground.component_container
+	if container.has_component(Components.Id.Terrain):
+		var terrain_component: TerrainComponent = container.get_by_id(Components.Id.Terrain)
+		await get_tree().create_timer(float(index) * 0.04).timeout
+		container.remove_component(Components.Id.Terrain)
+		var juice_mesh := MeshInstance3D.new()
+		juice_mesh.mesh = blueprint_grid.mesh_library.get_item_mesh(terrain_component.mesh_id)
+		add_child(juice_mesh)
+		var pos: Vector3 = container.get_by_id(Components.Id.WorldPosition).current_position + Vector3(0, 0.5, 0)
+		juice_mesh.global_position = pos + Vector3(0, 1.0, 0)
+		$PlacementJuicePlayer.pitch_scale = 1 + randf_range(-0.1, 0.1)
+		$PlacementJuicePlayer.play()
+		await create_tween().tween_property(juice_mesh, "global_position", pos, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BOUNCE).finished
+		juice_mesh.queue_free()
+		container.add_component(terrain_component)
+
 func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 	var item_id := (selected_ui_action as UiAction.Build).item_id
+	var _index: int = 0
 	for tile_position in coordinates:
 		if not is_coordinate_occupied(tile_position):
 			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
@@ -223,6 +241,8 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 			WorldPositionComponent.set_world_position(blueprint, coordinate_to_global_position(tile_position))
 			blueprint.component_container.add_component(BlueprintComponent.new())
 			Events.blueprint_placed.emit(tile_position, blueprint)
+			_create_placement_juice(blueprint, _index)
+			_index += 1
 
 func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 	for coordinate in coordinates:

@@ -60,6 +60,8 @@ func remove_component(component_id: Components.Id) -> void:
 	)
 	
 	for matching in matching_all:
+		if matching.has_method("on_exit"):
+			matching.on_exit()
 		_components.erase(matching)
 		Events.component.removed.emit(self, matching)
 

@@ -12,7 +12,6 @@ var root: bool = false
 func clean_up() -> void:
 	for child in get_children():
 		if child.has_method("clean_up"):
-			print("Calling clean up on: ", child)
 			child.clean_up()
 		
 		child.queue_free()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://cxfu88mnhmgb7"]
+[gd_scene load_steps=23 format=3 uid="uid://cxfu88mnhmgb7"]
 
 [ext_resource type="Script" path="res://src/map/MainMap3D.gd" id="1_hry08"]
 [ext_resource type="Script" path="res://src/map/MapTileSelector.gd" id="2_k2ptl"]
@@ -6,6 +6,7 @@
 [ext_resource type="Material" uid="uid://602vpw2ulgrn" path="res://src/map/water_material_1.material" id="3_i6c31"]
 [ext_resource type="PackedScene" uid="uid://c67ua8jdle4ma" path="res://src/map/SelectionDraw.tscn" id="4_u51vp"]
 [ext_resource type="PackedScene" uid="uid://58s8ouhd1j86" path="res://src/map/EntitySelectionDraw.tscn" id="6_tt6bd"]
+[ext_resource type="AudioStream" uid="uid://b84nhjvx33esl" path="res://assets/sounds/placement.ogg" id="7_f2b3f"]
 
 [sub_resource type="Gradient" id="Gradient_gpv11"]
 colors = PackedColorArray(0.675781, 0.675781, 0.675781, 1, 1, 1, 1, 1)
@@ -136,3 +137,8 @@ visible = false
 mesh = SubResource("PlaneMesh_y0iy8")
 
 [node name="EntitySelectionDraw" parent="." instance=ExtResource("6_tt6bd")]
+
+[node name="PlacementJuicePlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_f2b3f")
+volume_db = -10.511
+max_polyphony = 10
