@@ -12,5 +12,5 @@ func process_action(actor: Settler, delta: float) -> void:
 	
 	var target_position: Vector3 = constructable_component.get_owner().global_position
 	var look_at_target := Vector3(target_position.x, actor.global_position.y, target_position.z)
-	if look_at_target != actor.global_position:
+	if look_at_target.distance_squared_to(actor.global_position) > 0.01:
 		actor.look_at(look_at_target, Vector3.UP, true)

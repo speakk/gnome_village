@@ -1,10 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://f30j7nr3ioc4"]
+[gd_scene load_steps=18 format=3 uid="uid://f30j7nr3ioc4"]
 
 [ext_resource type="Script" path="res://src/items/item_on_ground/ItemOnGround.gd" id="1_j80v7"]
 [ext_resource type="Texture2D" uid="uid://bw1pf7p1ry4gq" path="res://assets/dismantle_indicator.png" id="4_xl2yw"]
 [ext_resource type="PackedScene" uid="uid://cyfiey6xlcs1q" path="res://src/components/component_container.tscn" id="5_3dtg2"]
 [ext_resource type="Script" path="res://src/components/data/WorldPosition.gd" id="6_cx06m"]
-[ext_resource type="Script" path="res://src/components/data/Inventory.gd" id="7_delar"]
 [ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="8_hglpx"]
 [ext_resource type="Script" path="res://src/components/data/Selectable.gd" id="9_t6muy"]
 [ext_resource type="Script" path="res://src/components/data/ItemAmount.gd" id="9_w3cfj"]
@@ -25,9 +24,6 @@ gradient = SubResource("Gradient_sqx7s")
 [sub_resource type="Resource" id="Resource_beipl"]
 script = ExtResource("6_cx06m")
 
-[sub_resource type="Resource" id="Resource_vwlbm"]
-script = ExtResource("7_delar")
-
 [sub_resource type="Resource" id="Resource_otqls"]
 script = ExtResource("8_hglpx")
 display_name = ""
@@ -37,6 +33,8 @@ script = ExtResource("9_t6muy")
 
 [sub_resource type="Resource" id="Resource_g38ir"]
 script = ExtResource("10_kk5vt")
+items_can_be_picked = true
+pre_filled = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 
 [sub_resource type="Resource" id="Resource_ki78u"]
 script = ExtResource("9_w3cfj")
@@ -83,4 +81,4 @@ text = "2"
 font_size = 24
 
 [node name="ComponentContainer" parent="." instance=ExtResource("5_3dtg2")]
-default_components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_beipl"), SubResource("Resource_vwlbm"), SubResource("Resource_otqls"), SubResource("Resource_pf2j7"), SubResource("Resource_g38ir"), SubResource("Resource_ki78u")])
+default_components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_beipl"), SubResource("Resource_otqls"), SubResource("Resource_pf2j7"), SubResource("Resource_g38ir"), SubResource("Resource_ki78u")])

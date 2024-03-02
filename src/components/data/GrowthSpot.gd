@@ -4,16 +4,18 @@ signal plant_id_set(new_plant_id: Items.Id)
 
 var has_growing: bool
 
-var growth_requirement_inventory: InventoryComponent = InventoryComponent.new()
+var growth_requirement_inventory: InventoryComponent
 
 var plant_component: PlantComponent
 
 func _init() -> void:
 	id = Components.Id.GrowthSpot
-
-func set_owner(_owner: Node) -> void:
-	super.set_owner(_owner)
-	growth_requirement_inventory.set_owner(_owner)
+	subscriptions.append(
+		Subscription.new(id, Components.Id.Inventory,
+		func(_inventory: InventoryComponent) -> void:
+			growth_requirement_inventory = _inventory
+			)
+	)
 
 func consume_growth_requirement(growth_requirement_id: Items.Id, amount: int) -> void:
 	growth_requirement_inventory.remove_item_amount(growth_requirement_id, amount)

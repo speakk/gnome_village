@@ -1,17 +1,32 @@
 class_name InventoryComponent extends Component
 
+@export var items_can_be_picked: bool = true
+@export var pre_filled: Array[ItemRequirement]:
+	set(new_value):
+		pre_filled = new_value
+		for item_requirement in pre_filled:
+			add_item_amount(item_requirement.item_id, item_requirement.amount)
+
 var item_amounts: Dictionary = {}
 var reservations: Dictionary = {}
 
 signal item_added(item_id: Variant, amount: int)
 signal item_removed(item_id: Variant, amount: int)
 
+func set_owner(_new_owner: Node) -> void:
+	super.set_owner(_new_owner)
+	for item_amount in get_items():
+		item_amount.set_owner(_new_owner)
+
 func _init() -> void:
 	id = Components.Id.Inventory
 
-func add_item_amount(item_id: Variant, amount: int) -> void:
+func add_item_amount(item_id: Items.Id, amount: int) -> void:
+	if item_id == 8:
+		push_error("WE DID IT WATER WELL ADDED AS ITEM AMOUNT ??")
 	if not item_amounts.has(item_id):
-		item_amounts[item_id] = ItemAmountComponent.new(0, item_id)
+		item_amounts[item_id] = ItemAmountComponent.new(item_id)
+		item_amounts[item_id].set_owner(component_owner)
 		
 	item_amounts[item_id].amount += amount
 	item_added.emit(item_id, amount)
@@ -21,20 +36,20 @@ func get_item_amount(item_id: Items.Id) -> ItemAmountComponent:
 
 func reserve_item_amount(item_id: Variant, amount: int) -> void:
 	if not reservations.has(item_id):
-		reservations[item_id] = ItemAmountComponent.new(0, item_id)
+		reservations[item_id] = ItemAmountComponent.new(item_id)
 	
 	reservations[item_id].amount += amount
 
 func remove_item_reservation(item_id: Variant, amount: int) -> void:
 	if not reservations.has(item_id):
-		reservations[item_id] = ItemAmountComponent.new(0, item_id)
+		reservations[item_id] = ItemAmountComponent.new(item_id)
 	reservations[item_id].amount -= amount
 	if reservations[item_id].amount <= 0:
 		reservations.erase(item_id)
 
 func remove_item_amount(item_id: Variant, amount: int) -> void:
 	if not item_amounts.has(item_id):
-		item_amounts[item_id] = ItemAmountComponent.new(0, item_id)
+		item_amounts[item_id] = ItemAmountComponent.new(item_id)
 	item_amounts[item_id].amount -= amount
 	if item_amounts[item_id].amount <= 0:
 		item_amounts.erase(item_id)

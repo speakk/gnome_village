@@ -10,8 +10,19 @@ func find_closest_material(_item_requirement: ItemRequirement) -> ItemOnGround:
 	
 	# TODO: Doesn't handle reservations yet with material.item_amount
 	var correct_materials := materials_on_ground.filter(func(material: ItemOnGround) -> bool:
-		return (material.item_id == _item_requirement.item_id and material.item_amount.has_item_amount(_item_requirement.item_id, _item_requirement.amount)) \
-		or material.inventory.has_item_requirement(_item_requirement)
+		var container: ComponentContainer = material.component_container
+		if material.item_id == _item_requirement.item_id:
+			if container.has_component(Components.Id.ItemAmount):
+				var item_amount: ItemAmountComponent = container.get_by_id(Components.Id.ItemAmount)
+				if item_amount.has_item_amount(_item_requirement.item_id, _item_requirement.amount):
+					return true
+			
+		if container.has_component(Components.Id.Inventory):
+			var inventory: InventoryComponent = container.get_by_id(Components.Id.Inventory)
+			if inventory.items_can_be_picked and inventory.has_item_requirement(_item_requirement):
+				return true
+		
+		return false
 	)
 	
 	var closest_distance := 99999999.0
@@ -37,9 +48,9 @@ func start_work() -> void:
 			return
 		
 		if material.item_id == task.item_requirement.item_id:
-			_item_amount_component = material.item_amount
+			_item_amount_component = material.component_container.get_by_id(Components.Id.ItemAmount)
 		else:
-			_item_amount_component = material.inventory.get_item_amount(task.item_requirement.item_id)
+			_item_amount_component = material.component_container.get_by_id(Components.Id.Inventory).get_item_amount(task.item_requirement.item_id)
 	
 		var reservation := ItemAmountReservation.new(tree.actor, task.item_requirement.amount)
 		_item_amount_component.add_reservation(reservation)

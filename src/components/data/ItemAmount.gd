@@ -32,7 +32,7 @@ func has_item_amount(_item_id: Variant, _amount: int) -> bool:
 func has_item_requirement(item_requirement: ItemRequirement) -> bool:
 	return has_item_amount(item_requirement.item_id, item_requirement.amount)
 
-func _init(_amount: int = 0, _item_id: Items.Id = Items.Id.Wood) -> void:
+func _init(_item_id: Items.Id = Items.Id.Wood, _amount: int = 0) -> void:
 	amount = _amount
 	item_id = _item_id
 	id = Components.Id.ItemAmount

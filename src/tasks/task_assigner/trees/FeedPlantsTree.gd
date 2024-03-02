@@ -6,7 +6,11 @@ var farm_plot: ItemOnGround
 
 func _ready() -> void:
 	name = "FeedPlantsTree"
-	
+
+func finish_tree() -> void:
+	print("FINISH FEED")
+	clean_up()
+
 func initialize(_farm_plot: ItemOnGround) -> FeedPlantsTree:
 	order_type = TaskTreeBranch.OrderType.Parallel
 	farm_plot = _farm_plot
@@ -21,23 +25,26 @@ func initialize(_farm_plot: ItemOnGround) -> FeedPlantsTree:
 		bring_resources.name = "Bring_Resources_Parallel"
 		
 		for growth_requirement in growth_requirements as Array[ItemRequirement]:
-			var bring_resource_leaf := TaskTreeLeaf.new()
-			bring_resource_leaf.name = "Bring_Resource_Leaf"
-			var task := BRING_RESOURCE_TASK.instantiate() as BringResourceTask
-			task.initialize({
-				item_requirement = growth_requirement,
-				inventory_component = growth_spot.growth_requirement_inventory
-			})
-			task.failed.connect(_handle_task_failure)
-			bring_resource_leaf.set_task(task)
-			bring_resources.add_child(bring_resource_leaf)
+			for i in growth_requirement.amount:
+				var split_requirement := growth_requirement.duplicate()
+				split_requirement.amount = 1
+				var bring_resource_leaf := TaskTreeLeaf.new()
+				bring_resource_leaf.name = "Bring_Resource_Leaf"
+				var task := BRING_RESOURCE_TASK.instantiate() as BringResourceTask
+				task.initialize({
+					item_requirement = split_requirement,
+					inventory_component = growth_spot.growth_requirement_inventory
+				})
+				task.failed.connect(_handle_task_failure)
+				bring_resource_leaf.set_task(task)
+				bring_resources.add_child(bring_resource_leaf)
 		
 		add_child(bring_resources)
 	
 	return self
 
 func _handle_task_failure(task: Task) -> void:
-	pass
+	print("Feed plants bring task failed")
 
 func save() -> Dictionary:
 	var save_dict: Dictionary = {}

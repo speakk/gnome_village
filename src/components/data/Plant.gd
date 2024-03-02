@@ -28,11 +28,11 @@ func is_mature() -> bool:
 func has_growth_requirements() -> bool:
 	if not grows_in:
 		return false
-		
+	
 	for growth_requirement in growth_requirements:
 		var satisfies_requirement := false
 		for growth_provided: ItemAmountComponent in grows_in.growth_requirement_inventory.get_items():
-			if growth_provided.id == growth_requirement.item_id \
+			if growth_provided.item_id == growth_requirement.item_id \
 			and growth_provided.amount >= growth_requirement.amount:
 				satisfies_requirement = true
 				break

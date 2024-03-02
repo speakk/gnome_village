@@ -5,8 +5,6 @@ class_name ItemOnGround
 @onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
 
 @onready var component_container: ComponentContainer = $ComponentContainer
-@onready var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
-@onready var inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
 
 var item_scene: Node3D
 var item: Item
@@ -22,7 +20,6 @@ func save() -> Dictionary:
 	var save_dict := {
 		"position_x" = global_position.x,
 		"position_y" = global_position.y,
-		"item_amount" = item_amount.save(),
 		"item_id" = item_id,
 	}
 	
@@ -32,21 +29,14 @@ func load_save(save_dict: Dictionary) -> void:
 	global_position.x = save_dict["position_x"]
 	global_position.y = save_dict["position_y"]
 	item_id = save_dict["item_id"]
-	item_amount.load_save(save_dict["item_amount"])
 
 	Events.item_placed_on_ground.emit(self, global_position)
 
 func initialize(_item_id: Items.Id, _amount: int = 1) -> ItemOnGround:
 	item_id = _item_id
 	
-	# TODO: Get rid of item_amount default component
-	if item_amount:
-		item_amount.amount = _amount
-	
-	for provides_item: ItemRequirement in item.provides:
-		inventory.add_item_amount(provides_item.item_id, provides_item.amount)
-	
 	set_item_components()
+	component_container.get_by_id(Components.Id.ItemAmount).amount = _amount
 
 	return self
 	
@@ -62,7 +52,6 @@ func _amount_changed(new_amount: int) -> void:
 
 func _ready() -> void:
 	set_notify_transform(true)
-	item_amount.amount_changed.connect(_amount_changed)
 
 func _exit_tree() -> void:
 	Events.item_removed_from_ground.emit(self)

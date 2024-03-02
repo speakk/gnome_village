@@ -9,19 +9,22 @@ var blueprint: ItemOnGround
 
 func _ready() -> void:
 	name = "BlueprintTree"
-	
-	Events.construction_finished.connect(func(_blueprint: ItemOnGround) -> void:
-		if _blueprint == blueprint:
-			print("Cleaning up after finishing contruction")
-			clean_up()
-	)
+	#
+	#Events.construction_finished.connect(func(_blueprint: ItemOnGround) -> void:
+		#if _blueprint == blueprint:
+			#print("Cleaning up after finishing contruction")
+			#clean_up()
+	#)
 	
 	Events.blueprint_cancel_issued.connect(func(_blueprint: ItemOnGround) -> void:
 		if _blueprint == blueprint:
 			clean_up()
 			#blueprint.queue_free()
 	)
-	
+
+func finish_tree() -> void:
+	clean_up()
+
 func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTree:
 	order_type = TaskTreeBranch.OrderType.Sequence
 	blueprint = _blueprint
@@ -35,6 +38,8 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 		bring_resources.order_type = TaskTreeBranch.OrderType.Parallel
 		bring_resources.name = "Bring_Resources_Parallel"
 		
+		# TODO: Each amount gets split into 1
+		# Figure if we want to support item stacks being delivered
 		for material_requirement in material_requirements as Array[ItemRequirement]:
 			for i in material_requirement.amount:
 				var bring_resource_leaf := TaskTreeLeaf.new()

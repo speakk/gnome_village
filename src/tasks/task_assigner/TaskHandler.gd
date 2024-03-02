@@ -125,7 +125,8 @@ func _process(delta: float) -> void:
 					if available_settler:
 						next_available_task.is_being_worked_on = true
 						available_settler.start_task(next_available_task)
-				
+				elif result.status == NodeStatus.Finished:
+					task_tree.finish_tree()
 		task_process_timer = 0
 
 enum NodeStatus {
@@ -172,6 +173,8 @@ func give_task(node: Variant) -> NodeResult:
 					else:
 						return NodeResult.new(result.node, NodeStatus.FoundTask)
 				# Every task is being done
+			else:
+				return result
 				
 		if all_children_finished:
 			return NodeResult.new(null, NodeStatus.Finished)
