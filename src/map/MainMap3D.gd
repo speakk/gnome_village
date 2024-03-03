@@ -262,12 +262,7 @@ func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 		var entities := get_map_entities(coordinate)
 		for entity in entities:
 			if entity.component_container.has_component(Components.Id.Blueprint):
-				#Events.blueprint_cancel_issued.emit(entity)
 				entity.queue_free()
-
-#func _terrain_placed(coordinate: Vector2i, target_layer: MainMap.Layers,
-						#terrain_set_id: int, terrain_id: int, is_solid: bool, item_on_ground: ItemOnGround) -> void:
-	#set_cells_terrain_connect(target_layer, [coordinate], terrain_set_id, terrain_id)
 
 func _terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, blueprint: bool) -> void:
 	var grid_map: GridMap = grid if not blueprint else blueprint_grid
@@ -276,14 +271,6 @@ func _terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, blueprint: boo
 func _terrain_cleared(coordinate: Vector2i, blueprint: bool) -> void:
 	var grid_map: GridMap = grid if not blueprint else blueprint_grid
 	grid_map.set_cell_item(Globals.extend_vec2i(coordinate), -1)
-
-#
-#func _terrain_cleared(coordinate: Vector2i, target_layer: MainMap.Layers, tileset_source_id: int) -> void:
-	#set_cells_terrain_connect(target_layer, [coordinate], tileset_source_id, -1)
-#
-#func is_vacant_coordinate(coordinate: Vector2i) -> bool:
-	#var has_ground := get_cell_source_id(Layers.Ground, coordinate) >= 0
-	#return not PathFinder.is_position_solid(coordinate) and has_ground
 
 # TODO: Unholy
 func get_random_coordinate(accept_occupied: bool = true) -> Vector2i:
@@ -301,6 +288,3 @@ func coordinate_to_global_position(coordinate: Vector2i) -> Vector3:
 func global_position_to_coordinate(_global_position: Vector3) -> Vector2i:
 	var coordinate: Vector3i = grid.local_to_map(grid.to_local(_global_position))
 	return Vector2i(coordinate.x, coordinate.z)
-
-#func get_local_mouse_position() -> Vector2:
-	#return grid.get_mou

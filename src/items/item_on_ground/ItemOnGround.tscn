@@ -74,6 +74,7 @@ texture_progress = SubResource("GradientTexture2D_8n5hh")
 
 [node name="ItemAmountLabel" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196012, 0)
+visible = false
 pixel_size = 0.003
 billboard = 1
 no_depth_test = true

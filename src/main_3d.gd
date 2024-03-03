@@ -20,7 +20,9 @@ func _ready() -> void:
 	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
 	Events.save_game_called.connect(func(save_dict: Dictionary) -> void: save(save_dict))
 	
-	Events.request_entity_add.connect(func(entity: Node) -> void: entities.add_child(entity))
+	Events.request_entity_add.connect(func(entity: Node) -> void:
+		entities.add_child(entity)
+	)
 	
 	Events.current_time_changed.connect(_current_time_changed)
 	
@@ -69,6 +71,8 @@ func _ready() -> void:
 			settlers_to_place -= 1
 			if settlers_to_place <= 0:
 				break
+	
+	#create_ground_entities()
 	
 	var DECAL := preload("res://src/misc/Decal.tscn")
 	for i in DECAL_AMOUNT:
@@ -144,6 +148,30 @@ func save(save_dict: Dictionary) -> void:
 	
 	save_dict["main_data"] = main_data
 #
+
+func create_ground_entities() -> void:
+	for iter_x in MainMap3D.MAP_SIZE_X:
+		for iter_y in MainMap3D.MAP_SIZE_Y:
+			var x: int = iter_x - MainMap3D.MAP_SIZE_X/2
+			var y: int = iter_y - MainMap3D.MAP_SIZE_Y/2
+			var mesh_id: int = main_map.ground_grid.get_cell_item(Vector3i(x, 0, y))
+			if mesh_id == 0:
+				var entity: ItemOnGround = ITEM_ON_GROUND.instantiate()
+				entity.show_amount_number = false
+				main_map.add_map_entity(Vector2i(x, y), entity)
+				entities.add_child(entity)
+				entity.hide()
+				entity.process_mode = Node.PROCESS_MODE_DISABLED
+				entity.component_container.component_owner = entity
+				var inventory: InventoryComponent = InventoryComponent.new()
+				inventory.pre_filled = [ItemRequirement.new(Items.Id.Water, 100)]
+				inventory.items_can_be_picked = false
+				entity.component_container.add_component(inventory)
+				var world_pos: WorldPositionComponent = WorldPositionComponent.new()
+				world_pos = entity.component_container.add_component(world_pos)
+				world_pos.current_position = main_map.coordinate_to_global_position(Vector2i(x, y))
+
+
 func _current_time_changed(new_time: float) -> void:
 	#sky.set_time_of_day(new_time)
 	sky.time_of_day_setup = new_time

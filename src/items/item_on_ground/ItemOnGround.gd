@@ -6,6 +6,8 @@ class_name ItemOnGround
 
 @onready var component_container: ComponentContainer = $ComponentContainer
 
+var show_amount_number := true
+
 var item_scene: Node3D
 var item: Item
 
@@ -53,11 +55,12 @@ func initialize(_item_id: Items.Id, _amount: int = 1) -> ItemOnGround:
 	return self
 	
 func _amount_changed(new_amount: int) -> void:
-	$ItemAmountLabel.text = "%s" % new_amount
-	if new_amount > 1:
-		$ItemAmountLabel.show()
-	else:
-		$ItemAmountLabel.hide()
+	if show_amount_number:
+		$ItemAmountLabel.text = "%s" % new_amount
+		if new_amount > 1:
+			$ItemAmountLabel.show()
+		else:
+			$ItemAmountLabel.hide()
 	
 	if new_amount <= 0:
 		queue_free()

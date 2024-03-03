@@ -13,6 +13,10 @@ func save() -> Dictionary:
 	
 	return save_dict
 
+func _init(_item_id: Items.Id = -1, _amount: int = 0) -> void:
+	item_id = _item_id
+	amount = _amount
+
 func load_save(save_dict: Dictionary) -> void:
 	item_id = save_dict["item_id"]
 	amount = save_dict["amount"]
