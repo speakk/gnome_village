@@ -1,0 +1,58 @@
+[gd_resource type="Resource" script_class="Item" load_steps=20 format=3 uid="uid://d21dsdlmqvf2h"]
+
+[ext_resource type="PackedScene" uid="uid://b66wvto8e2uqa" path="res://assets/blender_models/plants/oak_tree_seedling.blend" id="1_2eh1g"]
+[ext_resource type="Script" path="res://src/items/Item.gd" id="1_6wax3"]
+[ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_j48q8"]
+[ext_resource type="Script" path="res://src/items/plants/GrowthStage.gd" id="2_lb2w0"]
+[ext_resource type="PackedScene" uid="uid://ckxp0vo3b1bs2" path="res://assets/blender_models/plants/oak_tree_1.blend" id="3_cgql2"]
+[ext_resource type="PackedScene" uid="uid://xeh85gspxejx" path="res://assets/blender_models/plants/oak_tree_2.blend" id="4_5h2r7"]
+[ext_resource type="PackedScene" uid="uid://b0chxrd57lc3i" path="res://assets/blender_models/plants/oak_tree_3.blend" id="5_dq7p0"]
+[ext_resource type="Script" path="res://src/components/data/Plant.gd" id="6_03736"]
+[ext_resource type="PackedScene" uid="uid://cpjoxtonfq1qp" path="res://src/items/item_data/scenes/Plant.tscn" id="7_re57t"]
+[ext_resource type="Script" path="res://src/components/data/PlantScene.gd" id="8_6tdx3"]
+[ext_resource type="Script" path="res://src/components/data/Spread.gd" id="9_yjcyv"]
+
+[sub_resource type="Resource" id="Resource_yj5ua"]
+script = ExtResource("1_j48q8")
+item_id = 7
+amount = 1
+
+[sub_resource type="Resource" id="Resource_i1sya"]
+script = ExtResource("2_lb2w0")
+mesh_scene = ExtResource("1_2eh1g")
+
+[sub_resource type="Resource" id="Resource_uqr4v"]
+script = ExtResource("2_lb2w0")
+mesh_scene = ExtResource("3_cgql2")
+
+[sub_resource type="Resource" id="Resource_nnjrc"]
+script = ExtResource("2_lb2w0")
+mesh_scene = ExtResource("4_5h2r7")
+
+[sub_resource type="Resource" id="Resource_k38fb"]
+script = ExtResource("2_lb2w0")
+mesh_scene = ExtResource("5_dq7p0")
+
+[sub_resource type="Resource" id="Resource_f4xcm"]
+script = ExtResource("6_03736")
+growth_stage_time = 120.0
+growth_stages = Array[ExtResource("2_lb2w0")]([SubResource("Resource_i1sya"), SubResource("Resource_uqr4v"), SubResource("Resource_nnjrc"), SubResource("Resource_k38fb")])
+growth_requirements = Array[ExtResource("1_j48q8")]([SubResource("Resource_yj5ua")])
+
+[sub_resource type="Resource" id="Resource_xjwkl"]
+script = ExtResource("8_6tdx3")
+scene = ExtResource("7_re57t")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+
+[sub_resource type="Resource" id="Resource_e6kwd"]
+script = ExtResource("9_yjcyv")
+spread_check_rate = 5.0
+spread_radius = 50
+spread_chance = 0.01
+
+[resource]
+script = ExtResource("1_6wax3")
+display_name = "Oak Tree"
+item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
+provides = Array[ExtResource("1_j48q8")]([])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_f4xcm"), SubResource("Resource_xjwkl"), SubResource("Resource_e6kwd")])

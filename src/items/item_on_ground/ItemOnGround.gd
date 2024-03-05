@@ -9,7 +9,10 @@ class_name ItemOnGround
 var show_amount_number := true
 
 var item_scene: Node3D
-var item: Item
+var item: Item:
+	set(new_item):
+		item = new_item
+		set_item_components()
 
 var item_id: Items.Id:
 	set(new_item_id):
@@ -34,23 +37,8 @@ func load_save(save_dict: Dictionary) -> void:
 
 	Events.item_placed_on_ground.emit(self, global_position)
 
-func initialize(_item_id: Items.Id, _amount: int = 1) -> ItemOnGround:
+func initialize(_item_id: Items.Id) -> ItemOnGround:
 	item_id = _item_id
-	
-	set_item_components()
-	var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
-	item_amount.amount_changed.connect(func(new_amount: int) -> void:
-		if new_amount > 1:
-			$ItemAmountLabel.text = new_amount
-			$ItemAmountLabel.show()
-		else:
-			$ItemAmountLabel.hide()
-		
-		if new_amount <= 0:
-			queue_free()
-		)
-	item_amount.amount = _amount
-	
 	
 	return self
 	
@@ -71,6 +59,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	Events.item_removed_from_ground.emit(self)
 
+# TODO: Separate into a component
 func generate_drops() -> void:
 	for item_drop in item.item_drops:
 		if randf() <= item_drop.probability:
@@ -78,7 +67,7 @@ func generate_drops() -> void:
 			var new_item_on_ground := ITEM_ON_GROUND.instantiate() as ItemOnGround
 			# TODO: Randomize position slightly
 			get_parent().add_child(new_item_on_ground)
-			new_item_on_ground.initialize(item_drop.item_id, amount)
+			new_item_on_ground.initialize(item_drop.item_id)
 			var position_component: WorldPositionComponent = new_item_on_ground.component_container.get_by_id(Components.Id.WorldPosition)
 			position_component.current_position = global_position
 			WorldPositionComponent.set_world_position(new_item_on_ground, global_position)
@@ -92,3 +81,16 @@ func set_item_components() -> void:
 		component_container.add_component(component)
 
 	component_container.get_by_id(Components.Id.DisplayName).display_name = item.display_name
+
+	var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
+	item_amount.amount_changed.connect(func(new_amount: int) -> void:
+		if new_amount > 1:
+			$ItemAmountLabel.text = new_amount
+			$ItemAmountLabel.show()
+		else:
+			$ItemAmountLabel.hide()
+		
+		if new_amount <= 0:
+			queue_free()
+		)
+	#item_amount.amount = _amount

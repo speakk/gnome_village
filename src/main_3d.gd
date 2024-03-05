@@ -8,6 +8,8 @@ extends Node3D
 
 @onready var sky: DayNightCycleSky = $sky
 
+@export var test_tree: Item
+
 @export var daylight_amount: Curve
 @export var yellow_light_amount: Curve
 
@@ -32,15 +34,29 @@ func _ready() -> void:
 	
 	print("Now spawning entities")
 	
+	#for i in TEST_TREES:
+		#var grid_position := Globals.get_map().get_random_coordinate()
+		#var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
+		#if not PathFinder.is_position_solid(grid_position):
+			#var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
+			#%Entities.add_child(item_on_ground)
+			#item_on_ground.initialize(Items.Id.Tree)
+			#WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
+	
 	for i in TEST_TREES:
 		var grid_position := Globals.get_map().get_random_coordinate()
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
-			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
+			var new_grows_in_entity := PlantComponent.create_growth_spot(quantized_position)
+			
+			var new_tree: Item = test_tree.duplicate(true)
+			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround) 
 			%Entities.add_child(item_on_ground)
-			item_on_ground.initialize(Items.Id.Tree)
+			item_on_ground.item = new_tree
 			WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
-	
+			item_on_ground.component_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
+			item_on_ground.component_container.get_by_id(Components.Id.Plant).current_growth_stage_index = randi_range(0, 3)
+			
 	await get_tree().physics_frame
 #
 	var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone]

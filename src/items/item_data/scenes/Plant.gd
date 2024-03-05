@@ -5,7 +5,6 @@ extends Node3D
 var current_growth_scene: Node3D
 
 var plant: PlantComponent
-var grows_in: GrowthSpotComponent
 
 func set_plant(_plant: PlantComponent) -> void:
 	plant = _plant
@@ -21,5 +20,9 @@ func _advance_growth_stage(new_index: int) -> void:
 			current_growth_scene.queue_free()
 		
 		var growth_stage_scene := plant.growth_stages[new_index].mesh_scene.instantiate()
+		print("New growth stage", new_index)
 		current_growth_scene = growth_stage_scene
+		#Events.request_entity_add.emit(current_growth_scene)
 		add_child(current_growth_scene)
+		#current_growth_scene.global_position = global_position
+		

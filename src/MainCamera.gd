@@ -1,12 +1,13 @@
 extends Camera3D
 
-const CAMERA_SPEED: float = 15
-const MAX_SPEED: float = 2
+const CAMERA_SPEED: float = 500
+const MAX_SPEED: float = 150
+const FRICTION: float = 250
 
 var position_target: Vector3
 var velocity: Vector3
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	var movement_vector: Vector2 = Vector2(0, 0)
 	if not Globals.is_focus_in_control():
 		if Input.is_action_pressed("pan_camera_down"):
@@ -22,9 +23,9 @@ func _process(delta: float) -> void:
 	velocity = velocity.limit_length(MAX_SPEED)
 	
 	var size_speed_multiplier: float = size / max_size
-	position += velocity * size_speed_multiplier
+	position += velocity * size_speed_multiplier * delta / Engine.time_scale
 	
-	velocity = velocity.move_toward(Vector3(), delta * 10)
+	velocity = velocity.move_toward(Vector3(), delta * FRICTION / Engine.time_scale)
 	
 	
 	var ray_result: Variant = _get_ray_result(get_viewport().get_mouse_position())

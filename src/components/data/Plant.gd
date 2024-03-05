@@ -1,6 +1,6 @@
 class_name PlantComponent extends Component
 
-signal matured
+var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
 ## How long does it take to progress to next growth stage (in seconds)
 @export var growth_stage_time: float = 2.0
@@ -9,21 +9,61 @@ signal matured
 @export var growth_requirements: Array[ItemRequirement]
 
 var current_growth_timer: float = 0.0
-var current_growth_stage_index: int = -1
+var current_growth_stage_index: int = -1:
+	set(new_value):
+		current_growth_stage_index = new_value
+		advanced_growth_stage.emit(current_growth_stage_index)
 
 var current_growth_scene: Variant
 
 signal satisfies_growth_requirements
 signal lacks_growth_requirements
 signal advanced_growth_stage(new_stage_index: int)
+signal matured
 
 var grows_in: GrowthSpotComponent
 
 func _init() -> void:
 	id = Components.Id.Plant
+	subscriptions.append(Subscription.new(id, Components.Id.Spread, _set_spread_component))
+
+func _set_spread_component(spread_component: SpreadComponent) -> void:
+	print("Spread component set!")
+	spread_component.spreads.connect(_spreads)
+	matured.connect(func() -> void: spread_component.set_active(true))
+	if is_mature():
+		spread_component.set_active(true)
+	else:
+		spread_component.set_active(false)
+
+static func create_growth_spot(new_position: Vector3) -> ItemOnGround:
+	var new_grows_in_entity: ItemOnGround = load("res://src/items/item_on_ground/ItemOnGround.tscn").instantiate()
+	Events.request_entity_add.emit(new_grows_in_entity)
+	var grows_container: ComponentContainer = new_grows_in_entity.component_container
+	grows_container.add_component(GrowthSpotComponent.new())
+	var inventory: InventoryComponent = grows_container.add_component(InventoryComponent.new())
+	inventory.add_item_amount(Items.Id.Water, 300)
+	var grows_world_pos_component: WorldPositionComponent = grows_container.add_component(WorldPositionComponent.new())
+	grows_world_pos_component.current_position = new_position
+	return new_grows_in_entity
+
+func _spreads(coordinate: Vector2i) -> void:
+	print("Spreads called!", coordinate)
+	var global_pos: Vector3 = Globals.get_map().coordinate_to_global_position(coordinate)
+	var new_grows_in_entity := PlantComponent.create_growth_spot(global_pos)
+	
+	var new_plant: ItemOnGround = ITEM_ON_GROUND.instantiate()
+	Events.request_entity_add.emit(new_plant)
+	#new_plant.initialize(get_owner().item_id)
+	new_plant.item = get_owner().item.duplicate(true)
+	var comp_container: ComponentContainer = new_plant.component_container
+	comp_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
+	WorldPositionComponent.set_world_position(new_plant, global_pos)
+	
 
 func is_mature() -> bool:
-	return current_growth_stage_index >= growth_stages.size() - 1
+	#print("Current stage: %s vs stages size: %s" % [current_growth_stage_index, growth_stages.size()])
+	return current_growth_stage_index >= growth_stages.size()
 
 func has_growth_requirements() -> bool:
 	if not grows_in:
@@ -49,7 +89,6 @@ func consume_growth_requirements() -> void:
 func advance_growth_stage() -> void:
 	if not is_mature():
 		current_growth_stage_index += 1
-		advanced_growth_stage.emit(current_growth_stage_index)
 		
 		if is_mature():
 			matured.emit()
@@ -57,11 +96,9 @@ func advance_growth_stage() -> void:
 var lacks_growth_requirements_emitted := false
 
 func process_component(delta: float) -> void:
-	#print("Processing plant")
 	if not is_mature():
 		#print("Not mature")
 		if has_growth_requirements():
-			#print("Had growth requirements")
 			lacks_growth_requirements_emitted = false
 			satisfies_growth_requirements.emit()
 			current_growth_timer += delta
