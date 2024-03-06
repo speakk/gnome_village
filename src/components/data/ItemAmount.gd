@@ -6,7 +6,7 @@ var item_id: Items.Id
 
 var _reservations: Array[ItemAmountReservation]
 
-var amount: int = 1:
+@export var amount: int = 1:
 	set(new_amount):
 		amount = new_amount
 		amount_changed.emit(new_amount)

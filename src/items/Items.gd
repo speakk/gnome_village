@@ -2,23 +2,32 @@ extends Node
 
 enum Id {
 	Stone, Wood, WoodenWall, Tree, WoodenDoor, FarmPlot, WoodenTorch,
-	Water, WaterWell, PotatoPlant
+	Water, WaterWell, PotatoPlant, OakTree
 }
 
-var list: Dictionary = {
-	Id.Stone: load("res://src/items/item_data/stone.tres") as Item,
-	Id.Wood: load("res://src/items/item_data/wood.tres") as Item,
-	Id.WoodenWall: load("res://src/items/item_data/wooden_wall.tres") as Item,
-	Id.Tree: load("res://src/items/item_data/tree.tres") as Item,
-	Id.WoodenDoor: load("res://src/items/item_data/wooden_door.tres") as Item,
-	Id.FarmPlot: load("res://src/items/item_data/farm_plot.tres") as Item,
-	Id.WoodenTorch: load("res://src/items/item_data/wooden_torch.tres") as Item,
-	Id.Water: load("res://src/items/item_data/water.tres") as Item,
-	Id.WaterWell: load("res://src/items/item_data/well.tres") as Item,
-	Id.PotatoPlant: load("res://src/items/item_data/plants/potato_plant.tres") as Item
-}
+var list: Dictionary = {}
+
+func _ready() -> void:
+	var paths: Array[String] = ["res://src/items/item_data", "res://src/items/item_data/plants"]
+	for path in paths:
+		var data_dir := DirAccess.open(path)
+		data_dir.list_dir_begin()
+		var file_name := data_dir.get_next()
+		print("File name: ", file_name)
+		while file_name != "":
+			if not data_dir.current_is_dir():
+				var data := load("%s/%s" % [path, file_name])
+				var item: Item
+				if data is Item:
+					item = data
+					if list.has(item.item_id):
+						push_error("Item Id duplicate found: ", item.item_id, file_name)
+					list[item.item_id] = item
+			file_name = data_dir.get_next()
 
 func get_by_id(id: Id) -> Item:
+	if not list.has(id):
+		push_error("No item found with id %s, corresponding to: %s" % [id, Id.keys()[id]])
 	return list[id] as Item
 
 func get_constructable_item_ids() -> Array[Id]:

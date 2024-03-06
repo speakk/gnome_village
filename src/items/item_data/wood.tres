@@ -7,20 +7,11 @@
 [sub_resource type="Resource" id="Resource_esoyu"]
 script = ExtResource("2_20fp2")
 scene = ExtResource("1_xxm8b")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
 
 [resource]
 script = ExtResource("1_oi3ex")
-rendering_type = 2
-model = ExtResource("1_xxm8b")
-target_layer = 0
-mesh_id = 0
+item_id = 1
 display_name = "Wood"
-can_be_picked = true
-can_be_constructed = false
-can_be_dismantled = false
-is_solid = false
-durability = 10
-crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
-provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_esoyu")])

@@ -52,7 +52,7 @@ spread_chance = 0.01
 
 [resource]
 script = ExtResource("1_6wax3")
+item_id = 10
 display_name = "Oak Tree"
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
-provides = Array[ExtResource("1_j48q8")]([])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_f4xcm"), SubResource("Resource_xjwkl"), SubResource("Resource_e6kwd")])

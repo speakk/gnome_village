@@ -40,7 +40,7 @@ custom_subscriptions = Array[Resource("res://src/components/StringSubscription.g
 
 [resource]
 script = ExtResource("1_d5r2t")
+item_id = 9
 display_name = "Potato Plant"
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
-provides = Array[ExtResource("1_tunl2")]([])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_lciqt"), SubResource("Resource_kiexp")])

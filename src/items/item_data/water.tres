@@ -11,7 +11,7 @@ custom_subscriptions = Array[Resource("res://src/components/StringSubscription.g
 
 [resource]
 script = ExtResource("1_apqiq")
+item_id = 7
 display_name = "Water"
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
-provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_pakku")])

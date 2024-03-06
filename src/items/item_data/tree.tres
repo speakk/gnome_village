@@ -8,6 +8,7 @@
 [sub_resource type="Resource" id="Resource_t1fa1"]
 script = ExtResource("2_a58pr")
 scene = ExtResource("2_8bqks")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
 
 [sub_resource type="Resource" id="Resource_851nl"]
 script = ExtResource("1_3s5ki")
@@ -18,17 +19,7 @@ probability = 1.0
 
 [resource]
 script = ExtResource("1_ql27c")
-rendering_type = 2
-model = ExtResource("2_8bqks")
-target_layer = 3
-mesh_id = 0
+item_id = 3
 display_name = "Tree"
-can_be_picked = true
-can_be_constructed = false
-can_be_dismantled = true
-is_solid = true
-durability = 10
-crafting_requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 item_drops = Array[ExtResource("1_3s5ki")]([SubResource("Resource_851nl")])
-provides = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_t1fa1")])

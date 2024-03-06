@@ -15,7 +15,7 @@ func _plant_id_set(plant_id: Items.Id) -> void:
 	if not planted_plant:
 		var planted_plant: ItemOnGround = ITEM_ON_GROUND.instantiate()
 		add_child(planted_plant)
-		planted_plant.initialize(plant_id)
+		planted_plant.item = Items.get_by_id(plant_id)
 		plant_component = planted_plant.component_container.get_by_id(Components.Id.Plant)
 		plant_component.grows_in = growth_spot
 		plant_component.lacks_growth_requirements.connect(_lacks_growth_requirements)

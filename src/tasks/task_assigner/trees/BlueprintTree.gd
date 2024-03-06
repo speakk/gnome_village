@@ -29,7 +29,7 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 	order_type = TaskTreeBranch.OrderType.Sequence
 	blueprint = _blueprint
 	
-	var item_id := blueprint.item_id
+	var item_id := blueprint.item.item_id
 	var constructable_component: ConstructableComponent = _blueprint.component_container.get_by_id(Components.Id.Constructable)
 	var material_requirements := constructable_component.requirements
 	

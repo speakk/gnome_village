@@ -250,7 +250,7 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 		if not is_coordinate_occupied(tile_position):
 			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			Events.request_entity_add.emit(blueprint)
-			blueprint.initialize(item_id)
+			blueprint.item = Items.get_by_id(item_id)
 			WorldPositionComponent.set_world_position(blueprint, coordinate_to_global_position(tile_position))
 			blueprint.component_container.add_component(BlueprintComponent.new())
 			Events.blueprint_placed.emit(tile_position, blueprint)

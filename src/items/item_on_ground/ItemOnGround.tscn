@@ -39,6 +39,7 @@ pre_filled = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 
 [sub_resource type="Resource" id="Resource_ki78u"]
 script = ExtResource("9_w3cfj")
+amount = 1
 
 [node name="ItemOnGround" type="Node3D" groups=["item_on_ground"]]
 script = ExtResource("1_j80v7")

@@ -34,7 +34,7 @@ probability = 1.0
 
 [resource]
 script = ExtResource("2_3a7ng")
+item_id = 2
 display_name = "Wooden wall"
 item_drops = Array[ExtResource("2_y8a2u")]([SubResource("Resource_l4oxn")])
-provides = Array[ExtResource("1_3k661")]([])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_apa45"), SubResource("Resource_cq5ta"), SubResource("Resource_gifqu")])

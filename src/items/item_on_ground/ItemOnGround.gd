@@ -14,18 +14,12 @@ var item: Item:
 		item = new_item
 		set_item_components()
 
-var item_id: Items.Id:
-	set(new_item_id):
-		item_id = new_item_id
-		item = Items.get_by_id(item_id)
-
 var _initial_state: Variant
 
 func save() -> Dictionary:
 	var save_dict := {
 		"position_x" = global_position.x,
 		"position_y" = global_position.y,
-		"item_id" = item_id,
 	}
 	
 	return save_dict
@@ -33,15 +27,9 @@ func save() -> Dictionary:
 func load_save(save_dict: Dictionary) -> void:
 	global_position.x = save_dict["position_x"]
 	global_position.y = save_dict["position_y"]
-	item_id = save_dict["item_id"]
 
 	Events.item_placed_on_ground.emit(self, global_position)
 
-func initialize(_item_id: Items.Id) -> ItemOnGround:
-	item_id = _item_id
-	
-	return self
-	
 func _amount_changed(new_amount: int) -> void:
 	if show_amount_number:
 		$ItemAmountLabel.text = "%s" % new_amount
@@ -67,7 +55,7 @@ func generate_drops() -> void:
 			var new_item_on_ground := ITEM_ON_GROUND.instantiate() as ItemOnGround
 			# TODO: Randomize position slightly
 			get_parent().add_child(new_item_on_ground)
-			new_item_on_ground.initialize(item_drop.item_id)
+			new_item_on_ground.item = Items.get_by_id(item_drop.item_id)
 			var position_component: WorldPositionComponent = new_item_on_ground.component_container.get_by_id(Components.Id.WorldPosition)
 			position_component.current_position = global_position
 			WorldPositionComponent.set_world_position(new_item_on_ground, global_position)
@@ -93,4 +81,5 @@ func set_item_components() -> void:
 		if new_amount <= 0:
 			queue_free()
 		)
-	#item_amount.amount = _amount
+	
+	#item_amount.amount = 1

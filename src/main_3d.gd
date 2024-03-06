@@ -67,7 +67,7 @@ func _ready() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			%Entities.add_child(item_on_ground)
-			item_on_ground.initialize(item_types.pick_random())
+			item_on_ground.item = Items.get_by_id(item_types.pick_random())
 			WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
 			
 	

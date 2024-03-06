@@ -48,7 +48,7 @@ custom_subscriptions = Array[ExtResource("6_sltw2")]([SubResource("Resource_0sgr
 
 [resource]
 script = ExtResource("1_am7fa")
+item_id = 5
 display_name = "Farm Plot"
 item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
-provides = Array[ExtResource("6_xcfl6")]([])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_h10c2"), SubResource("Resource_uort6"), SubResource("Resource_egpa4"), SubResource("Resource_x6j1b"), SubResource("Resource_wo3jf")])
