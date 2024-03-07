@@ -9,7 +9,11 @@ var _components_by_id: Dictionary
 
 var _subscriptions: Array[Subscription]
 
+# Used for optimizing. When amount is 0, no need to process
+var _processing_component_amount := 0
+
 func _ready() -> void:
+	process_mode = PROCESS_MODE_DISABLED
 	component_owner = get_parent()
 	for component in default_components:
 		add_component(component)
@@ -31,9 +35,12 @@ func get_by_id(component_id: Components.Id) -> Component:
 
 func get_all() -> Array[Component]:
 	return _components
-	#var all: Array[Component]
-	#all.assign(_components)
-	#return all
+
+func recheck_processing_mode() -> void:
+	if _processing_component_amount > 0:
+		process_mode = PROCESS_MODE_INHERIT
+	else:
+		process_mode = PROCESS_MODE_DISABLED
 
 func add_component(component: Component) -> Component:
 	var duplicated: Component = component.duplicate()
@@ -55,6 +62,11 @@ func add_component(component: Component) -> Component:
 			if subscription.target_id == duplicated.id:
 				subscription.callable.call(duplicated)
 	
+	if duplicated.has_method("process_component"):
+		_processing_component_amount += 1
+	
+	recheck_processing_mode()
+	
 	return duplicated
 
 func remove_component(component_id: Components.Id) -> void:
@@ -64,6 +76,12 @@ func remove_component(component_id: Components.Id) -> void:
 		matching.on_exit()
 	_components.erase(matching)
 	_components_by_id.erase(component_id)
+	
+	if matching.has_method("process_component"):
+		_processing_component_amount -= 1
+	
+	recheck_processing_mode()
+	
 	Events.component.removed.emit(self, matching)
 
 func subscribe(subscriber_id: Components.Id, target_id: Components.Id, callable: Callable) -> void:
@@ -72,7 +90,7 @@ func subscribe(subscriber_id: Components.Id, target_id: Components.Id, callable:
 func clear() -> void:
 	_components.clear()
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	for component in get_all():
 		if component.has_method("process_component"):
 			component.process_component(delta)
