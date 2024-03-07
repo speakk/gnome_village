@@ -93,4 +93,5 @@ func clear() -> void:
 func _physics_process(delta: float) -> void:
 	for component in get_all():
 		if component.has_method("process_component"):
-			component.process_component(delta)
+			if component.advance_process_timer(delta):
+				component.process_component(delta)

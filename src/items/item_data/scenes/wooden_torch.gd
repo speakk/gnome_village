@@ -6,7 +6,7 @@ var _scene: Node3D
 
 func _ready() -> void:
 	_scene = MODEL_SCENE.instantiate()
-	_scene.get_node("Torch").cast_shadow = true
+	#_scene.get_node("Torch").cast_shadow = true
 	add_child(_scene)
 
 func set_blueprint(is_blueprint: bool) -> void:
@@ -15,7 +15,7 @@ func set_blueprint(is_blueprint: bool) -> void:
 		_scene.queue_free()
 		
 	_scene = MODEL_SCENE.instantiate()
-	_scene.get_node("Torch").cast_shadow = true
+	#_scene.get_node("Torch").cast_shadow = true
 		
 	if is_blueprint:
 		Globals.apply_blueprint_material(_scene)

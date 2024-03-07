@@ -36,6 +36,7 @@ mesh_scene = ExtResource("5_dq7p0")
 [sub_resource type="Resource" id="Resource_f4xcm"]
 script = ExtResource("6_03736")
 growth_stage_time = 120.0
+growth_stage_time_variance = 30.0
 growth_stages = Array[ExtResource("2_lb2w0")]([SubResource("Resource_i1sya"), SubResource("Resource_uqr4v"), SubResource("Resource_nnjrc"), SubResource("Resource_k38fb")])
 growth_requirements = Array[ExtResource("1_j48q8")]([SubResource("Resource_yj5ua")])
 

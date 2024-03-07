@@ -4,7 +4,10 @@ var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn"
 
 ## How long does it take to progress to next growth stage (in seconds)
 @export var growth_stage_time: float = 2.0
+@export var growth_stage_time_variance: float = 0.5
 @export var growth_stages: Array[GrowthStage]
+
+var _actual_grow_time: float
 
 @export var growth_requirements: Array[ItemRequirement]
 
@@ -26,6 +29,12 @@ var grows_in: GrowthSpotComponent
 func _init() -> void:
 	id = Components.Id.Plant
 	subscriptions.append(Subscription.new(id, Components.Id.Spread, _set_spread_component))
+
+func recalculate_actual_growth_time() -> void:
+	_actual_grow_time = growth_stage_time + randf_range(-growth_stage_time_variance/2, growth_stage_time_variance/2)
+
+func on_enter() -> void:
+	recalculate_actual_growth_time()
 
 func _set_spread_component(spread_component: SpreadComponent) -> void:
 	print("Spread component set!")
@@ -97,15 +106,15 @@ var lacks_growth_requirements_emitted := false
 
 func process_component(delta: float) -> void:
 	if not is_mature():
-		#print("Not mature")
 		if has_growth_requirements():
 			lacks_growth_requirements_emitted = false
 			satisfies_growth_requirements.emit()
 			current_growth_timer += delta
-			if current_growth_timer > growth_stage_time:
+			if current_growth_timer > _actual_grow_time:
 				advance_growth_stage()
 				consume_growth_requirements()
 				current_growth_timer = 0
+				recalculate_actual_growth_time()
 		elif not lacks_growth_requirements_emitted:
 			#print("Emitting lacks")
 			lacks_growth_requirements_emitted = true

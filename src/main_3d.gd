@@ -13,9 +13,9 @@ extends Node3D
 @export var daylight_amount: Curve
 @export var yellow_light_amount: Curve
 
-const TEST_TREES = 40
-const TEST_RESOURCES = 150
-const TEST_SETTLERS = 10
+const TEST_TREES = 100
+const TEST_RESOURCES = 350
+const TEST_SETTLERS = 40
 const DECAL_AMOUNT = 2
 
 func _ready() -> void:
