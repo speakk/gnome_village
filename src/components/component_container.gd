@@ -24,7 +24,10 @@ func has_component(component_id: Components.Id) -> bool:
 	return _components_by_id.has(component_id)
 		
 func get_by_id(component_id: Components.Id) -> Component:
-	return _components_by_id[component_id]
+	if _components_by_id.has(component_id):
+		return _components_by_id[component_id]
+	
+	return null
 
 func get_all() -> Array[Component]:
 	return _components

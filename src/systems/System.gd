@@ -5,7 +5,9 @@ func _ready() -> void:
 	Events.component.removed.connect(_component_removed)
 
 func _component_added(container: ComponentContainer, component: Component) -> void:
-	push_warning("Abstract System _component_added called - Did you forget to implement it for the specific system?")
+	#push_warning("Abstract System _component_added called - Did you forget to implement it for the specific system?")
+	pass
 
 func _component_removed(container: ComponentContainer, component: Component) -> void:
-	push_warning("Abstract System _component_removed called - Did you forget to implement it for the specific system?")
+	#push_warning("Abstract System _component_removed called - Did you forget to implement it for the specific system?")
+	pass

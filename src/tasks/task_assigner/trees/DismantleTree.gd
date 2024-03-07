@@ -12,9 +12,6 @@ func _ready() -> void:
 	Events.dismantle_finished.connect(func(_item_on_ground: ItemOnGround) -> void:
 		if _item_on_ground == item_on_ground:
 			clean_up()
-			# TODO: I don't like the tree calling queue_free
-			item_on_ground.generate_drops() # TODO: DEFINITELY not the place for this
-			item_on_ground.call_deferred("queue_free")
 	)
 	
 	Events.dismantle_cancel_issued.connect(func(_item_on_ground: ItemOnGround) -> void:

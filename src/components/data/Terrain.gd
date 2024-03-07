@@ -10,6 +10,11 @@ func _init() -> void:
 	subscriptions = [
 		Subscription.new(self.id, Components.Id.WorldPosition, func (world_position: WorldPositionComponent) -> void:
 			world_position.position_changed.connect(self._on_position_changed)
+			),
+		Subscription.new(self.id, Components.Id.Blueprint, func (blueprint: BlueprintComponent) -> void:
+			set_blueprint(true)
+			blueprint.removed.connect(func() -> void:
+				set_blueprint(false))
 			)
 	]
 
@@ -24,5 +29,6 @@ func set_blueprint(status: bool) -> void:
 	Events.terrain_cleared.emit(coordinate, not status)
 
 func on_exit() -> void:
+	super.on_exit()
 	var coordinate := Globals.get_map().global_position_to_coordinate(get_owner().global_position)
 	Events.terrain_cleared.emit(coordinate, _blueprint_status)

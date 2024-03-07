@@ -19,7 +19,8 @@ func start_work() -> void:
 # TODO: I guess this should really be in the Task itself now
 func clean_up() -> void:
 	if task.target:
-		task.target.reserved_for_dismantling = false
+		if task.target and task.target.component_container.has_component(Components.Id.Constructable):
+			task.target.component_container.get_by_id(Components.Id.Constructable).reserved_for_dismantling = false
 
 func save() -> Dictionary:
 	var save_dict := super.save()

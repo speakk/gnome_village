@@ -14,6 +14,18 @@ var _instantiated_scene: Node
 
 func _init() -> void:
 	id = Components.Id.Scene
+	subscriptions.append_array([
+		Subscription.new(self.id, Components.Id.Blueprint, func (blueprint: BlueprintComponent) -> void:
+			set_blueprint(true)
+			blueprint.removed.connect(func() -> void: set_blueprint(false))
+			),
+		Subscription.new(self.id, Components.Id.Constructable, func (constructable: ConstructableComponent) -> void:
+			set_active(false)
+			constructable.finished.connect(func() -> void:
+				set_active(true)
+				)
+			),
+	])
 
 func on_enter() -> void:
 	_instantiated_scene = scene.instantiate()
@@ -21,6 +33,7 @@ func on_enter() -> void:
 	set_active(false)
 
 func on_exit() -> void:
+	super.on_exit()
 	get_owner().call_deferred("remove_child", _instantiated_scene)
 
 func set_active(active: bool) -> void:

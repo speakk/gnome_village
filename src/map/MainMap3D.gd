@@ -205,8 +205,11 @@ func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 		var entities := get_map_entities(tile_position)
 		for entity in entities as Array[Node]:
 			if entity is ItemOnGround:
-				if entity.item.can_be_dismantled and not entity.reserved_for_dismantling:
-					Events.dismantle_issued.emit(entity)
+				var container: ComponentContainer = entity.component_container
+				var constructable_component: ConstructableComponent = container.get_by_id(Components.Id.Constructable)
+				if constructable_component:
+					if constructable_component.can_be_dismantled and not constructable_component.reserved_for_dismantling:
+						Events.dismantle_issued.emit(entity)
 
 func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
 	var zone := (selected_ui_action as UiAction.ZoneAddTiles).zone
@@ -266,7 +269,7 @@ func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 
 func _terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, blueprint: bool) -> void:
 	var grid_map: GridMap = grid if not blueprint else blueprint_grid
-	grid_map.set_cell_item(Globals.extend_vec2i(coordinate), 0)
+	grid_map.set_cell_item(Globals.extend_vec2i(coordinate), mesh_id)
 
 func _terrain_cleared(coordinate: Vector2i, blueprint: bool) -> void:
 	var grid_map: GridMap = grid if not blueprint else blueprint_grid

@@ -7,7 +7,7 @@ func _init() -> void:
 
 func initialize(params: Dictionary) -> void:
 	target = params["target"]
-	target.reserved_for_dismantling = true
+	target.component_container.get_by_id(Components.Id.Constructable).reserved_for_dismantling = true
 
 func save() -> Dictionary:
 	var save_dict: Dictionary = super.save()
