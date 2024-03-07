@@ -231,12 +231,17 @@ func _create_placement_juice(item_on_ground: ItemOnGround, index: int) -> void:
 		var scene_component: SceneComponent = container.get_by_id(Components.Id.Scene)
 		container.remove_component(Components.Id.Scene)
 		node = scene_component.scene.instantiate()
+		if node.has_method("set_blueprint"):
+			node.set_blueprint(true)
+		
+		if node.has_method("set_active"):
+			node.set_active(false)
 		removed_component = scene_component
 	
 	if not node:
 		return
 	
-	await get_tree().create_timer(float(index) * 0.03).timeout
+	await get_tree().create_timer(float(index) * 0.02).timeout
 	add_child(node)
 	var pos: Vector3 = container.get_by_id(Components.Id.WorldPosition).current_position + position_correction
 	node.global_position = pos + Vector3(0, 1.0, 0)

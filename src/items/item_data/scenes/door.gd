@@ -42,8 +42,9 @@ func _ready() -> void:
 # TODO: Some kind of bigger cells/quadtree instead of literally
 # doing this for every door on the whole map
 func _map_changed(coordinate: Vector2i) -> void:
-	if get_parent_node_3d().global_position.distance_to(Globals.get_map().coordinate_to_global_position(coordinate)) < MainMap3D.CELL_SIZE.x * 2:
-		correct_orientation()
+	if get_parent_node_3d():
+		if get_parent_node_3d().global_position.distance_to(Globals.get_map().coordinate_to_global_position(coordinate)) < MainMap3D.CELL_SIZE.x * 2:
+			correct_orientation()
 
 func set_door(door_component: DoorComponent) -> void:
 	door_component.open_amount_changed.connect(func(new_amount: float) -> void:

@@ -1,9 +1,9 @@
 extends Node2D
 
-const DAY_SPEED: float = 0.01
+const DAY_SPEED: float = 0.005
 
 # Current time between 0 and 1. 0.5 is the middle of the day
-var current_time: float = 0.3:
+var current_time: float = 0.5:
 	set(new_value):
 		Events.current_time_changed.emit(new_value)
 		current_time = new_value
