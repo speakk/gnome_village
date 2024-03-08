@@ -2,7 +2,7 @@ extends Node
 
 enum Id {
 	Selectable, Door, WorldPosition, DisplayName, CharacterStats, Inventory,
-	GrowthSpot, ConstructionInventory, ItemAmount, Constructable, Terrain,
+	GrowthSpot, ItemAmount, Constructable, Terrain,
 	Blueprint, Scene, Solid, Plant, PlantScene, Spread, Drop, Consumable
 }
 

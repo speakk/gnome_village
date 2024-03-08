@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://f30j7nr3ioc4"]
+[gd_scene load_steps=17 format=3 uid="uid://f30j7nr3ioc4"]
 
 [ext_resource type="Script" path="res://src/items/item_on_ground/ItemOnGround.gd" id="1_j80v7"]
 [ext_resource type="FontFile" uid="uid://dtfb4n2n8qq7m" path="res://assets/fonts/m5x7.ttf" id="3_s7v4j"]
@@ -8,7 +8,6 @@
 [ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="8_hglpx"]
 [ext_resource type="Script" path="res://src/components/data/Selectable.gd" id="9_t6muy"]
 [ext_resource type="Script" path="res://src/components/data/ItemAmount.gd" id="9_w3cfj"]
-[ext_resource type="Script" path="res://src/components/data/ConstructionInventory.gd" id="10_kk5vt"]
 
 [sub_resource type="Gradient" id="Gradient_fm3l8"]
 colors = PackedColorArray(0.492029, 0.550781, 0.333705, 1, 1, 0.936739, 0.577836, 1)
@@ -31,11 +30,6 @@ display_name = ""
 
 [sub_resource type="Resource" id="Resource_pf2j7"]
 script = ExtResource("9_t6muy")
-
-[sub_resource type="Resource" id="Resource_g38ir"]
-script = ExtResource("10_kk5vt")
-items_can_be_picked = true
-pre_filled = Array[Resource("res://src/items/ItemRequirement.gd")]([])
 
 [sub_resource type="Resource" id="Resource_ki78u"]
 script = ExtResource("9_w3cfj")
@@ -87,4 +81,4 @@ font_size = 16
 outline_size = 8
 
 [node name="ComponentContainer" parent="." instance=ExtResource("5_3dtg2")]
-default_components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_beipl"), SubResource("Resource_otqls"), SubResource("Resource_pf2j7"), SubResource("Resource_g38ir"), SubResource("Resource_ki78u")])
+default_components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_beipl"), SubResource("Resource_otqls"), SubResource("Resource_pf2j7"), SubResource("Resource_ki78u")])
