@@ -18,6 +18,7 @@ func _plant_id_set(plant_id: Items.Id) -> void:
 		planted_plant.item = Items.get_by_id(plant_id)
 		plant_component = planted_plant.component_container.get_by_id(Components.Id.Plant)
 		plant_component.grows_in = growth_spot
+		plant_component.managed_by_player = true
 		plant_component.lacks_growth_requirements.connect(_lacks_growth_requirements)
 		plant_component.satisfies_growth_requirements.connect(_satisfies_growth_requirements)
 
@@ -27,7 +28,6 @@ func set_growth_spot(_growth_spot: GrowthSpotComponent) -> void:
 
 func _lacks_growth_requirements() -> void:
 	$LacksGrowthRequirementIndicator.show()
-	Events.farm_plot_plant_lacks_growth_requirement.emit(self.get_parent())
 
 func _satisfies_growth_requirements() -> void:
 	$LacksGrowthRequirementIndicator.hide()

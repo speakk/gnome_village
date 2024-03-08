@@ -10,7 +10,7 @@ class_name TaskHandler
 
 func _ready() -> void:
 	Events.blueprint_placed.connect(_blueprint_placed)
-	Events.farm_plot_plant_lacks_growth_requirement.connect(_farm_plot_plant_lacks_growth_requirement)
+	Events.plant_lacks_growth_requirement.connect(_plant_lacks_growth_requirement)
 	Events.dismantle_issued.connect(_dismantle_issued)
 	$Tasks.child_entered_tree.connect(_tasks_changed)
 	$Tasks.child_exiting_tree.connect(_tasks_changed)
@@ -68,10 +68,10 @@ func _blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround) -> void
 	$Tasks.add_child(task_tree)
 	task_tree.initialize(tile_position, blueprint)
 	
-func _farm_plot_plant_lacks_growth_requirement(farm_plot: ItemOnGround) -> void:
+func _plant_lacks_growth_requirement(growth_spot: GrowthSpotComponent) -> void:
 	var task_tree := FEED_PLANTS_TREE.instantiate() as FeedPlantsTree
 	$Tasks.add_child(task_tree)
-	task_tree.initialize(farm_plot)
+	task_tree.initialize(growth_spot)
 
 func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
 	var task_tree := (DISMANTLE_TREE.instantiate() as DismantleTree)

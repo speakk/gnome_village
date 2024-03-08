@@ -6,10 +6,13 @@ var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn"
 @export var growth_stage_time: float = 2.0
 @export var growth_stage_time_variance: float = 0.5
 @export var growth_stages: Array[GrowthStage]
+@export var growth_requirements: Array[ItemRequirement]
+
+
+var managed_by_player := false
 
 var _actual_grow_time: float
 
-@export var growth_requirements: Array[ItemRequirement]
 
 var current_growth_timer: float = 0.0
 var current_growth_stage_index: int = -1:
@@ -120,3 +123,6 @@ func process_component(delta: float) -> void:
 			#print("Emitting lacks")
 			lacks_growth_requirements_emitted = true
 			lacks_growth_requirements.emit()
+			
+			if managed_by_player:
+				Events.plant_lacks_growth_requirement.emit(grows_in)

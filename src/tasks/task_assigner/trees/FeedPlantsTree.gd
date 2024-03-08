@@ -2,7 +2,7 @@ class_name FeedPlantsTree extends TaskTree
 
 var BRING_RESOURCE_TASK := preload("res://src/tasks/task_data/BringResource.tscn")
 
-var farm_plot: ItemOnGround
+var _growth_spot: GrowthSpotComponent
 
 func _ready() -> void:
 	name = "FeedPlantsTree"
@@ -11,11 +11,9 @@ func finish_tree() -> void:
 	print("FINISH FEED")
 	clean_up()
 
-func initialize(_farm_plot: ItemOnGround) -> FeedPlantsTree:
+func initialize(growth_spot: GrowthSpotComponent) -> FeedPlantsTree:
 	order_type = TaskTreeBranch.OrderType.Parallel
-	farm_plot = _farm_plot
-	
-	var growth_spot: GrowthSpotComponent = _farm_plot.component_container.get_by_id(Components.Id.GrowthSpot)
+	_growth_spot = growth_spot
 	var plant_component: PlantComponent = growth_spot.plant_component
 	var growth_requirements := plant_component.growth_requirements
 	
