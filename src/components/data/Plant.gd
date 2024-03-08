@@ -52,6 +52,7 @@ static func create_growth_spot(new_position: Vector3) -> ItemOnGround:
 	grows_container.add_component(GrowthSpotComponent.new())
 	var inventory: InventoryComponent = grows_container.add_component(InventoryComponent.new())
 	inventory.add_item_amount(Items.Id.Water, 300)
+	inventory.items_can_be_picked = false
 	var grows_world_pos_component: WorldPositionComponent = grows_container.add_component(WorldPositionComponent.new())
 	grows_world_pos_component.current_position = new_position
 	return new_grows_in_entity

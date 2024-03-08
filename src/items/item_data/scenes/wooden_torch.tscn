@@ -24,7 +24,7 @@ script = ExtResource("1_grq6w")
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.729958, 0)
 light_color = Color(0.949219, 0.678864, 0.458375, 1)
-shadow_enabled = true
+omni_shadow_mode = 0
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.576111, 0)

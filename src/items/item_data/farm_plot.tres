@@ -19,6 +19,8 @@ amount = 1
 script = ExtResource("1_sxubs")
 requirements = Array[ExtResource("6_xcfl6")]([SubResource("Resource_kiryq")])
 solid_when_started = false
+can_be_dismantled = true
+max_durability = 10.0
 
 [sub_resource type="Resource" id="Resource_nfmyc"]
 script = ExtResource("6_xcfl6")
