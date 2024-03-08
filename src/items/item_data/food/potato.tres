@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="Item" load_steps=10 format=3 uid="uid://b2fhlwf6pm0jt"]
+
+[ext_resource type="Script" path="res://src/items/Item.gd" id="1_nlu2u"]
+[ext_resource type="PackedScene" uid="uid://mkox0g6jfmf7" path="res://assets/blender_models/plants/potato_harvested.blend" id="1_yjs3m"]
+[ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_ibrg3"]
+[ext_resource type="Script" path="res://src/components/helper_models/Satisfaction.gd" id="3_ed2pa"]
+[ext_resource type="Script" path="res://src/components/data/Consumable.gd" id="4_s7fay"]
+
+[sub_resource type="Resource" id="Resource_rllhf"]
+script = ExtResource("2_ibrg3")
+scene = ExtResource("1_yjs3m")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+
+[sub_resource type="Resource" id="Resource_uwki3"]
+script = ExtResource("3_ed2pa")
+character_stat = 2
+amount = 0.2
+
+[sub_resource type="Resource" id="Resource_6beag"]
+script = ExtResource("3_ed2pa")
+character_stat = 0
+amount = 0.1
+
+[sub_resource type="Resource" id="Resource_xldbh"]
+script = ExtResource("4_s7fay")
+provides = Array[ExtResource("3_ed2pa")]([SubResource("Resource_uwki3"), SubResource("Resource_6beag")])
+
+[resource]
+script = ExtResource("1_nlu2u")
+item_id = 11
+display_name = "Potato"
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_rllhf"), SubResource("Resource_xldbh")])

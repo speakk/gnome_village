@@ -2,13 +2,17 @@ extends Node
 
 enum Id {
 	Stone, Wood, WoodenWall, Tree, WoodenDoor, FarmPlot, WoodenTorch,
-	Water, WaterWell, PotatoPlant, OakTree
+	Water, WaterWell, PotatoPlant, OakTree, Potato
 }
 
 var list: Dictionary = {}
 
 func _ready() -> void:
-	var paths: Array[String] = ["res://src/items/item_data", "res://src/items/item_data/plants"]
+	var paths: Array[String] = [
+		"res://src/items/item_data",
+		"res://src/items/item_data/plants",
+		"res://src/items/item_data/food"
+		]
 	for path in paths:
 		var data_dir := DirAccess.open(path)
 		data_dir.list_dir_begin()

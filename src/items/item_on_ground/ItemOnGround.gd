@@ -47,19 +47,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	Events.item_removed_from_ground.emit(self)
 
-# TODO: Separate into a component
-func generate_drops() -> void:
-	for item_drop in item.item_drops:
-		if randf() <= item_drop.probability:
-			var amount := randi_range(item_drop.amount_min, item_drop.amount_max)
-			var new_item_on_ground := ITEM_ON_GROUND.instantiate() as ItemOnGround
-			# TODO: Randomize position slightly
-			get_parent().add_child(new_item_on_ground)
-			new_item_on_ground.item = Items.get_by_id(item_drop.item_id)
-			var position_component: WorldPositionComponent = new_item_on_ground.component_container.get_by_id(Components.Id.WorldPosition)
-			position_component.current_position = global_position
-			WorldPositionComponent.set_world_position(new_item_on_ground, global_position)
-			
+
 func place_at_coordinate(coordinate: Vector2i) -> void:
 	var new_position := Globals.get_map().coordinate_to_global_position(coordinate)
 	WorldPositionComponent.set_world_position(self, new_position)
