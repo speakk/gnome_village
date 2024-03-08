@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://7fdwruifel15"]
+
+[ext_resource type="Script" path="res://src/tasks/task_assigner/trees/HarvestPlantTree.gd" id="1_i2gn6"]
+
+[node name="HarvestPlantTree" type="Node"]
+script = ExtResource("1_i2gn6")

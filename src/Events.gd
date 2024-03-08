@@ -1,10 +1,15 @@
 extends Node
 
 var component := ComponentEvents.new()
+var plant := PlantEvents.new()
 
 class ComponentEvents:
 	signal added(container: ComponentContainer, component: Component)
 	signal removed(container: ComponentContainer, component: Component)
+
+class PlantEvents:
+	signal matured(plant: PlantComponent)
+	signal lacks_growth_requirement(growth_spot: GrowthSpotComponent)
 
 signal blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround)
 signal construction_finished(item: ItemOnGround)
@@ -65,5 +70,3 @@ signal zone_list_changed
 signal zone_selected(zone: Zone)
 signal zone_updated(zone: Zone)
 signal zone_menu_hidden()
-
-signal plant_lacks_growth_requirement(growth_spot: GrowthSpotComponent)

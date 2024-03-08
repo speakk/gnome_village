@@ -4,13 +4,15 @@ class_name TaskHandler
 
 @onready var BLUEPRINT_TREE := preload("res://src/tasks/task_assigner/trees/BlueprintTree.tscn")
 @onready var FEED_PLANTS_TREE := preload("res://src/tasks/task_assigner/trees/FeedPlantsTree.tscn")
+@onready var HARVEST_PLANT_TREE := preload("res://src/tasks/task_assigner/trees/HarvestPlantTree.tscn")
 @onready var DISMANTLE_TREE := preload("res://src/tasks/task_assigner/trees/DismantleTree.tscn")
 
 @onready var debug_ui_tree := %Tree as Tree
 
 func _ready() -> void:
 	Events.blueprint_placed.connect(_blueprint_placed)
-	Events.plant_lacks_growth_requirement.connect(_plant_lacks_growth_requirement)
+	Events.plant.lacks_growth_requirement.connect(_plant_lacks_growth_requirement)
+	Events.plant.matured.connect(_harvest_plant)
 	Events.dismantle_issued.connect(_dismantle_issued)
 	$Tasks.child_entered_tree.connect(_tasks_changed)
 	$Tasks.child_exiting_tree.connect(_tasks_changed)
@@ -72,6 +74,11 @@ func _plant_lacks_growth_requirement(growth_spot: GrowthSpotComponent) -> void:
 	var task_tree := FEED_PLANTS_TREE.instantiate() as FeedPlantsTree
 	$Tasks.add_child(task_tree)
 	task_tree.initialize(growth_spot)
+
+func _harvest_plant(plant: PlantComponent) -> void:
+	var task_tree := HARVEST_PLANT_TREE.instantiate() as HarvestPlantTree
+	$Tasks.add_child(task_tree)
+	task_tree.initialize(plant)
 
 func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
 	var task_tree := (DISMANTLE_TREE.instantiate() as DismantleTree)

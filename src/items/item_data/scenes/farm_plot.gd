@@ -17,6 +17,9 @@ func _plant_id_set(plant_id: Items.Id) -> void:
 		add_child(planted_plant)
 		planted_plant.item = Items.get_by_id(plant_id)
 		plant_component = planted_plant.component_container.get_by_id(Components.Id.Plant)
+		# TODO: This is so that the can be "dismantled". Do this any other way
+		# in the future.
+		planted_plant.component_container.add_component(ConstructableComponent.new())
 		plant_component.grows_in = growth_spot
 		plant_component.managed_by_player = true
 		plant_component.lacks_growth_requirements.connect(_lacks_growth_requirements)

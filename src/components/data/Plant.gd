@@ -105,6 +105,8 @@ func advance_growth_stage() -> void:
 		
 		if is_mature():
 			matured.emit()
+			if managed_by_player:
+				Events.plant.matured.emit(self)
 
 var lacks_growth_requirements_emitted := false
 
@@ -125,4 +127,4 @@ func process_component(delta: float) -> void:
 			lacks_growth_requirements.emit()
 			
 			if managed_by_player:
-				Events.plant_lacks_growth_requirement.emit(grows_in)
+				Events.plant.lacks_growth_requirement.emit(grows_in)

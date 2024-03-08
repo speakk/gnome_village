@@ -20,7 +20,7 @@ func tick_zone() -> void:
 				var container: ComponentContainer = entity.component_container
 				if container.has_component(Components.Id.GrowthSpot):
 					var constructable: ConstructableComponent = container.get_by_id(Components.Id.Constructable)
-					if constructable.is_finished:
+					if constructable and constructable.is_finished:
 						var growth_spot: GrowthSpotComponent = container.get_by_id(Components.Id.GrowthSpot)
 						growth_spot.start_growing_plant(Items.Id.PotatoPlant)
 						# TODO: Absolutely not like this - farm plot component should have this
