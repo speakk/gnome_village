@@ -6,6 +6,7 @@ class_name Settler
 @onready var component_container: ComponentContainer = $ComponentContainer
 @onready var inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
 
+@export var utility_agent: UtilityAiAgent
 
 const REACH_DISTANCE := 2.5
 const AT_DISTANCE := 1.0
@@ -42,6 +43,7 @@ func _ready() -> void:
 	component_container.get_by_id(Components.Id.DisplayName).display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
 	WorldPositionComponent.set_world_position(self, original_position)
 
+	utility_agent.top_score_action_changed.connect(_utility_ai_action_changed)
 
 func save() -> Dictionary:
 	var save_dict := {
@@ -224,3 +226,6 @@ func play_hammer_sound() -> void:
 	var player := $HammerSounds.get_children().pick_random() as AudioStreamPlayer3D
 	player.play()
 	
+
+func _utility_ai_action_changed(action_id: String) -> void:
+	print("New action: %s" % action_id)

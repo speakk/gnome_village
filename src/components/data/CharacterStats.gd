@@ -17,22 +17,30 @@ class CharacterStat:
 		value = _value
 		value_delta = _value_delta
 
-var stats: Array[CharacterStat] = [
-	CharacterStat.new(Id.Happiness, "Happiness", 1.0, -0.01),
-	CharacterStat.new(Id.Melancholy, "Melancholy", 0.0, randf_range(0, 0.03)),
-	CharacterStat.new(Id.Hunger, "Hunger", randf_range(0, 0.03)),
-	CharacterStat.new(Id.Thirst, "Thirst", randf_range(0, 0.03)),
-	CharacterStat.new(Id.Tiredness, "Tiredness", randf_range(0, 0.03)),
-]
+var stats: Dictionary = {
+	Id.Happiness: CharacterStat.new(Id.Happiness, "Happiness", 1.0, -0.01),
+	Id.Melancholy: CharacterStat.new(Id.Melancholy, "Melancholy", 0.0, randf_range(0, 0.03)),
+	Id.Hunger: CharacterStat.new(Id.Hunger, "Hunger", randf_range(0, 0.03)),
+	Id.Thirst: CharacterStat.new(Id.Thirst, "Thirst", randf_range(0, 0.03)),
+	Id.Tiredness: CharacterStat.new(Id.Tiredness, "Tiredness", randf_range(0, 0.03)),
+}
 
 func _init() -> void:
 	id = Components.Id.CharacterStats
 	
 func get_stats() -> Array[CharacterStat]:
-	return stats
+	var stats_array: Array[CharacterStat]
+	stats_array.assign(stats.values())
+	return stats_array
+
+func get_stat(id: Id) -> CharacterStat:
+	if stats.has(id):
+		return stats[id]
+	
+	return null
 
 func process_component(delta: float) -> void:
-	for stat in stats:
+	for stat: CharacterStat in stats.values():
 		stat.value += stat.value_delta * delta
 		stat.value = clampf(stat.value, 0.0, 1.0)
 		

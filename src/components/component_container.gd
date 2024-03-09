@@ -1,5 +1,7 @@
 class_name ComponentContainer extends Node3D
 
+signal component_added(component: Component)
+
 var component_owner: Node
 @export var default_components: Array[Component]
 
@@ -66,6 +68,8 @@ func add_component(component: Component) -> Component:
 		_processing_component_amount += 1
 	
 	recheck_processing_mode()
+	
+	component_added.emit(duplicated)
 	
 	return duplicated
 
