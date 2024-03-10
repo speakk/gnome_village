@@ -4,6 +4,9 @@ var BRING_RESOURCE_TASK := preload("res://src/tasks/task_data/BringResource.tscn
 
 var _growth_spot: GrowthSpotComponent
 
+func _init() -> void:
+	task_name = "Tend plants"
+
 func _ready() -> void:
 	name = "FeedPlantsTree"
 

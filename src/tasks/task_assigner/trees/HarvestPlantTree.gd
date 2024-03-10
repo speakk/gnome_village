@@ -4,6 +4,9 @@ var DISMANTLE_TASK := preload("res://src/tasks/task_data/Dismantle.tscn")
 
 var _plant: PlantComponent
 
+func _init() -> void:
+	task_name = "Harvest plant"
+
 func _ready() -> void:
 	name = "HarvestPlantTree"
 

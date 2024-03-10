@@ -6,6 +6,8 @@ enum OrderType {
 	Sequence, Parallel
 }
 
+var task_name: String
+
 var order_type: OrderType = OrderType.Sequence
 var root: bool = false
 

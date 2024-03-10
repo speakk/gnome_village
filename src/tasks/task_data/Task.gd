@@ -1,6 +1,7 @@
 class_name Task extends Node
 
 var task_id: Tasks.TaskId
+var task_name: String
 
 signal failed(task: Task)
 

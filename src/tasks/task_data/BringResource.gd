@@ -6,6 +6,7 @@ var inventory_component: InventoryComponent
 
 func _init() -> void:
 	task_id = Tasks.TaskId.BringResource
+	task_name = "Bring resource"
 
 func initialize(params: Dictionary) -> void:
 	if params.has("target_coordinate"):

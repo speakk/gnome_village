@@ -4,11 +4,14 @@
 
 [node name="TaskDebugUI" type="PanelContainer"]
 auto_translate_mode = 1
+visible = false
+size_flags_horizontal = 0
 script = ExtResource("1_bamqy")
 
 [node name="Tree" type="Tree" parent="."]
 unique_name_in_owner = true
 auto_translate_mode = 1
+custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
 allow_search = false
 

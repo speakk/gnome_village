@@ -7,6 +7,9 @@ var BUILD_TASK := preload("res://src/tasks/task_data/Build.tscn")
 
 var blueprint: ItemOnGround
 
+func _init() -> void:
+	task_name = "Construct blueprint"
+
 func _ready() -> void:
 	name = "BlueprintTree"
 	#
@@ -37,6 +40,8 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 		var bring_resources := TaskTreeBranch.new()
 		bring_resources.order_type = TaskTreeBranch.OrderType.Parallel
 		bring_resources.name = "Bring_Resources_Parallel"
+		# TODO: Absolutely not here
+		bring_resources.task_name = "[parallel]"
 		
 		# TODO: Each amount gets split into 1
 		# Figure if we want to support item stacks being delivered

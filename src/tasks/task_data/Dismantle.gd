@@ -4,6 +4,7 @@ var target: ItemOnGround
 
 func _init() -> void:
 	task_id = Tasks.TaskId.Dismantle
+	task_name = "Dismantle"
 
 func initialize(params: Dictionary) -> void:
 	target = params["target"]

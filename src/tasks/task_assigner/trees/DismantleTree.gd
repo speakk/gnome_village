@@ -6,6 +6,9 @@ var DISMANTLE_TASK := preload("res://src/tasks/task_data/Dismantle.tscn")
 
 var item_on_ground: ItemOnGround
 
+func _init() -> void:
+	task_name = "Dismantle target"
+
 func _ready() -> void:
 	name = "Dismantle_Tree"
 	
