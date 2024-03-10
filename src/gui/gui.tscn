@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cynniosvk7y2r"]
+[gd_scene load_steps=20 format=3 uid="uid://cynniosvk7y2r"]
 
 [ext_resource type="Script" path="res://src/gui/gui.gd" id="1_jqq6f"]
 [ext_resource type="FontFile" uid="uid://4nfdi1tps2fv" path="res://assets/fonts/ThaleahFat.ttf" id="2_egltv"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://d3hc65n7bfkm3" path="res://src/gui/day_night_cycle_indicator.tscn" id="5_dfwll"]
 [ext_resource type="PackedScene" uid="uid://c13wfhh44yr61" path="res://src/gui/entity_info/entity_selection_panel.tscn" id="6_uim4i"]
 [ext_resource type="AudioStream" uid="uid://g1f6rs6xy8io" path="res://assets/sounds/ui/click.ogg" id="7_alwiq"]
+[ext_resource type="PackedScene" uid="uid://bvtrf7nc178ou" path="res://src/gui/debug_ui/task_debug_ui.tscn" id="7_rxkft"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oammu"]
 
@@ -69,17 +70,17 @@ grow_vertical = 2
 theme_override_constants/margin_bottom = 0
 script = ExtResource("1_jqq6f")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="Buttons" type="PanelContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxEmpty_oammu")
 
-[node name="MainButtons" type="HBoxContainer" parent="PanelContainer"]
+[node name="MainButtons" type="HBoxContainer" parent="Buttons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
 
-[node name="BuildButton" type="Button" parent="PanelContainer/MainButtons"]
+[node name="BuildButton" type="Button" parent="Buttons/MainButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
@@ -92,7 +93,7 @@ toggle_mode = true
 shortcut = SubResource("Shortcut_00krf")
 text = "Build"
 
-[node name="PlantButton" type="Button" parent="PanelContainer/MainButtons"]
+[node name="PlantButton" type="Button" parent="Buttons/MainButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
@@ -106,7 +107,7 @@ shortcut = SubResource("Shortcut_uyf65")
 text = "Plant
 "
 
-[node name="OrderButton" type="Button" parent="PanelContainer/MainButtons"]
+[node name="OrderButton" type="Button" parent="Buttons/MainButtons"]
 unique_name_in_owner = true
 clip_contents = true
 custom_minimum_size = Vector2(120, 0)
@@ -120,7 +121,7 @@ toggle_mode = true
 shortcut = SubResource("Shortcut_q38xj")
 text = "Orders"
 
-[node name="ZoneButton" type="Button" parent="PanelContainer/MainButtons"]
+[node name="ZoneButton" type="Button" parent="Buttons/MainButtons"]
 unique_name_in_owner = true
 clip_contents = true
 custom_minimum_size = Vector2(120, 0)
@@ -135,81 +136,88 @@ toggle_mode = true
 shortcut = SubResource("Shortcut_x0bax")
 text = "Zones"
 
-[node name="SubMenuParent" type="MarginContainer" parent="."]
+[node name="ButtonMenus" type="MarginContainer" parent="."]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_bottom = 50
 
-[node name="SubMenuContainer" type="PanelContainer" parent="SubMenuParent"]
+[node name="SubMenuContainer" type="PanelContainer" parent="ButtonMenus"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(350, 400)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 
-[node name="BuildMenu" parent="SubMenuParent/SubMenuContainer" instance=ExtResource("2_fxugl")]
+[node name="BuildMenu" parent="ButtonMenus/SubMenuContainer" instance=ExtResource("2_fxugl")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="PlantMenu" type="MarginContainer" parent="SubMenuParent/SubMenuContainer"]
+[node name="PlantMenu" type="MarginContainer" parent="ButtonMenus/SubMenuContainer"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="PlantOptions" type="VBoxContainer" parent="SubMenuParent/SubMenuContainer/PlantMenu"]
+[node name="PlantOptions" type="VBoxContainer" parent="ButtonMenus/SubMenuContainer/PlantMenu"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Button" type="Button" parent="SubMenuParent/SubMenuContainer/PlantMenu/PlantOptions"]
+[node name="Button" type="Button" parent="ButtonMenus/SubMenuContainer/PlantMenu/PlantOptions"]
 layout_mode = 2
 text = "Tree"
 
-[node name="OrderMenu" type="MarginContainer" parent="SubMenuParent/SubMenuContainer"]
+[node name="OrderMenu" type="MarginContainer" parent="ButtonMenus/SubMenuContainer"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="OrderOptions" type="VBoxContainer" parent="SubMenuParent/SubMenuContainer/OrderMenu"]
+[node name="OrderOptions" type="VBoxContainer" parent="ButtonMenus/SubMenuContainer/OrderMenu"]
 layout_mode = 2
 
-[node name="DismantleButton" type="Button" parent="SubMenuParent/SubMenuContainer/OrderMenu/OrderOptions"]
+[node name="DismantleButton" type="Button" parent="ButtonMenus/SubMenuContainer/OrderMenu/OrderOptions"]
 layout_mode = 2
 text = "Dismantle"
 
-[node name="ZoneMenu" parent="SubMenuParent/SubMenuContainer" instance=ExtResource("4_jp28f")]
+[node name="ZoneMenu" parent="ButtonMenus/SubMenuContainer" instance=ExtResource("4_jp28f")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="."]
+[node name="CornerWidget" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 theme_override_constants/margin_bottom = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer2"]
+[node name="PanelContainer" type="PanelContainer" parent="CornerWidget"]
 custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 
-[node name="DayNightCycleIndicator" parent="MarginContainer2/PanelContainer" instance=ExtResource("5_dfwll")]
+[node name="DayNightCycleIndicator" parent="CornerWidget/PanelContainer" instance=ExtResource("5_dfwll")]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="MarginContainer3" type="MarginContainer" parent="."]
+[node name="EntitySelectionPanel" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_bottom = 120
 
-[node name="EntitySelectionPanel" parent="MarginContainer3" instance=ExtResource("6_uim4i")]
+[node name="EntitySelectionPanel" parent="EntitySelectionPanel" instance=ExtResource("6_uim4i")]
+layout_mode = 2
+
+[node name="DebugUI" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="TaskDebugUI" parent="DebugUI" instance=ExtResource("7_rxkft")]
 layout_mode = 2
 
 [node name="ClickSoundPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_alwiq")
 volume_db = -15.63
 
-[connection signal="pressed" from="PanelContainer/MainButtons/BuildButton" to="." method="_on_build_button_pressed"]
-[connection signal="pressed" from="PanelContainer/MainButtons/PlantButton" to="." method="_on_plant_button_pressed"]
-[connection signal="pressed" from="PanelContainer/MainButtons/OrderButton" to="." method="_on_order_button_pressed"]
-[connection signal="pressed" from="PanelContainer/MainButtons/ZoneButton" to="." method="_on_zone_button_pressed"]
-[connection signal="pressed" from="SubMenuParent/SubMenuContainer/OrderMenu/OrderOptions/DismantleButton" to="." method="_on_dismantle_button_pressed"]
+[connection signal="pressed" from="Buttons/MainButtons/BuildButton" to="." method="_on_build_button_pressed"]
+[connection signal="pressed" from="Buttons/MainButtons/PlantButton" to="." method="_on_plant_button_pressed"]
+[connection signal="pressed" from="Buttons/MainButtons/OrderButton" to="." method="_on_order_button_pressed"]
+[connection signal="pressed" from="Buttons/MainButtons/ZoneButton" to="." method="_on_zone_button_pressed"]
+[connection signal="pressed" from="ButtonMenus/SubMenuContainer/OrderMenu/OrderOptions/DismantleButton" to="." method="_on_dismantle_button_pressed"]

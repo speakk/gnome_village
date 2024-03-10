@@ -23,6 +23,7 @@ signal dismantle_cancel_issued(item_on_ground: ItemOnGround)
 signal debug_visuals_set(value: bool)
 
 signal task_finished(task: Task)
+signal tasks_changed(tasks: Array[Node])
 
 signal map_ready(map: MainMap3D)
 signal solid_cell_placed(coordinate: Vector2i)

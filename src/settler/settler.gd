@@ -7,6 +7,7 @@ class_name Settler
 @onready var inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
 
 @export var utility_agent: UtilityAiAgent
+@export var task_handler: TaskHandler
 
 const REACH_DISTANCE := 2.5
 const AT_DISTANCE := 1.0
@@ -17,8 +18,6 @@ var dismantling_speed := 3
 var open_door_speed := 1.2
 
 var velocity := Vector3(0, 0, 0)
-
-var current_task_actuator: TaskActuator
 
 var valid_position_timer := 0.0
 var valid_position_interval := 1.0
@@ -58,10 +57,11 @@ func save() -> Dictionary:
 	}
 	
 	save_dict["inventory_id"] = SaveSystem.save_entity(inventory)
-	
-	if current_task_actuator:
-		#save_dict["current_task_actuator_id"] = SaveSystem.save_entity(current_task_actuator)
-		save_dict["task_id"] = SaveSystem.save_entity(current_task_actuator.task)
+
+	# TODO: Actually serialize AiActuator
+	#if current_task_actuator:
+		##save_dict["current_task_actuator_id"] = SaveSystem.save_entity(current_task_actuator)
+		#save_dict["task_id"] = SaveSystem.save_entity(current_task_actuator.task)
 	
 	return save_dict
 
@@ -78,10 +78,11 @@ func load_save(save_dict: Dictionary) -> void:
 		#current_task_actuator = SaveSystem.get_saved_entity(save_dict["current_task_actuator_id"])
 		#add_child(current_task_actuator)
 	
-	if save_dict.has("task_id"):
-		var task := SaveSystem.get_saved_entity(save_dict["task_id"]) as Task
-		#add_child(current_task_actuator)
-		start_task(task)
+	# TODO: This
+	#if save_dict.has("task_id"):
+		#var task := SaveSystem.get_saved_entity(save_dict["task_id"]) as Task
+		##add_child(current_task_actuator)
+		#start_task(task)
 	
 	inventory = SaveSystem.get_saved_entity(save_dict["inventory_id"])
 
@@ -105,10 +106,6 @@ func move_and_slide(delta: float) -> void:
 	##$Line2D.global_position = get_parent().global_position
 
 func _physics_process(delta: float) -> void:
-	if not current_task_actuator:
-		current_task_actuator = null
-		#clear_path()
-	
 	velocity = Vector3.ZERO
 	
 	process_actions(delta)
@@ -121,40 +118,6 @@ func _physics_process(delta: float) -> void:
 		ensure_valid_position()
 		valid_position_timer = 0
 
-func get_current_task() -> TaskActuator:
-	return current_task_actuator
-
-func start_task(task: Task) -> void:
-	var task_actuator := Tasks.create_task_actuator(task)
-	task.tree_exited.connect(_clean_up_actuator)
-	task.failed.connect(_task_failed)
-	add_child(task_actuator)
-	current_task_actuator = task_actuator
-	current_task_actuator.start_work()
-
-func _clean_up_actuator() -> void:
-	if current_task_actuator:
-		current_task_actuator.task.failed.disconnect(_task_failed)
-		current_task_actuator.task.tree_exited.disconnect(_clean_up_actuator)
-		remove_child(current_task_actuator)
-		current_task_actuator = null
-
-func _task_failed(_task: Task) -> void:
-	_clean_up_actuator()
-
-func finish_current_task() -> void:
-	current_task_actuator.finish()
-	_clean_up_actuator()
-
-func fail_current_task() -> void:
-	current_task_actuator.fail()
-	_clean_up_actuator()
-
-func is_available_for_work() -> bool:
-	return current_task_actuator == null or not current_task_actuator
-
-func get_task_status() -> int:
-	return current_task_actuator.get_last_tick_status()
 
 func ensure_valid_position() -> void:
 	if not is_in_valid_position():
@@ -225,7 +188,7 @@ func stop_animation() -> void:
 func play_hammer_sound() -> void:
 	var player := $HammerSounds.get_children().pick_random() as AudioStreamPlayer3D
 	player.play()
-	
 
-func _utility_ai_action_changed(action_id: String) -> void:
-	print("New action: %s" % action_id)
+func _utility_ai_action_changed(utility_ai_task_id: String) -> void:
+	task_handler.handle_utility_ai_task(utility_ai_task_id)
+	print("New action: %s" % utility_ai_task_id)

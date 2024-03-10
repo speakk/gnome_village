@@ -122,10 +122,10 @@ func _process(delta: float) -> void:
 		data_name = "entities",
 		node = %Entities,
 	},
-	{
-		data_name = "tasks",
-		node = %TaskHandler.get_node("Tasks"),
-	},
+	#{
+		#data_name = "tasks",
+		#node = %TaskManager.get_node("Tasks"),
+	#},
 ] as Array[Dictionary]
 
 func load_save(data: Dictionary) -> void:
