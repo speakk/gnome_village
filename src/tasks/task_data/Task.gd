@@ -24,6 +24,7 @@ var is_finished := false:
 		if new_value:
 			Events.task_finished.emit(self)
 			finished.emit()
+			clean_up(false)
 		is_finished = new_value
 
 var has_failed := false:
@@ -45,8 +46,7 @@ func register_subtask(task: Task) -> void:
 	task.finished.connect(func() -> void:
 		_subtasks.erase(task)
 		if _subtasks.size() <= 0:
-			finished.emit()
-			clean_up(false)
+			is_finished = true
 		)
 	
 	task.failed.connect(func() -> void:

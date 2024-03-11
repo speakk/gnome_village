@@ -13,7 +13,9 @@ func start_work() -> void:
 	%GoToAction.target_coordinate = Globals.get_map().global_position_to_coordinate(task.target.global_position)
 	%DismantleAction.target = task.target
 	%FinishTask.finished.connect(func() -> void:
-		Events.dismantle_finished.emit(task.target)
+		task.is_finished = true
+		finish()
+		#Events.dismantle_finished.emit(task.target)
 	)
 
 # TODO: I guess this should really be in the Task itself now

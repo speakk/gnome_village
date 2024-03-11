@@ -9,6 +9,12 @@ func _init(params: Dictionary) -> void:
 	target = params["target"]
 	target.component_container.get_by_id(Components.Id.Constructable).reserved_for_dismantling = true
 
+func _ready() -> void:
+	Events.dismantle_cancel_issued.connect(func(_item_on_ground: ItemOnGround) -> void:
+		if _item_on_ground == target:
+			is_cancelled = true
+	)
+
 func save() -> Dictionary:
 	var save_dict: Dictionary = super.save()
 	save_dict["target_id"] = SaveSystem.save_entity(target)

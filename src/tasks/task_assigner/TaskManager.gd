@@ -1,10 +1,5 @@
 extends Node
 
-@onready var BLUEPRINT_TREE := preload("res://src/tasks/task_assigner/trees/BlueprintTree.gd")
-@onready var FEED_PLANTS_TREE := preload("res://src/tasks/task_assigner/trees/FeedPlantsTree.gd")
-@onready var HARVEST_PLANT_TREE := preload("res://src/tasks/task_assigner/trees/HarvestPlantTree.gd")
-@onready var DISMANTLE_TREE := preload("res://src/tasks/task_assigner/trees/DismantleTree.gd")
-
 func _ready() -> void:
 	Events.blueprint_placed.connect(_blueprint_placed)
 	Events.plant.lacks_growth_requirement.connect(_plant_lacks_growth_requirement)
@@ -32,7 +27,7 @@ func _harvest_plant(plant: PlantComponent) -> void:
 	$Tasks.add_child(task_tree)
 
 func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
-	var task_tree := DismantleTree.new(item_on_ground)
+	var task_tree := DismantleTask.new({target = item_on_ground})
 	$Tasks.add_child(task_tree)
 
 func get_available_settler(task: Variant) -> Settler:
@@ -166,4 +161,7 @@ func find_unfinished_task_in_tree(task: Task) -> NodeResult:
 		else:
 			return NodeResult.new(null, NodeStatus.Unfinished)
 	# Leaf
-	return NodeResult.new(task, NodeStatus.FoundTask)
+	if task.is_being_worked_on:
+		return NodeResult.new(null, NodeStatus.Unfinished)
+	else:
+		return NodeResult.new(task, NodeStatus.FoundTask)

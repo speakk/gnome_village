@@ -11,12 +11,13 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	if _done:
 		return SUCCESS
 	
-	if not actor.can_reach_target(target.global_position):
+	if target and not actor.can_reach_target(target.global_position):
 		return FAILURE
 	
 	if not _action:
 		_action = ACTION.new().initialize({ target =  target })
-		_action.finished.connect(func(__action: ActorAction) -> void: _done = true)
+		_action.finished.connect(func(__action: ActorAction) ->void:
+			_done = true)
 		actor.add_action(_action)
 		
 	return RUNNING
