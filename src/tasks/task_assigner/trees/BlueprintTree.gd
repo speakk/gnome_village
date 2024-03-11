@@ -24,9 +24,6 @@ func _ready() -> void:
 			#blueprint.queue_free()
 	)
 
-func finish_tree() -> void:
-	clean_up()
-
 func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTree:
 	order_type = TaskTreeBranch.OrderType.Sequence
 	blueprint = _blueprint
@@ -59,6 +56,7 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 				task.failed.connect(_handle_task_failure)
 				bring_resource_leaf.set_task(task)
 				bring_resources.add_child(bring_resource_leaf)
+				register_subtask(task)
 		
 		add_child(bring_resources)
 	
@@ -71,6 +69,7 @@ func initialize(tile_target: Vector2i, _blueprint: ItemOnGround) -> BlueprintTre
 	build_leaf.set_task(build_task)
 	build_leaf.name = "Build_Leaf"
 	
+	register_subtask(build_task)
 	add_child(build_leaf)
 
 	return self

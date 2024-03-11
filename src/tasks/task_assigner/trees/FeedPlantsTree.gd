@@ -38,6 +38,7 @@ func initialize(growth_spot: GrowthSpotComponent) -> FeedPlantsTree:
 				})
 				task.failed.connect(_handle_task_failure)
 				bring_resource_leaf.set_task(task)
+				register_subtask(task)
 				bring_resources.add_child(bring_resource_leaf)
 		
 		add_child(bring_resources)

@@ -27,6 +27,7 @@ func initialize(plant: PlantComponent) -> HarvestPlantTree:
 	dismantle_leaf.set_task(task)
 	dismantle_leaf.name = "Dismantle_leaf"
 	
+	register_subtask(task)
 	add_child(dismantle_leaf)
 	
 	return self

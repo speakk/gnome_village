@@ -10,8 +10,6 @@ func _init() -> void:
 	task_name = "Dismantle target"
 
 func _ready() -> void:
-	name = "Dismantle_Tree"
-	
 	Events.dismantle_finished.connect(func(_item_on_ground: ItemOnGround) -> void:
 		if _item_on_ground == item_on_ground:
 			clean_up()
@@ -36,5 +34,6 @@ func initialize(_item_on_ground: ItemOnGround) -> DismantleTree:
 	dismantle_leaf.name = "Dismantle_leaf"
 	
 	add_child(dismantle_leaf)
+	register_subtask(task)
 
 	return self

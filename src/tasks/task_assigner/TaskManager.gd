@@ -5,8 +5,6 @@ extends Node
 @onready var HARVEST_PLANT_TREE := preload("res://src/tasks/task_assigner/trees/HarvestPlantTree.gd")
 @onready var DISMANTLE_TREE := preload("res://src/tasks/task_assigner/trees/DismantleTree.gd")
 
-#@onready var debug_ui_tree := %Tree as Tree
-
 func _ready() -> void:
 	Events.blueprint_placed.connect(_blueprint_placed)
 	Events.plant.lacks_growth_requirement.connect(_plant_lacks_growth_requirement)
@@ -14,16 +12,10 @@ func _ready() -> void:
 	Events.dismantle_issued.connect(_dismantle_issued)
 	$Tasks.child_entered_tree.connect(_tasks_changed)
 	$Tasks.child_exiting_tree.connect(_tasks_changed)
-	#Events.task_finished.connect(func(_task: Task) -> void: _refresh_debug_tree($Tasks.get_children()))
-	#Events.debug_visuals_set.connect(func(new_value: bool) -> void:
-		#if new_value:
-			#_refresh_debug_tree($Tasks.get_children())
-		#%DebugUI.visible = new_value
-	#)
 
 func _tasks_changed(_node: Node) -> void:
+	await get_tree().physics_frame
 	Events.tasks_changed.emit($Tasks.get_children())
-	#_refresh_debug_tree($Tasks.get_children())
 			
 func _blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround) -> void:
 	var task_tree := (BLUEPRINT_TREE.new() as BlueprintTree) as TaskTreeBranch
@@ -84,23 +76,6 @@ func get_available_settler(task: Variant) -> Settler:
 var task_process_timer := 0.0
 var task_process_delay := 0.5
 
-#func _process(delta: float) -> void:
-	#task_process_timer += delta
-	#if task_process_timer >= task_process_delay:
-		##for task_tree in task_trees:
-		#for task_tree in $Tasks.get_children() as Array[TaskTreeBranch]:
-			#if task_tree:
-				#var result: NodeResult = give_task(task_tree)
-				#if result.status == NodeStatus.FoundTask:
-					#var next_available_task: Task = result.node.task
-					#var available_settler := get_available_settler(next_available_task)
-					#if available_settler:
-						#next_available_task.is_being_worked_on = true
-						#available_settler.start_task(next_available_task)
-				#elif result.status == NodeStatus.Finished:
-					#task_tree.finish_tree()
-		#task_process_timer = 0
-
 enum NodeStatus {
 	Unfinished, Finished, FoundTask
 }
@@ -130,7 +105,7 @@ func get_available_task(actor_position: Vector3) -> Task:
 	var all_available_tasks: Array[Task]
 	for task_tree in $Tasks.get_children() as Array[TaskTreeBranch]:
 		if task_tree:
-			var result: NodeResult = give_task(task_tree)
+			var result: NodeResult = find_unfinished_task_in_tree(task_tree)
 			if result.status == NodeStatus.FoundTask:
 				var next_available_task: Task = result.node.task
 				all_available_tasks.append(next_available_task)
@@ -153,10 +128,10 @@ func get_available_task(actor_position: Vector3) -> Task:
 	
 	return null
 
-func give_task(node: Variant) -> NodeResult:
+func find_unfinished_task_in_tree(node: Variant) -> NodeResult:
 	if node is TaskTreeBranch and node.order_type == TaskTreeBranch.OrderType.Sequence:
 		for sub_node: Variant in node.get_children():
-			var result: Variant = give_task(sub_node)
+			var result: Variant = find_unfinished_task_in_tree(sub_node)
 			if result.status == NodeStatus.Unfinished:
 				return NodeResult.new(null, NodeStatus.Unfinished)
 			
@@ -173,7 +148,7 @@ func give_task(node: Variant) -> NodeResult:
 	elif node is TaskTreeBranch and node.order_type == TaskTreeBranch.OrderType.Parallel:
 		var all_children_finished := true
 		for sub_node: Variant in node.get_children():
-			var result: NodeResult = give_task(sub_node)
+			var result: NodeResult = find_unfinished_task_in_tree(sub_node)
 			if result.node is TaskTreeLeaf:
 				var task: Variant = result.node.task
 				if task:
