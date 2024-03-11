@@ -6,6 +6,13 @@ var component_owner: Node3D
 
 var subscriptions: Array[Subscription]
 
+var groups: Array[Groups.Id]:
+	set(new_value):
+		groups = new_value
+		if component_owner:
+			for group in groups:
+				component_owner.add_to_group(Groups.get_group_name(group))
+
 signal removed
 
 # Once a second
@@ -14,6 +21,8 @@ var _process_timer: float = _process_rate
 
 func set_owner(_new_owner: Node3D) -> void:
 	component_owner = _new_owner
+	for group in groups:
+		component_owner.add_to_group(Groups.get_group_name(group))
 
 func get_owner() -> Node3D:
 	return component_owner

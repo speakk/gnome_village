@@ -28,6 +28,7 @@ Tasks="*res://src/tasks/Tasks.gd"
 Components="*res://src/components/Components.gd"
 ComponentDisplays="*res://src/gui/entity_info/ComponentDisplays.gd"
 TaskManager="*res://src/tasks/task_assigner/TaskManager.tscn"
+Groups="*res://src/misc/Groups.gd"
 
 [debug]
 
