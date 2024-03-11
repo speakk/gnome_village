@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://1r6x5jir7hr2"]
-
-[ext_resource type="Script" path="res://src/tasks/task_data/Dismantle.gd" id="1_lojl4"]
-
-[node name="Dismantle" type="Node"]
-script = ExtResource("1_lojl4")

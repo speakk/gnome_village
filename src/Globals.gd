@@ -2,6 +2,8 @@ extends Node
 
 var map: MainMap3D
 
+#var quitting := false
+
 func _ready() -> void:
 	Events.map_ready.connect(_map_ready)
 

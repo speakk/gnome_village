@@ -2,7 +2,7 @@ extends PanelContainer
 
 @onready var debug_ui_tree: Tree = %Tree
 
-var _cached_tasks: Array[Node]
+var _cached_tasks: Array[Task]
 
 func _ready() -> void:
 	Events.tasks_changed.connect(_refresh_debug_tree)
@@ -11,11 +11,8 @@ func _ready() -> void:
 			_refresh_debug_tree(_cached_tasks)
 		visible = new_value
 )
-
-func _tasks_changed(_node: Node) -> void:
-	_refresh_debug_tree($Tasks.get_children())
 	
-func _refresh_debug_tree(tasks: Array[Node]) -> void:
+func _refresh_debug_tree(tasks: Array[Task]) -> void:
 	_cached_tasks = tasks
 	if not debug_ui_tree.visible:
 		return
@@ -28,23 +25,19 @@ func _refresh_debug_tree(tasks: Array[Node]) -> void:
 			child.set_text(0, task.task_name)
 			child.collapsed = true
 			
-			for subtask in task.get_children():
+			for subtask: Task in task.get_subtasks():
 				var child2 := debug_ui_tree.create_item(child)
 				var label: String = subtask.task_name
-				if subtask is TaskTreeLeaf and not subtask.task:
-					continue
-				if subtask is TaskTreeLeaf and subtask.task.is_finished:
+				if subtask.is_leaf() and subtask.is_finished:
 					label = label + " (DONE)"
 					child2.set_custom_color(0, Color.SEA_GREEN)
-				elif subtask is TaskTreeBranch:
+				elif not subtask.is_leaf():
 					var all_finished := false
-					for subsubtask in subtask.get_children():
+					for subsubtask: Task in subtask.get_subtasks():
 						var child3 := debug_ui_tree.create_item(child2)
 						var label3: String = subsubtask.task_name
-						if subsubtask is TaskTreeLeaf:
-							if not subsubtask.task:
-								continue
-							if subsubtask.task.is_finished:
+						if subsubtask.is_leaf():
+							if subsubtask.is_finished:
 								label3 = label3 + " (DONE)"
 								child2.set_custom_color(0, Color.SEA_GREEN)
 							else:

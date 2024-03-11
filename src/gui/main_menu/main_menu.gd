@@ -11,7 +11,10 @@ func _ready() -> void:
 	$sky.time_of_day = 0.327
 	new_game_button.pressed.connect(func() -> void: Events.scene_change_requested.emit(SceneManager.SceneId.InGame))
 	#new_game_button.pressed.connect(func() -> void: Events.scene_change_requested(SceneManager.SceneId.InGame))
-	quit_button.pressed.connect(func() -> void: get_tree().quit())
+	quit_button.pressed.connect(func() -> void:
+		#Globals.quitting = true
+		get_tree().quit()
+		)
 
 func _process(delta: float) -> void:
 	var ray_result: Variant = _get_ray_result(get_viewport().get_mouse_position())

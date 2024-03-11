@@ -2,11 +2,10 @@ class_name DismantleTask extends Task
 
 var target: ItemOnGround
 
-func _init() -> void:
+func _init(params: Dictionary) -> void:
 	task_id = Tasks.TaskId.Dismantle
 	task_name = "Dismantle"
-
-func initialize(params: Dictionary) -> void:
+	
 	target = params["target"]
 	target.component_container.get_by_id(Components.Id.Constructable).reserved_for_dismantling = true
 

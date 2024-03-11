@@ -1,39 +1,20 @@
-extends TaskTree
-
-class_name DismantleTree
-
-var DISMANTLE_TASK := preload("res://src/tasks/task_data/Dismantle.tscn")
+class_name DismantleTree extends Task
 
 var item_on_ground: ItemOnGround
 
-func _init() -> void:
+func _init(_item_on_ground: ItemOnGround) -> void:
 	task_name = "Dismantle target"
-
-func _ready() -> void:
-	Events.dismantle_finished.connect(func(_item_on_ground: ItemOnGround) -> void:
-		if _item_on_ground == item_on_ground:
-			clean_up()
-	)
+	order_type = Task.OrderType.Sequence
+	item_on_ground = _item_on_ground
 	
+	var task := DismantleTask.new({
+		target = item_on_ground
+	})
+	
+	register_subtask(task)
+
+func _ready() -> void:	
 	Events.dismantle_cancel_issued.connect(func(_item_on_ground: ItemOnGround) -> void:
 		if _item_on_ground == item_on_ground:
 			clean_up()
 	)
-	
-func initialize(_item_on_ground: ItemOnGround) -> DismantleTree:
-	order_type = TaskTreeBranch.OrderType.Sequence
-	item_on_ground = _item_on_ground
-	
-	var task := DISMANTLE_TASK.instantiate() as DismantleTask
-	task.initialize({
-		target = item_on_ground
-	})
-	
-	var dismantle_leaf := TaskTreeLeaf.new()
-	dismantle_leaf.set_task(task)
-	dismantle_leaf.name = "Dismantle_leaf"
-	
-	add_child(dismantle_leaf)
-	register_subtask(task)
-
-	return self

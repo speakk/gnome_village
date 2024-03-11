@@ -15,27 +15,25 @@ func _ready() -> void:
 
 func _tasks_changed(_node: Node) -> void:
 	await get_tree().physics_frame
-	Events.tasks_changed.emit($Tasks.get_children())
+	var tasks: Array[Task]
+	tasks.assign($Tasks.get_children())
+	Events.tasks_changed.emit(tasks)
 			
 func _blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround) -> void:
-	var task_tree := (BLUEPRINT_TREE.new() as BlueprintTree) as TaskTreeBranch
+	var task_tree := BlueprintTree.new(tile_position, blueprint)
 	$Tasks.add_child(task_tree)
-	task_tree.initialize(tile_position, blueprint)
 	
 func _plant_lacks_growth_requirement(growth_spot: GrowthSpotComponent) -> void:
-	var task_tree := FEED_PLANTS_TREE.new() as FeedPlantsTree
+	var task_tree := FeedPlantsTree.new(growth_spot)
 	$Tasks.add_child(task_tree)
-	task_tree.initialize(growth_spot)
 
 func _harvest_plant(plant: PlantComponent) -> void:
-	var task_tree := HARVEST_PLANT_TREE.new() as HarvestPlantTree
+	var task_tree := HarvestPlantTree.new(plant)
 	$Tasks.add_child(task_tree)
-	task_tree.initialize(plant)
 
 func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
-	var task_tree := (DISMANTLE_TREE.new() as DismantleTree)
+	var task_tree := DismantleTree.new(item_on_ground)
 	$Tasks.add_child(task_tree)
-	task_tree.initialize(item_on_ground)
 
 func get_available_settler(task: Variant) -> Settler:
 	var settlers := get_tree().get_nodes_in_group("settler") as Array[Node]
@@ -81,11 +79,11 @@ enum NodeStatus {
 }
 
 class NodeResult:
-	var node: Variant
+	var task: Task
 	var status: NodeStatus
 	
-	func _init(_node: Variant, _status: NodeStatus) -> void:
-		node = _node
+	func _init(_task: Task, _status: NodeStatus) -> void:
+		task = _task
 		status = _status    
 
 # Returns Vector3 or null
@@ -103,11 +101,11 @@ func get_approximate_task_location(task: Task) -> Variant:
 
 func get_available_task(actor_position: Vector3) -> Task:
 	var all_available_tasks: Array[Task]
-	for task_tree in $Tasks.get_children() as Array[TaskTreeBranch]:
+	for task_tree in $Tasks.get_children() as Array[Task]:
 		if task_tree:
 			var result: NodeResult = find_unfinished_task_in_tree(task_tree)
 			if result.status == NodeStatus.FoundTask:
-				var next_available_task: Task = result.node.task
+				var next_available_task: Task = result.task
 				all_available_tasks.append(next_available_task)
 	
 	all_available_tasks.sort_custom(func(a: Task, b: Task) -> bool:
@@ -128,37 +126,37 @@ func get_available_task(actor_position: Vector3) -> Task:
 	
 	return null
 
-func find_unfinished_task_in_tree(node: Variant) -> NodeResult:
-	if node is TaskTreeBranch and node.order_type == TaskTreeBranch.OrderType.Sequence:
-		for sub_node: Variant in node.get_children():
-			var result: Variant = find_unfinished_task_in_tree(sub_node)
+func find_unfinished_task_in_tree(task: Task) -> NodeResult:
+	if task.order_type == Task.OrderType.Sequence:
+		for sub_task: Task in task.get_subtasks():
+			var result: NodeResult = find_unfinished_task_in_tree(sub_task)
 			if result.status == NodeStatus.Unfinished:
 				return NodeResult.new(null, NodeStatus.Unfinished)
 			
-			if result.node is TaskTreeLeaf:
-				var task: Variant = result.node.task
-				if task and not task.is_finished:
-					if task.is_being_worked_on:
+			if result.task and result.task.is_leaf():
+				var sub_sub_task: Task = result.task
+				if sub_sub_task and not sub_sub_task.is_finished:
+					if sub_sub_task.is_being_worked_on:
 						# Sequence is occupied
 						return NodeResult.new(null, NodeStatus.Unfinished)
-					return NodeResult.new(result.node, NodeStatus.FoundTask)
+					return NodeResult.new(sub_sub_task, NodeStatus.FoundTask)
 			
 		# Node is done
 		return NodeResult.new(null, NodeStatus.Finished)
-	elif node is TaskTreeBranch and node.order_type == TaskTreeBranch.OrderType.Parallel:
+	elif task.order_type == Task.OrderType.Parallel:
 		var all_children_finished := true
-		for sub_node: Variant in node.get_children():
-			var result: NodeResult = find_unfinished_task_in_tree(sub_node)
-			if result.node is TaskTreeLeaf:
-				var task: Variant = result.node.task
-				if task:
-					if task.is_finished:
+		for sub_task: Task in task.get_subtasks():
+			var result: NodeResult = find_unfinished_task_in_tree(sub_task)
+			if result.task and result.task.is_leaf():
+				var sub_sub_task: Task = result.task
+				if sub_sub_task:
+					if sub_sub_task.is_finished:
 						continue
 					
-					if task.is_being_worked_on:
+					if sub_sub_task.is_being_worked_on:
 						all_children_finished = false
 					else:
-						return NodeResult.new(result.node, NodeStatus.FoundTask)
+						return NodeResult.new(sub_sub_task, NodeStatus.FoundTask)
 				# Every task is being done
 			else:
 				return result
@@ -168,4 +166,4 @@ func find_unfinished_task_in_tree(node: Variant) -> NodeResult:
 		else:
 			return NodeResult.new(null, NodeStatus.Unfinished)
 	# Leaf
-	return NodeResult.new(node, NodeStatus.FoundTask)
+	return NodeResult.new(task, NodeStatus.FoundTask)

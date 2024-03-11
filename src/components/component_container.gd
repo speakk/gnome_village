@@ -21,6 +21,7 @@ func _ready() -> void:
 		add_component(component)
 
 func _exit_tree() -> void:
+	#if not Globals.quitting:
 	for component in _components:
 		Events.component.removed.emit(self, component)
 		if component.has_method("on_exit"):
