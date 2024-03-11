@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bikbd3afrsmlx"]
-
-[ext_resource type="Script" path="res://src/tasks/task_assigner/trees/FeedPlantsTree.gd" id="1_5wmq1"]
-
-[node name="FeedPlants" type="Node"]
-script = ExtResource("1_5wmq1")

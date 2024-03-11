@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cq2al0bm84ikx"]
-
-[ext_resource type="Script" path="res://src/tasks/task_assigner/trees/DismantleTree.gd" id="1_c861e"]
-
-[node name="DismantleTree" type="Node"]
-script = ExtResource("1_c861e")
