@@ -27,7 +27,11 @@ func has_item_amount(_item_id: Variant, _amount: int) -> bool:
 	if item_id != _item_id:
 		return false
 	
-	return amount >= _amount
+	var reserved: int = 0
+	for reservation in _reservations:
+		reserved += reservation.amount
+	
+	return amount - reserved >= _amount
 
 func has_item_requirement(item_requirement: ItemRequirement) -> bool:
 	return has_item_amount(item_requirement.item_id, item_requirement.amount)

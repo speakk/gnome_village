@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bkmg230poc32i"]
-
-[ext_resource type="Script" path="res://src/tasks/task_data/Task.gd" id="1_441kr"]
-
-[node name="Task" type="Node"]
-script = ExtResource("1_441kr")

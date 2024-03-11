@@ -43,7 +43,7 @@ func _init(tile_target: Vector2i, _blueprint: ItemOnGround) -> void:
 func _ready() -> void:
 	Events.blueprint_cancel_issued.connect(func(_blueprint: ItemOnGround) -> void:
 		if _blueprint == blueprint:
-			clean_up()
+			is_cancelled = true
 	)
 
 func _handle_task_failure(task: Task) -> void:

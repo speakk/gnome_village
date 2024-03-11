@@ -253,6 +253,7 @@ func _create_placement_juice(item_on_ground: ItemOnGround, index: int) -> void:
 	$PlacementJuicePlayer.play()
 	await create_tween().tween_property(node, "global_position", pos, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BOUNCE).finished
 	node.queue_free()
+	if not container: return
 	container.add_component(removed_component)
 
 func _place_blueprint(coordinates: Array[Vector2i]) -> void:

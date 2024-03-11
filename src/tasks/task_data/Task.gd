@@ -4,6 +4,7 @@ var task_id: Tasks.TaskId
 var task_name: String
 
 signal failed()
+signal cancelled()
 signal finished()
 
 var is_being_worked_on := false
@@ -18,6 +19,26 @@ var _subtasks: Array[Task]
 
 var _parent_task: Task
 
+var is_finished := false:
+	set(new_value):
+		if new_value:
+			Events.task_finished.emit(self)
+			finished.emit()
+		is_finished = new_value
+
+var has_failed := false:
+	set(new_value):
+		has_failed = new_value
+		if new_value:
+			failed.emit()
+			is_being_worked_on = false
+
+var is_cancelled := false:
+	set(new_value):
+		is_cancelled = new_value
+		if new_value:
+			clean_up(true)
+
 func register_subtask(task: Task) -> void:
 	_subtasks.append(task)
 	task._parent_task = self
@@ -25,8 +46,7 @@ func register_subtask(task: Task) -> void:
 		_subtasks.erase(task)
 		if _subtasks.size() <= 0:
 			finished.emit()
-			if tree_root:
-				clean_up()
+			clean_up(false)
 		)
 	
 	task.failed.connect(func() -> void:
@@ -42,26 +62,14 @@ func is_root() -> bool:
 func is_leaf() -> bool:
 	return _subtasks.size() == 0
 
-func clean_up() -> void:
+func clean_up(_cancelled: bool) -> void:
+	if _cancelled:
+		cancelled.emit()
+		
 	for subtask in _subtasks:
-		subtask.clean_up()
+		subtask.clean_up(_cancelled)
 	
 	queue_free()
-
-
-var is_finished := false:
-	set(new_value):
-		if new_value:
-			Events.task_finished.emit(self)
-			finished.emit()
-		is_finished = new_value
-
-var has_failed := false:
-	set(new_value):
-		has_failed = new_value
-		if new_value:
-			failed.emit(self)
-			is_being_worked_on = false
 
 func save() -> Dictionary:
 	var save_dict := {

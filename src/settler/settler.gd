@@ -191,4 +191,4 @@ func play_hammer_sound() -> void:
 
 func _utility_ai_action_changed(utility_ai_task_id: String) -> void:
 	task_handler.handle_utility_ai_task(utility_ai_task_id)
-	print("New action: %s" % utility_ai_task_id)
+	#print("New action: %s" % utility_ai_task_id)

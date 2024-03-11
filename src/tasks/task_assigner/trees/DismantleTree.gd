@@ -16,5 +16,5 @@ func _init(_item_on_ground: ItemOnGround) -> void:
 func _ready() -> void:	
 	Events.dismantle_cancel_issued.connect(func(_item_on_ground: ItemOnGround) -> void:
 		if _item_on_ground == item_on_ground:
-			clean_up()
+			is_cancelled = true
 	)

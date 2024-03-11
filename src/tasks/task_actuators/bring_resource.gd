@@ -1,6 +1,4 @@
-extends TaskActuator
-
-class_name BringResourceActuator
+class_name BringResourceActuator extends TaskActuator
 
 var _item_amount_component: ItemAmountComponent
 

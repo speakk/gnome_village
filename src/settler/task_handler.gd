@@ -30,6 +30,7 @@ func start_task(task: Task) -> void:
 	var task_actuator := Tasks.create_task_actuator(task)
 	task.tree_exited.connect(_clean_up_actuator)
 	task.failed.connect(_task_failed)
+	task.cancelled.connect(func() -> void: _clean_up_actuator())
 	settler.add_child(task_actuator)
 	current_task_actuator = task_actuator
 	current_task_actuator.start_work()
@@ -40,6 +41,7 @@ func _clean_up_actuator() -> void:
 		current_task_actuator.task.failed.disconnect(_task_failed)
 		current_task_actuator.task.tree_exited.disconnect(_clean_up_actuator)
 		settler.remove_child(current_task_actuator)
+		settler.stop_animation()
 		current_task_actuator = null
 
 func _task_failed(_task: Task) -> void:
