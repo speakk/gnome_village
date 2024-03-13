@@ -2,12 +2,16 @@ class_name BuildActorAction extends ActorAction
 
 var constructable_component: ConstructableComponent
 
-func initialize(params: Variant) -> ActorAction:
+func validate(actor: Settler, params: Dictionary) -> void:
+	if not actor.can_reach_target(params.constructable_component.get_owner().global_position):
+		validation_failed.emit()
+
+func _init(actor: Settler, params: Dictionary) -> void:
+	super._init(actor, params)
 	constructable_component = params.constructable_component
 	constructable_component.finished.connect(func() -> void: finished.emit(self))
-	return self
 
-func process_action(actor: Settler, delta: float) -> void:
+func process_action(delta: float) -> void:
 	constructable_component.increase_progress(actor.build_speed * delta)
 	
 	var target_position: Vector3 = constructable_component.get_owner().global_position

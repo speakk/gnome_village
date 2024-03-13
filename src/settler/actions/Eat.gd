@@ -3,11 +3,11 @@ class_name EatActorAction extends ActorAction
 var consumable: ConsumableComponent
 var eating_time: float = 2.0
 
-func initialize(params: Variant) -> ActorAction:
+func _init(actor: Settler, params: Dictionary) -> void:
+	super._init(actor, params)
 	consumable = params.consumable
-	return self
 
-func process_action(actor: Settler, delta: float) -> void:
+func process_action(delta: float) -> void:
 	if consumable:
 		eating_time -= delta
 		if eating_time <= 0:

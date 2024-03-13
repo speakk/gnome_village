@@ -1,0 +1,28 @@
+[gd_scene load_steps=7 format=3 uid="uid://bmsv08bdj14js"]
+
+[ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://src/tasks/task_actuators/TaskActuator.tscn" id="1_qoxia"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_65oj4"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/eat.gd" id="2_xabs4"]
+[ext_resource type="PackedScene" uid="uid://bevd0ykcp7npk" path="res://src/tasks/task_actuators/actions/GoToAction.tscn" id="3_44rbg"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/DoAction.gd" id="4_5unpk"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/FinishTask.gd" id="5_pi6p0"]
+
+[node name="Eat" instance=ExtResource("1_qoxia")]
+script = ExtResource("2_xabs4")
+
+[node name="BeehaveTree" parent="." index="0" node_paths=PackedStringArray("blackboard")]
+blackboard = NodePath("@Node@17159")
+
+[node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0"]
+script = ExtResource("2_65oj4")
+
+[node name="GoToAction" parent="BeehaveTree/SequenceComposite" index="0" instance=ExtResource("3_44rbg")]
+unique_name_in_owner = true
+
+[node name="DoAction" type="Node" parent="BeehaveTree/SequenceComposite" index="1"]
+unique_name_in_owner = true
+script = ExtResource("4_5unpk")
+
+[node name="FinishTask" type="Node" parent="BeehaveTree/SequenceComposite" index="2"]
+unique_name_in_owner = true
+script = ExtResource("5_pi6p0")

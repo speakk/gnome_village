@@ -3,8 +3,6 @@ extends ActionLeaf
 var _action: GoToActorAction
 var _done := false
 
-@onready var ACTION := preload("res://src/settler/actions/GoTo.gd")
-
 @warning_ignore("untyped_declaration")
 func tick(actor: Node, blackboard: Blackboard) -> int:
 	if _done:
@@ -24,7 +22,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 			#print("Path index was undex size, proceeding")
 			var current_target_coordinate := path[current_path_index]
 			
-			_action = ACTION.new().initialize({ target_coordinate =  current_target_coordinate })
+			_action = GoToActorAction.new(actor, { target_coordinate =  current_target_coordinate })
 			_action.finished.connect(func(__action: ActorAction) -> void:
 				blackboard.set_value("current_path_index", current_path_index + 1)
 				blackboard.erase_value("blocking_door")

@@ -141,13 +141,18 @@ func get_action_range() -> float:
 
 var actions: Array[ActorAction]
 
+func has_action(action: ActorAction) -> void:
+	return actions.has(action)
+
 func add_action(action: ActorAction) -> void:
+	action.set_settler(self)
 	actions.append(action)
 	action.finished.connect(func(_action: ActorAction) -> void: actions.erase(_action))
 
 func process_actions(delta: float) -> void:
 	for action in actions:
-		action.process_action(self, delta)
+		if action.is_started():
+			action.process_action(delta)
 
 func _refresh_carry_item() -> void:
 	var items := inventory.get_items()

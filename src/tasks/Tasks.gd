@@ -1,7 +1,7 @@
 extends Node
 
 enum TaskId {
-	BringResource, Build, Dismantle
+	BringResource, Build, Dismantle, Eat
 }
 
 var task_actuators: Dictionary = {

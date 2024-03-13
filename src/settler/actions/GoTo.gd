@@ -2,11 +2,11 @@ class_name GoToActorAction extends ActorAction
 
 var target_coordinate: Vector2i
 
-func initialize(params: Variant) -> ActorAction:
+func _init(actor: Settler, params: Dictionary) -> void:
+	super._init(actor, params)
 	target_coordinate = params.target_coordinate
-	return self
 
-func process_action(actor: Settler, delta: float) -> void:
+func process_action(delta: float) -> void:
 	if actor.global_position.distance_to(Globals.get_map().coordinate_to_global_position(target_coordinate)) < actor.AT_DISTANCE:
 		finished.emit(self)
 	

@@ -3,6 +3,7 @@ extends Node
 class_name TaskActuator
 
 var task: Task
+var actor: Settler
 
 @onready var tree: BeehaveTree = $BeehaveTree as BeehaveTree
 
@@ -21,6 +22,7 @@ func start_work() -> void:
 	tree.actor = get_parent()
 	tree.enable()
 	task.is_being_worked_on = true
+	actor = get_parent()
 	
 func save() -> Dictionary:
 	var save_dict := {

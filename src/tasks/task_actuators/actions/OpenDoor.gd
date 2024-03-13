@@ -3,8 +3,6 @@ extends ActionLeaf
 var _action: OpenDoorActorAction
 var _done := false
 
-@onready var ACTION := preload("res://src/settler/actions/OpenDoor.gd")
-
 @warning_ignore("untyped_declaration")
 func tick(actor: Node, blackboard: Blackboard) -> int:
 	if _done:
@@ -19,7 +17,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	
 	if not _action:
 		print("opening door")
-		_action = ACTION.new().initialize({ door = door })
+		_action = OpenDoorActorAction.new(actor, { door = door })
 		_action.finished.connect(func(__action: ActorAction) -> void: _done = true)
 		actor.add_action(_action)
 		
