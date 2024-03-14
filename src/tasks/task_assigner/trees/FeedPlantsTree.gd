@@ -29,5 +29,5 @@ func _init(growth_spot: GrowthSpotComponent) -> void:
 		
 		register_subtask(bring_resources)
 
-func _handle_task_failure(task: Task) -> void:
+func _handle_task_failure() -> void:
 	print("Feed plants bring task failed")

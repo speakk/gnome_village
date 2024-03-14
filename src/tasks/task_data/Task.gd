@@ -50,7 +50,7 @@ func register_subtask(task: Task) -> void:
 		)
 	
 	task.failed.connect(func() -> void:
-		print("Handle subtask failure TODO")
+		failed.emit()
 		)
 
 func get_subtasks() -> Array[Task]:

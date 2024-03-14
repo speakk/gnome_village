@@ -69,6 +69,8 @@ func start_work() -> void:
 	%PutItemToBlueprint.item_id = task.item_requirement.item_id
 	%PutItemToBlueprint.amount = task.item_requirement.amount
 	
+	if not task.item_requirement:
+		print("Oopsie")
 	%HasItemRequirement.item_requirement = task.item_requirement
 
 func _ready() -> void:

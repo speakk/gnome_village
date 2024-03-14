@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=32 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://src/settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="PackedScene" uid="uid://d0bhvo3gwo2q8" path="res://assets/blender_models/settler.blend" id="4_j4bsq"]
@@ -18,6 +18,7 @@
 [ext_resource type="Script" path="res://addons/utility_ai/considerations/consideration_from_node.gd" id="15_lvjgf"]
 [ext_resource type="Script" path="res://src/settler/UtilityAiEvaluators.gd" id="16_e4fj0"]
 [ext_resource type="PackedScene" uid="uid://bldmexncscbhf" path="res://src/settler/task_handler.tscn" id="18_0wyf8"]
+[ext_resource type="AudioStream" uid="uid://1p876rj2h27f" path="res://assets/sounds/eating.ogg" id="19_m14x2"]
 
 [sub_resource type="Animation" id="Animation_qwdft"]
 resource_name = "Build"
@@ -38,9 +39,28 @@ tracks/0/keys = {
 }]
 }
 
+[sub_resource type="Animation" id="Animation_nc4bt"]
+resource_name = "Eat"
+length = 0.625
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"play_eating_sound"
+}]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tjr5p"]
 _data = {
-"Build": SubResource("Animation_qwdft")
+"Build": SubResource("Animation_qwdft"),
+"Eat": SubResource("Animation_nc4bt")
 }
 
 [sub_resource type="Resource" id="Resource_k4fvq"]
@@ -196,3 +216,11 @@ container = NodePath("../ComponentContainer")
 
 [node name="TaskHandler" parent="." node_paths=PackedStringArray("settler") instance=ExtResource("18_0wyf8")]
 settler = NodePath("..")
+
+[node name="EatingSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00430357, 0.5, 0.097248)
+stream = ExtResource("19_m14x2")
+volume_db = 0.02
+max_distance = 147.16
+bus = &"Environment"
+attenuation_filter_db = -9.1

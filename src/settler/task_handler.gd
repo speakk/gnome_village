@@ -6,10 +6,19 @@ var current_task_actuator: TaskActuator
 
 var latest_task_id: String
 
+var _process_interval: float = randf_range(0.4, 0.7)
+var _current_process_timer := _process_interval
+
 func handle_utility_ai_task(task_id: String) -> void:
 	latest_task_id = task_id
 
 func _physics_process(delta: float) -> void:
+	_current_process_timer -= delta
+	if _current_process_timer > 0:
+		return
+	
+	_current_process_timer = _process_interval
+	
 	if not self.current_task_actuator:
 		match latest_task_id:
 			"eat":
@@ -50,7 +59,7 @@ func _clean_up_actuator() -> void:
 		settler.stop_animation()
 		current_task_actuator = null
 
-func _task_failed(_task: Task) -> void:
+func _task_failed() -> void:
 	_clean_up_actuator()
 
 func finish_current_task() -> void:

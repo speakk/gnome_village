@@ -14,7 +14,7 @@ extends Node3D
 @export var yellow_light_amount: Curve
 
 const TEST_TREES = 100
-const TEST_RESOURCES = 350
+const TEST_RESOURCES = 20
 const TEST_SETTLERS = 40
 const DECAL_AMOUNT = 2
 

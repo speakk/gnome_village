@@ -194,6 +194,11 @@ func play_hammer_sound() -> void:
 	var player := $HammerSounds.get_children().pick_random() as AudioStreamPlayer3D
 	player.play()
 
+func play_eating_sound() -> void:
+	var player: AudioStreamPlayer3D = $EatingSound
+	player.pitch_scale = 1 + randf_range(-0.1, 0.1)
+	player.play()
+
 func _utility_ai_action_changed(utility_ai_task_id: String) -> void:
 	task_handler.handle_utility_ai_task(utility_ai_task_id)
 	#print("New action: %s" % utility_ai_task_id)

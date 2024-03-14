@@ -46,5 +46,5 @@ func _ready() -> void:
 			is_cancelled = true
 	)
 
-func _handle_task_failure(task: Task) -> void:
+func _handle_task_failure() -> void:
 	pass
