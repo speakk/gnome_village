@@ -9,7 +9,7 @@ func validate(actor: Settler, params: Dictionary) -> void:
 func _init(actor: Settler, params: Dictionary) -> void:
 	super._init(actor, params)
 	constructable_component = params.constructable_component
-	constructable_component.finished.connect(func() -> void: finished.emit(self))
+	constructable_component.finished.connect(func() -> void: finished.emit())
 
 func process_action(delta: float) -> void:
 	constructable_component.increase_progress(actor.build_speed * delta)

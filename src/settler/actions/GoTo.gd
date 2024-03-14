@@ -8,7 +8,7 @@ func _init(actor: Settler, params: Dictionary) -> void:
 
 func process_action(delta: float) -> void:
 	if actor.global_position.distance_to(Globals.get_map().coordinate_to_global_position(target_coordinate)) < actor.AT_DISTANCE:
-		finished.emit(self)
+		finished.emit()
 	
 	var target_position := Globals.get_map().coordinate_to_global_position(target_coordinate)
 	var direction := actor.global_position.direction_to(target_position)

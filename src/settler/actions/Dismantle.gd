@@ -7,7 +7,7 @@ func _init(actor: Settler, params: Dictionary) -> void:
 	super._init(actor, params)
 	target = params.target
 	constructable = params.target.component_container.get_by_id(Components.Id.Constructable)
-	constructable.no_durability_left.connect(func() -> void: finished.emit(self))
+	constructable.no_durability_left.connect(func() -> void: finished.emit())
 
 func process_action(delta: float) -> void:
 	if constructable:

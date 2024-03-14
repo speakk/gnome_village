@@ -14,7 +14,7 @@ custom_subscriptions = Array[Resource("res://src/components/StringSubscription.g
 [sub_resource type="Resource" id="Resource_uwki3"]
 script = ExtResource("3_ed2pa")
 character_stat = 2
-amount = 0.2
+amount = -0.4
 
 [sub_resource type="Resource" id="Resource_6beag"]
 script = ExtResource("3_ed2pa")

@@ -59,7 +59,7 @@ func _ready() -> void:
 			
 	await get_tree().physics_frame
 #
-	var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone]
+	var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone, Items.Id.Potato]
 #
 	for i in TEST_RESOURCES:
 		var grid_position := Globals.get_map().get_random_coordinate()

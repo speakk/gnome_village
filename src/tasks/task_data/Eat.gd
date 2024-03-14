@@ -7,4 +7,5 @@ func _init(params: Dictionary) -> void:
 	task_name = "Eat food"
 	
 	consumable = params["consumable"]
+	consumable.reserved = true
 	#target.component_container.get_by_id(Components.Id.Constructable).reserved_for_dismantling = true

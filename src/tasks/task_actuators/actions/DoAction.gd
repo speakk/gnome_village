@@ -7,9 +7,9 @@ var _failed := false
 var action: ActorAction:
 	set(new_value):
 		action = new_value
-		action.finished.connect(func(__action: ActorAction) ->void:
+		action.finished.connect(func() ->void:
 			_done = true)
-		action.validation_failure.connect(func() -> void:
+		action.validation_failed.connect(func() -> void:
 			_failed = true)
 
 @warning_ignore("untyped_declaration")

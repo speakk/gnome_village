@@ -10,11 +10,17 @@ func handle_utility_ai_task(task_id: String) -> void:
 	latest_task_id = task_id
 
 func _physics_process(delta: float) -> void:
-	if not current_task_actuator:
+	if not self.current_task_actuator:
 		match latest_task_id:
 			"eat":
-				# TODO: start_task for eat task here,
-				print("Eat!")
+				var consumables := get_tree().get_nodes_in_group("consumable")
+				if consumables.size() > 0:
+					for consumable in consumables:
+						var component: ConsumableComponent = consumable.component_container.get_by_id(Components.Id.Consumable)
+						if not component.reserved:
+							var eating_task := EatTask.new({ consumable = component })
+							start_task(eating_task)
+							break
 			"sleep":
 				# TODO: start_task for sleep task here,
 				print("Sleep!")

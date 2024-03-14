@@ -16,7 +16,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	
 	if not _action:
 		_action = DismantleActorAction.new(actor, { target =  target })
-		_action.finished.connect(func(__action: ActorAction) ->void:
+		_action.finished.connect(func() ->void:
 			_done = true)
 		actor.add_action(_action)
 		

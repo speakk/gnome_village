@@ -7,8 +7,7 @@ func initialize(_task: EatTask) -> EatActuator:
 func start_work() -> void:
 	super.start_work()
 	
-	%GoToAction.target_coordinate = Globals.get_map().global_position_to_coordinate(task.target.global_position)
-	%DismantleAction.target = task.target
+	%GoToAction.target_coordinate = Globals.get_map().global_position_to_coordinate(task.consumable.get_owner().global_position)
 	%FinishTask.finished.connect(func() -> void:
 		task.is_finished = true
 		finish()

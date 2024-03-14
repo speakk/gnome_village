@@ -20,14 +20,24 @@ class CharacterStat:
 var stats: Dictionary = {
 	Id.Happiness: CharacterStat.new(Id.Happiness, "Happiness", 1.0, -0.01),
 	Id.Melancholy: CharacterStat.new(Id.Melancholy, "Melancholy", 0.0, randf_range(0, 0.03)),
-	Id.Hunger: CharacterStat.new(Id.Hunger, "Hunger", randf_range(0, 0.03)),
+	Id.Hunger: CharacterStat.new(Id.Hunger, "Hunger", randf_range(0.3, 0.59)),
 	Id.Thirst: CharacterStat.new(Id.Thirst, "Thirst", randf_range(0, 0.03)),
 	Id.Tiredness: CharacterStat.new(Id.Tiredness, "Tiredness", randf_range(0, 0.03)),
 }
 
+func _randomize_deltas() -> void:
+	get_stat(Id.Happiness).value_delta = -0.01
+	get_stat(Id.Melancholy).value_delta = randf_range(0.01, 0.03)
+	get_stat(Id.Hunger).value_delta = randf_range(0.01, 0.03)
+	get_stat(Id.Thirst).value_delta = randf_range(0.01, 0.03)
+	get_stat(Id.Tiredness).value_delta = randf_range(0.01, 0.03)
+
 func _init() -> void:
 	id = Components.Id.CharacterStats
 	
+func on_enter() -> void:
+	_randomize_deltas()
+
 func get_stats() -> Array[CharacterStat]:
 	var stats_array: Array[CharacterStat]
 	stats_array.assign(stats.values())
@@ -38,6 +48,11 @@ func get_stat(id: Id) -> CharacterStat:
 		return stats[id]
 	
 	return null
+
+func apply_satisfactions(satisfactions: Array[Satisfaction]) -> void:
+	for satisfaction in satisfactions:
+		var stat := get_stat(satisfaction.character_stat)
+		stat.value += satisfaction.amount
 
 func process_component(delta: float) -> void:
 	for stat: CharacterStat in stats.values():

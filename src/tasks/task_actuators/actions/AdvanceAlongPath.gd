@@ -23,7 +23,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 			var current_target_coordinate := path[current_path_index]
 			
 			_action = GoToActorAction.new(actor, { target_coordinate =  current_target_coordinate })
-			_action.finished.connect(func(__action: ActorAction) -> void:
+			_action.finished.connect(func() -> void:
 				blackboard.set_value("current_path_index", current_path_index + 1)
 				blackboard.erase_value("blocking_door")
 				_done = true

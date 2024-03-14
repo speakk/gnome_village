@@ -141,13 +141,13 @@ func get_action_range() -> float:
 
 var actions: Array[ActorAction]
 
-func has_action(action: ActorAction) -> void:
+func has_action(action: ActorAction) -> bool:
 	return actions.has(action)
 
 func add_action(action: ActorAction) -> void:
 	action.set_settler(self)
 	actions.append(action)
-	action.finished.connect(func(_action: ActorAction) -> void: actions.erase(_action))
+	action.finished.connect(func() -> void: actions.erase(action))
 
 func process_actions(delta: float) -> void:
 	for action in actions:

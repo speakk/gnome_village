@@ -18,7 +18,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	if not _action:
 		print("opening door")
 		_action = OpenDoorActorAction.new(actor, { door = door })
-		_action.finished.connect(func(__action: ActorAction) -> void: _done = true)
+		_action.finished.connect(func() -> void: _done = true)
 		actor.add_action(_action)
 		
 	return RUNNING

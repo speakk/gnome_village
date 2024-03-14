@@ -12,4 +12,5 @@ func process_action(delta: float) -> void:
 		eating_time -= delta
 		if eating_time <= 0:
 			var character_stats: CharacterStatsComponent = actor.component_container.get_by_id(Components.Id.CharacterStats)
-			character_stats.apply_consumable(consumable.consume())
+			character_stats.apply_satisfactions(consumable.consume())
+			finished.emit()
