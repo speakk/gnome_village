@@ -3,6 +3,8 @@ class_name Task extends Node
 var task_id: Tasks.TaskId
 var task_name: String
 
+var task_actuator_scene: PackedScene
+
 signal failed()
 signal cancelled()
 signal finished()

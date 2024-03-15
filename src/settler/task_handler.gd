@@ -6,6 +6,9 @@ var current_task_actuator: TaskActuator
 
 var latest_task_id: String
 
+# TODO: Utility AI changing state is already a signal
+# We only really need to re-check if task starting failed.
+# Anyway, that is for a future optimization
 var _process_interval: float = randf_range(0.4, 0.7)
 var _current_process_timer := _process_interval
 
@@ -42,7 +45,8 @@ func get_current_task() -> TaskActuator:
 	return current_task_actuator
 
 func start_task(task: Task) -> void:
-	var task_actuator := Tasks.create_task_actuator(task)
+	var task_actuator: TaskActuator = task.task_actuator_scene.instantiate()
+	task_actuator.initialize(task)
 	task.tree_exited.connect(_clean_up_actuator)
 	task.failed.connect(_task_failed)
 	task.cancelled.connect(func() -> void: _clean_up_actuator())

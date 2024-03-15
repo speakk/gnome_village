@@ -7,6 +7,8 @@ var inventory_component: InventoryComponent
 func _init(params: Dictionary) -> void:
 	task_id = Tasks.TaskId.BringResource
 	task_name = "Bring resource"
+	task_actuator_scene = preload("res://src/tasks/task_actuators/bring_resource.tscn")
+	
 	if params.has("target_coordinate"):
 		target_coordinate = params["target_coordinate"]
 	else:
