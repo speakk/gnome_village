@@ -36,10 +36,13 @@ func get_subscriptions() -> Array[Subscription]:
 func on_exit() -> void:
 	removed.emit()
 
-func advance_process_timer(delta: float) -> bool:
+var _full_delta: float = 0
+
+func advance_process_timer(delta: float) -> void:
 	_process_timer -= delta
+	_full_delta += delta
 	if _process_timer <= 0:
 		_process_timer = _process_rate
-		return true
-	
-	return false
+		if has_method("process_component"):
+			call("process_component", _full_delta)
+		_full_delta = 0

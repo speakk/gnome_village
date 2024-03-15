@@ -8,6 +8,7 @@ signal open_amount_changed(new_amount: float)
 
 func _init() -> void:
 	id = Components.Id.Door
+	_process_rate = 0.1
 
 var is_locked := false
 var open_amount := 0.0:

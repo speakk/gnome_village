@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cxah2qb0vkqog"]
-
-[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/BuildAction.gd" id="1_3llk6"]
-
-[node name="BuildAction" type="Node"]
-script = ExtResource("1_3llk6")

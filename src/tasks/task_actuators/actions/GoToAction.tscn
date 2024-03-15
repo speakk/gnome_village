@@ -9,9 +9,9 @@
 [ext_resource type="Script" path="res://src/tasks/task_actuators/actions/PlayAnimation.gd" id="5_8gaoi"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_set.gd" id="7_f8gd8"]
 [ext_resource type="Script" path="res://src/tasks/task_actuators/conditions/IsBlockedByDoor.gd" id="7_lcpct"]
-[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/OpenDoor.gd" id="8_or0dk"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_erase.gd" id="8_v0c37"]
 [ext_resource type="Script" path="res://src/tasks/task_actuators/actions/AdvanceAlongPath.gd" id="9_1n0he"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/DoAction.gd" id="9_g6cq4"]
 
 [node name="GoToAction" type="Node"]
 script = ExtResource("1_qg1rs")
@@ -41,10 +41,12 @@ script = ExtResource("2_vbggv")
 script = ExtResource("3_yi44a")
 
 [node name="IsBlockedByDoor" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/MoveSequence/DoorSelector/Not"]
+unique_name_in_owner = true
 script = ExtResource("7_lcpct")
 
-[node name="OpenDoor" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/MoveSequence/DoorSelector"]
-script = ExtResource("8_or0dk")
+[node name="DoActionOpenDoor" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/MoveSequence/DoorSelector"]
+unique_name_in_owner = true
+script = ExtResource("9_g6cq4")
 
 [node name="AdvanceAlongPath" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/MoveSequence"]
 script = ExtResource("9_1n0he")

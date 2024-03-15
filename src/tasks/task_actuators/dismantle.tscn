@@ -4,14 +4,14 @@
 [ext_resource type="PackedScene" uid="uid://dllkku4j86v6u" path="res://src/tasks/task_actuators/TaskActuator.tscn" id="1_fm161"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_a2kab"]
 [ext_resource type="PackedScene" uid="uid://bevd0ykcp7npk" path="res://src/tasks/task_actuators/actions/GoToAction.tscn" id="3_sxw6n"]
-[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/DismantleAction.gd" id="4_unmgl"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/DoAction.gd" id="5_6efpt"]
 [ext_resource type="Script" path="res://src/tasks/task_actuators/actions/FinishTask.gd" id="5_iplfe"]
 
 [node name="DismantleTask" instance=ExtResource("1_fm161")]
 script = ExtResource("1_6vuxa")
 
 [node name="BeehaveTree" parent="." index="0" node_paths=PackedStringArray("blackboard")]
-blackboard = NodePath("@Node@25022")
+blackboard = NodePath("@Node@24454")
 
 [node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0"]
 script = ExtResource("2_a2kab")
@@ -19,10 +19,12 @@ script = ExtResource("2_a2kab")
 [node name="GoToAction" parent="BeehaveTree/SequenceComposite" index="0" instance=ExtResource("3_sxw6n")]
 unique_name_in_owner = true
 
-[node name="DismantleAction" type="Node" parent="BeehaveTree/SequenceComposite" index="1"]
+[node name="DoAction" type="Node" parent="BeehaveTree/SequenceComposite" index="1"]
 unique_name_in_owner = true
-script = ExtResource("4_unmgl")
+script = ExtResource("5_6efpt")
 
 [node name="FinishTask" type="Node" parent="BeehaveTree/SequenceComposite" index="2"]
 unique_name_in_owner = true
 script = ExtResource("5_iplfe")
+
+[node name="GoToAction" parent="." index="1" instance=ExtResource("3_sxw6n")]

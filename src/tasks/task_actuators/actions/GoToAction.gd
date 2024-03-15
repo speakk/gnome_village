@@ -5,6 +5,13 @@ var target_coordinate: Vector2i:
 		%UpdatePath.target_coordinate = new_value
 		target_coordinate = new_value
 
+func before_run(actor: Node, blackboard: Blackboard) -> void:
+	%IsBlockedByDoor.blocking_door_found.connect(func(door: DoorComponent) -> void:
+		%DoActionOpenDoor.action = OpenDoorActorAction.new(actor, {
+			door = door
+		})
+		)
+
 @warning_ignore("untyped_declaration")
 func tick(_node, _blackboard) -> int:
 	#print("Ticking GoToAction, ", name)

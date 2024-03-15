@@ -17,6 +17,10 @@ func start_work() -> void:
 		finish()
 		#Events.dismantle_finished.emit(task.target)
 	)
+	
+	%DoAction.action = DismantleActorAction.new(actor, {
+		target = task.target
+	})
 
 # TODO: I guess this should really be in the Task itself now
 func clean_up() -> void:

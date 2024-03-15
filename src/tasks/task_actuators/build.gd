@@ -10,7 +10,9 @@ func initialize(_task: BuildTask) -> BuildActuator:
 func start_work() -> void:
 	super.start_work()
 	%GoToBlueprint.target_coordinate = Globals.get_map().global_position_to_coordinate(task.constructable_component.get_owner().global_position)
-	%BuildAction.target = task.constructable_component
+	%DoAction.action = BuildActorAction.new(actor, {
+		constructable_component = task.constructable_component
+		})
 
 func save() -> Dictionary:
 	var save_dict := super.save()

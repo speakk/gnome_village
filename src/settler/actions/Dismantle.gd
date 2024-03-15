@@ -3,6 +3,10 @@ class_name DismantleActorAction extends ActorAction
 var target: ItemOnGround
 var constructable: ConstructableComponent
 
+func validate(actor: Settler, params: Dictionary) -> void:
+	if not actor.can_reach_target(params.constructable.get_owner().global_position):
+		validation_failed.emit()
+
 func _init(actor: Settler, params: Dictionary) -> void:
 	super._init(actor, params)
 	target = params.target
