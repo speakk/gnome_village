@@ -5,6 +5,9 @@ enum Id {
 	Happiness, Melancholy, Hunger, Thirst, Tiredness
 }
 
+# How fast stats move, here to make the value_deltas a bit more palatable
+const DELTA_MULTIPLIER: float = 0.05
+
 class CharacterStat:
 	var stat_id: Id
 	var display_name: String
@@ -56,7 +59,7 @@ func apply_satisfactions(satisfactions: Array[Satisfaction]) -> void:
 
 func process_component(delta: float) -> void:
 	for stat: CharacterStat in stats.values():
-		stat.value += stat.value_delta * delta
+		stat.value += stat.value_delta * delta * DELTA_MULTIPLIER
 		stat.value = clampf(stat.value, 0.0, 1.0)
 		
 	
