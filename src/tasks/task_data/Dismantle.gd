@@ -5,7 +5,7 @@ var target: ItemOnGround
 func _init(params: Dictionary) -> void:
 	task_id = Tasks.TaskId.Dismantle
 	task_name = "Dismantle"
-	task_actuator_scene = preload("res://src/tasks/task_actuators/dismantle.tscn")
+	animation_name = "Build"
 	
 	target = params["target"]
 	target.component_container.get_by_id(Components.Id.Constructable).reserved_for_dismantling = true
@@ -24,3 +24,9 @@ func save() -> Dictionary:
 func load_save(save_dict: Dictionary) -> void:
 	super.load_save(save_dict)
 	target = SaveSystem.get_saved_entity(save_dict["target_id"])
+
+func create_action(actor: Settler) -> ActorAction:
+	return DismantleActorAction.new(actor, self)
+
+func get_target() -> Vector3:
+	return target.global_position

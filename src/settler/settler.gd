@@ -145,7 +145,6 @@ func has_action(action: ActorAction) -> bool:
 	return actions.has(action)
 
 func add_action(action: ActorAction) -> void:
-	action.set_settler(self)
 	actions.append(action)
 	action.finished.connect(func() -> void: actions.erase(action))
 

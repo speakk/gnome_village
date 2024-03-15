@@ -1,11 +1,11 @@
-class_name EatActorAction extends ActorAction
+class_name EatActorAction extends ActorTaskAction
 
 var consumable: ConsumableComponent
 var eating_time: float = 2.0
 
-func _init(actor: Settler, params: Dictionary) -> void:
-	super._init(actor, params)
-	consumable = params.consumable
+func _init(actor: Settler, task: Task) -> void:
+	super._init(actor, task)
+	consumable = (task as EatTask).consumable
 
 func process_action(delta: float) -> void:
 	if consumable:

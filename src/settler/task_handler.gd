@@ -45,7 +45,12 @@ func get_current_task() -> TaskActuator:
 	return current_task_actuator
 
 func start_task(task: Task) -> void:
-	var task_actuator: TaskActuator = task.task_actuator_scene.instantiate()
+	var task_actuator: TaskActuator
+	if task.task_actuator_scene:
+		task_actuator = task.task_actuator_scene.instantiate()
+	else:
+		task_actuator = preload("res://src/tasks/task_actuators/simple_actuator.tscn").instantiate()
+		
 	task_actuator.initialize(task)
 	task.tree_exited.connect(_clean_up_actuator)
 	task.failed.connect(_task_failed)

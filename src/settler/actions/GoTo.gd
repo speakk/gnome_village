@@ -3,7 +3,7 @@ class_name GoToActorAction extends ActorAction
 var target_coordinate: Vector2i
 
 func _init(actor: Settler, params: Dictionary) -> void:
-	super._init(actor, params)
+	super._init(actor)
 	target_coordinate = params.target_coordinate
 
 func process_action(delta: float) -> void:

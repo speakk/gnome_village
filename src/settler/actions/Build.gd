@@ -1,14 +1,16 @@
-class_name BuildActorAction extends ActorAction
+class_name BuildActorAction extends ActorTaskAction
 
 var constructable_component: ConstructableComponent
 
-func validate(actor: Settler, params: Dictionary) -> void:
-	if not actor.can_reach_target(params.constructable_component.get_owner().global_position):
+func validate(actor: Settler, task: Task) -> void:
+	task = task as BuildTask
+	if not actor.can_reach_target(task.constructable_component.get_owner().global_position):
 		validation_failed.emit()
 
-func _init(actor: Settler, params: Dictionary) -> void:
-	super._init(actor, params)
-	constructable_component = params.constructable_component
+func _init(actor: Settler, task: Task) -> void:
+	super._init(actor, task)
+	task = task as BuildTask
+	constructable_component = task.constructable_component
 	constructable_component.finished.connect(func() -> void: finished.emit())
 
 func process_action(delta: float) -> void:

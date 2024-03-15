@@ -3,7 +3,7 @@ class_name OpenDoorActorAction extends ActorAction
 var door: DoorComponent
 
 func _init(actor: Settler, params: Dictionary) -> void:
-	super._init(actor, params)
+	super._init(actor)
 	door = params.door
 
 func process_action(delta: float) -> void:

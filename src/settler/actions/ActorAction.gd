@@ -12,15 +12,12 @@ signal validation_failed()
 func process_action(delta: float) -> void:
 	push_warning("ActorAction process_action called, did you forget to implement?")
 
-func _init(actor: Settler, params: Dictionary) -> void:
+func _init(_actor: Settler) -> void:
 	_started = true
-	validate(actor, params)
+	actor = _actor
 
 func is_started() -> bool:
 	return _started
 
-func validate(actor: Settler, params: Dictionary) -> void:
+func validate(actor: Settler, task: Task) -> void:
 	pass
-
-func set_settler(settler: Settler) -> void:
-	actor = settler

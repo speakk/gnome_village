@@ -4,6 +4,7 @@ var task_id: Tasks.TaskId
 var task_name: String
 
 var task_actuator_scene: PackedScene
+var animation_name: String
 
 signal failed()
 signal cancelled()
@@ -72,6 +73,13 @@ func clean_up(_cancelled: bool) -> void:
 		subtask.clean_up(_cancelled)
 	
 	queue_free()
+
+func create_action(actor: Settler) -> ActorAction:
+	push_error("Abstract task create_action called")
+	return null
+
+func get_target() -> Vector3:
+	return Vector3(-9999, -9999, -9999)
 
 func save() -> Dictionary:
 	var save_dict := {
