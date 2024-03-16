@@ -14,5 +14,5 @@ func _init(params: Dictionary) -> void:
 func create_action(actor: Settler) -> ActorAction:
 	return EatActorAction.new(actor, self)
 
-func get_target() -> Vector3:
+func get_target(actor: Settler) -> Vector3:
 	return consumable.get_owner().global_position

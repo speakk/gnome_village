@@ -33,7 +33,7 @@ func _randomize_deltas() -> void:
 	get_stat(Id.Melancholy).value_delta = randf_range(0.01, 0.03)
 	get_stat(Id.Hunger).value_delta = randf_range(0.01, 0.03)
 	get_stat(Id.Thirst).value_delta = randf_range(0.01, 0.03)
-	get_stat(Id.Tiredness).value_delta = randf_range(0.01, 0.03)
+	get_stat(Id.Tiredness).value_delta = randf_range(0.1, 0.2)
 
 func _init() -> void:
 	id = Components.Id.CharacterStats
@@ -54,12 +54,14 @@ func get_stat(id: Id) -> CharacterStat:
 
 func apply_satisfactions(satisfactions: Array[Satisfaction]) -> void:
 	for satisfaction in satisfactions:
-		var stat := get_stat(satisfaction.character_stat)
-		stat.value += satisfaction.amount
+		apply_stat_amount(satisfaction.character_stat, satisfaction.amount)
+
+func apply_stat_amount(stat_id: Id, amount: float) -> void:
+	var stat := get_stat(stat_id)
+	stat.value += amount
 
 func process_component(delta: float) -> void:
 	for stat: CharacterStat in stats.values():
 		stat.value += stat.value_delta * delta * DELTA_MULTIPLIER
 		stat.value = clampf(stat.value, 0.0, 1.0)
 		
-	

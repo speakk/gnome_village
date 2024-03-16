@@ -27,6 +27,7 @@ var is_finished := false:
 		if new_value:
 			Events.task_finished.emit(self)
 			finished.emit()
+			print("Task: %s finished" % task_name)
 			clean_up(false)
 		is_finished = new_value
 
@@ -35,6 +36,7 @@ var has_failed := false:
 		has_failed = new_value
 		if new_value:
 			failed.emit()
+			print("Task: %s failed" % task_name)
 			is_being_worked_on = false
 
 var is_cancelled := false:
@@ -78,7 +80,7 @@ func create_action(actor: Settler) -> ActorAction:
 	push_error("Abstract task create_action called")
 	return null
 
-func get_target() -> Vector3:
+func get_target(actor: Settler) -> Vector3:
 	return Vector3(-9999, -9999, -9999)
 
 func save() -> Dictionary:

@@ -1,5 +1,5 @@
 extends Node
 
 enum TaskId {
-	BringResource, Build, Dismantle, Eat
+	BringResource, Build, Dismantle, Eat, Sleep
 }

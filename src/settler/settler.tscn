@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=33 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://src/settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="PackedScene" uid="uid://d0bhvo3gwo2q8" path="res://assets/blender_models/settler.blend" id="4_j4bsq"]
@@ -96,6 +96,10 @@ point_count = 2
 [sub_resource type="Curve" id="Curve_76gl7"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.605744, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 3
+
+[sub_resource type="Curve" id="Curve_dpk8f"]
+_data = [Vector2(0, 0.758242), 0.0, 0.0, 0, 0, Vector2(0.197248, 0), 0.0, 0.0, 0, 0, Vector2(0.504587, 0), 0.0, 0.0, 0, 0, Vector2(0.880734, 0), 0.0, 0.0, 0, 0, Vector2(1, 0.758242), 0.0, 0.0, 0, 0]
+point_count = 5
 
 [node name="Settler" type="Node3D" node_paths=PackedStringArray("utility_agent", "task_handler") groups=["settler"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -209,6 +213,12 @@ script = ExtResource("15_lvjgf")
 node = NodePath("../../../../UtilityAiEvaluators")
 property_name = "get_melancholy"
 curve = SubResource("Curve_8sa7u")
+
+[node name="TimeOfDay" type="Node" parent="UtilityAiAgent/Sleep/UtilityAiAggregation" node_paths=PackedStringArray("node")]
+script = ExtResource("15_lvjgf")
+node = NodePath("../../../../UtilityAiEvaluators")
+property_name = "get_time_of_day"
+curve = SubResource("Curve_dpk8f")
 
 [node name="UtilityAiEvaluators" type="Node" parent="." node_paths=PackedStringArray("container")]
 script = ExtResource("16_e4fj0")

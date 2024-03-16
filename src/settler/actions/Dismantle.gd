@@ -5,7 +5,7 @@ var constructable: ConstructableComponent
 
 func validate_task(actor: Settler, task: Task) -> void:
 	task = task as DismantleTask
-	if not actor.can_reach_target(task.constructable.get_owner().global_position):
+	if not actor.can_reach_target(task.target.global_position):
 		validation_failed.emit()
 
 func _init(actor: Settler, task: Task) -> void:

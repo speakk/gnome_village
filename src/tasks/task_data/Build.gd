@@ -21,5 +21,5 @@ func load_save(save_dict: Dictionary) -> void:
 func create_action(actor: Settler) -> ActorAction:
 	return BuildActorAction.new(actor, self)
 
-func get_target() -> Vector3:
+func get_target(actor: Settler) -> Vector3:
 	return constructable_component.get_owner().global_position

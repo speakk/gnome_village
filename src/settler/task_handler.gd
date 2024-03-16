@@ -34,8 +34,8 @@ func _physics_process(delta: float) -> void:
 							start_task(eating_task)
 							break
 			"sleep":
-				# TODO: start_task for sleep task here,
-				print("Sleep!")
+				var task := SleepTask.new()
+				start_task(task)
 			"work":
 				var next_work_task: Task = TaskManager.get_available_task(settler.global_position)
 				if next_work_task:
