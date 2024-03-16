@@ -9,7 +9,7 @@ var latest_task_id: String
 # TODO: Utility AI changing state is already a signal
 # We only really need to re-check if task starting failed.
 # Anyway, that is for a future optimization
-var _process_interval: float = randf_range(0.4, 0.7)
+var _process_interval: float = randf_range(1, 4)
 var _current_process_timer := _process_interval
 
 func handle_utility_ai_task(task_id: String) -> void:

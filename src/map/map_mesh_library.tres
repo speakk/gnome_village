@@ -1,4 +1,4 @@
-[gd_resource type="MeshLibrary" load_steps=7 format=3 uid="uid://cpsm4h5sl5dg6"]
+[gd_resource type="MeshLibrary" load_steps=14 format=3 uid="uid://cpsm4h5sl5dg6"]
 
 [ext_resource type="Texture2D" uid="uid://bi6mp65lpsrbx" path="res://assets/textures/wooden_wall.png" id="1_dahys"]
 
@@ -22,6 +22,37 @@ material = SubResource("StandardMaterial3D_vf4wq")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tiln4"]
 
+[sub_resource type="Gradient" id="Gradient_tt7rg"]
+colors = PackedColorArray(0.953125, 0.953125, 0.953125, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_85qsj"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5ehxw"]
+seamless = true
+color_ramp = SubResource("Gradient_tt7rg")
+noise = SubResource("FastNoiseLite_85qsj")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_muiw0"]
+albedo_color = Color(0.546875, 0.546875, 0.546875, 1)
+albedo_texture = SubResource("NoiseTexture2D_5ehxw")
+uv1_scale = Vector3(0.15, 0.15, 0.15)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_t80yt"]
+material = SubResource("StandardMaterial3D_muiw0")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ekfsy"]
+albedo_color = Color(0.515625, 0.515625, 0.515625, 1)
+albedo_texture = SubResource("NoiseTexture2D_5ehxw")
+uv1_scale = Vector3(0.15, 0.15, 0.15)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_pj0lr"]
+material = SubResource("StandardMaterial3D_ekfsy")
+size = Vector3(1, 1.2, 1)
+
 [resource]
 item/0/name = "wooden_wall"
 item/0/mesh = SubResource("BoxMesh_l7w1v")
@@ -29,3 +60,15 @@ item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/shapes = [SubResource("BoxShape3D_tiln4"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)]
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1
+item/1/name = "Rock"
+item/1/mesh = SubResource("BoxMesh_t80yt")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/shapes = []
+item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/navigation_layers = 1
+item/2/name = "Rock2"
+item/2/mesh = SubResource("BoxMesh_pj0lr")
+item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/shapes = []
+item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/navigation_layers = 1

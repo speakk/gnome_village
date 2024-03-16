@@ -1,6 +1,7 @@
 class_name MainMap3D extends Node3D
 
 @export var clear_on_load: bool = false
+@export var rock_placement_noise: Noise
 
 @onready var grid: GridMap = $GridMap
 @onready var blueprint_grid: GridMap = $BlueprintGridMap
@@ -67,10 +68,19 @@ func prepare_for_load() -> void:
 		
 		for x in MAP_SIZE_X:
 			for y in MAP_SIZE_Y:
+				var coord := Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2)
 				if y < MAP_SIZE_Y - water_area_y_size - sin(x * shore_wave_frequency) * shore_wave_depth:
-					ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 0)
+					ground_grid.set_cell_item(coord, 0)
+					
+					var noise_value := rock_placement_noise.get_noise_2d(x, y)
+					if noise_value > 0.2:
+						var noise_value2 := rock_placement_noise.get_noise_2d(y*2, x*2)
+						if noise_value2 > -0.1:
+							grid.set_cell_item(coord, 1)
+						else:
+							grid.set_cell_item(coord, 2)
 				else:
-					ground_grid.set_cell_item(Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2), 1)
+					ground_grid.set_cell_item(coord, 1)
 
 func add_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:
 	if not map_entities.has(coordinate):
