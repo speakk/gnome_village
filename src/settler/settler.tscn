@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://b1no50g6cjkhd"]
+[gd_scene load_steps=35 format=3 uid="uid://b1no50g6cjkhd"]
 
 [ext_resource type="Script" path="res://src/settler/settler.gd" id="1_ghp1u"]
 [ext_resource type="PackedScene" uid="uid://d0bhvo3gwo2q8" path="res://assets/blender_models/settler.blend" id="4_j4bsq"]
@@ -100,6 +100,21 @@ point_count = 3
 [sub_resource type="Curve" id="Curve_dpk8f"]
 _data = [Vector2(0, 0.758242), 0.0, 0.0, 0, 0, Vector2(0.197248, 0), 0.0, 0.0, 0, 0, Vector2(0.504587, 0), 0.0, 0.0, 0, 0, Vector2(0.880734, 0), 0.0, 0.0, 0, 0, Vector2(1, 0.758242), 0.0, 0.0, 0, 0]
 point_count = 5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hvia0"]
+albedo_color = Color(0.046875, 0.046875, 0.046875, 1)
+emission_enabled = true
+emission = Color(0.427704, 0.234121, 0.578125, 1)
+emission_energy_multiplier = 5.77
+disable_receive_shadows = true
+grow_amount = -2.263
+
+[sub_resource type="TorusMesh" id="TorusMesh_eq2t0"]
+material = SubResource("StandardMaterial3D_hvia0")
+inner_radius = 0.35
+outer_radius = 0.4
+rings = 16
+ring_segments = 16
 
 [node name="Settler" type="Node3D" node_paths=PackedStringArray("utility_agent", "task_handler") groups=["settler"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -234,3 +249,7 @@ volume_db = 0.02
 max_distance = 147.16
 bus = &"Environment"
 attenuation_filter_db = -9.1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.476605, 0)
+mesh = SubResource("TorusMesh_eq2t0")

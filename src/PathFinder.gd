@@ -3,15 +3,12 @@ extends Node
 @onready var astar_grid := AStarGrid2D.new()
 
 func _ready() -> void:
-	Events.map_ready.connect(_map_ready)
+	_reset()
 	Events.solid_cell_placed.connect(_solid_cell_placed)
 	Events.solid_cell_removed.connect(_solid_cell_removed)
 
-func prepare_for_load() -> void:
+func _reset() -> void:
 	astar_grid = AStarGrid2D.new()
-	_map_ready(null)
-
-func _map_ready(_map: MainMap3D) -> void:
 	astar_grid.cell_size = MainMap3D.CELL_SIZE
 	astar_grid.region = Rect2i(-MainMap3D.MAP_SIZE_X/2, -MainMap3D.MAP_SIZE_Y/2, MainMap3D.MAP_SIZE_X, MainMap3D.MAP_SIZE_Y)
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES

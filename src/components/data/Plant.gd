@@ -40,7 +40,6 @@ func on_enter() -> void:
 	recalculate_actual_growth_time()
 
 func _set_spread_component(spread_component: SpreadComponent) -> void:
-	print("Spread component set!")
 	spread_component.spreads.connect(_spreads)
 	matured.connect(func() -> void: spread_component.set_active(true))
 	if is_mature():
@@ -61,7 +60,6 @@ static func create_growth_spot(new_position: Vector3) -> ItemOnGround:
 	return new_grows_in_entity
 
 func _spreads(coordinate: Vector2i) -> void:
-	print("Spreads called!", coordinate)
 	var global_pos: Vector3 = Globals.get_map().coordinate_to_global_position(coordinate)
 	var new_grows_in_entity := PlantComponent.create_growth_spot(global_pos)
 	

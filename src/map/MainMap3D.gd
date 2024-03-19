@@ -2,10 +2,17 @@ class_name MainMap3D extends Node3D
 
 @export var clear_on_load: bool = false
 @export var rock_placement_noise: Noise
+@export var grass_placement_noise: Noise
+@export var grass_color0: Color
+@export var grass_color1: Color
+@export var grass_color2: Color
+@export var grass_color3: Color
+@export var grass_prob_curve: Curve
 
 @onready var grid: GridMap = $GridMap
 @onready var blueprint_grid: GridMap = $BlueprintGridMap
 @onready var ground_grid: GridMap = $GroundGrid
+@onready var grass_multi_mesh: MultiMeshInstance3D = $GrassMultiMesh
 
 @onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
 
@@ -33,6 +40,70 @@ enum Layers {
 
 var map_entities := {} as Dictionary
 
+func _create_grass() -> void:
+	var multi_mesh := MultiMesh.new()
+	multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
+	multi_mesh.mesh = preload("res://assets/blender_models/foliage/grass_blade_mesh.res")
+	multi_mesh.use_colors = true
+	multi_mesh.mesh.surface_get_material(0).vertex_color_use_as_albedo = true
+	var mat := multi_mesh.mesh.surface_get_material(0) as StandardMaterial3D
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.diffuse_mode = BaseMaterial3D.DIFFUSE_TOON
+	var amount_of_tries: int = 800000
+	
+	var transforms: Array[Transform3D]
+	var colors: PackedColorArray
+	
+	for i in amount_of_tries:
+		var random_position := Vector3(randf_range(-MAP_SIZE_X/2, MAP_SIZE_X/2), 0, randf_range(-MAP_SIZE_Y/2, MAP_SIZE_Y/2))
+		var noise_value := grass_placement_noise.get_noise_2d(
+			random_position.x,
+			random_position.z)
+		
+		var grid_pos := Globals.extend_vec2i(global_position_to_coordinate(random_position))
+		var norm_value := remap(noise_value, -1, 1, 0, 1)
+		var base_color: Color
+		
+		if ground_grid.get_cell_item(grid_pos) != 1:
+			base_color = grass_color0
+			if noise_value > 0 and noise_value < 0.2:
+				ground_grid.set_cell_item(grid_pos, 4)
+				base_color = grass_color1
+			elif noise_value > 0.2 and noise_value < 0.4:
+				ground_grid.set_cell_item(grid_pos, 2)
+				base_color = grass_color2
+			elif noise_value > 0.4:
+				ground_grid.set_cell_item(grid_pos, 3)
+				base_color = grass_color3
+				
+			
+			if randf() > grass_prob_curve.sample(norm_value):
+				continue
+			
+			var blade_transform := Transform3D(Basis(), random_position)
+			blade_transform = blade_transform.rotated_local(Vector3.FORWARD, randf_range(-PI/3, PI/3))
+			var scale_no := randf_range(0.4, 0.7)
+			blade_transform = blade_transform.scaled_local(Vector3(scale_no, scale_no, scale_no))
+			transforms.append(blade_transform)
+			var color := base_color
+			color.v = color.v - norm_value * 0.2 - 0.1
+			colors.append(color)
+				
+	
+	multi_mesh.instance_count = transforms.size()
+	print("GRASS SIZE", multi_mesh.instance_count)
+	
+	for i in multi_mesh.instance_count:
+		multi_mesh.set_instance_transform(i, transforms[i])
+		multi_mesh.set_instance_color(i, colors[i])
+	
+	grass_multi_mesh.multimesh = multi_mesh
+	
+	#multi_mesh.instance_count = amount
+	
+	
+	#multi_mesh.multimesh 
+
 func prepare_blueprint_grid() -> void:
 	var original_mesh_library := grid.mesh_library
 	var mesh_ids := original_mesh_library.get_item_list()
@@ -59,6 +130,7 @@ func prepare_for_load() -> void:
 		map_entities.clear()
 		grid.clear()
 		blueprint_grid.clear()
+		PathFinder._reset()
 		
 		
 		var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
@@ -79,8 +151,12 @@ func prepare_for_load() -> void:
 							grid.set_cell_item(coord, 1)
 						else:
 							grid.set_cell_item(coord, 2)
+						Events.solid_cell_placed.emit(Globals.truncate_vec3i(coord))
 				else:
 					ground_grid.set_cell_item(coord, 1)
+
+		_create_grass()
+		
 
 func add_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:
 	if not map_entities.has(coordinate):
@@ -155,7 +231,7 @@ func _ready() -> void:
 		for y in MAP_SIZE_Y:
 			var final_x: int = x - MAP_SIZE_X/2
 			var final_y: int = y - MAP_SIZE_Y/2
-			if ground_grid.get_cell_item(Vector3i(final_x, 0, final_y)) != 0:
+			if ground_grid.get_cell_item(Vector3i(final_x, 0, final_y)) == 1:
 				PathFinder.set_coordinate_invalid(Vector2i(final_x, final_y))
 
 func _handle_ui_action_selection(new_ui_action: UiAction) -> void:

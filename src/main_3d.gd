@@ -16,7 +16,7 @@ extends Node3D
 const TEST_TREES = 100
 const TEST_RESOURCES = 400
 const TEST_SETTLERS = 40
-const DECAL_AMOUNT = 2
+const DECAL_AMOUNT = 800
 
 func _ready() -> void:
 	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
@@ -82,22 +82,22 @@ func _ready() -> void:
 			%Entities.add_child(settler)
 			WorldPositionComponent.set_world_position(settler, quantized_position)
 			
-			print("Settler placed at", grid_position)
-			
 			settlers_to_place -= 1
 			if settlers_to_place <= 0:
 				break
 	
 	#create_ground_entities()
 	
-	var DECAL := preload("res://src/misc/Decal.tscn")
+	var decal_items: Array[Items.Id] = [Items.Id.Flower1, Items.Id.Flower2]
 	for i in DECAL_AMOUNT:
-		var decal := DECAL.instantiate()
 		var grid_position := Globals.get_map().get_random_coordinate()
-		var new_position := Globals.get_map().coordinate_to_global_position(grid_position)
-		%Entities.add_child(decal)
-		decal.global_position = new_position + Vector3(randf_range(-6, 6), randf_range(-6, 6), 0)
-		
+		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
+		if not PathFinder.is_position_solid(grid_position):
+			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
+			%Entities.add_child(item_on_ground)
+			item_on_ground.item = Items.get_by_id(decal_items.pick_random())
+			WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
+			item_on_ground.rotate_y(randf_range(0, PI*2))
 
 var debug_visuals := false
 
@@ -129,8 +129,8 @@ func _process(delta: float) -> void:
 ] as Array[Dictionary]
 
 func load_save(data: Dictionary) -> void:
-	main_map.prepare_for_load()
 	PathFinder.prepare_for_load()
+	main_map.prepare_for_load()
 	
 	await get_tree().physics_frame
 	

@@ -20,9 +20,6 @@ func _advance_growth_stage(new_index: int) -> void:
 			current_growth_scene.queue_free()
 		
 		var growth_stage_scene := plant.growth_stages[new_index].mesh_scene.instantiate()
-		print("New growth stage", new_index)
 		current_growth_scene = growth_stage_scene
-		#Events.request_entity_add.emit(current_growth_scene)
 		add_child(current_growth_scene)
-		#current_growth_scene.global_position = global_position
 		

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cxfu88mnhmgb7"]
+[gd_scene load_steps=34 format=3 uid="uid://cxfu88mnhmgb7"]
 
 [ext_resource type="Script" path="res://src/map/MainMap3D.gd" id="1_hry08"]
 [ext_resource type="Script" path="res://src/map/MapTileSelector.gd" id="2_k2ptl"]
@@ -12,10 +12,18 @@
 noise_type = 3
 frequency = 0.0273
 
-[sub_resource type="Gradient" id="Gradient_gpv11"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_403xa"]
+seed = 2
+frequency = 0.0181
+
+[sub_resource type="Curve" id="Curve_qq4fa"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.286408, 0), 0.0, 0.0, 0, 0, Vector2(0.781553, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Gradient" id="Gradient_3ghp2"]
 colors = PackedColorArray(0.675781, 0.675781, 0.675781, 1, 1, 1, 1, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_qhp3q"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6j44h"]
 noise_type = 2
 frequency = 0.0036
 fractal_gain = 0.8
@@ -26,22 +34,8 @@ domain_warp_fractal_type = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gyv7a"]
 seamless = true
-color_ramp = SubResource("Gradient_gpv11")
-noise = SubResource("FastNoiseLite_qhp3q")
-
-[sub_resource type="Gradient" id="Gradient_om7vy"]
-offsets = PackedFloat32Array(0, 0.709524, 0.747619, 1)
-colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.17619, 1, 1, 1, 0.891959, 1, 1, 1, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_lsl4g"]
-noise_type = 0
-seed = 3
-frequency = 0.0038
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gnsfy"]
-seamless = true
-color_ramp = SubResource("Gradient_om7vy")
-noise = SubResource("FastNoiseLite_lsl4g")
+color_ramp = SubResource("Gradient_3ghp2")
+noise = SubResource("FastNoiseLite_6j44h")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_npf8i"]
 seed = 1
@@ -54,17 +48,7 @@ as_normal_map = true
 bump_strength = 0.3
 noise = SubResource("FastNoiseLite_npf8i")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dfy3p"]
-transparency = 1
-albedo_color = Color(0.33396, 0.66, 0.2838, 0.545098)
-albedo_texture = SubResource("NoiseTexture2D_gnsfy")
-normal_texture = SubResource("NoiseTexture2D_hw8tb")
-uv1_scale = Vector3(0.005, 0.005, 0.005)
-uv1_triplanar = true
-uv1_world_triplanar = true
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_44mkl"]
-next_pass = SubResource("StandardMaterial3D_dfy3p")
 albedo_color = Color(0.75, 0.558289, 0.401478, 1)
 albedo_texture = SubResource("NoiseTexture2D_gyv7a")
 normal_texture = SubResource("NoiseTexture2D_hw8tb")
@@ -82,6 +66,70 @@ subdivide_width = 2
 subdivide_depth = 2
 center_offset = Vector3(0, 0.3, 0)
 
+[sub_resource type="Gradient" id="Gradient_ux2wb"]
+colors = PackedColorArray(0.675781, 0.675781, 0.675781, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_q4det"]
+noise_type = 2
+frequency = 0.0036
+fractal_gain = 0.8
+cellular_return_type = 2
+domain_warp_enabled = true
+domain_warp_type = 2
+domain_warp_fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_y0unm"]
+seamless = true
+color_ramp = SubResource("Gradient_ux2wb")
+noise = SubResource("FastNoiseLite_q4det")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5s04w"]
+albedo_color = Color(0.648438, 0.644815, 0.37129, 1)
+albedo_texture = SubResource("NoiseTexture2D_y0unm")
+uv1_scale = Vector3(0.01, 0.01, 0.01)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_2ibgf"]
+material = SubResource("StandardMaterial3D_5s04w")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hd0lu"]
+albedo_color = Color(0.604669, 0.660156, 0.307633, 1)
+albedo_texture = SubResource("NoiseTexture2D_gyv7a")
+uv1_scale = Vector3(0.01, 0.01, 0.01)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_wbt6d"]
+material = SubResource("StandardMaterial3D_hd0lu")
+
+[sub_resource type="Gradient" id="Gradient_hglti"]
+colors = PackedColorArray(0.675781, 0.675781, 0.675781, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4tq4k"]
+noise_type = 2
+frequency = 0.0036
+fractal_gain = 0.8
+cellular_return_type = 2
+domain_warp_enabled = true
+domain_warp_type = 2
+domain_warp_fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nuyfv"]
+seamless = true
+color_ramp = SubResource("Gradient_hglti")
+noise = SubResource("FastNoiseLite_4tq4k")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qlu4i"]
+albedo_color = Color(0.648438, 0.584324, 0.350925, 1)
+albedo_texture = SubResource("NoiseTexture2D_nuyfv")
+uv1_scale = Vector3(0.01, 0.01, 0.01)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_s3pbq"]
+material = SubResource("StandardMaterial3D_qlu4i")
+
 [sub_resource type="MeshLibrary" id="MeshLibrary_rith7"]
 item/0/name = "Dirt"
 item/0/mesh = SubResource("BoxMesh_6cvuo")
@@ -95,6 +143,24 @@ item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/1/shapes = []
 item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/1/navigation_layers = 1
+item/2/name = "Grass1"
+item/2/mesh = SubResource("BoxMesh_2ibgf")
+item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/shapes = []
+item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/navigation_layers = 1
+item/3/name = "Grass2"
+item/3/mesh = SubResource("BoxMesh_wbt6d")
+item/3/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/3/shapes = []
+item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/3/navigation_layers = 1
+item/4/name = "Grass3"
+item/4/mesh = SubResource("BoxMesh_s3pbq")
+item/4/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/4/shapes = []
+item/4/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/4/navigation_layers = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bylo6"]
 size = Vector3(200, 1, 200)
@@ -106,6 +172,12 @@ size = Vector2(200, 200)
 [node name="MainMap3d" type="Node3D"]
 script = ExtResource("1_hry08")
 rock_placement_noise = SubResource("FastNoiseLite_ov800")
+grass_placement_noise = SubResource("FastNoiseLite_403xa")
+grass_color0 = Color(0.628906, 0.394745, 0.299457, 1)
+grass_color1 = Color(0.613281, 0.486421, 0.300819, 1)
+grass_color2 = Color(0.580554, 0.675781, 0.198282, 1)
+grass_color3 = Color(0.579301, 0.753906, 0.143798, 1)
+grass_prob_curve = SubResource("Curve_qq4fa")
 
 [node name="GridMap" type="GridMap" parent="."]
 mesh_library = ExtResource("2_nprxo")
@@ -123,7 +195,7 @@ mesh_library = SubResource("MeshLibrary_rith7")
 cell_size = Vector3(1, 1, 1)
 cell_octant_size = 320
 data = {
-"cells": PackedInt32Array(3, 65533, 0, 3, 65534, 0, 3, 65535, 0, 3, 0, 0, 3, 1, 0, 3, 2, 0, 2, 2, 0, 2, 1, 0, 2, 65535, 0, 2, 65533, 0, 2, 65532, 0, 1, 65534, 0, 1, 65535, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 2, 0, 0, 3, 1, 0, 4, 0, 65535, 4, 0, 65534, 3, 1, 65534, 2, 1, 65534, 1, 1, 65534, 0, 0, 65534, 65535, 0, 65534, 65533, 0, 65534, 65532, 0, 65534, 65531, 1, 65534, 65530, 1, 65535, 65533, 0, 65535, 65534, 0, 65535, 0, 0, 65535, 1, 0, 65535, 2, 0, 1, 4, 1, 1, 3, 1, 1, 2, 0, 1, 65533, 0, 1, 65532, 0, 1, 65531, 1, 1, 65530, 1, 1, 65529, 1, 2, 65530, 1, 2, 65531, 1, 1, 5, 1, 2, 5, 0, 2, 4, 0, 2, 3, 0, 3, 65532, 0, 3, 65531, 0, 4, 0, 0, 4, 1, 0, 4, 2, 0, 4, 3, 0, 3, 4, 0, 4, 65535, 0, 4, 65534, 0, 4, 65533, 0, 5, 65533, 0, 5, 65532, 0, 5, 65534, 0, 1, 65528, 1, 0, 65528, 1, 0, 65529, 1, 65535, 65530, 1, 65535, 65532, 0, 65533, 3, 1, 65533, 2, 0, 65532, 1, 0, 65531, 0, 0, 65531, 65535, 0, 65530, 65533, 0, 65530, 65532, 0, 65529, 65531, 0, 65529, 65530, 0, 65529, 65529, 0, 65528, 65530, 0, 65528, 65531, 0, 65529, 65532, 0, 65529, 65533, 0, 65529, 0, 0, 65529, 1, 0, 65529, 3, 0, 65530, 3, 0, 65531, 3, 0, 65531, 2, 0, 65531, 1, 0, 65532, 65535, 0, 65533, 65533, 0, 65533, 65531, 1, 65534, 65529, 0, 65534, 65528, 0, 65534, 4, 1, 65534, 5, 1, 65534, 6, 1, 65535, 6, 0, 65535, 7, 1, 65535, 5, 0, 65535, 3, 0, 65535, 65531, 0, 65535, 65535, 0, 0, 7, 1, 1, 7, 0, 2, 7, 0, 3, 7, 0, 65533, 6, 1, 65532, 6, 0, 65530, 5, 0, 65531, 5, 0, 65532, 5, 0, 65533, 5, 1, 1, 6, 1, 4, 7, 0, 65530, 4, 0, 65531, 4, 0, 65532, 4, 0, 2, 6, 0, 5, 7, 0, 6, 8, 0, 5, 8, 0, 3, 9, 0, 1, 9, 0, 65533, 9, 0, 65532, 9, 0, 65535, 8, 0, 4, 6, 0, 5, 6, 0, 0, 6, 1, 0, 5, 0, 3, 5, 0, 5, 5, 0, 6, 5, 0, 3, 6, 0, 4, 5, 0, 7, 8, 0, 8, 8, 0, 6, 9, 0, 4, 10, 0, 2, 11, 0, 65535, 11, 0, 65532, 12, 0, 65531, 12, 0, 65533, 11, 0, 65534, 10, 0, 0, 9, 0, 3, 8, 0, 6, 7, 0, 0, 10, 0, 65531, 11, 0, 65528, 11, 0, 65527, 11, 0, 65529, 10, 0, 0, 8, 0, 5, 9, 0, 65532, 10, 0, 4, 9, 0, 2, 9, 0, 65533, 8, 1, 65532, 7, 0, 65533, 7, 1, 65534, 7, 1, 65535, 10, 0, 65535, 9, 0, 4, 8, 0, 2, 8, 0, 5, 10, 0, 2, 10, 0, 1, 8, 0, 3, 10, 0, 1, 11, 0, 0, 11, 0, 7, 5, 0, 3, 3, 0, 5, 3, 0, 6, 3, 0, 7, 3, 0, 6, 4, 0, 5, 4, 0, 4, 4, 0, 7, 4, 0, 8, 3, 0, 6, 2, 0, 7, 2, 0, 8, 2, 0, 5, 1, 0, 6, 1, 0, 7, 1, 0, 8, 1, 0, 5, 0, 0, 6, 0, 0, 5, 2, 0, 5, 65535, 0, 1, 65527, 1, 1, 65526, 0, 1, 65525, 0, 2, 65526, 0, 2, 65527, 0, 2, 65528, 1, 3, 65528, 0, 3, 65529, 0, 4, 65530, 0, 4, 65531, 0, 4, 65532, 0, 3, 65530, 0, 2, 65529, 1, 0, 65526, 1, 0, 65527, 1, 0, 65530, 1, 65535, 65529, 0, 65535, 65528, 0, 0, 65531, 1, 0, 65532, 0, 65534, 65526, 0, 65534, 65525, 0, 65534, 65527, 0, 65533, 65525, 0, 65533, 65524, 0, 65532, 65524, 0, 65531, 65524, 0, 65530, 65524, 0, 65529, 65524, 0, 65535, 65525, 0, 65532, 65525, 0, 65531, 65527, 0, 65530, 65526, 0, 65533, 65527, 0, 65535, 65527, 1, 65532, 65527, 0, 65531, 65526, 0, 65532, 65528, 0, 65531, 65528, 0, 65532, 65529, 0, 65531, 65529, 0, 65533, 65529, 0, 65530, 65529, 0, 65530, 65530, 0, 65531, 65530, 0, 65532, 65530, 0, 65530, 65531, 0, 65531, 65531, 0, 65532, 65531, 0, 65533, 65532, 1, 65532, 65532, 1, 65531, 65532, 0, 65531, 65533, 0, 65528, 65533, 0, 65533, 65534, 0, 65534, 65534, 0, 65532, 65534, 0, 65530, 65535, 0, 65529, 65535, 0, 65531, 65534, 1, 65530, 65534, 0, 65532, 65533, 1, 65533, 65535, 0, 65532, 0, 0, 65532, 2, 0, 65532, 3, 0, 65533, 1, 0, 65533, 0, 0, 65534, 9, 0, 65534, 8, 0, 65533, 4, 1, 65530, 6, 0, 65528, 7, 0, 65527, 7, 0, 65528, 8, 0, 65529, 8, 0, 65533, 10, 0, 65530, 10, 0, 65528, 10, 0, 65527, 10, 0, 65528, 9, 0, 65529, 9, 0, 65530, 9, 0, 65532, 8, 0, 65531, 9, 0, 65531, 8, 0, 65530, 8, 0, 65527, 8, 0, 65531, 7, 0, 65529, 7, 0, 65529, 6, 0, 65531, 6, 0, 65530, 7, 0, 65532, 11, 0, 65534, 11, 0, 65534, 12, 0, 65533, 12, 0, 1, 10, 0, 65535, 65526, 1)
+"cells": PackedInt32Array(3, 65533, 0, 3, 65534, 0, 3, 65535, 0, 3, 0, 0, 3, 1, 0, 3, 2, 0, 2, 2, 0, 2, 1, 0, 2, 65535, 0, 2, 65533, 0, 2, 65532, 0, 1, 65534, 0, 1, 65535, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 2, 0, 0, 3, 1, 0, 4, 0, 65535, 4, 0, 65534, 3, 1, 65534, 2, 1, 65534, 1, 1, 65534, 0, 0, 65534, 65535, 0, 65534, 65533, 0, 65534, 65532, 0, 65534, 65531, 1, 65534, 65530, 1, 65535, 65533, 0, 65535, 65534, 0, 65535, 0, 0, 65535, 1, 0, 65535, 2, 0, 1, 4, 1, 1, 3, 1, 1, 2, 0, 1, 65533, 0, 1, 65532, 0, 1, 65531, 1, 1, 65530, 1, 1, 65529, 1, 2, 65530, 1, 2, 65531, 1, 1, 5, 1, 2, 5, 0, 2, 4, 0, 2, 3, 0, 3, 65532, 0, 3, 65531, 0, 4, 0, 0, 4, 1, 0, 4, 2, 0, 4, 3, 0, 3, 4, 4, 4, 65535, 0, 4, 65534, 0, 4, 65533, 0, 5, 65533, 0, 5, 65532, 0, 5, 65534, 0, 1, 65528, 1, 0, 65528, 1, 0, 65529, 1, 65535, 65530, 1, 65535, 65532, 0, 65533, 3, 1, 65533, 2, 0, 65532, 1, 0, 65531, 0, 0, 65531, 65535, 0, 65530, 65533, 0, 65530, 65532, 0, 65529, 65531, 0, 65529, 65530, 0, 65529, 65529, 0, 65528, 65530, 0, 65528, 65531, 0, 65529, 65532, 0, 65529, 65533, 0, 65529, 0, 0, 65529, 1, 0, 65529, 3, 0, 65530, 3, 0, 65531, 3, 0, 65531, 2, 0, 65531, 1, 0, 65532, 65535, 0, 65533, 65533, 0, 65533, 65531, 1, 65534, 65529, 0, 65534, 65528, 0, 65534, 4, 1, 65534, 5, 1, 65534, 6, 1, 65535, 6, 0, 65535, 7, 1, 65535, 5, 0, 65535, 3, 0, 65535, 65531, 0, 65535, 65535, 0, 0, 7, 1, 1, 7, 0, 2, 7, 0, 3, 7, 4, 65533, 6, 1, 65532, 6, 0, 65530, 5, 0, 65531, 5, 0, 65532, 5, 0, 65533, 5, 1, 1, 6, 1, 4, 7, 2, 65530, 4, 0, 65531, 4, 0, 65532, 4, 0, 2, 6, 0, 5, 7, 2, 6, 8, 4, 5, 8, 4, 3, 9, 3, 1, 9, 0, 65533, 9, 0, 65532, 9, 0, 65535, 8, 0, 4, 6, 2, 5, 6, 2, 0, 6, 1, 0, 5, 0, 3, 5, 4, 5, 5, 2, 6, 5, 2, 3, 6, 4, 4, 5, 2, 7, 8, 4, 8, 8, 4, 6, 9, 3, 4, 10, 3, 2, 11, 0, 65535, 11, 0, 65532, 12, 0, 65531, 12, 0, 65533, 11, 0, 65534, 10, 0, 0, 9, 0, 3, 8, 4, 6, 7, 2, 0, 10, 0, 65531, 11, 0, 65528, 11, 0, 65527, 11, 0, 65529, 10, 0, 0, 8, 0, 5, 9, 3, 65532, 10, 0, 4, 9, 3, 2, 9, 0, 65533, 8, 1, 65532, 7, 0, 65533, 7, 1, 65534, 7, 1, 65535, 10, 0, 65535, 9, 0, 4, 8, 4, 2, 8, 0, 5, 10, 3, 2, 10, 0, 1, 8, 0, 3, 10, 3, 1, 11, 0, 0, 11, 0, 7, 5, 2, 3, 3, 0, 5, 3, 4, 6, 3, 0, 7, 3, 0, 6, 4, 4, 5, 4, 4, 4, 4, 4, 7, 4, 4, 8, 3, 3, 6, 2, 0, 7, 2, 0, 8, 2, 3, 5, 1, 0, 6, 1, 0, 7, 1, 0, 8, 1, 0, 5, 0, 0, 6, 0, 0, 5, 2, 0, 5, 65535, 0, 1, 65527, 1, 1, 65526, 0, 1, 65525, 0, 2, 65526, 0, 2, 65527, 0, 2, 65528, 1, 3, 65528, 0, 3, 65529, 0, 4, 65530, 0, 4, 65531, 0, 4, 65532, 0, 3, 65530, 0, 2, 65529, 1, 0, 65526, 1, 0, 65527, 1, 0, 65530, 1, 65535, 65529, 0, 65535, 65528, 0, 0, 65531, 1, 0, 65532, 0, 65534, 65526, 0, 65534, 65525, 0, 65534, 65527, 0, 65533, 65525, 0, 65533, 65524, 0, 65532, 65524, 0, 65531, 65524, 0, 65530, 65524, 0, 65529, 65524, 0, 65535, 65525, 0, 65532, 65525, 0, 65531, 65527, 0, 65530, 65526, 0, 65533, 65527, 0, 65535, 65527, 1, 65532, 65527, 0, 65531, 65526, 0, 65532, 65528, 0, 65531, 65528, 0, 65532, 65529, 0, 65531, 65529, 0, 65533, 65529, 0, 65530, 65529, 0, 65530, 65530, 0, 65531, 65530, 0, 65532, 65530, 0, 65530, 65531, 0, 65531, 65531, 0, 65532, 65531, 0, 65533, 65532, 1, 65532, 65532, 1, 65531, 65532, 0, 65531, 65533, 0, 65528, 65533, 0, 65533, 65534, 0, 65534, 65534, 0, 65532, 65534, 0, 65530, 65535, 0, 65529, 65535, 0, 65531, 65534, 1, 65530, 65534, 0, 65532, 65533, 1, 65533, 65535, 0, 65532, 0, 0, 65532, 2, 0, 65532, 3, 0, 65533, 1, 0, 65533, 0, 0, 65534, 9, 0, 65534, 8, 0, 65533, 4, 1, 65530, 6, 0, 65528, 7, 0, 65527, 7, 0, 65528, 8, 0, 65529, 8, 0, 65533, 10, 0, 65530, 10, 0, 65528, 10, 0, 65527, 10, 0, 65528, 9, 0, 65529, 9, 0, 65530, 9, 0, 65532, 8, 0, 65531, 9, 0, 65531, 8, 0, 65530, 8, 0, 65527, 8, 0, 65531, 7, 0, 65529, 7, 0, 65529, 6, 0, 65531, 6, 0, 65530, 7, 0, 65532, 11, 0, 65534, 11, 0, 65534, 12, 0, 65533, 12, 0, 1, 10, 0, 65535, 65526, 1, 8, 5, 2, 7, 6, 2, 6, 6, 2, 9, 5, 2, 9, 6, 2, 9, 7, 2, 8, 7, 2, 7, 7, 2, 8, 6, 2, 9, 4, 4, 8, 4, 4, 7, 9, 3, 9, 8, 4, 10, 8, 4, 10, 7, 4, 9, 2, 3, 10, 2, 3, 10, 3, 3, 11, 3, 3, 11, 4, 3, 11, 5, 3, 11, 6, 3, 10, 5, 3, 10, 6, 3, 11, 7, 3, 12, 7, 3, 12, 8, 3, 12, 9, 3, 11, 9, 3, 11, 10, 3, 10, 10, 3, 9, 10, 3, 9, 9, 3, 10, 9, 3, 11, 8, 3, 8, 10, 3, 7, 10, 3, 7, 11, 3, 6, 11, 3, 6, 10, 3, 8, 9, 3, 5, 11, 3, 4, 11, 3, 10, 4, 3, 9, 3, 3)
 }
 
 [node name="MapTileSelector" type="Node" parent="." node_paths=PackedStringArray("selection_draw")]
@@ -147,3 +219,6 @@ mesh = SubResource("PlaneMesh_y0iy8")
 stream = ExtResource("7_f2b3f")
 volume_db = -10.511
 max_polyphony = 10
+
+[node name="GrassMultiMesh" type="MultiMeshInstance3D" parent="."]
+cast_shadow = 0
