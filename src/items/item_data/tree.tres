@@ -11,6 +11,5 @@ custom_subscriptions = Array[Resource("res://src/components/StringSubscription.g
 
 [resource]
 script = ExtResource("1_ql27c")
-item_id = 3
 display_name = "Tree"
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_t1fa1")])

@@ -11,6 +11,5 @@ custom_subscriptions = Array[Resource("res://src/components/StringSubscription.g
 
 [resource]
 script = ExtResource("1_4s53r")
-item_id = 0
 display_name = "Stone"
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_vu4th")])

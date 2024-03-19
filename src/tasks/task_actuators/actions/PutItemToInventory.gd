@@ -3,7 +3,7 @@ extends ActionLeaf
 class_name PutItemToInventory
 
 var target_inventory: InventoryComponent
-var item_id: Variant
+var item: Item
 var amount: int
 
 @warning_ignore("untyped_declaration")
@@ -16,6 +16,6 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		print("Can't reach target, PUTITEM FAILED")
 		return FAILURE
 		
-	actor.inventory.remove_item_amount(item_id, amount)
-	target_inventory.add_item_amount(item_id, amount)
+	actor.inventory.remove_item_amount(item, amount)
+	target_inventory.add_item_amount(item, amount)
 	return SUCCESS

@@ -1,6 +1,6 @@
 extends Zone
 
-@onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
+@onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
 
 func _init() -> void:
 	zone_type = ZoneManager.ZoneType.Farming
@@ -11,7 +11,7 @@ func tick_zone() -> void:
 		if entities.size() == 0:
 			var farm_plot := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			Events.request_entity_add.emit(farm_plot)
-			farm_plot.item = Items.get_by_id(Items.Id.FarmPlot)
+			farm_plot.item = preload("res://src/items/item_data/farm_plot.tres")
 			WorldPositionComponent.set_world_position(farm_plot, Globals.get_map().coordinate_to_global_position(coordinate))
 			farm_plot.component_container.add_component(BlueprintComponent.new())
 			Events.blueprint_placed.emit(coordinate, farm_plot)
@@ -22,6 +22,4 @@ func tick_zone() -> void:
 					var constructable: ConstructableComponent = container.get_by_id(Components.Id.Constructable)
 					if constructable and constructable.is_finished:
 						var growth_spot: GrowthSpotComponent = container.get_by_id(Components.Id.GrowthSpot)
-						growth_spot.start_growing_plant(Items.Id.PotatoPlant)
-						# TODO: Absolutely not like this - farm plot component should have this
-						#entity.component_container.get_by_id(Components.Id.Scene)._instantiated_scene.start_growing_plant(Items.Id.PotatoPlant)
+						growth_spot.start_growing_plant(preload("res://src/items/item_data/plants/potato_plant.tres"))

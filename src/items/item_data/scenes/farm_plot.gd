@@ -9,13 +9,13 @@ var growth_rate: float = 0.1
 
 var planted_plant: ItemOnGround
 var plant_component: PlantComponent
-@onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
+@onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-func _plant_id_set(plant_id: Items.Id) -> void:
+func _plant_set(plant: Item) -> void:
 	if not planted_plant:
-		var planted_plant: ItemOnGround = ITEM_ON_GROUND.instantiate()
+		planted_plant = ITEM_ON_GROUND.instantiate()
 		add_child(planted_plant)
-		planted_plant.item = Items.get_by_id(plant_id)
+		planted_plant.item = plant
 		plant_component = planted_plant.component_container.get_by_id(Components.Id.Plant)
 		# TODO: This is so that the can be "dismantled". Do this any other way
 		# in the future.
@@ -27,7 +27,7 @@ func _plant_id_set(plant_id: Items.Id) -> void:
 
 func set_growth_spot(_growth_spot: GrowthSpotComponent) -> void:
 	growth_spot = _growth_spot
-	growth_spot.plant_id_set.connect(_plant_id_set)
+	growth_spot.plant_set.connect(_plant_set)
 
 func _lacks_growth_requirements() -> void:
 	$LacksGrowthRequirementIndicator.show()

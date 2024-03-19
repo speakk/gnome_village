@@ -1,8 +1,8 @@
 class_name Item extends Resource
 
-@export var item_id: Items.Id
 @export var display_name: String = ""
 @export var components: Array[Component]
+@export var test: bool = false
 
 func has_component(component_id: Components.Id) -> bool:
 	return components.filter(func(component: Component) -> bool:

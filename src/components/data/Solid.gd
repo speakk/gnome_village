@@ -1,6 +1,7 @@
 class_name SolidComponent extends Component
 
 func _init() -> void:
+	push_warning("init solid")
 	id = Components.Id.Solid
 
 	subscriptions = [

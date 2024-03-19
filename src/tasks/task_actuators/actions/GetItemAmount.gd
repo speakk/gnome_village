@@ -17,5 +17,5 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	
 	item_amount_component.amount -= item_requirement.amount
 	
-	actor.inventory.add_item_amount(item_requirement.item_id, item_requirement.amount)
+	actor.inventory.add_item_amount(item_requirement.item, item_requirement.amount)
 	return SUCCESS

@@ -9,10 +9,10 @@ func find_closest_material(_item_requirement: ItemRequirement) -> ItemOnGround:
 	# TODO: Doesn't handle reservations yet with material.item_amount
 	var correct_materials := materials_on_ground.filter(func(material: ItemOnGround) -> bool:
 		var container: ComponentContainer = material.component_container
-		if material.item and material.item.item_id == _item_requirement.item_id:
+		if material.item and material.item == _item_requirement.item:
 			if container.has_component(Components.Id.ItemAmount):
 				var item_amount: ItemAmountComponent = container.get_by_id(Components.Id.ItemAmount)
-				if item_amount.has_item_amount(_item_requirement.item_id, _item_requirement.amount):
+				if item_amount.has_item_amount(_item_requirement.item, _item_requirement.amount):
 					return true
 			
 		if container.has_component(Components.Id.Inventory):
@@ -45,10 +45,10 @@ func start_work() -> void:
 			task.has_failed = true
 			return
 		
-		if material.item and material.item.item_id == task.item_requirement.item_id:
+		if material.item and material.item == task.item_requirement.item:
 			_item_amount_component = material.component_container.get_by_id(Components.Id.ItemAmount)
 		else:
-			_item_amount_component = material.component_container.get_by_id(Components.Id.Inventory).get_item_amount(task.item_requirement.item_id)
+			_item_amount_component = material.component_container.get_by_id(Components.Id.Inventory).get_item_amount(task.item_requirement.item)
 	
 		var reservation := ItemAmountReservation.new(tree.actor, task.item_requirement.amount)
 		_item_amount_component.add_reservation(reservation)
@@ -66,7 +66,7 @@ func start_work() -> void:
 	
 	# TODO: Support for just placing items down instead of adding to inventory
 	%PutItemToBlueprint.target_inventory = task.inventory_component
-	%PutItemToBlueprint.item_id = task.item_requirement.item_id
+	%PutItemToBlueprint.item = task.item_requirement.item
 	%PutItemToBlueprint.amount = task.item_requirement.amount
 	
 	if not task.item_requirement:

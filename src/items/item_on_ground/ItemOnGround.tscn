@@ -2,12 +2,12 @@
 
 [ext_resource type="Script" path="res://src/items/item_on_ground/ItemOnGround.gd" id="1_j80v7"]
 [ext_resource type="FontFile" uid="uid://dtfb4n2n8qq7m" path="res://assets/fonts/m5x7.ttf" id="3_s7v4j"]
+[ext_resource type="Script" path="res://src/components/component_container.gd" id="4_vrjrf"]
 [ext_resource type="Texture2D" uid="uid://bw1pf7p1ry4gq" path="res://assets/dismantle_indicator.png" id="4_xl2yw"]
-[ext_resource type="PackedScene" uid="uid://cyfiey6xlcs1q" path="res://src/components/component_container.tscn" id="5_3dtg2"]
 [ext_resource type="Script" path="res://src/components/data/WorldPosition.gd" id="6_cx06m"]
+[ext_resource type="Script" path="res://src/components/data/ItemAmount.gd" id="8_2qer3"]
 [ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="8_hglpx"]
 [ext_resource type="Script" path="res://src/components/data/Selectable.gd" id="9_t6muy"]
-[ext_resource type="Script" path="res://src/components/data/ItemAmount.gd" id="9_w3cfj"]
 
 [sub_resource type="Gradient" id="Gradient_fm3l8"]
 colors = PackedColorArray(0.492029, 0.550781, 0.333705, 1, 1, 0.936739, 0.577836, 1)
@@ -21,18 +21,18 @@ colors = PackedColorArray(0.492029, 0.550781, 0.333705, 1, 1, 0.936739, 0.577836
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_8n5hh"]
 gradient = SubResource("Gradient_sqx7s")
 
-[sub_resource type="Resource" id="Resource_beipl"]
-script = ExtResource("6_cx06m")
-
-[sub_resource type="Resource" id="Resource_otqls"]
+[sub_resource type="Resource" id="Resource_iyosi"]
 script = ExtResource("8_hglpx")
 display_name = ""
 
-[sub_resource type="Resource" id="Resource_pf2j7"]
+[sub_resource type="Resource" id="Resource_onuy6"]
+script = ExtResource("6_cx06m")
+
+[sub_resource type="Resource" id="Resource_ucd33"]
 script = ExtResource("9_t6muy")
 
-[sub_resource type="Resource" id="Resource_ki78u"]
-script = ExtResource("9_w3cfj")
+[sub_resource type="Resource" id="Resource_i1ikl"]
+script = ExtResource("8_2qer3")
 amount = 1
 
 [node name="ItemOnGround" type="Node3D" groups=["item_on_ground"]]
@@ -80,5 +80,6 @@ font = ExtResource("3_s7v4j")
 font_size = 16
 outline_size = 8
 
-[node name="ComponentContainer" parent="." instance=ExtResource("5_3dtg2")]
-default_components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_beipl"), SubResource("Resource_otqls"), SubResource("Resource_pf2j7"), SubResource("Resource_ki78u")])
+[node name="ComponentContainer" type="Node3D" parent="."]
+script = ExtResource("4_vrjrf")
+default_components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_iyosi"), SubResource("Resource_onuy6"), SubResource("Resource_ucd33"), SubResource("Resource_i1ikl")])

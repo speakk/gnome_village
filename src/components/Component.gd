@@ -4,7 +4,7 @@ var id: Components.Id
 
 var component_owner: Node3D
 
-var subscriptions: Array[Subscription]
+var subscriptions: Array
 
 var groups: Array[Groups.Id]:
 	set(new_value):

@@ -1,21 +1,23 @@
-[gd_resource type="Resource" script_class="Item" load_steps=12 format=3 uid="uid://pbbjelty00sx"]
+[gd_resource type="Resource" script_class="Item" load_steps=11 format=3 uid="uid://pbbjelty00sx"]
 
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_3k661"]
+[ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/items/item_data/wood.tres" id="1_qup6a"]
 [ext_resource type="Script" path="res://src/items/Item.gd" id="2_3a7ng"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="2_unt6m"]
-[ext_resource type="Script" path="res://src/items/ItemDrop.gd" id="2_y8a2u"]
 [ext_resource type="Script" path="res://src/components/data/Terrain.gd" id="3_sp55h"]
 [ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="4_sc1l6"]
 
 [sub_resource type="Resource" id="Resource_vnter"]
 script = ExtResource("1_3k661")
-item_id = 1
+item = ExtResource("1_qup6a")
 amount = 1
 
 [sub_resource type="Resource" id="Resource_apa45"]
 script = ExtResource("2_unt6m")
 requirements = Array[ExtResource("1_3k661")]([SubResource("Resource_vnter")])
 solid_when_started = true
+can_be_dismantled = true
+max_durability = 10.0
 
 [sub_resource type="Resource" id="Resource_cq5ta"]
 script = ExtResource("3_sp55h")
@@ -25,16 +27,7 @@ mesh_id = 0
 [sub_resource type="Resource" id="Resource_gifqu"]
 script = ExtResource("4_sc1l6")
 
-[sub_resource type="Resource" id="Resource_l4oxn"]
-script = ExtResource("2_y8a2u")
-item_id = 1
-amount_min = 1
-amount_max = 1
-probability = 1.0
-
 [resource]
 script = ExtResource("2_3a7ng")
-item_id = 2
 display_name = "Wooden wall"
-item_drops = Array[ExtResource("2_y8a2u")]([SubResource("Resource_l4oxn")])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_apa45"), SubResource("Resource_cq5ta"), SubResource("Resource_gifqu")])

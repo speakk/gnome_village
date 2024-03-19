@@ -17,7 +17,6 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Events="*res://src/Events.gd"
 BeehaveGlobalMetrics="*res://addons/beehave/metrics/beehave_global_metrics.gd"
 BeehaveGlobalDebugger="*res://addons/beehave/debug/global_debugger.gd"
 Globals="*res://src/Globals.gd"
@@ -29,10 +28,7 @@ Components="*res://src/components/Components.gd"
 ComponentDisplays="*res://src/gui/entity_info/ComponentDisplays.gd"
 TaskManager="*res://src/tasks/task_assigner/TaskManager.tscn"
 Groups="*res://src/misc/Groups.gd"
-
-[debug]
-
-gdscript/warnings/untyped_declaration=2
+Events="*res://src/Events.gd"
 
 [display]
 

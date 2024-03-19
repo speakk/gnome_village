@@ -2,7 +2,7 @@ class_name ItemAmountComponent extends Component
 
 signal amount_changed(new_amount: int)
 
-var item_id: Items.Id
+var item: Item
 
 var _reservations: Array[ItemAmountReservation]
 
@@ -23,8 +23,8 @@ func remove_reservation(item_amount_reservation: ItemAmountReservation) -> void:
 				_reservations.erase(reservation)
 				break
 
-func has_item_amount(_item_id: Variant, _amount: int) -> bool:
-	if item_id != _item_id:
+func has_item_amount(_item: Item, _amount: int) -> bool:
+	if item != _item:
 		return false
 	
 	var reserved: int = 0
@@ -34,21 +34,22 @@ func has_item_amount(_item_id: Variant, _amount: int) -> bool:
 	return amount - reserved >= _amount
 
 func has_item_requirement(item_requirement: ItemRequirement) -> bool:
-	return has_item_amount(item_requirement.item_id, item_requirement.amount)
+	return has_item_amount(item_requirement.item, item_requirement.amount)
 
-func _init(_item_id: Items.Id = Items.Id.Wood, _amount: int = 0) -> void:
+func _init(_item: Item = null, _amount: int = 0) -> void:
+	push_warning("init itemamount")
 	amount = _amount
-	item_id = _item_id
+	item = _item
 	id = Components.Id.ItemAmount
 
 func save() -> Dictionary:
 	var save_dict := {
 		"amount": amount,
-		"item_id": item_id
+		"item": item
 	}
 	
 	return save_dict
 
 func load_save(save_dict: Dictionary) -> void:
 	amount = save_dict["amount"]
-	item_id = save_dict["item_id"]
+	item = save_dict["item"]

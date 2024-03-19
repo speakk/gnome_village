@@ -6,6 +6,7 @@ class_name TerrainComponent extends Component
 var _blueprint_status: bool
 
 func _init() -> void:
+	push_warning("init terrain")
 	id = Components.Id.Terrain
 	subscriptions = [
 		Subscription.new(self.id, Components.Id.WorldPosition, func (world_position: WorldPositionComponent) -> void:

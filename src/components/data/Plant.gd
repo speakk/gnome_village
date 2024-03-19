@@ -1,13 +1,12 @@
 class_name PlantComponent extends Component
 
-var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
+var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
 
 ## How long does it take to progress to next growth stage (in seconds)
 @export var growth_stage_time: float = 2.0
 @export var growth_stage_time_variance: float = 0.5
 @export var growth_stages: Array[GrowthStage]
 @export var growth_requirements: Array[ItemRequirement]
-
 
 var managed_by_player := false
 
@@ -30,6 +29,7 @@ signal matured
 var grows_in: GrowthSpotComponent
 
 func _init() -> void:
+	push_warning("init plant")
 	id = Components.Id.Plant
 	subscriptions.append(Subscription.new(id, Components.Id.Spread, _set_spread_component))
 
@@ -53,7 +53,7 @@ static func create_growth_spot(new_position: Vector3) -> ItemOnGround:
 	var grows_container: ComponentContainer = new_grows_in_entity.component_container
 	grows_container.add_component(GrowthSpotComponent.new())
 	var inventory: InventoryComponent = grows_container.add_component(InventoryComponent.new())
-	inventory.add_item_amount(Items.Id.Water, 300)
+	inventory.add_item_amount(preload("res://src/items/item_data/water.tres"), 300)
 	inventory.items_can_be_picked = false
 	var grows_world_pos_component: WorldPositionComponent = grows_container.add_component(WorldPositionComponent.new())
 	grows_world_pos_component.current_position = new_position
@@ -65,7 +65,6 @@ func _spreads(coordinate: Vector2i) -> void:
 	
 	var new_plant: ItemOnGround = ITEM_ON_GROUND.instantiate()
 	Events.request_entity_add.emit(new_plant)
-	#new_plant.initialize(get_owner().item_id)
 	new_plant.item = get_owner().item.duplicate(true)
 	var comp_container: ComponentContainer = new_plant.component_container
 	comp_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
@@ -83,7 +82,7 @@ func has_growth_requirements() -> bool:
 	for growth_requirement in growth_requirements:
 		var satisfies_requirement := false
 		for growth_provided: ItemAmountComponent in grows_in.growth_requirement_inventory.get_items():
-			if growth_provided.item_id == growth_requirement.item_id \
+			if growth_provided.item == growth_requirement.item \
 			and growth_provided.amount >= growth_requirement.amount:
 				satisfies_requirement = true
 				break
@@ -95,7 +94,7 @@ func has_growth_requirements() -> bool:
 
 func consume_growth_requirements() -> void:
 	for growth_requirement in growth_requirements:
-		grows_in.consume_growth_requirement(growth_requirement.item_id, growth_requirement.amount)
+		grows_in.consume_growth_requirement(growth_requirement.item, growth_requirement.amount)
 
 func advance_growth_stage() -> void:
 	if not is_mature():

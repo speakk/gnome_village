@@ -110,8 +110,10 @@ far = 57.56
 
 [node name="SceneObjects" type="Node3D" parent="."]
 
-[node name="Settler" parent="SceneObjects" instance=ExtResource("9_5dbc7")]
+[node name="Settler" parent="SceneObjects" node_paths=PackedStringArray("utility_agent", "task_handler") instance=ExtResource("9_5dbc7")]
 transform = Transform3D(-0.763413, 0, 0.645911, 0, 1, 0, -0.645911, 0, -0.763413, -1.57347, 0.481627, 0.753459)
+utility_agent = NodePath("UtilityAiAgent")
+task_handler = NodePath("TaskHandler")
 
 [node name="WoodenTorch" parent="SceneObjects" instance=ExtResource("3_kks4n")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.24711, 0, -3.15991)

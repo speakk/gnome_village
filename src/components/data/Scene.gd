@@ -3,16 +3,19 @@ class_name SceneComponent extends Component
 @export var scene: PackedScene
 @export var custom_subscriptions: Array[StringSubscription]:
 	set(new_value):
-		custom_subscriptions = new_value
-		subscriptions.append_array(custom_subscriptions.map(func(custom_subscription: StringSubscription) -> Subscription:
-			return Subscription.new(id, custom_subscription.target_id, func(component: Component) -> void:
-				_instantiated_scene.call(custom_subscription.method_name, component)
-				)
-		))
+		custom_subscriptions.assign(new_value)
+		if custom_subscriptions.size() > 0:
+			subscriptions.append_array(custom_subscriptions.map(func(custom_subscription: StringSubscription) -> Subscription:
+				return Subscription.new(id, custom_subscription.target_id, func(component: Component) -> void:
+					_instantiated_scene.call(custom_subscription.method_name, component)
+					)
+			))
+		push_warning("subsub set")
 
 var _instantiated_scene: Node
 
 func _init() -> void:
+	push_warning("init scene comp")
 	id = Components.Id.Scene
 	subscriptions.append_array([
 		Subscription.new(self.id, Components.Id.Blueprint, func (blueprint: BlueprintComponent) -> void:
@@ -26,6 +29,7 @@ func _init() -> void:
 				)
 			),
 	])
+	print("Uh")
 
 func on_enter() -> void:
 	_instantiated_scene = scene.instantiate()

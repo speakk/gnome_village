@@ -4,7 +4,8 @@ class_name ItemOnGround
 
 @onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-@onready var component_container: ComponentContainer = $ComponentContainer
+#@onready var component_container: ComponentContainer = $ComponentContainer
+var component_container: Node
 
 var show_amount_number := true
 
@@ -53,10 +54,11 @@ func place_at_coordinate(coordinate: Vector2i) -> void:
 	WorldPositionComponent.set_world_position(self, new_position)
 
 func set_item_components() -> void:
-	for component in item.components:
+	for component: Component in item.components:
 		component_container.add_component(component)
 
-	component_container.get_by_id(Components.Id.DisplayName).display_name = item.display_name
+	var display_name_component: DisplayNameComponent = component_container.get_by_id(Components.Id.DisplayName)
+	display_name_component.display_name = item.display_name
 
 	var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
 	item_amount.amount_changed.connect(func(new_amount: int) -> void:

@@ -1,6 +1,6 @@
 class_name GrowthSpotComponent extends Component
 
-signal plant_id_set(new_plant_id: Items.Id)
+signal plant_set(new_plant: Item)
 
 var has_growing: bool
 
@@ -9,6 +9,7 @@ var growth_requirement_inventory: InventoryComponent
 var plant_component: PlantComponent
 
 func _init() -> void:
+	push_warning("init growth spot")
 	id = Components.Id.GrowthSpot
 	subscriptions.append(
 		Subscription.new(id, Components.Id.Inventory,
@@ -17,17 +18,17 @@ func _init() -> void:
 			)
 	)
 
-func consume_growth_requirement(growth_requirement_id: Items.Id, amount: int) -> void:
-	growth_requirement_inventory.remove_item_amount(growth_requirement_id, amount)
+func consume_growth_requirement(growth_requirement_item: Item, amount: int) -> void:
+	growth_requirement_inventory.remove_item_amount(growth_requirement_item, amount)
 
-func increase_growth_requirement(growth_requirement_id: Items.Id, amount: int) -> void:
-	growth_requirement_inventory.add_item_amount(growth_requirement_id, amount)
+func increase_growth_requirement(growth_requirement_item: Item, amount: int) -> void:
+	growth_requirement_inventory.add_item_amount(growth_requirement_item, amount)
 
-func start_growing_plant(item_id: Items.Id) -> void:
+func start_growing_plant(item: Item) -> void:
 	if not has_growing:
-		plant_id_set.emit(item_id)
+		plant_set.emit(item)
 		# TODO: Just implement get_by_id for components as well to avoid this? (already in component_container)
-		var components := Items.get_by_id(item_id).components
+		var components := item.components
 		for component in components:
 			if component.id == Components.Id.Plant:
 				plant_component = component

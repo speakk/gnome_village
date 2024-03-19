@@ -27,6 +27,6 @@ provides = Array[ExtResource("3_ed2pa")]([SubResource("Resource_uwki3"), SubReso
 
 [resource]
 script = ExtResource("1_nlu2u")
-item_id = 11
 display_name = "Potato"
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_rllhf"), SubResource("Resource_xldbh")])
+test = false

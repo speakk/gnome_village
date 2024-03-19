@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="Item" load_steps=17 format=3 uid="uid://bpws0cgrpa471"]
+[gd_resource type="Resource" script_class="Item" load_steps=16 format=3 uid="uid://bpws0cgrpa471"]
 
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_jxdwe"]
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_oubrg"]
-[ext_resource type="Script" path="res://src/items/ItemDrop.gd" id="2_4hitp"]
+[ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/items/item_data/wood.tres" id="1_v4ten"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="2_28vem"]
 [ext_resource type="Script" path="res://src/components/data/Door.gd" id="3_f5sd8"]
 [ext_resource type="PackedScene" uid="uid://cac2htxxa8jhx" path="res://src/items/item_data/scenes/wooden_door.tscn" id="3_nj775"]
@@ -12,13 +12,15 @@
 
 [sub_resource type="Resource" id="Resource_1qa2l"]
 script = ExtResource("1_oubrg")
-item_id = 1
+item = ExtResource("1_v4ten")
 amount = 1
 
 [sub_resource type="Resource" id="Resource_soltd"]
 script = ExtResource("2_28vem")
 requirements = Array[ExtResource("1_oubrg")]([SubResource("Resource_1qa2l")])
 solid_when_started = false
+can_be_dismantled = true
+max_durability = 10.0
 
 [sub_resource type="Resource" id="Resource_7rghg"]
 script = ExtResource("4_p81hu")
@@ -36,16 +38,7 @@ script = ExtResource("3_f5sd8")
 [sub_resource type="Resource" id="Resource_llxvv"]
 script = ExtResource("6_j3cak")
 
-[sub_resource type="Resource" id="Resource_w4qcp"]
-script = ExtResource("2_4hitp")
-item_id = 1
-amount_min = 1
-amount_max = 1
-probability = 1.0
-
 [resource]
 script = ExtResource("1_jxdwe")
-item_id = 4
 display_name = "Wooden Door"
-item_drops = Array[ExtResource("2_4hitp")]([SubResource("Resource_w4qcp")])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_soltd"), SubResource("Resource_oxxp4"), SubResource("Resource_q3d0i"), SubResource("Resource_llxvv")])

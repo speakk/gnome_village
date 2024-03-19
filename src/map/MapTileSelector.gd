@@ -154,9 +154,7 @@ func _process(_delta: float) -> void:
 			set_line_end(tile_position)
 			selection_draw.line_coords = get_tile_line(line_start, line_end)
 		elif not Input.is_action_pressed("rectangle_select_modifier"):
-			#signal_to_emit.emit([tile_position] as Array[Vector2i])
 			info_to_emit = EmitInformation.new(signal_to_emit, [tile_position] as Array[Vector2i])
-			#build_issued.emit(tile_position, item_id)
 			line_start = null
 			line_end = null
 			
@@ -166,7 +164,6 @@ func _process(_delta: float) -> void:
 			
 			rect_end = tile_position
 			
-			#var hollow := selected_ui_action.ui_action_id == UiAction.UiActionId.Build
 			var hollow := false
 			if selected_ui_action:
 				if selected_ui_action.ui_action_id == UiAction.UiActionId.Build:

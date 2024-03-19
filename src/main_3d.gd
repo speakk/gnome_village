@@ -1,7 +1,7 @@
 extends Node3D
 
 @onready var SETTLER := preload("res://src/settler/settler.tscn")
-@onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
+@onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
 
 @onready var main_map: MainMap3D = $MainMap3d as MainMap3D
 @onready var entities: Node3D = %Entities
@@ -34,15 +34,6 @@ func _ready() -> void:
 	
 	print("Now spawning entities")
 	
-	#for i in TEST_TREES:
-		#var grid_position := Globals.get_map().get_random_coordinate()
-		#var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
-		#if not PathFinder.is_position_solid(grid_position):
-			#var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
-			#%Entities.add_child(item_on_ground)
-			#item_on_ground.initialize(Items.Id.Tree)
-			#WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
-	
 	for i in TEST_TREES:
 		var grid_position := Globals.get_map().get_random_coordinate()
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
@@ -59,7 +50,6 @@ func _ready() -> void:
 			
 	await get_tree().physics_frame
 #
-	#var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone, Items.Id.Potato]
 	var resources: Array[Item] = [
 		preload("res://src/items/item_data/wood.tres"),
 		preload("res://src/items/item_data/stone.tres"),
@@ -90,8 +80,6 @@ func _ready() -> void:
 			settlers_to_place -= 1
 			if settlers_to_place <= 0:
 				break
-	
-	#create_ground_entities()
 	
 	var decal_items: Array[Item] = [
 		preload("res://src/items/item_data/foliage/flower_1.tres"),
@@ -188,7 +176,7 @@ func create_ground_entities() -> void:
 				entity.process_mode = Node.PROCESS_MODE_DISABLED
 				entity.component_container.component_owner = entity
 				var inventory: InventoryComponent = InventoryComponent.new()
-				inventory.pre_filled = [ItemRequirement.new(Items.Id.Water, 100)]
+				inventory.pre_filled = [ItemRequirement.new(preload("res://src/items/item_data/water.tres"), 100)]
 				inventory.items_can_be_picked = false
 				entity.component_container.add_component(inventory)
 				var world_pos: WorldPositionComponent = WorldPositionComponent.new()

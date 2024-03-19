@@ -5,13 +5,13 @@ class_name InventoryComponent extends Component
 	set(new_value):
 		pre_filled = new_value
 		for item_requirement in pre_filled:
-			add_item_amount(item_requirement.item_id, item_requirement.amount)
+			add_item_amount(item_requirement.item, item_requirement.amount)
 
 var item_amounts: Dictionary = {}
 var reservations: Dictionary = {}
 
-signal item_added(item_id: Variant, amount: int)
-signal item_removed(item_id: Variant, amount: int)
+signal item_added(item: Item, amount: int)
+signal item_removed(item: Item, amount: int)
 
 func set_owner(_new_owner: Node) -> void:
 	super.set_owner(_new_owner)
@@ -19,57 +19,56 @@ func set_owner(_new_owner: Node) -> void:
 		item_amount.set_owner(_new_owner)
 
 func _init() -> void:
+	push_warning("init inventory")
 	id = Components.Id.Inventory
 
-func add_item_amount(item_id: Items.Id, amount: int) -> void:
-	if item_id == 8:
-		push_error("WE DID IT WATER WELL ADDED AS ITEM AMOUNT ??")
-	if not item_amounts.has(item_id):
-		item_amounts[item_id] = ItemAmountComponent.new(item_id)
-		item_amounts[item_id].set_owner(component_owner)
+func add_item_amount(item: Item, amount: int) -> void:
+	if not item_amounts.has(item):
+		item_amounts[item] = ItemAmountComponent.new(item)
+		item_amounts[item].set_owner(component_owner)
 		
-	item_amounts[item_id].amount += amount
-	item_added.emit(item_id, amount)
+	item_amounts[item].amount += amount
+	item_added.emit(item, amount)
 
-func get_item_amount(item_id: Items.Id) -> ItemAmountComponent:
-	return item_amounts[item_id]
+func get_item_amount(item: Items) -> ItemAmountComponent:
+	return item_amounts[item]
 
-func reserve_item_amount(item_id: Variant, amount: int) -> void:
-	if not reservations.has(item_id):
-		reservations[item_id] = ItemAmountComponent.new(item_id)
+func reserve_item_amount(item: Item, amount: int) -> void:
+	if not reservations.has(item):
+		reservations[item] = ItemAmountComponent.new(item)
 	
-	reservations[item_id].amount += amount
+	reservations[item].amount += amount
 
-func remove_item_reservation(item_id: Variant, amount: int) -> void:
-	if not reservations.has(item_id):
-		reservations[item_id] = ItemAmountComponent.new(item_id)
-	reservations[item_id].amount -= amount
-	if reservations[item_id].amount <= 0:
-		reservations.erase(item_id)
+func remove_item_reservation(item: Item, amount: int) -> void:
+	if not reservations.has(item):
+		reservations[item] = ItemAmountComponent.new(item)
+	reservations[item].amount -= amount
+	if reservations[item].amount <= 0:
+		reservations.erase(item)
 
-func remove_item_amount(item_id: Variant, amount: int) -> void:
-	if not item_amounts.has(item_id):
-		item_amounts[item_id] = ItemAmountComponent.new(item_id)
-	item_amounts[item_id].amount -= amount
-	if item_amounts[item_id].amount <= 0:
-		item_amounts.erase(item_id)
-	item_removed.emit(item_id, amount)
+func remove_item_amount(item: Item, amount: int) -> void:
+	if not item_amounts.has(item):
+		item_amounts[item] = ItemAmountComponent.new(item)
+	item_amounts[item].amount -= amount
+	if item_amounts[item].amount <= 0:
+		item_amounts.erase(item)
+	item_removed.emit(item, amount)
 
-func has_item_amount(item_id: Variant, amount: int) -> bool:
-	if not item_amounts.has(item_id):
+func has_item_amount(item: Item, amount: int) -> bool:
+	if not item_amounts.has(item):
 		return false
 	
 	var reserved: int = 0
-	if reservations.has(item_id):
-		reserved += reservations.get(item_id).amount
+	if reservations.has(item):
+		reserved += reservations.get(item).amount
 	
-	return item_amounts[item_id].amount - reserved >= amount
+	return item_amounts[item].amount - reserved >= amount
 
 func has_item_requirement(item_requirement: ItemRequirement) -> bool:
-	return has_item_amount(item_requirement.item_id, item_requirement.amount)
+	return has_item_amount(item_requirement.item, item_requirement.amount)
 
 func reserve_item_requirement(item_requirement: ItemRequirement) -> void:
-	reserve_item_amount(item_requirement.item_id, item_requirement.amount)
+	reserve_item_amount(item_requirement.item, item_requirement.amount)
 
 func get_items() -> Array[ItemAmountComponent]:
 	var items: Array[ItemAmountComponent]
@@ -92,4 +91,4 @@ func load_save(save_dict: Dictionary) -> void:
 	item_amounts = {}
 	
 	for item_amount in item_amount_values:
-		item_amounts[item_amount.id] = item_amount
+		item_amounts[item_amount.item] = item_amount

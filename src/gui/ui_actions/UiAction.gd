@@ -12,9 +12,9 @@ static var UiActionIdMap: Dictionary = {
 }
 
 class Build extends UiAction:
-	var item_id: Items.Id
-	func _init(_item_id: Items.Id) -> void:
-		item_id = _item_id
+	var item: Item
+	func _init(_item: Item = null) -> void:
+		item = _item
 		ui_action_id = UiActionId.Build
 
 class ZoneAddTiles extends UiAction:

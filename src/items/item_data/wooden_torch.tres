@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="Item" load_steps=9 format=3 uid="uid://qp3qm2tlm81y"]
+[gd_resource type="Resource" script_class="Item" load_steps=12 format=3 uid="uid://qp3qm2tlm81y"]
 
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_4j5er"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_k7huv"]
 [ext_resource type="PackedScene" uid="uid://uqcgysgd2yqr" path="res://src/items/item_data/scenes/wooden_torch.tscn" id="2_ueooe"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="3_dya6g"]
+[ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/items/item_data/wood.tres" id="3_s1i11"]
+[ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="4_jfr8t"]
 [ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="4_s32c3"]
 
 [sub_resource type="Resource" id="Resource_k8glm"]
@@ -11,17 +13,22 @@ script = ExtResource("2_k7huv")
 scene = ExtResource("2_ueooe")
 custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
 
+[sub_resource type="Resource" id="Resource_ui2c1"]
+script = ExtResource("4_jfr8t")
+item = ExtResource("3_s1i11")
+amount = 1
+
 [sub_resource type="Resource" id="Resource_c6xkv"]
 script = ExtResource("3_dya6g")
-requirements = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+requirements = Array[ExtResource("4_jfr8t")]([SubResource("Resource_ui2c1")])
 solid_when_started = false
+can_be_dismantled = true
+max_durability = 10.0
 
 [sub_resource type="Resource" id="Resource_te1k0"]
 script = ExtResource("4_s32c3")
 
 [resource]
 script = ExtResource("1_4j5er")
-item_id = 6
 display_name = "Wooden Torch"
-item_drops = Array[Resource("res://src/items/ItemDrop.gd")]([])
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_k8glm"), SubResource("Resource_c6xkv"), SubResource("Resource_te1k0")])

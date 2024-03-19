@@ -11,6 +11,5 @@ custom_subscriptions = Array[Resource("res://src/components/StringSubscription.g
 
 [resource]
 script = ExtResource("3_q8k0p")
-item_id = 13
 display_name = "Flower"
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_yf3fj")])

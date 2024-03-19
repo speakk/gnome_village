@@ -29,6 +29,7 @@ signal no_durability_left
 var _no_durability_emitted := false
 
 func _init() -> void:
+	push_warning("init constructable")
 	id = Components.Id.Constructable
 	_current_durability = max_durability
 	subscriptions.append(
@@ -77,7 +78,7 @@ func has_requirements() -> bool:
 	return true
 
 func supply_item_amount(item_amount: ItemAmountComponent) -> void:
-	_inventory.add_item_amount(item_amount.item_id, item_amount.amount)
+	_inventory.add_item_amount(item_amount.item, item_amount.amount)
 
 func increase_progress(amount: float) -> void:
 	_current_progress += amount

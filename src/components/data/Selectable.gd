@@ -9,4 +9,5 @@ var selected: bool:
 			Events.entity_deselected.emit(component_owner)
 			
 func _init() -> void:
+	push_warning("init selectable")
 	id = Components.Id.Selectable

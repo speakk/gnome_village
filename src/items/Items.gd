@@ -1,11 +1,6 @@
 extends Node
 
-enum Id {
-	Stone, Wood, WoodenWall, Tree, WoodenDoor, FarmPlot, WoodenTorch,
-	Water, WaterWell, PotatoPlant, OakTree, Potato, Flower1, Flower2
-}
-
-var list: Dictionary = {}
+var list: Array[Item]
 
 func _ready() -> void:
 	var paths: Array[String] = [
@@ -22,37 +17,25 @@ func _ready() -> void:
 		while file_name != "":
 			if not data_dir.current_is_dir():
 				var data := load("%s/%s" % [path, file_name])
+				print("Loaded: %s in %s" % [file_name, path])
 				var item: Item
 				if data is Item:
-					item = data
-					if list.has(item.item_id):
-						push_error("Item Id duplicate found: ", item.item_id, file_name)
-					list[item.item_id] = item
+					list.append(data)
 			file_name = data_dir.get_next()
 
-func get_by_id(id: Id) -> Item:
-	if not list.has(id):
-		push_error("No item found with id %s, corresponding to: %s" % [id, Id.keys()[id]])
-	return list[id] as Item
-
-func get_constructable_item_ids() -> Array[Id]:
-	var result: Array[Id] = []
-	for id in list.keys() as Array[Id]:
-		var data := get_by_id(id)
+func get_constructable_items() -> Array[Item]:
+	var result: Array[Item]
+	for item in list:
 		var has_constructable := false
-		for component in data.components:
+		for component: Component in item.components:
 			if component is ConstructableComponent:
 				has_constructable = true
 				break
 		
 		if has_constructable:
-			result.push_back(id)
+			result.push_back(item)
 	
 	return result
-
-func get_crafting_requirements(item_id: Id) -> Array[ItemRequirement]:
-	var item := get_by_id(item_id)
-	return item.crafting_requirements
 
 func get_item_render_scene(item: Item) -> Node3D:
 	var results := item.components.filter(func(component: Component) -> bool:

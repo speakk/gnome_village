@@ -8,7 +8,7 @@ func _init(tile_target: Vector2i, _blueprint: ItemOnGround) -> void:
 	order_type = Task.OrderType.Sequence
 	blueprint = _blueprint
 	
-	var item_id := blueprint.item.item_id
+	var item := blueprint.item
 	var constructable_component: ConstructableComponent = _blueprint.component_container.get_by_id(Components.Id.Constructable)
 	var material_requirements := constructable_component.requirements
 	
@@ -23,7 +23,7 @@ func _init(tile_target: Vector2i, _blueprint: ItemOnGround) -> void:
 		for material_requirement in material_requirements as Array[ItemRequirement]:
 			for i in material_requirement.amount:
 				var requirement := ItemRequirement.new()
-				requirement.item_id = material_requirement.item_id
+				requirement.item = material_requirement.item
 				requirement.amount = 1
 				var task := BringResourceTask.new({
 					item_requirement = requirement,

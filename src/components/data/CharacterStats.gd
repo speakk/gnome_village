@@ -14,7 +14,7 @@ class CharacterStat:
 	var value: float
 	var value_delta: float
 	
-	func _init(_stat_id: Id, _display_name: String, _value: float = 0, _value_delta:float = 0.01) -> void:
+	func _init(_stat_id: Id = -1, _display_name: String = "", _value: float = 0, _value_delta:float = 0.01) -> void:
 		stat_id = _stat_id
 		display_name = _display_name
 		value = _value
@@ -36,6 +36,7 @@ func _randomize_deltas() -> void:
 	get_stat(Id.Tiredness).value_delta = randf_range(0.1, 0.2)
 
 func _init() -> void:
+	push_warning("init char stats")
 	id = Components.Id.CharacterStats
 	
 func on_enter() -> void:

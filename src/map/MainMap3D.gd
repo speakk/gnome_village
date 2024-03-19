@@ -155,7 +155,26 @@ func prepare_for_load() -> void:
 				else:
 					ground_grid.set_cell_item(coord, 1)
 
+		_create_river()
 		_create_grass()
+
+func _create_river() -> void:
+	var river_length: int = 30
+	var starting_coordinate := get_random_coordinate()
+	var starting_point := coordinate_to_global_position(starting_coordinate)
+	var starting_angle := randf_range(0, PI*2)
+	var step_length: float = 1.0
+	
+	var direction_range := PI/4
+	
+	var current_angle := starting_angle
+	var current_point := starting_point
+	
+	for i in river_length:
+		ground_grid.set_cell_item(Globals.extend_vec2i(global_position_to_coordinate(current_point)), 1)
+		var angle_vec := Vector2.from_angle(current_angle) * step_length
+		current_point += Globals.extend_vec2(angle_vec)
+		current_angle += randf_range(-direction_range, direction_range)
 		
 
 func add_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:
@@ -343,13 +362,13 @@ func _create_placement_juice(item_on_ground: ItemOnGround, index: int) -> void:
 	container.add_component(removed_component)
 
 func _place_blueprint(coordinates: Array[Vector2i]) -> void:
-	var item_id := (selected_ui_action as UiAction.Build).item_id
+	var item := (selected_ui_action as UiAction.Build).item
 	var _index: int = 0
 	for tile_position in coordinates:
 		if not is_coordinate_occupied(tile_position):
 			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			Events.request_entity_add.emit(blueprint)
-			blueprint.item = Items.get_by_id(item_id)
+			blueprint.item = item
 			WorldPositionComponent.set_world_position(blueprint, coordinate_to_global_position(tile_position))
 			blueprint.component_container.add_component(BlueprintComponent.new())
 			Events.blueprint_placed.emit(tile_position, blueprint)
