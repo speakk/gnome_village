@@ -49,7 +49,7 @@ func _ready() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var new_grows_in_entity := PlantComponent.create_growth_spot(quantized_position)
 			
-			var new_tree: Item = test_tree.duplicate(true)
+			var new_tree: Item = preload("res://src/items/item_data/plants/oak_tree.tres")
 			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround) 
 			%Entities.add_child(item_on_ground)
 			item_on_ground.item = new_tree
@@ -59,7 +59,12 @@ func _ready() -> void:
 			
 	await get_tree().physics_frame
 #
-	var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone, Items.Id.Potato]
+	#var item_types: Array[Items.Id] = [Items.Id.Wood, Items.Id.Stone, Items.Id.Potato]
+	var resources: Array[Item] = [
+		preload("res://src/items/item_data/wood.tres"),
+		preload("res://src/items/item_data/stone.tres"),
+		preload("res://src/items/item_data/food/potato.tres"),
+		]
 #
 	for i in TEST_RESOURCES:
 		var grid_position := Globals.get_map().get_random_coordinate()
@@ -67,7 +72,7 @@ func _ready() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			%Entities.add_child(item_on_ground)
-			item_on_ground.item = Items.get_by_id(item_types.pick_random())
+			item_on_ground.item = resources.pick_random()
 			WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
 			
 	
@@ -88,14 +93,17 @@ func _ready() -> void:
 	
 	#create_ground_entities()
 	
-	var decal_items: Array[Items.Id] = [Items.Id.Flower1, Items.Id.Flower2]
+	var decal_items: Array[Item] = [
+		preload("res://src/items/item_data/foliage/flower_1.tres"),
+		preload("res://src/items/item_data/foliage/flower_2.tres")
+		]
 	for i in DECAL_AMOUNT:
 		var grid_position := Globals.get_map().get_random_coordinate()
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
 			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
 			%Entities.add_child(item_on_ground)
-			item_on_ground.item = Items.get_by_id(decal_items.pick_random())
+			item_on_ground.item = decal_items.pick_random()
 			WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
 			item_on_ground.rotate_y(randf_range(0, PI*2))
 
