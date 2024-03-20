@@ -155,26 +155,63 @@ func prepare_for_load() -> void:
 				else:
 					ground_grid.set_cell_item(coord, 1)
 
-		_create_river()
+		_create_river(get_random_coordinate(), 3, randf_range(0, PI*2))
 		_create_grass()
 
-func _create_river() -> void:
-	var river_length: int = 30
-	var starting_coordinate := get_random_coordinate()
+var width_shapes: Dictionary = {
+	1: [Vector2i(0, 0)],
+	2: [
+		Vector2i(0, -1),
+		Vector2i(1, 0),
+		Vector2i(0, 1),
+		Vector2i(-1, 1),
+		],
+	3: [
+		Vector2i(-1, -1),
+		Vector2i(1, -1),
+		Vector2i(1, 1),
+		Vector2i(-1, 1),
+	]
+}
+
+func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starting_angle: float) -> void:
+	#region Invariables
+	var river_length: int = 1000
 	var starting_point := coordinate_to_global_position(starting_coordinate)
-	var starting_angle := randf_range(0, PI*2)
 	var step_length: float = 1.0
+	var direction_range := PI/12
+	var branching_chance := 0.01
+	var branch_angle_range := PI/2
+	var starting_width: float = 1.0
+	var width_variance: float = 0.1
+	var max_width: float = 3.0
+	#endregion
 	
-	var direction_range := PI/4
-	
+	#region Variables
 	var current_angle := starting_angle
 	var current_point := starting_point
+	var current_width := starting_width
+	#endregion
 	
 	for i in river_length:
-		ground_grid.set_cell_item(Globals.extend_vec2i(global_position_to_coordinate(current_point)), 1)
+		current_width += randf_range(-width_variance/2, width_variance)
+		current_width = clampf(current_width, 0, max_width)
+		
+		var current_coord := global_position_to_coordinate(current_point)
+		for w in int(maxi(current_width, 1)):
+			var shapes: Array = width_shapes[w+1]
+			for shape_coord: Vector2i in shapes:
+				var final_pos := current_coord + shape_coord
+				#var pos := current_coord + Vector2i(Vector2.from_angle(current_angle).orthogonal() * w)
+				ground_grid.set_cell_item(Globals.extend_vec2i(final_pos), 1)
 		var angle_vec := Vector2.from_angle(current_angle) * step_length
 		current_point += Globals.extend_vec2(angle_vec)
 		current_angle += randf_range(-direction_range, direction_range)
+		
+		if max_branches_left > 0 and randf() < branching_chance:
+			max_branches_left -= 1
+			var new_angle := current_angle + randf_range(-branch_angle_range/2, branch_angle_range)
+			_create_river(current_coord, max_branches_left, new_angle)
 		
 
 func add_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:

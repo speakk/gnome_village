@@ -30,6 +30,11 @@ TaskManager="*res://src/tasks/task_assigner/TaskManager.tscn"
 Groups="*res://src/misc/Groups.gd"
 Events="*res://src/Events.gd"
 
+[debug]
+
+gdscript/warnings/untyped_declaration=2
+gdscript/warnings/unsafe_property_access=1
+
 [display]
 
 window/size/viewport_width=1400
