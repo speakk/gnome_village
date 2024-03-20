@@ -26,6 +26,20 @@ func _ready() -> void:
 	
 	Events.current_time_changed.connect(_current_time_changed)
 	
+	create_world()
+
+var debug_visuals := false
+
+func _clear_entities() -> void:
+	for container in containers:
+		for entity in container["node"].get_children() as Array[Node]:
+			entity.queue_free()
+
+func create_world() -> void:
+	_clear_entities()
+	#PathFinder.prepare_for_load()
+	main_map.prepare_for_load()
+	
 	var test_divider := 1
 	var map_size_real_x := MainMap3D.MAP_SIZE_X / test_divider
 	var map_size_real_y := MainMap3D.MAP_SIZE_Y / test_divider
@@ -93,8 +107,6 @@ func _ready() -> void:
 			WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
 			item_on_ground.rotate_y(randf_range(0, PI*2))
 
-var debug_visuals := false
-
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("debug_toggle"):
 		debug_visuals = not debug_visuals
@@ -108,6 +120,9 @@ func _process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("game_speed_3"):
 		Engine.time_scale = 9.0
+	
+	if Input.is_action_just_pressed("reload_map"):
+		create_world()
 	
 # For now this is okay, but eventually Entities and
 # TaskHandler ought to have their own save methods

@@ -157,6 +157,14 @@ func prepare_for_load() -> void:
 
 		_create_river(get_random_coordinate(), 3, randf_range(0, PI*2))
 		_create_grass()
+		
+			
+		for x in MAP_SIZE_X:
+			for y in MAP_SIZE_Y:
+				var final_x: int = x - MAP_SIZE_X/2
+				var final_y: int = y - MAP_SIZE_Y/2
+				if ground_grid.get_cell_item(Vector3i(final_x, 0, final_y)) == 1:
+					PathFinder.set_coordinate_invalid(Vector2i(final_x, final_y))
 
 var width_shapes: Dictionary = {
 	1: [Vector2i(0, 0)],
@@ -256,7 +264,7 @@ func is_coordinate_occupied(coordinate: Vector2i) -> bool:
 	
 
 func _ready() -> void:
-	prepare_for_load()
+	prepare_blueprint_grid()
 	
 	map_tile_selector.tiles_selected.connect(_tiles_selected)
 	map_tile_selector.tiles_selected_secondary.connect(_tiles_selected_secondary)
@@ -279,16 +287,7 @@ func _ready() -> void:
 	
 	Events.ui_action_selected.connect(_handle_ui_action_selection)
 	
-	prepare_blueprint_grid()
-	
 	Events.map_ready.emit(self)
-	
-	for x in MAP_SIZE_X:
-		for y in MAP_SIZE_Y:
-			var final_x: int = x - MAP_SIZE_X/2
-			var final_y: int = y - MAP_SIZE_Y/2
-			if ground_grid.get_cell_item(Vector3i(final_x, 0, final_y)) == 1:
-				PathFinder.set_coordinate_invalid(Vector2i(final_x, final_y))
 
 func _handle_ui_action_selection(new_ui_action: UiAction) -> void:
 	selected_ui_action = new_ui_action
