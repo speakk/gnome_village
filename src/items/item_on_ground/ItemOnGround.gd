@@ -75,4 +75,5 @@ func set_item_components() -> void:
 			queue_free()
 		)
 	
-	#item_amount.amount = 1
+	item_amount.item = item
+	item_amount.amount = 1
