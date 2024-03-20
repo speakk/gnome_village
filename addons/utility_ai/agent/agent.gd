@@ -10,15 +10,24 @@ signal top_score_action_changed(top_action_id)
 ## Enable or disable the agent
 @export var enabled: bool = true
 
+## How frequently to process the agent (0 for every frame)
+@export_range(0, 2) var processing_interval: float
+
 var _current_top_action
 var _action_scores = []
 var _score_sorted = false
 
+var _processing_timer: float = 0
 
 func _physics_process(delta):
 	if not enabled:
 		return
-	_process_actions()
+	
+	_processing_timer -= delta
+	
+	if _processing_timer <= 0:
+		_process_actions()
+		_processing_timer = processing_interval
 
 
 func _process_actions():

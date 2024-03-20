@@ -178,6 +178,7 @@ default_components = Array[Resource("res://src/components/Component.gd")]([SubRe
 
 [node name="UtilityAiAgent" type="Node" parent="."]
 script = ExtResource("13_e6mff")
+processing_interval = 0.5
 
 [node name="Eat" type="Node" parent="UtilityAiAgent"]
 script = ExtResource("14_fgy1g")
