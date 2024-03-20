@@ -33,7 +33,7 @@ func _refresh_zones() -> void:
 	
 	var zone_nodes := get_tree().get_nodes_in_group("zone") as Array[Node]
 	var zones: Array[Zone] = []
-	#zones.assign(zone_nodes)
+	zones.assign(zone_nodes)
 	
 	for zone in zones:
 		print("Righto ", zone.zone_type, " vs : ", zone_type)

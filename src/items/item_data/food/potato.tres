@@ -29,4 +29,3 @@ provides = Array[ExtResource("3_ed2pa")]([SubResource("Resource_uwki3"), SubReso
 script = ExtResource("1_nlu2u")
 display_name = "Potato"
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_rllhf"), SubResource("Resource_xldbh")])
-test = false

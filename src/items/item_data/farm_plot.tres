@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Item" load_steps=18 format=3 uid="uid://dulsru7myeyi4"]
+[gd_resource type="Resource" script_class="Item" load_steps=20 format=3 uid="uid://dulsru7myeyi4"]
 
 [ext_resource type="Script" path="res://src/items/Item.gd" id="1_am7fa"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="1_sxubs"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="5_5qdnr"]
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="6_xcfl6"]
 [ext_resource type="Script" path="res://src/components/data/Inventory.gd" id="7_4nsy2"]
+[ext_resource type="Script" path="res://src/components/StringSubscription.gd" id="8_mmlpk"]
 
 [sub_resource type="Resource" id="Resource_kiryq"]
 script = ExtResource("6_xcfl6")
@@ -39,10 +40,15 @@ script = ExtResource("1_yxf7r")
 [sub_resource type="Resource" id="Resource_x6j1b"]
 script = ExtResource("3_4i3tg")
 
+[sub_resource type="Resource" id="Resource_ya3em"]
+script = ExtResource("8_mmlpk")
+target_id = 6
+method_name = "set_growth_spot"
+
 [sub_resource type="Resource" id="Resource_wo3jf"]
 script = ExtResource("5_5qdnr")
 scene = ExtResource("4_or0nf")
-custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+custom_subscriptions = Array[ExtResource("8_mmlpk")]([SubResource("Resource_ya3em")])
 
 [resource]
 script = ExtResource("1_am7fa")

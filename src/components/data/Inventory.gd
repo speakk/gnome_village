@@ -29,7 +29,7 @@ func add_item_amount(item: Item, amount: int) -> void:
 	item_amounts[item].amount += amount
 	item_added.emit(item, amount)
 
-func get_item_amount(item: Items) -> ItemAmountComponent:
+func get_item_amount(item: Item) -> ItemAmountComponent:
 	return item_amounts[item]
 
 func reserve_item_amount(item: Item, amount: int) -> void:
