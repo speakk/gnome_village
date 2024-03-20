@@ -29,7 +29,6 @@ signal no_durability_left
 var _no_durability_emitted := false
 
 func _init() -> void:
-	push_warning("init constructable")
 	id = Components.Id.Constructable
 	_current_durability = max_durability
 	subscriptions.append(

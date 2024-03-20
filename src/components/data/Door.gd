@@ -7,7 +7,6 @@ var self_close_timer := 0.0
 signal open_amount_changed(new_amount: float)
 
 func _init() -> void:
-	push_warning("init door")
 	id = Components.Id.Door
 	_process_rate = 0.1
 

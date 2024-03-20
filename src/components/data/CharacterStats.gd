@@ -36,7 +36,6 @@ func _randomize_deltas() -> void:
 	get_stat(Id.Tiredness).value_delta = randf_range(0.1, 0.2)
 
 func _init() -> void:
-	push_warning("init char stats")
 	id = Components.Id.CharacterStats
 	
 func on_enter() -> void:

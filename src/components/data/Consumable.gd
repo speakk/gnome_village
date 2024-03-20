@@ -6,7 +6,6 @@ class_name ConsumableComponent extends Component
 var reserved := false
 
 func _init() -> void:
-	push_warning("init consumable")
 	id = Components.Id.Consumable
 	groups = [Groups.Id.Consumable]
 

@@ -29,7 +29,6 @@ signal matured
 var grows_in: GrowthSpotComponent
 
 func _init() -> void:
-	push_warning("init plant")
 	id = Components.Id.Plant
 	subscriptions.append(Subscription.new(id, Components.Id.Spread, _set_spread_component))
 

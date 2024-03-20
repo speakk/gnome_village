@@ -10,7 +10,6 @@ var _spread_check_timer := spread_check_rate
 var _active := true
 
 func _init() -> void:
-	push_warning("init spread")
 	id = Components.Id.Spread
 
 func set_active(new_value: bool) -> void:

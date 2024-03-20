@@ -19,6 +19,4 @@ static func set_world_position(node: Node3D, world_position: Vector3) -> void:
 	world_position_component.current_position = world_position
 
 func _init() -> void:
-	push_warning("init worldpos")
 	id = Components.Id.WorldPosition
-	push_warning("init done")

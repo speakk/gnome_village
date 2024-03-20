@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://cdn5fwsgd0fpm"]
+[gd_scene load_steps=9 format=3 uid="uid://cdn5fwsgd0fpm"]
 
 [ext_resource type="Script" path="res://src/main_3d.gd" id="1_h0o83"]
-[ext_resource type="Resource" uid="uid://d21dsdlmqvf2h" path="res://src/items/item_data/plants/oak_tree.tres" id="2_j2ty3"]
 [ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap3D.tscn" id="2_l8r3t"]
 [ext_resource type="PackedScene" uid="uid://cs2fptc2k4veq" path="res://src/sky/Sky.tscn" id="2_vk0vx"]
 [ext_resource type="PackedScene" uid="uid://du6ros11u7s0m" path="res://src/zones/ZoneManager.tscn" id="3_v025i"]
@@ -12,7 +11,6 @@
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_h0o83")
-test_tree = ExtResource("2_j2ty3")
 
 [node name="sky" parent="." instance=ExtResource("2_vk0vx")]
 time_of_day_setup = 0.685

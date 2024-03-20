@@ -9,7 +9,6 @@ var growth_requirement_inventory: InventoryComponent
 var plant_component: PlantComponent
 
 func _init() -> void:
-	push_warning("init growth spot")
 	id = Components.Id.GrowthSpot
 	subscriptions.append(
 		Subscription.new(id, Components.Id.Inventory,

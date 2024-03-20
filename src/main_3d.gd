@@ -8,8 +8,6 @@ extends Node3D
 
 @onready var sky: DayNightCycleSky = $sky
 
-@export var test_tree: Item
-
 @export var daylight_amount: Curve
 @export var yellow_light_amount: Curve
 

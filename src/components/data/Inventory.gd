@@ -19,7 +19,6 @@ func set_owner(_new_owner: Node) -> void:
 		item_amount.set_owner(_new_owner)
 
 func _init() -> void:
-	push_warning("init inventory")
 	id = Components.Id.Inventory
 
 func add_item_amount(item: Item, amount: int) -> void:

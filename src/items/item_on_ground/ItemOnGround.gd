@@ -4,8 +4,7 @@ class_name ItemOnGround
 
 @onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
 
-#@onready var component_container: ComponentContainer = $ComponentContainer
-var component_container: Node
+@onready var component_container: ComponentContainer = $ComponentContainer
 
 var show_amount_number := true
 
@@ -57,7 +56,11 @@ func set_item_components() -> void:
 	for component: Component in item.components:
 		component_container.add_component(component)
 
-	var display_name_component: DisplayNameComponent = component_container.get_by_id(Components.Id.DisplayName)
+	# This untyped display_name_component is here because of an OBSCURE bug
+	# If you type display_name_component here, basically all components become invalid
+	# and everything breaks
+	@warning_ignore("untyped_declaration")
+	var display_name_component = component_container.get_by_id(Components.Id.DisplayName)
 	display_name_component.display_name = item.display_name
 
 	var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)

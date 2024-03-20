@@ -5,7 +5,6 @@ var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
 @export var drops: Array[ItemDrop]
 
 func _init() -> void:
-	push_warning("init drop")
 	id = Components.Id.Drop
 
 func on_exit() -> void:
