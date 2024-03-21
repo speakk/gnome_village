@@ -41,7 +41,7 @@ func finish() -> void:
 
 func fail() -> void:
 	if task:
-		task.failed.emit(task)
+		task.failed.emit()
 		task.has_failed = true
 		task.is_being_worked_on = false
 		task.is_finished = false

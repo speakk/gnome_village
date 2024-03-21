@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bevd0ykcp7npk"]
+[gd_scene load_steps=14 format=3 uid="uid://bevd0ykcp7npk"]
 
 [ext_resource type="Script" path="res://src/tasks/task_actuators/actions/GoToAction.gd" id="1_qg1rs"]
 [ext_resource type="Script" path="res://src/tasks/task_actuators/actions/GoToUpdatePath.gd" id="2_1psy6"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="3_nu6c4"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/decorators/inverter.gd" id="3_yi44a"]
 [ext_resource type="Script" path="res://src/tasks/task_actuators/actions/PlayAnimation.gd" id="5_8gaoi"]
+[ext_resource type="Script" path="res://src/tasks/task_actuators/actions/FailTask.gd" id="6_1rsww"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_set.gd" id="7_f8gd8"]
 [ext_resource type="Script" path="res://src/tasks/task_actuators/conditions/IsBlockedByDoor.gd" id="7_lcpct"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_erase.gd" id="8_v0c37"]
@@ -23,9 +24,16 @@ blackboard_key = "goto_finished"
 [node name="SequenceComposite" type="Node" parent="ConditionalLoopDecorator"]
 script = ExtResource("3_nu6c4")
 
-[node name="UpdatePath" type="Node" parent="ConditionalLoopDecorator/SequenceComposite"]
+[node name="GetPathOrFail" type="Node" parent="ConditionalLoopDecorator/SequenceComposite"]
+script = ExtResource("2_vbggv")
+
+[node name="UpdatePath" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/GetPathOrFail"]
 unique_name_in_owner = true
 script = ExtResource("2_1psy6")
+
+[node name="FailToFindPath" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/GetPathOrFail"]
+unique_name_in_owner = true
+script = ExtResource("6_1rsww")
 
 [node name="PlayAnimationAction" type="Node" parent="ConditionalLoopDecorator/SequenceComposite"]
 script = ExtResource("5_8gaoi")

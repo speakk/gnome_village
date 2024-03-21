@@ -125,13 +125,13 @@ func prepare_blueprint_grid() -> void:
 	
 	blueprint_grid.mesh_library = blueprint_mesh_library
 
-func prepare_for_load() -> void:
-	if clear_on_load:
+func prepare_for_load(clear: bool) -> void:
+	if clear:
 		map_entities.clear()
 		grid.clear()
 		blueprint_grid.clear()
+		ground_grid.clear()
 		PathFinder._reset()
-		
 		
 		var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
 		var water_area_y_size := 40
@@ -155,7 +155,17 @@ func prepare_for_load() -> void:
 				else:
 					ground_grid.set_cell_item(coord, 1)
 
-		_create_river(get_random_coordinate(), 3, randf_range(0, PI*2))
+		var rivers: int = 2
+		
+		for i in rivers:
+			var river_start := Vector2i(randi_range(-MAP_SIZE_X/2, MAP_SIZE_X), -MAP_SIZE_Y/2 + 10)
+			var river_start_angle := -3*PI/2
+			var river_coordinates: Array[Vector2i]
+			_create_river(river_start, 3, river_start_angle, river_coordinates)
+			for coordinate in river_coordinates:
+				ground_grid.set_cell_item(Globals.extend_vec2i(coordinate), 1)
+			
+		
 		_create_grass()
 		
 			
@@ -182,13 +192,13 @@ var width_shapes: Dictionary = {
 	]
 }
 
-func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starting_angle: float) -> void:
+func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starting_angle: float, array_to_fill: Array[Vector2i]) -> void:
 	#region Invariables
-	var river_length: int = 1000
+	var river_length: int = 300
 	var starting_point := coordinate_to_global_position(starting_coordinate)
 	var step_length: float = 1.0
-	var direction_range := PI/12
-	var branching_chance := 0.01
+	var direction_range := PI/14
+	var branching_chance := 0.02
 	var branch_angle_range := PI/2
 	var starting_width: float = 1.0
 	var width_variance: float = 0.1
@@ -206,12 +216,18 @@ func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starti
 		current_width = clampf(current_width, 0, max_width)
 		
 		var current_coord := global_position_to_coordinate(current_point)
+		
+		# Terminate if hit existing water body or out of bounds
+		var current_cell := ground_grid.get_cell_item(Globals.extend_vec2i(current_coord))
+		if current_cell == 1 or current_cell == -1:
+			return
+		
 		for w in int(maxi(current_width, 1)):
 			var shapes: Array = width_shapes[w+1]
 			for shape_coord: Vector2i in shapes:
 				var final_pos := current_coord + shape_coord
-				#var pos := current_coord + Vector2i(Vector2.from_angle(current_angle).orthogonal() * w)
-				ground_grid.set_cell_item(Globals.extend_vec2i(final_pos), 1)
+				#ground_grid.set_cell_item(Globals.extend_vec2i(final_pos), 1)
+				array_to_fill.append(final_pos)
 		var angle_vec := Vector2.from_angle(current_angle) * step_length
 		current_point += Globals.extend_vec2(angle_vec)
 		current_angle += randf_range(-direction_range, direction_range)
@@ -219,7 +235,7 @@ func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starti
 		if max_branches_left > 0 and randf() < branching_chance:
 			max_branches_left -= 1
 			var new_angle := current_angle + randf_range(-branch_angle_range/2, branch_angle_range)
-			_create_river(current_coord, max_branches_left, new_angle)
+			_create_river(current_coord, max_branches_left, new_angle, array_to_fill)
 		
 
 func add_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:

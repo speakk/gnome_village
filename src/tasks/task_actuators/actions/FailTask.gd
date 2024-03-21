@@ -9,4 +9,4 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	print("Task failed, not noice")
 	#actor.task_handler.fail_current_task()
 	failed.emit()
-	return SUCCESS
+	return FAILURE

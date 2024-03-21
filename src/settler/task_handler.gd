@@ -66,6 +66,9 @@ func _clean_up_actuator() -> void:
 		current_task_actuator.task.tree_exited.disconnect(_clean_up_actuator)
 		settler.remove_child(current_task_actuator)
 		settler.stop_animation()
+		current_task_actuator.process_mode = Node.PROCESS_MODE_DISABLED
+		current_task_actuator.tree.enabled = false
+		current_task_actuator.queue_free()
 		current_task_actuator = null
 
 func _task_failed() -> void:

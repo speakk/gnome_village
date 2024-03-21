@@ -38,7 +38,7 @@ func _clear_entities() -> void:
 func create_world() -> void:
 	_clear_entities()
 	#PathFinder.prepare_for_load()
-	main_map.prepare_for_load()
+	main_map.prepare_for_load(true)
 	
 	var test_divider := 1
 	var map_size_real_x := MainMap3D.MAP_SIZE_X / test_divider
@@ -139,7 +139,7 @@ func _process(delta: float) -> void:
 
 func load_save(data: Dictionary) -> void:
 	PathFinder.prepare_for_load()
-	main_map.prepare_for_load()
+	main_map.prepare_for_load(true)
 	
 	await get_tree().physics_frame
 	

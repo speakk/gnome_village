@@ -8,6 +8,10 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		var map_position_from := Globals.get_map().global_position_to_coordinate(actor.global_position)
 		var map_position_to := target_coordinate
 		var path := PathFinder.get_id_path_to_closest_point(map_position_from, map_position_to)
+		
+		if not path or path.size() <= 0:
+			return FAILURE
+			
 		print("Got path", path)
 		
 		blackboard.set_value("path", path)

@@ -69,6 +69,18 @@ func start_work() -> void:
 	%PutItemToBlueprint.item = task.item_requirement.item
 	%PutItemToBlueprint.amount = task.item_requirement.amount
 	
+	# TODO: This is too much manual work, make FailTask
+	# somehow just fail things automatically
+	%GoToBlueprint.failed.connect(func() -> void:
+		fail()
+		)
+	%GoToResource.failed.connect(func() -> void:
+		fail()
+		)
+	%FailTask.failed.connect(func() -> void:
+		fail()
+		)
+	
 	if not task.item_requirement:
 		print("Oopsie")
 	%HasItemRequirement.item_requirement = task.item_requirement
