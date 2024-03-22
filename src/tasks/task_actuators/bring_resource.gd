@@ -3,11 +3,11 @@ class_name BringResourceActuator extends TaskActuator
 var _item_amount_component: ItemAmountComponent
 
 # TODO: Handle amounts
-func find_closest_material(_item_requirement: ItemRequirement) -> ItemOnGround:
-	var materials_on_ground := get_tree().get_nodes_in_group("item_on_ground") as Array[Node]
+func find_closest_material(_item_requirement: ItemRequirement) -> Entity:
+	var materials_on_ground := get_tree().get_nodes_in_group("entity") as Array[Node]
 	
 	# TODO: Doesn't handle reservations yet with material.item_amount
-	var correct_materials := materials_on_ground.filter(func(material: ItemOnGround) -> bool:
+	var correct_materials := materials_on_ground.filter(func(material: Entity) -> bool:
 		var container: ComponentContainer = material.component_container
 		if material.item and material.item == _item_requirement.item:
 			if container.has_component(Components.Id.ItemAmount):
@@ -24,8 +24,8 @@ func find_closest_material(_item_requirement: ItemRequirement) -> ItemOnGround:
 	)
 	
 	var closest_distance := 99999999.0
-	var closest_material: ItemOnGround
-	for material_on_ground in correct_materials as Array[ItemOnGround]:
+	var closest_material: Entity
+	for material_on_ground in correct_materials as Array[Entity]:
 		var distance: float = tree.actor.global_position.distance_to(material_on_ground.global_position)
 		if distance < closest_distance:
 			closest_distance = distance
@@ -72,12 +72,15 @@ func start_work() -> void:
 	# TODO: This is too much manual work, make FailTask
 	# somehow just fail things automatically
 	%GoToBlueprint.failed.connect(func() -> void:
+		push_warning("gotoblueprint failed")
 		fail()
 		)
 	%GoToResource.failed.connect(func() -> void:
+		push_warning("gotoresource failed")
 		fail()
 		)
 	%FailTask.failed.connect(func() -> void:
+		push_warning("failtask failed lol")
 		fail()
 		)
 	

@@ -1,6 +1,6 @@
 class_name DismantleTask extends Task
 
-var target: ItemOnGround
+var target: Entity
 
 func _init(params: Dictionary) -> void:
 	task_id = Tasks.TaskId.Dismantle
@@ -11,8 +11,8 @@ func _init(params: Dictionary) -> void:
 	target.component_container.get_by_id(Components.Id.Constructable).reserved_for_dismantling = true
 
 func _ready() -> void:
-	Events.dismantle_cancel_issued.connect(func(_item_on_ground: ItemOnGround) -> void:
-		if _item_on_ground == target:
+	Events.dismantle_cancel_issued.connect(func(_entity: Entity) -> void:
+		if _entity == target:
 			is_cancelled = true
 	)
 

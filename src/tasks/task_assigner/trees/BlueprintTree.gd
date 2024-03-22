@@ -1,8 +1,8 @@
 class_name BlueprintTree extends Task
 
-var blueprint: ItemOnGround
+var blueprint: Entity
 
-func _init(tile_target: Vector2i, _blueprint: ItemOnGround) -> void:
+func _init(tile_target: Vector2i, _blueprint: Entity) -> void:
 	task_name = "Construct blueprint"
 	name = "BlueprintTree"
 	order_type = Task.OrderType.Sequence
@@ -41,7 +41,7 @@ func _init(tile_target: Vector2i, _blueprint: ItemOnGround) -> void:
 	register_subtask(build_task)
 
 func _ready() -> void:
-	Events.blueprint_cancel_issued.connect(func(_blueprint: ItemOnGround) -> void:
+	Events.blueprint_cancel_issued.connect(func(_blueprint: Entity) -> void:
 		if _blueprint == blueprint:
 			is_cancelled = true
 	)

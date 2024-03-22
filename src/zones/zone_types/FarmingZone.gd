@@ -1,6 +1,6 @@
 extends Zone
 
-@onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
+@onready var ENTITY := load("res://src/items/entity/Entity.tscn")
 
 func _init() -> void:
 	zone_type = ZoneManager.ZoneType.Farming
@@ -9,7 +9,7 @@ func tick_zone() -> void:
 	for coordinate in get_coordinates():
 		var entities := Globals.get_map().get_map_entities(coordinate, true)
 		if entities.size() == 0:
-			var farm_plot := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
+			var farm_plot := (ENTITY.instantiate() as Entity)
 			Events.request_entity_add.emit(farm_plot)
 			farm_plot.item = preload("res://src/items/item_data/farm_plot.tres")
 			WorldPositionComponent.set_world_position(farm_plot, Globals.get_map().coordinate_to_global_position(coordinate))

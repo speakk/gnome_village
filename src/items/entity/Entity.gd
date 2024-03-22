@@ -1,8 +1,8 @@
 extends Node3D
 
-class_name ItemOnGround
+class_name Entity
 
-@onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
+@onready var ENTITY := load("res://src/items/entity/Entity.tscn")
 
 @onready var component_container: ComponentContainer = $ComponentContainer
 

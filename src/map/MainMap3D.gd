@@ -14,7 +14,7 @@ class_name MainMap3D extends Node3D
 @onready var ground_grid: GridMap = $GroundGrid
 @onready var grass_multi_mesh: MultiMeshInstance3D = $GrassMultiMesh
 
-@onready var ITEM_ON_GROUND := preload("res://src/items/item_on_ground/ItemOnGround.tscn")
+@onready var ENTITY := preload("res://src/items/entity/Entity.tscn")
 
 const MAP_SIZE_X: int = 200
 const MAP_SIZE_Y: int = 150
@@ -238,16 +238,16 @@ func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starti
 			_create_river(current_coord, max_branches_left, new_angle, array_to_fill)
 		
 
-func add_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:
+func add_map_entity(coordinate: Vector2i, entity: Node3D) -> void:
 	if not map_entities.has(coordinate):
 		map_entities[coordinate] = []
 	
-	if not map_entities[coordinate].has(item_on_ground):
-		map_entities[coordinate].append(item_on_ground)
+	if not map_entities[coordinate].has(entity):
+		map_entities[coordinate].append(entity)
 
-func remove_map_entity(coordinate: Vector2i, item_on_ground: Node3D) -> void:
+func remove_map_entity(coordinate: Vector2i, entity: Node3D) -> void:
 	if map_entities.has(coordinate):
-		map_entities[coordinate].erase(item_on_ground)
+		map_entities[coordinate].erase(entity)
 
 func get_map_entities(coordinate: Vector2i, items_only: bool = false) -> Array[Node3D]:
 	var result: Array[Node3D]
@@ -255,7 +255,7 @@ func get_map_entities(coordinate: Vector2i, items_only: bool = false) -> Array[N
 		result.assign(map_entities[coordinate])
 		result = result.filter(func(entity: Node3D) -> bool:
 			if items_only:
-				return entity is ItemOnGround
+				return entity is Entity
 			return true
 			)
 	return result
@@ -266,9 +266,9 @@ func is_coordinate_occupied(coordinate: Vector2i) -> bool:
 	
 	var entities := map_entities[coordinate] as Array
 	
-	for item_on_ground in entities as Array[ItemOnGround]:
-		if item_on_ground is ItemOnGround:
-			var container := item_on_ground.component_container
+	for entity in entities as Array[Entity]:
+		if entity is Entity:
+			var container := entity.component_container
 			if container.has_component(Components.Id.Solid):
 				return true
 			
@@ -296,7 +296,7 @@ func _ready() -> void:
 			add_map_entity(coordinate, entity)
 			)
 		
-	Events.item_removed_from_ground.connect(func(item: ItemOnGround) -> void:
+	Events.item_removed_from_ground.connect(func(item: Entity) -> void:
 			var coordinate := global_position_to_coordinate(item.global_position)
 			remove_map_entity(coordinate, item)
 	)
@@ -365,7 +365,7 @@ func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 	for tile_position in coordinates:
 		var entities := get_map_entities(tile_position)
 		for entity in entities as Array[Node]:
-			if entity is ItemOnGround:
+			if entity is Entity:
 				var container: ComponentContainer = entity.component_container
 				var constructable_component: ConstructableComponent = container.get_by_id(Components.Id.Constructable)
 				if constructable_component:
@@ -376,8 +376,8 @@ func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
 	var zone := (selected_ui_action as UiAction.ZoneAddTiles).zone
 	zone.add_coordinates(coordinates)
 
-func _create_placement_juice(item_on_ground: ItemOnGround, index: int) -> void:
-	var container: ComponentContainer = item_on_ground.component_container
+func _create_placement_juice(entity: Entity, index: int) -> void:
+	var container: ComponentContainer = entity.component_container
 	var node: Node3D
 	var removed_component: Component
 	var position_correction := Vector3(0, 0, 0)
@@ -418,7 +418,7 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 	var _index: int = 0
 	for tile_position in coordinates:
 		if not is_coordinate_occupied(tile_position):
-			var blueprint := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
+			var blueprint := (ENTITY.instantiate() as Entity)
 			Events.request_entity_add.emit(blueprint)
 			blueprint.item = item
 			WorldPositionComponent.set_world_position(blueprint, coordinate_to_global_position(tile_position))

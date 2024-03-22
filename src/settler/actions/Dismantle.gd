@@ -1,6 +1,6 @@
 class_name DismantleActorAction extends ActorTaskAction
 
-var target: ItemOnGround
+var target: Entity
 var constructable: ConstructableComponent
 
 func validate_task(actor: Settler, task: Task) -> void:

@@ -11,14 +11,14 @@ class PlantEvents:
 	signal matured(plant: PlantComponent)
 	signal lacks_growth_requirement(growth_spot: GrowthSpotComponent)
 
-signal blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround)
-signal construction_finished(item: ItemOnGround)
+signal blueprint_placed(tile_position: Vector2i, blueprint: Entity)
+signal construction_finished(item: Entity)
 signal construction_started(container: ComponentContainer)
-signal blueprint_cancel_issued(blueprint: ItemOnGround)
+signal blueprint_cancel_issued(blueprint: Entity)
 
-signal dismantle_issued(item_on_ground: ItemOnGround)
-signal dismantle_finished(item_on_ground: ItemOnGround)
-signal dismantle_cancel_issued(item_on_ground: ItemOnGround)
+signal dismantle_issued(entity: Entity)
+signal dismantle_finished(entity: Entity)
+signal dismantle_cancel_issued(entity: Entity)
 
 signal debug_visuals_set(value: bool)
 
@@ -37,8 +37,8 @@ signal terrain_cleared(coordinate: Vector2i, blueprint: bool)
 
 signal ui_action_selected(ui_action: UiAction)
 
-signal item_placed_on_ground(item: ItemOnGround, item_position: Vector2)
-signal item_removed_from_ground(item: ItemOnGround, item_position: Vector2)
+signal item_placed_on_ground(item: Entity, item_position: Vector2)
+signal item_removed_from_ground(item: Entity, item_position: Vector2)
 
 signal world_position_changed(entity: Node3D, old_position: Vector3, new_position: Vector3)
 signal entity_selected(entity: Node3D)

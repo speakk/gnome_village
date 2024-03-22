@@ -1,6 +1,6 @@
 class_name PlantComponent extends Component
 
-var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
+var ENTITY := load("res://src/items/entity/Entity.tscn")
 
 ## How long does it take to progress to next growth stage (in seconds)
 @export var growth_stage_time: float = 2.0
@@ -46,8 +46,8 @@ func _set_spread_component(spread_component: SpreadComponent) -> void:
 	else:
 		spread_component.set_active(false)
 
-static func create_growth_spot(new_position: Vector3) -> ItemOnGround:
-	var new_grows_in_entity: ItemOnGround = load("res://src/items/item_on_ground/ItemOnGround.tscn").instantiate()
+static func create_growth_spot(new_position: Vector3) -> Entity:
+	var new_grows_in_entity: Entity = load("res://src/items/entity/Entity.tscn").instantiate()
 	Events.request_entity_add.emit(new_grows_in_entity)
 	var grows_container: ComponentContainer = new_grows_in_entity.component_container
 	grows_container.add_component(GrowthSpotComponent.new())
@@ -62,7 +62,7 @@ func _spreads(coordinate: Vector2i) -> void:
 	var global_pos: Vector3 = Globals.get_map().coordinate_to_global_position(coordinate)
 	var new_grows_in_entity := PlantComponent.create_growth_spot(global_pos)
 	
-	var new_plant: ItemOnGround = ITEM_ON_GROUND.instantiate()
+	var new_plant: Entity = ENTITY.instantiate()
 	Events.request_entity_add.emit(new_plant)
 	new_plant.item = get_owner().item.duplicate(true)
 	var comp_container: ComponentContainer = new_plant.component_container

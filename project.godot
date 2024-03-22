@@ -47,9 +47,9 @@ enabled=PackedStringArray("res://addons/beehave/plugin.cfg", "res://addons/utili
 
 [global_group]
 
-item_on_ground="Items On Ground"
 zone=""
 radial_light=""
+entity="Items On Ground"
 
 [gui]
 

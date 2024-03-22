@@ -14,7 +14,7 @@ func _tasks_changed(_node: Node) -> void:
 	tasks.assign($Tasks.get_children())
 	Events.tasks_changed.emit(tasks)
 			
-func _blueprint_placed(tile_position: Vector2i, blueprint: ItemOnGround) -> void:
+func _blueprint_placed(tile_position: Vector2i, blueprint: Entity) -> void:
 	var task_tree := BlueprintTree.new(tile_position, blueprint)
 	$Tasks.add_child(task_tree)
 	
@@ -26,8 +26,8 @@ func _harvest_plant(plant: PlantComponent) -> void:
 	var task_tree := HarvestPlantTree.new(plant)
 	$Tasks.add_child(task_tree)
 
-func _dismantle_issued(item_on_ground: ItemOnGround) -> void:
-	var task_tree := DismantleTask.new({target = item_on_ground})
+func _dismantle_issued(entity: Entity) -> void:
+	var task_tree := DismantleTask.new({target = entity})
 	$Tasks.add_child(task_tree)
 
 func get_available_settler(task: Variant) -> Settler:

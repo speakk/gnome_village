@@ -7,13 +7,13 @@ const FARM_PLOT := preload("res://assets/blender_models/farm_plot.blend")
 
 var growth_rate: float = 0.1
 
-var planted_plant: ItemOnGround
+var planted_plant: Entity
 var plant_component: PlantComponent
-@onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
+@onready var ENTITY := load("res://src/items/entity/Entity.tscn")
 
 func _plant_set(plant: Item) -> void:
 	if not planted_plant:
-		planted_plant = ITEM_ON_GROUND.instantiate()
+		planted_plant = ENTITY.instantiate()
 		add_child(planted_plant)
 		planted_plant.item = plant
 		plant_component = planted_plant.component_container.get_by_id(Components.Id.Plant)

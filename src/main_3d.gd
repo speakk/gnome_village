@@ -1,7 +1,7 @@
 extends Node3D
 
 @onready var SETTLER := preload("res://src/settler/settler.tscn")
-@onready var ITEM_ON_GROUND := load("res://src/items/item_on_ground/ItemOnGround.tscn")
+@onready var ENTITY := load("res://src/items/entity/Entity.tscn")
 
 @onready var main_map: MainMap3D = $MainMap3d as MainMap3D
 @onready var entities: Node3D = %Entities
@@ -53,12 +53,12 @@ func create_world() -> void:
 			var new_grows_in_entity := PlantComponent.create_growth_spot(quantized_position)
 			
 			var new_tree: Item = preload("res://src/items/item_data/plants/oak_tree.tres")
-			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround) 
-			%Entities.add_child(item_on_ground)
-			item_on_ground.item = new_tree
-			WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
-			item_on_ground.component_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
-			item_on_ground.component_container.get_by_id(Components.Id.Plant).current_growth_stage_index = randi_range(0, 3)
+			var entity := (ENTITY.instantiate() as Entity) 
+			%Entities.add_child(entity)
+			entity.item = new_tree
+			WorldPositionComponent.set_world_position(entity, quantized_position)
+			entity.component_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
+			entity.component_container.get_by_id(Components.Id.Plant).current_growth_stage_index = randi_range(0, 3)
 			
 	await get_tree().physics_frame
 #
@@ -72,10 +72,10 @@ func create_world() -> void:
 		var grid_position := Globals.get_map().get_random_coordinate()
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
-			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
-			%Entities.add_child(item_on_ground)
-			item_on_ground.item = resources.pick_random()
-			WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
+			var entity := (ENTITY.instantiate() as Entity)
+			%Entities.add_child(entity)
+			entity.item = resources.pick_random()
+			WorldPositionComponent.set_world_position(entity, quantized_position)
 			
 	
 	var settlers_to_place := TEST_SETTLERS
@@ -101,11 +101,11 @@ func create_world() -> void:
 		var grid_position := Globals.get_map().get_random_coordinate()
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
-			var item_on_ground := (ITEM_ON_GROUND.instantiate() as ItemOnGround)
-			%Entities.add_child(item_on_ground)
-			item_on_ground.item = decal_items.pick_random()
-			WorldPositionComponent.set_world_position(item_on_ground, quantized_position)
-			item_on_ground.rotate_y(randf_range(0, PI*2))
+			var entity := (ENTITY.instantiate() as Entity)
+			%Entities.add_child(entity)
+			entity.item = decal_items.pick_random()
+			WorldPositionComponent.set_world_position(entity, quantized_position)
+			entity.rotate_y(randf_range(0, PI*2))
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("debug_toggle"):
@@ -181,7 +181,7 @@ func create_ground_entities() -> void:
 			var y: int = iter_y - MainMap3D.MAP_SIZE_Y/2
 			var mesh_id: int = main_map.ground_grid.get_cell_item(Vector3i(x, 0, y))
 			if mesh_id == 0:
-				var entity: ItemOnGround = ITEM_ON_GROUND.instantiate()
+				var entity: Entity = ENTITY.instantiate()
 				entity.show_amount_number = false
 				main_map.add_map_entity(Vector2i(x, y), entity)
 				entities.add_child(entity)
