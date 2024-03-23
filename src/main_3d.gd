@@ -52,7 +52,7 @@ func create_world() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var new_grows_in_entity := PlantComponent.create_growth_spot(quantized_position)
 			
-			var new_tree: Item = preload("res://src/items/item_data/plants/oak_tree.tres")
+			var new_tree: EntityDefinition = preload("res://src/items/item_data/plants/oak_tree.tres")
 			var entity := (ENTITY.instantiate() as Entity) 
 			%Entities.add_child(entity)
 			entity.item = new_tree
@@ -62,7 +62,7 @@ func create_world() -> void:
 			
 	await get_tree().physics_frame
 #
-	var resources: Array[Item] = [
+	var resources: Array[EntityDefinition] = [
 		preload("res://src/items/item_data/wood.tres"),
 		preload("res://src/items/item_data/stone.tres"),
 		preload("res://src/items/item_data/food/potato.tres"),
@@ -93,7 +93,7 @@ func create_world() -> void:
 			if settlers_to_place <= 0:
 				break
 	
-	var decal_items: Array[Item] = [
+	var decal_items: Array[EntityDefinition] = [
 		preload("res://src/items/item_data/foliage/flower_1.tres"),
 		preload("res://src/items/item_data/foliage/flower_2.tres")
 		]

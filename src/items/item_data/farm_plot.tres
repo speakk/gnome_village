@@ -1,6 +1,5 @@
-[gd_resource type="Resource" script_class="Item" load_steps=20 format=3 uid="uid://dulsru7myeyi4"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=20 format=3 uid="uid://dulsru7myeyi4"]
 
-[ext_resource type="Script" path="res://src/items/Item.gd" id="1_am7fa"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="1_sxubs"]
 [ext_resource type="Script" path="res://src/components/data/GrowthSpot.gd" id="1_yxf7r"]
 [ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="3_4i3tg"]
@@ -11,6 +10,7 @@
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="6_xcfl6"]
 [ext_resource type="Script" path="res://src/components/data/Inventory.gd" id="7_4nsy2"]
 [ext_resource type="Script" path="res://src/components/StringSubscription.gd" id="8_mmlpk"]
+[ext_resource type="Script" path="res://src/items/EntityDefinition.gd" id="11_ypnkl"]
 
 [sub_resource type="Resource" id="Resource_kiryq"]
 script = ExtResource("6_xcfl6")
@@ -51,6 +51,6 @@ scene = ExtResource("4_or0nf")
 custom_subscriptions = Array[ExtResource("8_mmlpk")]([SubResource("Resource_ya3em")])
 
 [resource]
-script = ExtResource("1_am7fa")
+script = ExtResource("11_ypnkl")
 display_name = "Farm Plot"
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_h10c2"), SubResource("Resource_uort6"), SubResource("Resource_egpa4"), SubResource("Resource_x6j1b"), SubResource("Resource_wo3jf")])

@@ -1,4 +1,4 @@
-class_name Item extends Resource
+class_name EntityDefinition extends Resource
 
 @export var display_name: String = ""
 @export var components: Array[Component]

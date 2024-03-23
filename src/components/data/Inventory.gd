@@ -10,8 +10,8 @@ class_name InventoryComponent extends Component
 var item_amounts: Dictionary = {}
 var reservations: Dictionary = {}
 
-signal item_added(item: Item, amount: int)
-signal item_removed(item: Item, amount: int)
+signal item_added(item: EntityDefinition, amount: int)
+signal item_removed(item: EntityDefinition, amount: int)
 
 func set_owner(_new_owner: Node) -> void:
 	super.set_owner(_new_owner)
@@ -21,7 +21,7 @@ func set_owner(_new_owner: Node) -> void:
 func _init() -> void:
 	id = Components.Id.Inventory
 
-func add_item_amount(item: Item, amount: int) -> void:
+func add_item_amount(item: EntityDefinition, amount: int) -> void:
 	if not item_amounts.has(item):
 		item_amounts[item] = ItemAmountComponent.new(item)
 		item_amounts[item].set_owner(component_owner)
@@ -29,23 +29,23 @@ func add_item_amount(item: Item, amount: int) -> void:
 	item_amounts[item].amount += amount
 	item_added.emit(item, amount)
 
-func get_item_amount(item: Item) -> ItemAmountComponent:
+func get_item_amount(item: EntityDefinition) -> ItemAmountComponent:
 	return item_amounts[item]
 
-func reserve_item_amount(item: Item, amount: int) -> void:
+func reserve_item_amount(item: EntityDefinition, amount: int) -> void:
 	if not reservations.has(item):
 		reservations[item] = ItemAmountComponent.new(item)
 	
 	reservations[item].amount += amount
 
-func remove_item_reservation(item: Item, amount: int) -> void:
+func remove_item_reservation(item: EntityDefinition, amount: int) -> void:
 	if not reservations.has(item):
 		reservations[item] = ItemAmountComponent.new(item)
 	reservations[item].amount -= amount
 	if reservations[item].amount <= 0:
 		reservations.erase(item)
 
-func remove_item_amount(item: Item, amount: int) -> void:
+func remove_item_amount(item: EntityDefinition, amount: int) -> void:
 	if not item_amounts.has(item):
 		item_amounts[item] = ItemAmountComponent.new(item)
 	item_amounts[item].amount -= amount
@@ -53,7 +53,7 @@ func remove_item_amount(item: Item, amount: int) -> void:
 		item_amounts.erase(item)
 	item_removed.emit(item, amount)
 
-func has_item_amount(item: Item, amount: int) -> bool:
+func has_item_amount(item: EntityDefinition, amount: int) -> bool:
 	if not item_amounts.has(item):
 		return false
 	

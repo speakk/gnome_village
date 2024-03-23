@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="Item" load_steps=5 format=3 uid="uid://bp5lv8puyb7kd"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=5 format=3 uid="uid://bp5lv8puyb7kd"]
 
-[ext_resource type="Script" path="res://src/items/Item.gd" id="1_4s53r"]
 [ext_resource type="PackedScene" uid="uid://dna7s14tl0j7b" path="res://assets/blender_models/stone.blend" id="1_oplyr"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_24w5p"]
+[ext_resource type="Script" path="res://src/items/EntityDefinition.gd" id="3_k2r6o"]
 
 [sub_resource type="Resource" id="Resource_vu4th"]
 script = ExtResource("2_24w5p")
@@ -10,6 +10,6 @@ scene = ExtResource("1_oplyr")
 custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
 
 [resource]
-script = ExtResource("1_4s53r")
+script = ExtResource("3_k2r6o")
 display_name = "Stone"
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_vu4th")])

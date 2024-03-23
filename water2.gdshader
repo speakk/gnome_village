@@ -29,7 +29,7 @@ uniform float border_scale : hint_range(0.0, 5.0, 0.01) = 2.0;
 uniform float border_near = 0.5;
 uniform float border_far = 300.0;
 
-uniform float refraction_intensity : hint_range(0.0, 1.0, 0.01) = 0.4; 
+uniform float refraction_intensity : hint_range(0.0, 1.0, 0.01) = 0.4;
 
 uniform float max_visible_depth : hint_range(0.0, 100.0, 0.1) = 10.0;
 uniform vec3 color_deep : source_color = vec3(0.0, 0.1, 0.4);
@@ -40,7 +40,7 @@ uniform sampler2D wave_b;
 uniform sampler2D surface_normals_a;
 uniform sampler2D surface_normals_b;
 
-varying vec2 vertex_uv; 
+varying vec2 vertex_uv;
 
 float get_wave_height(vec2 uv)
 {
@@ -54,12 +54,12 @@ void vertex()
 	vertex_uv = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xz;
 	vec2 uv = vertex_uv / wave_noise_scale + TIME * wave_time_scale;
 	VERTEX.y += get_wave_height(uv) * wave_height_scale;
-	
+
 	float normal_height_scale = wave_height_scale / wave_normal_flatness;
 	vec2 e = vec2(0.01, 0.0);
 	vec3 normal = normalize(vec3(
-		get_wave_height(uv - e) * normal_height_scale - get_wave_height(uv + e) * normal_height_scale, 
-		2.0 * e.x, 
+		get_wave_height(uv - e) * normal_height_scale - get_wave_height(uv + e) * normal_height_scale,
+		2.0 * e.x,
 		get_wave_height(uv - e.yx) * normal_height_scale - get_wave_height(uv + e.yx) * normal_height_scale
 		));
 	NORMAL = normal;
@@ -88,9 +88,9 @@ vec3 get_ssr_color(vec3 surface_view_position, vec3 normal_view_space, vec3 view
 	vec3 current_position_view_space = surface_view_position;
 	vec3 view_direction_view_space = view_view_space * -1.0;
 	vec3 reflect_vector_view_space = normalize(reflect(view_direction_view_space.xyz, normal_view_space.xyz));
-	
+
 	vec2 current_screen_position = vec2(0.0);
-	
+
 	vec3 resulting_color = vec3(-1.0);
 	for(float travel=0.0; resulting_color.x < 0.0 && travel < ssr_max_travel; travel = travel + ssr_resolution)
 	{
@@ -99,9 +99,9 @@ vec3 get_ssr_color(vec3 surface_view_position, vec3 normal_view_space, vec3 view
 
 		float depth_texture_probe_raw = texture(DEPTH_TEXTURE, current_screen_position).x;
 		vec3 depth_texture_probe_view_position = get_view_position_from_uv(current_screen_position, depth_texture_probe_raw, inv_proj_m);
-		
+
 		float depth_diff = depth_texture_probe_view_position.z - current_position_view_space.z;
-		
+
 		resulting_color = (is_within_screen_boundaries(current_screen_position) && depth_diff >= 0.0 && depth_diff < ssr_max_diff) ? texture(SCREEN_TEXTURE, current_screen_position.xy).rgb : vec3(-1.0);
 	}
 	return resulting_color;
@@ -129,24 +129,24 @@ vec2 get_refracted_uv(vec2 raw_screen_uv, float screen_depth_raw, vec3 view, vec
 
 void fragment() {
 	float screen_depth_raw = texture(DEPTH_TEXTURE, SCREEN_UV).x;
-	
+
 	vec2 refraction_uv = refraction_intensity > 0.0 ? get_refracted_uv(SCREEN_UV, screen_depth_raw, VIEW, NORMAL, PROJECTION_MATRIX, INV_PROJECTION_MATRIX) : SCREEN_UV;
-	
+
 	float screen_depth = texture(DEPTH_TEXTURE, refraction_uv).x;
 	float surface_depth = FRAGCOORD.z;
-	
+
 	float border_diff = border(screen_depth_raw) - border(surface_depth);
-	
+
 	vec2 time_vector = (TIME * surface_normals_move_direction_a) * surface_texture_time_scale;
 	vec2 time_vector2 = (TIME * surface_normals_move_direction_b) * surface_texture_time_scale;
-	
+
 	vec3 normal_texture_blend 	= mix(texture(surface_normals_a, vertex_uv * surface_texture_scale + time_vector).xyz, texture(surface_normals_b, vertex_uv * surface_texture_scale + time_vector2).xyz, 0.5);
 	vec3 normal_blend 			= mix(NORMAL, normal_texture_blend, surface_texture_roughness);
-	
+
 	vec3 screen_view_position 	= get_view_position_from_uv(refraction_uv, screen_depth, INV_PROJECTION_MATRIX);
 	vec3 surface_view_position 	= get_view_position_from_uv(refraction_uv, surface_depth, INV_PROJECTION_MATRIX);
 	float depth_opacity = 1.0 - normalize_float(0.0, max_visible_depth, length(surface_view_position - screen_view_position));
-	
+
 	vec3 screen_color 				= texture(SCREEN_TEXTURE, refraction_uv).rgb;
 	vec3 surface_color 				= albedo;
 	vec3 ssr_color 					= get_ssr_color(surface_view_position, NORMAL, VIEW, PROJECTION_MATRIX, INV_PROJECTION_MATRIX);
@@ -154,7 +154,7 @@ void fragment() {
 	vec3 depth_color 				= mix(color_deep.rgb, color_with_transparency, depth_opacity);
 	vec3 water_color 				= (ssr_color.x >= 0.0) ? mix(depth_color, ssr_color, ssr_mix_strength) : depth_color;
 	vec3 final_color				= mix(border_color, water_color, step(border_scale, border_diff));
-	
+
 	ALBEDO.rgb = final_color;
 	METALLIC = metallic;
 	ROUGHNESS = roughness;

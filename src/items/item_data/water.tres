@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="Item" load_steps=5 format=3 uid="uid://10hahtgmxe11"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=5 format=3 uid="uid://10hahtgmxe11"]
 
-[ext_resource type="Script" path="res://src/items/Item.gd" id="1_apqiq"]
 [ext_resource type="PackedScene" uid="uid://dqk5jjprgn28n" path="res://assets/blender_models/water_bucket.blend" id="1_nty6t"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_kejwc"]
+[ext_resource type="Script" path="res://src/items/EntityDefinition.gd" id="3_gc2x3"]
 
 [sub_resource type="Resource" id="Resource_pakku"]
 script = ExtResource("2_kejwc")
@@ -10,6 +10,6 @@ scene = ExtResource("1_nty6t")
 custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
 
 [resource]
-script = ExtResource("1_apqiq")
+script = ExtResource("3_gc2x3")
 display_name = "Water"
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_pakku")])

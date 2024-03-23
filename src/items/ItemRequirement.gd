@@ -2,7 +2,7 @@ extends Resource
 
 class_name ItemRequirement
 
-@export var item: Item
+@export var item: EntityDefinition
 @export var amount: int = 1
 
 func save() -> Dictionary:
@@ -13,7 +13,7 @@ func save() -> Dictionary:
 	
 	return save_dict
 
-func _init(_item: Item = null, _amount: int = 0) -> void:
+func _init(_item: EntityDefinition = null, _amount: int = 0) -> void:
 	item = _item
 	amount = _amount
 

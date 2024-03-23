@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="Item" load_steps=11 format=3 uid="uid://pbbjelty00sx"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=11 format=3 uid="uid://pbbjelty00sx"]
 
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_3k661"]
 [ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/items/item_data/wood.tres" id="1_qup6a"]
-[ext_resource type="Script" path="res://src/items/Item.gd" id="2_3a7ng"]
+[ext_resource type="Script" path="res://src/items/EntityDefinition.gd" id="2_3a7ng"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="2_unt6m"]
 [ext_resource type="Script" path="res://src/components/data/Terrain.gd" id="3_sp55h"]
 [ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="4_sc1l6"]

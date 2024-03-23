@@ -11,6 +11,6 @@ func _ready() -> void:
 		button.pressed.connect(_construction_button_pressed.bind(item))
 		%BuildOptions.add_child(button)
 
-func _construction_button_pressed(item: Item) -> void:
+func _construction_button_pressed(item: EntityDefinition) -> void:
 	var ui_action := UiAction.Build.new(item)
 	Events.ui_action_selected.emit(ui_action)

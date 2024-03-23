@@ -3,7 +3,7 @@ extends ActionLeaf
 class_name PutItemToInventory
 
 var target_inventory: InventoryComponent
-var item: Item
+var item: EntityDefinition
 var amount: int
 
 @warning_ignore("untyped_declaration")

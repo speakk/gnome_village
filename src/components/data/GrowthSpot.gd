@@ -1,6 +1,6 @@
 class_name GrowthSpotComponent extends Component
 
-signal plant_set(new_plant: Item)
+signal plant_set(new_plant: EntityDefinition)
 
 var has_growing: bool
 
@@ -17,13 +17,13 @@ func _init() -> void:
 			)
 	)
 
-func consume_growth_requirement(growth_requirement_item: Item, amount: int) -> void:
+func consume_growth_requirement(growth_requirement_item: EntityDefinition, amount: int) -> void:
 	growth_requirement_inventory.remove_item_amount(growth_requirement_item, amount)
 
-func increase_growth_requirement(growth_requirement_item: Item, amount: int) -> void:
+func increase_growth_requirement(growth_requirement_item: EntityDefinition, amount: int) -> void:
 	growth_requirement_inventory.add_item_amount(growth_requirement_item, amount)
 
-func start_growing_plant(item: Item) -> void:
+func start_growing_plant(item: EntityDefinition) -> void:
 	if not has_growing:
 		plant_set.emit(item)
 		# TODO: Just implement get_by_id for components as well to avoid this? (already in component_container)

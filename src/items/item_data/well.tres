@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="Item" load_steps=16 format=3 uid="uid://cpc18p56jv8bs"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=16 format=3 uid="uid://cpc18p56jv8bs"]
 
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_gybae"]
-[ext_resource type="Script" path="res://src/items/Item.gd" id="1_ygcvd"]
+[ext_resource type="Script" path="res://src/items/EntityDefinition.gd" id="1_ygcvd"]
 [ext_resource type="PackedScene" uid="uid://cdo3s14lusgmm" path="res://assets/blender_models/well.blend" id="2_icdf7"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_xr12o"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="3_2xuh5"]

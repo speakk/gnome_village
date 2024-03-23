@@ -11,7 +11,7 @@ var planted_plant: Entity
 var plant_component: PlantComponent
 @onready var ENTITY := load("res://src/items/entity/Entity.tscn")
 
-func _plant_set(plant: Item) -> void:
+func _plant_set(plant: EntityDefinition) -> void:
 	if not planted_plant:
 		planted_plant = ENTITY.instantiate()
 		add_child(planted_plant)

@@ -1,6 +1,6 @@
 extends Node
 
-var list: Array[Item]
+var list: Array[EntityDefinition]
 
 func _ready() -> void:
 	var paths: Array[String] = [
@@ -18,13 +18,13 @@ func _ready() -> void:
 			if not data_dir.current_is_dir():
 				var data := load("%s/%s" % [path, file_name])
 				print("Loaded: %s in %s" % [file_name, path])
-				var item: Item
-				if data is Item:
+				var item: EntityDefinition
+				if data is EntityDefinition:
 					list.append(data)
 			file_name = data_dir.get_next()
 
-func get_constructable_items() -> Array[Item]:
-	var result: Array[Item]
+func get_constructable_items() -> Array[EntityDefinition]:
+	var result: Array[EntityDefinition]
 	for item in list:
 		var has_constructable := false
 		for component: Component in item.components:
@@ -37,7 +37,7 @@ func get_constructable_items() -> Array[Item]:
 	
 	return result
 
-func get_item_render_scene(item: Item) -> Node3D:
+func get_item_render_scene(item: EntityDefinition) -> Node3D:
 	var results := item.components.filter(func(component: Component) -> bool:
 		return component.id == Components.Id.Scene
 		)

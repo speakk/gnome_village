@@ -2,7 +2,7 @@ class_name ItemAmountComponent extends Component
 
 signal amount_changed(new_amount: int)
 
-var item: Item
+var item: EntityDefinition
 
 var _reservations: Array[ItemAmountReservation]
 
@@ -23,7 +23,7 @@ func remove_reservation(item_amount_reservation: ItemAmountReservation) -> void:
 				_reservations.erase(reservation)
 				break
 
-func has_item_amount(_item: Item, _amount: int) -> bool:
+func has_item_amount(_item: EntityDefinition, _amount: int) -> bool:
 	if item != _item:
 		return false
 	
@@ -36,7 +36,7 @@ func has_item_amount(_item: Item, _amount: int) -> bool:
 func has_item_requirement(item_requirement: ItemRequirement) -> bool:
 	return has_item_amount(item_requirement.item, item_requirement.amount)
 
-func _init(_item: Item = null, _amount: int = 0) -> void:
+func _init(_item: EntityDefinition = null, _amount: int = 0) -> void:
 	amount = _amount
 	item = _item
 	id = Components.Id.ItemAmount

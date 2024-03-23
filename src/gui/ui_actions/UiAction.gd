@@ -12,8 +12,8 @@ static var UiActionIdMap: Dictionary = {
 }
 
 class Build extends UiAction:
-	var item: Item
-	func _init(_item: Item = null) -> void:
+	var item: EntityDefinition
+	func _init(_item: EntityDefinition = null) -> void:
 		item = _item
 		ui_action_id = UiActionId.Build
 

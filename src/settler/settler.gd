@@ -166,10 +166,10 @@ func _refresh_carry_item() -> void:
 			$CarryItemNode.add_child(item_render_scene)
 		
 
-func _inventory_item_added(item: Item, _amount: int) -> void:
+func _inventory_item_added(item: EntityDefinition, _amount: int) -> void:
 	_refresh_carry_item()
 
-func _inventory_item_removed(_item: Item, _amount: int) -> void:
+func _inventory_item_removed(_item: EntityDefinition, _amount: int) -> void:
 	_refresh_carry_item()
 
 func play_animation(animation_name: String) -> void:

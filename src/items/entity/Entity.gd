@@ -9,7 +9,7 @@ class_name Entity
 var show_amount_number := true
 
 var item_scene: Node3D
-var item: Item:
+var item: EntityDefinition:
 	set(new_item):
 		item = new_item
 		set_item_components()

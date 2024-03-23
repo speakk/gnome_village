@@ -1,7 +1,6 @@
-[gd_resource type="Resource" script_class="Item" load_steps=22 format=3 uid="uid://chsq0nuk6ur1i"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=22 format=3 uid="uid://chsq0nuk6ur1i"]
 
 [ext_resource type="Resource" uid="uid://10hahtgmxe11" path="res://src/items/item_data/water.tres" id="1_5153j"]
-[ext_resource type="Script" path="res://src/items/Item.gd" id="1_d5r2t"]
 [ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_tunl2"]
 [ext_resource type="PackedScene" uid="uid://bixhtyrioc70i" path="res://assets/blender_models/plants/potato_1.blend" id="1_x7iew"]
 [ext_resource type="Script" path="res://src/items/plants/GrowthStage.gd" id="2_8mldj"]
@@ -13,6 +12,7 @@
 [ext_resource type="Script" path="res://src/items/ItemDrop.gd" id="9_gekmr"]
 [ext_resource type="Resource" uid="uid://b2fhlwf6pm0jt" path="res://src/items/item_data/food/potato.tres" id="9_ln5s2"]
 [ext_resource type="Script" path="res://src/components/data/Drop.gd" id="10_4m2qb"]
+[ext_resource type="Script" path="res://src/items/EntityDefinition.gd" id="13_tayhl"]
 
 [sub_resource type="Resource" id="Resource_3uovn"]
 script = ExtResource("1_tunl2")
@@ -55,6 +55,6 @@ script = ExtResource("10_4m2qb")
 drops = Array[ExtResource("9_gekmr")]([SubResource("Resource_1labk")])
 
 [resource]
-script = ExtResource("1_d5r2t")
+script = ExtResource("13_tayhl")
 display_name = "Potato Plant"
 components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_lciqt"), SubResource("Resource_kiexp"), SubResource("Resource_yp2nr")])
