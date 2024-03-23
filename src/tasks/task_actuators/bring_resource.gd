@@ -9,7 +9,7 @@ func find_closest_material(_item_requirement: ItemRequirement) -> Entity:
 	# TODO: Doesn't handle reservations yet with material.item_amount
 	var correct_materials := materials_on_ground.filter(func(material: Entity) -> bool:
 		var container: ComponentContainer = material.component_container
-		if material.item and material.item == _item_requirement.item:
+		if material.definition and material.definition == _item_requirement.item:
 			if container.has_component(Components.Id.ItemAmount):
 				var item_amount: ItemAmountComponent = container.get_by_id(Components.Id.ItemAmount)
 				if item_amount.has_item_amount(_item_requirement.item, _item_requirement.amount):
@@ -45,7 +45,7 @@ func start_work() -> void:
 			task.has_failed = true
 			return
 		
-		if material.item and material.item == task.item_requirement.item:
+		if material.definition and material.definition == task.item_requirement.item:
 			_item_amount_component = material.component_container.get_by_id(Components.Id.ItemAmount)
 		else:
 			_item_amount_component = material.component_container.get_by_id(Components.Id.Inventory).get_item_amount(task.item_requirement.item)

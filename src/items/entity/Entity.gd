@@ -9,9 +9,9 @@ class_name Entity
 var show_amount_number := true
 
 var item_scene: Node3D
-var item: EntityDefinition:
-	set(new_item):
-		item = new_item
+var definition: EntityDefinition:
+	set(new_definition):
+		definition = new_definition
 		set_item_components()
 
 var _initial_state: Variant
@@ -53,7 +53,7 @@ func place_at_coordinate(coordinate: Vector2i) -> void:
 	WorldPositionComponent.set_world_position(self, new_position)
 
 func set_item_components() -> void:
-	for component: Component in item.components:
+	for component: Component in definition.components:
 		component_container.add_component(component)
 
 	# This untyped display_name_component is here because of an OBSCURE bug
@@ -61,7 +61,7 @@ func set_item_components() -> void:
 	# and everything breaks
 	@warning_ignore("untyped_declaration")
 	var display_name_component = component_container.get_by_id(Components.Id.DisplayName)
-	display_name_component.display_name = item.display_name
+	display_name_component.display_name = definition.display_name
 
 	var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
 	item_amount.amount_changed.connect(func(new_amount: int) -> void:
@@ -75,5 +75,5 @@ func set_item_components() -> void:
 			queue_free()
 		)
 	
-	item_amount.item = item
+	item_amount.item = definition
 	item_amount.amount = 1

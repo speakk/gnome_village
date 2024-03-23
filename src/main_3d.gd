@@ -55,7 +55,7 @@ func create_world() -> void:
 			var new_tree: EntityDefinition = preload("res://src/items/item_data/plants/oak_tree.tres")
 			var entity := (ENTITY.instantiate() as Entity) 
 			%Entities.add_child(entity)
-			entity.item = new_tree
+			entity.definition = new_tree
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			entity.component_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
 			entity.component_container.get_by_id(Components.Id.Plant).current_growth_stage_index = randi_range(0, 3)
@@ -74,7 +74,7 @@ func create_world() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var entity := (ENTITY.instantiate() as Entity)
 			%Entities.add_child(entity)
-			entity.item = resources.pick_random()
+			entity.definition = resources.pick_random()
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			
 	
@@ -103,7 +103,7 @@ func create_world() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var entity := (ENTITY.instantiate() as Entity)
 			%Entities.add_child(entity)
-			entity.item = decal_items.pick_random()
+			entity.definition = decal_items.pick_random()
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			entity.rotate_y(randf_range(0, PI*2))
 

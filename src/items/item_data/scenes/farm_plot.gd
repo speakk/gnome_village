@@ -15,7 +15,7 @@ func _plant_set(plant: EntityDefinition) -> void:
 	if not planted_plant:
 		planted_plant = ENTITY.instantiate()
 		add_child(planted_plant)
-		planted_plant.item = plant
+		planted_plant.definition = plant
 		plant_component = planted_plant.component_container.get_by_id(Components.Id.Plant)
 		# TODO: This is so that the can be "dismantled". Do this any other way
 		# in the future.

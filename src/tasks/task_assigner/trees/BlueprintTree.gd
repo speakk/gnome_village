@@ -8,7 +8,7 @@ func _init(tile_target: Vector2i, _blueprint: Entity) -> void:
 	order_type = Task.OrderType.Sequence
 	blueprint = _blueprint
 	
-	var item := blueprint.item
+	var item := blueprint.definition
 	var constructable_component: ConstructableComponent = _blueprint.component_container.get_by_id(Components.Id.Constructable)
 	var material_requirements := constructable_component.requirements
 	

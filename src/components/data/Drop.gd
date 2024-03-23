@@ -14,5 +14,5 @@ func on_exit() -> void:
 			var new_entity := ENTITY.instantiate() as Entity
 			# TODO: Randomize position slightly
 			Events.request_entity_add.emit(new_entity)
-			new_entity.item = item_drop.item
+			new_entity.definition = item_drop.item
 			WorldPositionComponent.set_world_position(new_entity, get_owner().global_position)

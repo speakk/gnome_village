@@ -64,7 +64,7 @@ func _spreads(coordinate: Vector2i) -> void:
 	
 	var new_plant: Entity = ENTITY.instantiate()
 	Events.request_entity_add.emit(new_plant)
-	new_plant.item = get_owner().item.duplicate(true)
+	new_plant.definition = get_owner().definition.duplicate(true)
 	var comp_container: ComponentContainer = new_plant.component_container
 	comp_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
 	WorldPositionComponent.set_world_position(new_plant, global_pos)
