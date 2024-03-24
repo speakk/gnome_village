@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://coa800xi7xgd2"]
+[gd_scene load_steps=26 format=3 uid="uid://coa800xi7xgd2"]
 
 [ext_resource type="Script" path="res://src/gui/main_menu/main_menu.gd" id="1_ojpbv"]
 [ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap3D.tscn" id="1_rn6i6"]
@@ -8,6 +8,13 @@
 [ext_resource type="Texture2D" uid="uid://skgrbq3iahcg" path="res://src/sky/moon.png" id="4_y78nw"]
 [ext_resource type="Texture2D" uid="uid://5c1w1lvrch1i" path="res://src/sky/starfield.png" id="5_fom0y"]
 [ext_resource type="PackedScene" uid="uid://o53a82tupq4h" path="res://src/gui/main_menu/main_menu_button.tscn" id="5_wk6eu"]
+[ext_resource type="Script" path="res://src/components/data/DisplayName.gd" id="9_0wih8"]
+[ext_resource type="PackedScene" uid="uid://d1nl0c8gv5jup" path="res://src/entities/scenes/settler/settler.tscn" id="9_5dbc7"]
+[ext_resource type="Script" path="res://src/components/data/WorldPosition.gd" id="10_e3fe1"]
+[ext_resource type="Script" path="res://src/components/data/Selectable.gd" id="11_qdkqw"]
+[ext_resource type="Script" path="res://src/components/data/ItemAmount.gd" id="12_ic5sq"]
+[ext_resource type="Script" path="res://src/components/data/Inventory.gd" id="13_srfgn"]
+[ext_resource type="Script" path="res://src/components/data/CharacterStats.gd" id="14_eji1h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tksbq"]
 shader = ExtResource("3_tj2dn")
@@ -65,6 +72,28 @@ adjustment_saturation = 0.75
 dof_blur_far_enabled = true
 dof_blur_far_transition = -1.0
 
+[sub_resource type="Resource" id="Resource_iyosi"]
+script = ExtResource("9_0wih8")
+display_name = ""
+
+[sub_resource type="Resource" id="Resource_onuy6"]
+script = ExtResource("10_e3fe1")
+
+[sub_resource type="Resource" id="Resource_ucd33"]
+script = ExtResource("11_qdkqw")
+
+[sub_resource type="Resource" id="Resource_i1ikl"]
+script = ExtResource("12_ic5sq")
+amount = 1
+
+[sub_resource type="Resource" id="Resource_nolv0"]
+script = ExtResource("13_srfgn")
+items_can_be_picked = true
+pre_filled = Array[Resource("res://src/entities/ItemRequirement.gd")]([])
+
+[sub_resource type="Resource" id="Resource_67bq5"]
+script = ExtResource("14_eji1h")
+
 [node name="MainMenu" type="Node3D"]
 script = ExtResource("1_ojpbv")
 
@@ -118,6 +147,38 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.77782, 0, 1.19487)
 [node name="WoodenTorch6" parent="SceneObjects" instance=ExtResource("3_kks4n")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.30203, 0, -3.79306)
 
+[node name="Settler" parent="SceneObjects" node_paths=PackedStringArray("utility_agent", "task_handler") instance=ExtResource("9_5dbc7")]
+transform = Transform3D(-0.810205, 0, 0.586146, 0, 1, 0, -0.586146, 0, -0.810205, -1.49589, 0.518051, 0.664896)
+utility_agent = NodePath("UtilityAiAgent")
+task_handler = NodePath("TaskHandler")
+
+[node name="ComponentContainer" parent="SceneObjects/Settler" index="4"]
+default_components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_iyosi"), SubResource("Resource_onuy6"), SubResource("Resource_ucd33"), SubResource("Resource_i1ikl"), SubResource("Resource_nolv0"), SubResource("Resource_67bq5")])
+
+[node name="UtilityAiEvaluators" parent="SceneObjects/Settler" index="9" node_paths=PackedStringArray("container")]
+container = NodePath("../ComponentContainer")
+
+[node name="Hunger" parent="SceneObjects/Settler/UtilityAiAgent/Eat/UtilityAiAggregation" index="0" node_paths=PackedStringArray("node")]
+node = NodePath("../../../../UtilityAiEvaluators")
+
+[node name="Melancholy" parent="SceneObjects/Settler/UtilityAiAgent/Eat/UtilityAiAggregation" index="1" node_paths=PackedStringArray("node")]
+node = NodePath("../../../../UtilityAiEvaluators")
+
+[node name="WorkPriority" parent="SceneObjects/Settler/UtilityAiAgent/Work" index="0" node_paths=PackedStringArray("node")]
+node = NodePath("../../../UtilityAiEvaluators")
+
+[node name="Tiredness" parent="SceneObjects/Settler/UtilityAiAgent/Sleep/UtilityAiAggregation" index="0" node_paths=PackedStringArray("node")]
+node = NodePath("../../../../UtilityAiEvaluators")
+
+[node name="Melancholy" parent="SceneObjects/Settler/UtilityAiAgent/Sleep/UtilityAiAggregation" index="1" node_paths=PackedStringArray("node")]
+node = NodePath("../../../../UtilityAiEvaluators")
+
+[node name="TimeOfDay" parent="SceneObjects/Settler/UtilityAiAgent/Sleep/UtilityAiAggregation" index="2" node_paths=PackedStringArray("node")]
+node = NodePath("../../../../UtilityAiEvaluators")
+
+[node name="TaskHandler" parent="SceneObjects/Settler" index="11" node_paths=PackedStringArray("settler")]
+settler = NodePath("..")
+
 [node name="Menu" type="Node3D" parent="."]
 
 [node name="NewGameButton" parent="Menu" instance=ExtResource("5_wk6eu")]
@@ -136,3 +197,4 @@ transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 1, 0.6
 text = "Quit"
 
 [editable path="MainMap3d"]
+[editable path="SceneObjects/Settler"]
