@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://c1begy6tfpitx" path="res://assets/blender_models/plants/potato_2.blend" id="3_qk5iu"]
 [ext_resource type="PackedScene" uid="uid://dn6ucdyd7505e" path="res://assets/blender_models/plants/potato_3.blend" id="4_o6kgs"]
 [ext_resource type="Script" path="res://src/components/data/Plant.gd" id="5_wr52w"]
-[ext_resource type="PackedScene" uid="uid://cpjoxtonfq1qp" path="res://src/entities/definitions/scenes/Plant.tscn" id="6_mvecv"]
+[ext_resource type="PackedScene" uid="uid://dhfow2ks5xt7l" path="res://src/entities/scenes/Plant.tscn" id="6_mvecv"]
 [ext_resource type="Script" path="res://src/components/data/PlantScene.gd" id="6_qtyxv"]
 [ext_resource type="Script" path="res://src/entities/ItemDrop.gd" id="9_gekmr"]
 [ext_resource type="Resource" uid="uid://b2fhlwf6pm0jt" path="res://src/entities/definitions/food/potato.tres" id="9_ln5s2"]
@@ -38,11 +38,6 @@ growth_stage_time_variance = 0.5
 growth_stages = Array[ExtResource("2_8mldj")]([SubResource("Resource_rruwe"), SubResource("Resource_ixuw2"), SubResource("Resource_rifwq")])
 growth_requirements = Array[ExtResource("1_tunl2")]([SubResource("Resource_3uovn")])
 
-[sub_resource type="Resource" id="Resource_kiexp"]
-script = ExtResource("6_qtyxv")
-scene = ExtResource("6_mvecv")
-custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
-
 [sub_resource type="Resource" id="Resource_1labk"]
 script = ExtResource("9_gekmr")
 item = ExtResource("9_ln5s2")
@@ -54,7 +49,12 @@ probability = 1.0
 script = ExtResource("10_4m2qb")
 drops = Array[ExtResource("9_gekmr")]([SubResource("Resource_1labk")])
 
+[sub_resource type="Resource" id="Resource_j36a2"]
+script = ExtResource("6_qtyxv")
+scene = ExtResource("6_mvecv")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+
 [resource]
 script = ExtResource("13_tayhl")
 display_name = "Potato Plant"
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_lciqt"), SubResource("Resource_kiexp"), SubResource("Resource_yp2nr")])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_lciqt"), SubResource("Resource_yp2nr"), SubResource("Resource_j36a2")])

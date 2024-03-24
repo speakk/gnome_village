@@ -1,4 +1,4 @@
-class_name ComponentContainer extends Node3D
+class_name ComponentContainer extends Node
 
 signal component_added(component: Component)
 
@@ -58,17 +58,17 @@ func add_component(component: Component) -> Component:
 	for subscription: Subscription in duplicated.get_subscriptions():
 		if has_component(subscription.target_id):
 			var matching := get_by_id(subscription.target_id)
-			subscription.callable.call(matching)
+			subscription.callable.call_deferred(matching)
 	
 	for existing_component in _components:
 		for subscription: Subscription in existing_component.get_subscriptions():
 			if subscription.target_id == duplicated.id:
-				subscription.callable.call(duplicated)
+				subscription.callable.call_deferred(duplicated)
 	
 	if duplicated.has_method("process_component"):
 		_processing_component_amount += 1
 	
-	recheck_processing_mode()
+	#recheck_processing_mode()
 	
 	component_added.emit(duplicated)
 	
@@ -85,7 +85,7 @@ func remove_component(component_id: Components.Id) -> void:
 	if matching.has_method("process_component"):
 		_processing_component_amount -= 1
 	
-	recheck_processing_mode()
+	#recheck_processing_mode()
 	
 	Events.component.removed.emit(self, matching)
 

@@ -1,6 +1,6 @@
 extends Node3D
 
-@onready var SETTLER := preload("res://src/settler/settler.tscn")
+@onready var SETTLER := load("res://src/entities/scenes/settler/settler.tscn")
 @onready var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
 @onready var main_map: MainMap3D = $MainMap3d as MainMap3D
@@ -51,11 +51,8 @@ func create_world() -> void:
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
 			var new_grows_in_entity := PlantComponent.create_growth_spot(quantized_position)
-			
-			var new_tree: EntityDefinition = preload("res://src/entities/definitions/plants/oak_tree.tres")
-			var entity := (ENTITY.instantiate() as Entity) 
+			var entity: Entity = Entity.from_definition(load("res://src/entities/definitions/plants/oak_tree.tres"))
 			%Entities.add_child(entity)
-			entity.definition = new_tree
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			entity.component_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
 			entity.component_container.get_by_id(Components.Id.Plant).current_growth_stage_index = randi_range(0, 3)
@@ -72,9 +69,8 @@ func create_world() -> void:
 		var grid_position := Globals.get_map().get_random_coordinate()
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
-			var entity := (ENTITY.instantiate() as Entity)
+			var entity: Entity = Entity.from_definition(resources.pick_random())
 			%Entities.add_child(entity)
-			entity.definition = resources.pick_random()
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			
 	
@@ -85,7 +81,7 @@ func create_world() -> void:
 		var grid_position := Globals.get_map().get_random_coordinate() * settler_radius_modifier
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
-			var settler := SETTLER.instantiate()
+			var settler: Settler = Entity.from_definition(load("res://src/entities/definitions/settler.tres"))
 			%Entities.add_child(settler)
 			WorldPositionComponent.set_world_position(settler, quantized_position)
 			
@@ -101,9 +97,9 @@ func create_world() -> void:
 		var grid_position := Globals.get_map().get_random_coordinate()
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
-			var entity := (ENTITY.instantiate() as Entity)
+			var entity: Entity = Entity.from_definition(decal_items.pick_random())
 			%Entities.add_child(entity)
-			entity.definition = decal_items.pick_random()
+			
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			entity.rotate_y(randf_range(0, PI*2))
 

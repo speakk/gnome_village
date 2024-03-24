@@ -1,0 +1,68 @@
+[gd_scene load_steps=4 format=3 uid="uid://brtx1wa87ft0g"]
+
+[ext_resource type="PackedScene" uid="uid://cddq71md6hpru" path="res://assets/blender_models/farm_plot.blend" id="3_8rhgn"]
+[ext_resource type="FontFile" uid="uid://dtfb4n2n8qq7m" path="res://assets/fonts/m5x7.ttf" id="4_h3ypk"]
+
+[sub_resource type="GDScript" id="GDScript_0ynav"]
+script/source = "class_name FarmPlot extends Node3D
+
+#@onready var growth_spot: GrowthSpotComponent = get_parent().component_container.get_by_id(Components.Id.GrowthSpot)
+@onready var growth_spot: GrowthSpotComponent
+
+const FARM_PLOT := preload(\"res://assets/blender_models/farm_plot.blend\")
+
+var growth_rate: float = 0.1
+
+var planted_plant: Entity
+var plant_component: PlantComponent
+@onready var ENTITY := load(\"res://src/entities/entity/Entity.tscn\")
+
+func _plant_set(plant: EntityDefinition) -> void:
+	if not planted_plant:
+		planted_plant = ENTITY.instantiate()
+		add_child(planted_plant)
+		planted_plant.definition = plant
+		plant_component = planted_plant.component_container.get_by_id(Components.Id.Plant)
+		# TODO: This is so that the can be \"dismantled\". Do this any other way
+		# in the future.
+		planted_plant.component_container.add_component(ConstructableComponent.new())
+		plant_component.grows_in = growth_spot
+		plant_component.managed_by_player = true
+		plant_component.lacks_growth_requirements.connect(_lacks_growth_requirements)
+		plant_component.satisfies_growth_requirements.connect(_satisfies_growth_requirements)
+
+func set_growth_spot(_growth_spot: GrowthSpotComponent) -> void:
+	growth_spot = _growth_spot
+	growth_spot.plant_set.connect(_plant_set)
+
+func _lacks_growth_requirements() -> void:
+	$LacksGrowthRequirementIndicator.show()
+
+func _satisfies_growth_requirements() -> void:
+	$LacksGrowthRequirementIndicator.hide()
+
+func set_blueprint(is_blueprint: bool) -> void:
+	if is_blueprint:
+		Globals.apply_blueprint_material($farm_plot)
+	else:
+		if has_node(\"farm_plot\"):
+			$farm_plot.queue_free()
+			var new_scene := FARM_PLOT.instantiate()
+			new_scene.name = \"farm_plot\"
+			add_child(new_scene)
+"
+
+[node name="FarmPlot" type="Node3D"]
+script = SubResource("GDScript_0ynav")
+
+[node name="farm_plot" parent="." instance=ExtResource("3_8rhgn")]
+
+[node name="LacksGrowthRequirementIndicator" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.350581, 0.0927965, 0.184697)
+visible = false
+texture_filter = 0
+modulate = Color(1, 0.266373, 0.363671, 1)
+text = "!"
+font = ExtResource("4_h3ypk")
+font_size = 110
+outline_size = 24

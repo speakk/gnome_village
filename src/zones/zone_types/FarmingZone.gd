@@ -22,4 +22,4 @@ func tick_zone() -> void:
 					var constructable: ConstructableComponent = container.get_by_id(Components.Id.Constructable)
 					if constructable and constructable.is_finished:
 						var growth_spot: GrowthSpotComponent = container.get_by_id(Components.Id.GrowthSpot)
-						growth_spot.start_growing_plant(preload("res://src/entities/definitions/plants/potato_plant.tres"))
+						growth_spot.start_growing_plant(load("res://src/entities/definitions/plants/potato_plant.tres"))

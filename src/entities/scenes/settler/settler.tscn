@@ -1,0 +1,224 @@
+[gd_scene load_steps=25 format=3 uid="uid://d1nl0c8gv5jup"]
+
+[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/Entity.tscn" id="1_x603s"]
+[ext_resource type="PackedScene" uid="uid://d0bhvo3gwo2q8" path="res://assets/blender_models/settler.blend" id="2_krb1r"]
+[ext_resource type="Script" path="res://src/entities/scenes/settler/settler.gd" id="2_u05q8"]
+[ext_resource type="AudioStream" uid="uid://b0d3ruteyyooq" path="res://assets/sounds/hammer1.ogg" id="3_7bfkx"]
+[ext_resource type="AudioStream" uid="uid://clv6mpeajwoxr" path="res://assets/sounds/hammer2.ogg" id="4_ye2ha"]
+[ext_resource type="AudioStream" uid="uid://daeuw4k6aohh7" path="res://assets/sounds/hammer3.ogg" id="5_qwags"]
+[ext_resource type="AudioStream" uid="uid://xh8if5kkhpyk" path="res://assets/sounds/hammer4.ogg" id="6_f1rei"]
+[ext_resource type="Script" path="res://addons/utility_ai/agent/agent.gd" id="7_5pobx"]
+[ext_resource type="Script" path="res://addons/utility_ai/actions/action.gd" id="8_3b5to"]
+[ext_resource type="Script" path="res://addons/utility_ai/considerations/aggregation.gd" id="9_f8k0f"]
+[ext_resource type="Script" path="res://addons/utility_ai/considerations/consideration_from_node.gd" id="10_4x8t6"]
+[ext_resource type="Script" path="res://src/entities/scenes/settler/UtilityAiEvaluators.gd" id="11_d4onw"]
+[ext_resource type="PackedScene" uid="uid://bldmexncscbhf" path="res://src/entities/scenes/settler/task_handler.tscn" id="12_xlj2u"]
+[ext_resource type="AudioStream" uid="uid://1p876rj2h27f" path="res://assets/sounds/eating.ogg" id="13_nspl2"]
+
+[sub_resource type="Animation" id="Animation_qwdft"]
+resource_name = "Build"
+length = 0.8333
+loop_mode = 1
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"play_hammer_sound"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_nc4bt"]
+resource_name = "Eat"
+length = 0.625
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"play_eating_sound"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tjr5p"]
+_data = {
+"Build": SubResource("Animation_qwdft"),
+"Eat": SubResource("Animation_nc4bt")
+}
+
+[sub_resource type="Curve" id="Curve_fdcv0"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.582245, 0.00703514), 0.0, 0.0, 0, 0, Vector2(0.997389, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_kj3d7"]
+_data = [Vector2(0.00522193, 0), 0.0, 0.0, 0, 0, Vector2(0.819843, 0), 0.0, 0.0, 0, 0, Vector2(1, 0.496985), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_1pbf8"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.997389, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_n2s2r"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.605744, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_1g8wt"]
+_data = [Vector2(0, 0.758242), 0.0, 0.0, 0, 0, Vector2(0.197248, 0), 0.0, 0.0, 0, 0, Vector2(0.504587, 0), 0.0, 0.0, 0, 0, Vector2(0.880734, 0), 0.0, 0.0, 0, 0, Vector2(1, 0.758242), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hvia0"]
+albedo_color = Color(0.046875, 0.046875, 0.046875, 1)
+emission_enabled = true
+emission = Color(0.427704, 0.234121, 0.578125, 1)
+emission_energy_multiplier = 5.77
+disable_receive_shadows = true
+grow_amount = -2.263
+
+[sub_resource type="TorusMesh" id="TorusMesh_p67ao"]
+material = SubResource("StandardMaterial3D_hvia0")
+inner_radius = 0.35
+outer_radius = 0.4
+rings = 16
+ring_segments = 16
+
+[node name="Settler" node_paths=PackedStringArray("utility_agent", "task_handler") instance=ExtResource("1_x603s")]
+script = ExtResource("2_u05q8")
+utility_agent = NodePath("UtilityAiAgent")
+task_handler = NodePath("TaskHandler")
+
+[node name="CarryItemNode" type="Node3D" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.822335, 0)
+
+[node name="settler" parent="." index="6" instance=ExtResource("2_krb1r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00430357, -0.5, -0.097248)
+
+[node name="HammerSounds" type="Node3D" parent="." index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00430357, -0.5, -0.097248)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="HammerSounds" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00430357, 0.5, 0.097248)
+stream = ExtResource("3_7bfkx")
+volume_db = 13.704
+max_distance = 147.16
+bus = &"Environment"
+attenuation_filter_db = -9.1
+
+[node name="AudioStreamPlayer3D2" type="AudioStreamPlayer3D" parent="HammerSounds" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00430357, 0.5, 0.097248)
+stream = ExtResource("4_ye2ha")
+volume_db = 13.704
+max_distance = 147.16
+bus = &"Environment"
+attenuation_filter_db = -9.1
+
+[node name="AudioStreamPlayer3D3" type="AudioStreamPlayer3D" parent="HammerSounds" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00430357, 0.5, 0.097248)
+stream = ExtResource("5_qwags")
+volume_db = 13.704
+max_distance = 147.16
+bus = &"Environment"
+attenuation_filter_db = -9.1
+
+[node name="AudioStreamPlayer3D4" type="AudioStreamPlayer3D" parent="HammerSounds" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00430357, 0.5, 0.097248)
+stream = ExtResource("6_f1rei")
+volume_db = 13.704
+max_distance = 147.16
+bus = &"Environment"
+attenuation_filter_db = -9.1
+
+[node name="AnimationPlayerAudio" type="AnimationPlayer" parent="." index="8"]
+libraries = {
+"": SubResource("AnimationLibrary_tjr5p")
+}
+
+[node name="UtilityAiEvaluators" type="Node" parent="." index="9" node_paths=PackedStringArray("container")]
+script = ExtResource("11_d4onw")
+container = NodePath("../ComponentContainer")
+
+[node name="UtilityAiAgent" type="Node" parent="." index="10"]
+script = ExtResource("7_5pobx")
+processing_interval = 0.5
+
+[node name="Eat" type="Node" parent="UtilityAiAgent" index="0"]
+script = ExtResource("8_3b5to")
+_action_id = "eat"
+
+[node name="UtilityAiAggregation" type="Node" parent="UtilityAiAgent/Eat" index="0"]
+script = ExtResource("9_f8k0f")
+aggregation_type = 3
+
+[node name="Hunger" type="Node" parent="UtilityAiAgent/Eat/UtilityAiAggregation" index="0" node_paths=PackedStringArray("node")]
+script = ExtResource("10_4x8t6")
+node = NodePath("../../../../UtilityAiEvaluators")
+property_name = "get_hunger"
+curve = SubResource("Curve_fdcv0")
+
+[node name="Melancholy" type="Node" parent="UtilityAiAgent/Eat/UtilityAiAggregation" index="1" node_paths=PackedStringArray("node")]
+script = ExtResource("10_4x8t6")
+node = NodePath("../../../../UtilityAiEvaluators")
+property_name = "get_melancholy"
+curve = SubResource("Curve_kj3d7")
+
+[node name="Work" type="Node" parent="UtilityAiAgent" index="1"]
+script = ExtResource("8_3b5to")
+_action_id = "work"
+
+[node name="WorkPriority" type="Node" parent="UtilityAiAgent/Work" index="0" node_paths=PackedStringArray("node")]
+script = ExtResource("10_4x8t6")
+node = NodePath("../../../UtilityAiEvaluators")
+property_name = "get_work"
+curve = SubResource("Curve_1pbf8")
+
+[node name="Sleep" type="Node" parent="UtilityAiAgent" index="2"]
+script = ExtResource("8_3b5to")
+_action_id = "sleep"
+
+[node name="UtilityAiAggregation" type="Node" parent="UtilityAiAgent/Sleep" index="0"]
+script = ExtResource("9_f8k0f")
+aggregation_type = 3
+
+[node name="Tiredness" type="Node" parent="UtilityAiAgent/Sleep/UtilityAiAggregation" index="0" node_paths=PackedStringArray("node")]
+script = ExtResource("10_4x8t6")
+node = NodePath("../../../../UtilityAiEvaluators")
+property_name = "get_tiredness"
+curve = SubResource("Curve_n2s2r")
+
+[node name="Melancholy" type="Node" parent="UtilityAiAgent/Sleep/UtilityAiAggregation" index="1" node_paths=PackedStringArray("node")]
+script = ExtResource("10_4x8t6")
+node = NodePath("../../../../UtilityAiEvaluators")
+property_name = "get_melancholy"
+curve = SubResource("Curve_kj3d7")
+
+[node name="TimeOfDay" type="Node" parent="UtilityAiAgent/Sleep/UtilityAiAggregation" index="2" node_paths=PackedStringArray("node")]
+script = ExtResource("10_4x8t6")
+node = NodePath("../../../../UtilityAiEvaluators")
+property_name = "get_time_of_day"
+curve = SubResource("Curve_1g8wt")
+
+[node name="TaskHandler" parent="." index="11" node_paths=PackedStringArray("settler") instance=ExtResource("12_xlj2u")]
+settler = NodePath("..")
+
+[node name="EatingSound" type="AudioStreamPlayer3D" parent="." index="12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00430357, 0.5, 0.097248)
+stream = ExtResource("13_nspl2")
+volume_db = 0.02
+max_distance = 147.16
+bus = &"Environment"
+attenuation_filter_db = -9.1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="13"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.476605, 0)
+mesh = SubResource("TorusMesh_p67ao")

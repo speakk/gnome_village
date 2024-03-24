@@ -9,6 +9,11 @@ func has_component(component_id: Components.Id) -> bool:
 	).size() > 0
 
 func get_component_by_id(component_id: Components.Id) -> Component:
-	return components.filter(func(component: Component) -> bool:
+	var matching_components: Array[Component] = components.filter(func(component: Component) -> bool:
 		return component.id == component_id
-	)[0]
+	)
+	
+	if matching_components.size() > 0:
+		return matching_components[0]
+	
+	return null

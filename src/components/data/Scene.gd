@@ -7,11 +7,9 @@ class_name SceneComponent extends Component
 		if custom_subscriptions.size() > 0:
 			subscriptions.append_array(custom_subscriptions.map(func(custom_subscription: StringSubscription) -> Subscription:
 				return Subscription.new(id, custom_subscription.target_id, func(component: Component) -> void:
-					_instantiated_scene.call(custom_subscription.method_name, component)
+					get_owner().call(custom_subscription.method_name, component)
 					)
 			))
-
-var _instantiated_scene: Node
 
 func _init() -> void:
 	id = Components.Id.Scene
@@ -29,19 +27,21 @@ func _init() -> void:
 	])
 
 func on_enter() -> void:
-	_instantiated_scene = scene.instantiate()
-	get_owner().add_child(_instantiated_scene)
+	#_instantiated_scene = scene.instantiate()
+	#get_owner().add_child(_instantiated_scene)
 	set_active(false)
 
 func on_exit() -> void:
 	super.on_exit()
-	get_owner().call_deferred("remove_child", _instantiated_scene)
+	#get_owner().call_deferred("remove_child", _instantiated_scene)
 
 func set_active(active: bool) -> void:
-	if _instantiated_scene.has_method("set_active"):
-		_instantiated_scene.set_active(active)
+	if get_owner().has_method("set_active"):
+	#if _instantiated_scene.has_method("set_active"):
+		get_owner().set_active(active)
 
 func set_blueprint(is_blueprint: bool) -> void:
-	if _instantiated_scene:
-		if _instantiated_scene.has_method("set_blueprint"):
-			_instantiated_scene.set_blueprint(is_blueprint)
+	if get_owner().has_method("set_blueprint"):
+	#if _instantiated_scene:
+		#if _instantiated_scene.has_method("set_blueprint"):
+		get_owner().set_blueprint(is_blueprint)

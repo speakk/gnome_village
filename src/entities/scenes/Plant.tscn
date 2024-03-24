@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://dhfow2ks5xt7l"]
+
+[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/Entity.tscn" id="1_pfwkv"]
+[ext_resource type="Script" path="res://src/entities/scenes/plant.gd" id="2_vakym"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_m8ccm"]
+emission_shape = 1
+emission_sphere_radius = 0.3
+angle_min = 11.9
+angle_max = 70.9
+velocity_pivot = Vector3(-0.1, -1, 0)
+spread = 91.619
+initial_velocity_max = 0.5
+gravity = Vector3(0, 0.5, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r6mba"]
+albedo_color = Color(0.470764, 1, 0.480545, 1)
+emission_enabled = true
+emission = Color(0.555022, 0.820312, 0.38788, 1)
+emission_energy_multiplier = 6.33
+grow_amount = 0.454
+
+[sub_resource type="BoxMesh" id="BoxMesh_5d5a3"]
+material = SubResource("StandardMaterial3D_r6mba")
+size = Vector3(0.02, 0.02, 0.02)
+
+[node name="Plant" instance=ExtResource("1_pfwkv")]
+script = ExtResource("2_vakym")
+
+[node name="ParticlesMatured" type="GPUParticles3D" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.549455, 0)
+emitting = false
+amount = 18
+one_shot = true
+speed_scale = 0.8
+explosiveness = 0.3
+process_material = SubResource("ParticleProcessMaterial_m8ccm")
+draw_pass_1 = SubResource("BoxMesh_5d5a3")

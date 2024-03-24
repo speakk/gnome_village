@@ -1,6 +1,5 @@
-class_name FarmPlot extends Node3D
+extends Entity
 
-#@onready var growth_spot: GrowthSpotComponent = get_parent().component_container.get_by_id(Components.Id.GrowthSpot)
 @onready var growth_spot: GrowthSpotComponent
 
 const FARM_PLOT := preload("res://assets/blender_models/farm_plot.blend")
@@ -9,7 +8,6 @@ var growth_rate: float = 0.1
 
 var planted_plant: Entity
 var plant_component: PlantComponent
-@onready var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
 func _plant_set(plant: EntityDefinition) -> void:
 	if not planted_plant:

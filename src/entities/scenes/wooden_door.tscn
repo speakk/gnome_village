@@ -1,0 +1,12 @@
+[gd_scene load_steps=4 format=3 uid="uid://c5nlq7gwp1we6"]
+
+[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/Entity.tscn" id="1_p720v"]
+[ext_resource type="BoxMesh" uid="uid://cf0v5m68rq3b5" path="res://src/entities/scenes/extra_meshes/wooden_door_mesh.tres" id="2_3tikg"]
+[ext_resource type="Script" path="res://src/entities/scenes/door.gd" id="2_8cnff"]
+
+[node name="Entity" instance=ExtResource("1_p720v")]
+script = ExtResource("2_8cnff")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.501651, 0, 0)
+mesh = ExtResource("2_3tikg")

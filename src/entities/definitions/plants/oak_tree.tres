@@ -8,9 +8,9 @@
 [ext_resource type="PackedScene" uid="uid://xeh85gspxejx" path="res://assets/blender_models/plants/oak_tree_2.blend" id="4_5h2r7"]
 [ext_resource type="PackedScene" uid="uid://b0chxrd57lc3i" path="res://assets/blender_models/plants/oak_tree_3.blend" id="5_dq7p0"]
 [ext_resource type="Script" path="res://src/components/data/Plant.gd" id="6_03736"]
-[ext_resource type="PackedScene" uid="uid://cpjoxtonfq1qp" path="res://src/entities/definitions/scenes/Plant.tscn" id="7_re57t"]
 [ext_resource type="Script" path="res://src/components/data/PlantScene.gd" id="8_6tdx3"]
 [ext_resource type="Script" path="res://src/components/data/Spread.gd" id="9_yjcyv"]
+[ext_resource type="PackedScene" uid="uid://dhfow2ks5xt7l" path="res://src/entities/scenes/Plant.tscn" id="10_mcb8v"]
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="12_gwc38"]
 
 [sub_resource type="Resource" id="Resource_yj5ua"]
@@ -41,18 +41,18 @@ growth_stage_time_variance = 30.0
 growth_stages = Array[ExtResource("2_lb2w0")]([SubResource("Resource_i1sya"), SubResource("Resource_uqr4v"), SubResource("Resource_nnjrc"), SubResource("Resource_k38fb")])
 growth_requirements = Array[ExtResource("1_j48q8")]([SubResource("Resource_yj5ua")])
 
-[sub_resource type="Resource" id="Resource_xjwkl"]
-script = ExtResource("8_6tdx3")
-scene = ExtResource("7_re57t")
-custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
-
 [sub_resource type="Resource" id="Resource_e6kwd"]
 script = ExtResource("9_yjcyv")
 spread_check_rate = 5.0
 spread_radius = 50
 spread_chance = 0.01
 
+[sub_resource type="Resource" id="Resource_133qg"]
+script = ExtResource("8_6tdx3")
+scene = ExtResource("10_mcb8v")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+
 [resource]
 script = ExtResource("12_gwc38")
 display_name = "Oak Tree"
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_f4xcm"), SubResource("Resource_xjwkl"), SubResource("Resource_e6kwd")])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_f4xcm"), SubResource("Resource_e6kwd"), SubResource("Resource_133qg")])

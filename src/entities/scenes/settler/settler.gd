@@ -1,10 +1,7 @@
-extends Node3D
-
-class_name Settler
+class_name Settler extends Entity
 
 @onready var animation_player_audio: AnimationPlayer = $AnimationPlayerAudio
-@onready var component_container: ComponentContainer = $ComponentContainer
-@onready var inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
+@onready var inventory: InventoryComponent
 
 @export var utility_agent: UtilityAiAgent
 @export var task_handler: TaskHandler
@@ -31,8 +28,10 @@ enum TaskResult {
 }
 
 func _ready() -> void:
+	super._ready()
 	name = "Settler"
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
+	inventory = component_container.get_by_id(Components.Id.Inventory)
 	inventory.item_added.connect(_inventory_item_added)
 	inventory.item_removed.connect(_inventory_item_removed)
 	play_animation("Idle")

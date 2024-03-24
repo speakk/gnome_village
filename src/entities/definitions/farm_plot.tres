@@ -5,11 +5,11 @@
 [ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="3_4i3tg"]
 [ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/entities/definitions/wood.tres" id="3_c7ev3"]
 [ext_resource type="Resource" uid="uid://10hahtgmxe11" path="res://src/entities/definitions/water.tres" id="3_v8bof"]
-[ext_resource type="PackedScene" uid="uid://b7ce8cn4so175" path="res://src/entities/definitions/scenes/farm_plot.tscn" id="4_or0nf"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="5_5qdnr"]
 [ext_resource type="Script" path="res://src/entities/ItemRequirement.gd" id="6_xcfl6"]
 [ext_resource type="Script" path="res://src/components/data/Inventory.gd" id="7_4nsy2"]
 [ext_resource type="Script" path="res://src/components/StringSubscription.gd" id="8_mmlpk"]
+[ext_resource type="PackedScene" uid="uid://brtx1wa87ft0g" path="res://src/entities/scenes/farm_plot.tscn" id="9_xx8xp"]
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="11_ypnkl"]
 
 [sub_resource type="Resource" id="Resource_kiryq"]
@@ -47,7 +47,7 @@ method_name = "set_growth_spot"
 
 [sub_resource type="Resource" id="Resource_wo3jf"]
 script = ExtResource("5_5qdnr")
-scene = ExtResource("4_or0nf")
+scene = ExtResource("9_xx8xp")
 custom_subscriptions = Array[ExtResource("8_mmlpk")]([SubResource("Resource_ya3em")])
 
 [resource]

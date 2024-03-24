@@ -14,8 +14,6 @@ class_name MainMap3D extends Node3D
 @onready var ground_grid: GridMap = $GroundGrid
 @onready var grass_multi_mesh: MultiMeshInstance3D = $GrassMultiMesh
 
-@onready var ENTITY := preload("res://src/entities/entity/Entity.tscn")
-
 const MAP_SIZE_X: int = 200
 const MAP_SIZE_Y: int = 150
 const CELL_SIZE := Vector2(1, 1)
@@ -418,9 +416,8 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 	var _index: int = 0
 	for tile_position in coordinates:
 		if not is_coordinate_occupied(tile_position):
-			var blueprint := (ENTITY.instantiate() as Entity)
+			var blueprint: Entity = Entity.from_definition(item)
 			Events.request_entity_add.emit(blueprint)
-			blueprint.definition = item
 			WorldPositionComponent.set_world_position(blueprint, coordinate_to_global_position(tile_position))
 			blueprint.component_container.add_component(BlueprintComponent.new())
 			Events.blueprint_placed.emit(tile_position, blueprint)

@@ -1,10 +1,12 @@
-extends Node3D
-
-@onready var component_container: ComponentContainer = $ComponentContainer
+class_name PlantScene extends Entity
 
 var current_growth_scene: Node3D
 
 var plant: PlantComponent
+
+func _ready() -> void:
+	super._ready()
+	name = "PlastScene"
 
 func set_plant(_plant: PlantComponent) -> void:
 	plant = _plant

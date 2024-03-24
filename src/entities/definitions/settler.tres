@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=9 format=3 uid="uid://c3sn2xcallc1b"]
+
+[ext_resource type="Script" path="res://src/components/data/CharacterStats.gd" id="1_dpcqd"]
+[ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="1_eke7j"]
+[ext_resource type="Script" path="res://src/components/data/Inventory.gd" id="2_xrvh6"]
+[ext_resource type="PackedScene" uid="uid://d1nl0c8gv5jup" path="res://src/entities/scenes/settler/settler.tscn" id="3_djvu8"]
+[ext_resource type="Script" path="res://src/components/data/Scene.gd" id="3_m3plk"]
+
+[sub_resource type="Resource" id="Resource_wfoik"]
+script = ExtResource("1_dpcqd")
+
+[sub_resource type="Resource" id="Resource_xny1d"]
+script = ExtResource("2_xrvh6")
+items_can_be_picked = false
+pre_filled = Array[Resource("res://src/entities/ItemRequirement.gd")]([])
+
+[sub_resource type="Resource" id="Resource_r8ch7"]
+script = ExtResource("3_m3plk")
+scene = ExtResource("3_djvu8")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+
+[resource]
+script = ExtResource("1_eke7j")
+display_name = "Suzy (default)"
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_wfoik"), SubResource("Resource_xny1d"), SubResource("Resource_r8ch7")])

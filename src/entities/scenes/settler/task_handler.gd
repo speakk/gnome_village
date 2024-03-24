@@ -7,7 +7,7 @@ var current_task_actuator: TaskActuator
 var latest_task_id: String
 
 # TODO: Utility AI changing state is already a signal
-# We only really need to re-check if task starting failed.
+# We only really need tdo re-check if task starting failed.
 # Anyway, that is for a future optimization
 var _process_interval: float = randf_range(1, 4)
 var _current_process_timer := _process_interval

@@ -5,7 +5,7 @@
 [ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/entities/definitions/wood.tres" id="1_v4ten"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="2_28vem"]
 [ext_resource type="Script" path="res://src/components/data/Door.gd" id="3_f5sd8"]
-[ext_resource type="PackedScene" uid="uid://cac2htxxa8jhx" path="res://src/entities/definitions/scenes/wooden_door.tscn" id="3_nj775"]
+[ext_resource type="PackedScene" uid="uid://c5nlq7gwp1we6" path="res://src/entities/scenes/wooden_door.tscn" id="3_nj775"]
 [ext_resource type="Script" path="res://src/components/StringSubscription.gd" id="4_p81hu"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="5_ahr5j"]
 [ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="6_j3cak"]
