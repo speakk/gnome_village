@@ -1,6 +1,6 @@
 class_name DropComponent extends Component
 
-var ENTITY := load("res://src/items/entity/Entity.tscn")
+var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
 @export var drops: Array[ItemDrop]
 

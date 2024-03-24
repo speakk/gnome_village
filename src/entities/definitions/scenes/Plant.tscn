@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://cpjoxtonfq1qp"]
 
-[ext_resource type="Script" path="res://src/items/item_data/scenes/Plant.gd" id="1_w06h4"]
+[ext_resource type="Script" path="res://src/entities/definitions/scenes/Plant.gd" id="1_w06h4"]
 [ext_resource type="PackedScene" uid="uid://cyfiey6xlcs1q" path="res://src/components/component_container.tscn" id="2_uuv82"]
 [ext_resource type="Script" path="res://src/components/data/Selectable.gd" id="3_rmaxh"]
 [ext_resource type="Script" path="res://src/components/data/WorldPosition.gd" id="4_keei7"]

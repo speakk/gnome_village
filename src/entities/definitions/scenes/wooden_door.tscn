@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cac2htxxa8jhx"]
 
-[ext_resource type="Script" path="res://src/items/item_data/scenes/door.gd" id="1_rep2w"]
-[ext_resource type="BoxMesh" uid="uid://cf0v5m68rq3b5" path="res://src/items/item_data/scenes/extra_meshes/wooden_door_mesh.tres" id="2_3tikg"]
+[ext_resource type="Script" path="res://src/entities/definitions/scenes/door.gd" id="1_rep2w"]
+[ext_resource type="BoxMesh" uid="uid://cf0v5m68rq3b5" path="res://src/entities/definitions/scenes/extra_meshes/wooden_door_mesh.tres" id="2_3tikg"]
 
 [node name="Door" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.490377, 0, 0)

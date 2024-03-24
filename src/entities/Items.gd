@@ -4,10 +4,10 @@ var list: Array[EntityDefinition]
 
 func _ready() -> void:
 	var paths: Array[String] = [
-		"res://src/items/item_data",
-		"res://src/items/item_data/plants",
-		"res://src/items/item_data/food",
-		"res://src/items/item_data/foliage"
+		"res://src/entities/definitions",
+		"res://src/entities/definitions/plants",
+		"res://src/entities/definitions/food",
+		"res://src/entities/definitions/foliage"
 		]
 	for path in paths:
 		var data_dir := DirAccess.open(path)

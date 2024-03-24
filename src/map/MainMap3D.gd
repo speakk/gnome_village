@@ -14,7 +14,7 @@ class_name MainMap3D extends Node3D
 @onready var ground_grid: GridMap = $GroundGrid
 @onready var grass_multi_mesh: MultiMeshInstance3D = $GrassMultiMesh
 
-@onready var ENTITY := preload("res://src/items/entity/Entity.tscn")
+@onready var ENTITY := preload("res://src/entities/entity/Entity.tscn")
 
 const MAP_SIZE_X: int = 200
 const MAP_SIZE_Y: int = 150

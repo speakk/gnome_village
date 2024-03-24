@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="EntityDefinition" load_steps=12 format=3 uid="uid://qp3qm2tlm81y"]
 
-[ext_resource type="Script" path="res://src/items/EntityDefinition.gd" id="1_4j5er"]
+[ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="1_4j5er"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_k7huv"]
-[ext_resource type="PackedScene" uid="uid://uqcgysgd2yqr" path="res://src/items/item_data/scenes/wooden_torch.tscn" id="2_ueooe"]
+[ext_resource type="PackedScene" uid="uid://uqcgysgd2yqr" path="res://src/entities/definitions/scenes/wooden_torch.tscn" id="2_ueooe"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="3_dya6g"]
-[ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/items/item_data/wood.tres" id="3_s1i11"]
-[ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="4_jfr8t"]
+[ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/entities/definitions/wood.tres" id="3_s1i11"]
+[ext_resource type="Script" path="res://src/entities/ItemRequirement.gd" id="4_jfr8t"]
 [ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="4_s32c3"]
 
 [sub_resource type="Resource" id="Resource_k8glm"]

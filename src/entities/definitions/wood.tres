@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://coq0jscwmqbi7" path="res://assets/blender_models/wood.blend" id="1_xxm8b"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_20fp2"]
-[ext_resource type="Script" path="res://src/items/EntityDefinition.gd" id="3_28anb"]
+[ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="3_28anb"]
 
 [sub_resource type="Resource" id="Resource_esoyu"]
 script = ExtResource("2_20fp2")

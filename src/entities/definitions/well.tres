@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="EntityDefinition" load_steps=16 format=3 uid="uid://cpc18p56jv8bs"]
 
-[ext_resource type="Script" path="res://src/items/ItemRequirement.gd" id="1_gybae"]
-[ext_resource type="Script" path="res://src/items/EntityDefinition.gd" id="1_ygcvd"]
+[ext_resource type="Script" path="res://src/entities/ItemRequirement.gd" id="1_gybae"]
+[ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="1_ygcvd"]
 [ext_resource type="PackedScene" uid="uid://cdo3s14lusgmm" path="res://assets/blender_models/well.blend" id="2_icdf7"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_xr12o"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="3_2xuh5"]
-[ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/items/item_data/wood.tres" id="3_swmoq"]
+[ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/entities/definitions/wood.tres" id="3_swmoq"]
 [ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="4_grm6k"]
 [ext_resource type="Script" path="res://src/components/data/Inventory.gd" id="6_c6ugf"]
-[ext_resource type="Resource" uid="uid://10hahtgmxe11" path="res://src/items/item_data/water.tres" id="7_nkdkc"]
+[ext_resource type="Resource" uid="uid://10hahtgmxe11" path="res://src/entities/definitions/water.tres" id="7_nkdkc"]
 
 [sub_resource type="Resource" id="Resource_4aj6r"]
 script = ExtResource("2_xr12o")

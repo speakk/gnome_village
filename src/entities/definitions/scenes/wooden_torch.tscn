@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://uqcgysgd2yqr"]
 
-[ext_resource type="Script" path="res://src/items/item_data/scenes/wooden_torch.gd" id="1_grq6w"]
+[ext_resource type="Script" path="res://src/entities/definitions/scenes/wooden_torch.gd" id="1_grq6w"]
 
 [sub_resource type="Curve" id="Curve_ie0t3"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]

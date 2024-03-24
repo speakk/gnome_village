@@ -9,7 +9,7 @@ var growth_rate: float = 0.1
 
 var planted_plant: Entity
 var plant_component: PlantComponent
-@onready var ENTITY := load("res://src/items/entity/Entity.tscn")
+@onready var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
 func _plant_set(plant: EntityDefinition) -> void:
 	if not planted_plant:

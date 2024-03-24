@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dqk5jjprgn28n" path="res://assets/blender_models/water_bucket.blend" id="1_nty6t"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_kejwc"]
-[ext_resource type="Script" path="res://src/items/EntityDefinition.gd" id="3_gc2x3"]
+[ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="3_gc2x3"]
 
 [sub_resource type="Resource" id="Resource_pakku"]
 script = ExtResource("2_kejwc")

@@ -3,7 +3,7 @@ extends Node3D
 @onready var original_rotation := rotation_degrees
 @onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D
 
-const WOODEN_DOOR_MESH := preload("res://src/items/item_data/scenes/extra_meshes/wooden_door_mesh.tres")
+const WOODEN_DOOR_MESH := preload("res://src/entities/definitions/scenes/extra_meshes/wooden_door_mesh.tres")
 
 func correct_orientation() -> void:
 	print("Correcting orientation")

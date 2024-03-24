@@ -1,6 +1,6 @@
 class_name PlantComponent extends Component
 
-var ENTITY := load("res://src/items/entity/Entity.tscn")
+var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
 ## How long does it take to progress to next growth stage (in seconds)
 @export var growth_stage_time: float = 2.0
@@ -47,12 +47,12 @@ func _set_spread_component(spread_component: SpreadComponent) -> void:
 		spread_component.set_active(false)
 
 static func create_growth_spot(new_position: Vector3) -> Entity:
-	var new_grows_in_entity: Entity = load("res://src/items/entity/Entity.tscn").instantiate()
+	var new_grows_in_entity: Entity = load("res://src/entities/entity/Entity.tscn").instantiate()
 	Events.request_entity_add.emit(new_grows_in_entity)
 	var grows_container: ComponentContainer = new_grows_in_entity.component_container
 	grows_container.add_component(GrowthSpotComponent.new())
 	var inventory: InventoryComponent = grows_container.add_component(InventoryComponent.new())
-	inventory.add_item_amount(preload("res://src/items/item_data/water.tres"), 300)
+	inventory.add_item_amount(preload("res://src/entities/definitions/water.tres"), 300)
 	inventory.items_can_be_picked = false
 	var grows_world_pos_component: WorldPositionComponent = grows_container.add_component(WorldPositionComponent.new())
 	grows_world_pos_component.current_position = new_position

@@ -66,7 +66,7 @@ _data = {
 [sub_resource type="Resource" id="Resource_k4fvq"]
 script = ExtResource("8_ob2pl")
 items_can_be_picked = false
-pre_filled = Array[Resource("res://src/items/ItemRequirement.gd")]([])
+pre_filled = Array[Resource("res://src/entities/ItemRequirement.gd")]([])
 
 [sub_resource type="Resource" id="Resource_thyvc"]
 script = ExtResource("9_u0jd3")

@@ -1,7 +1,7 @@
 extends Node3D
 
 @onready var SETTLER := preload("res://src/settler/settler.tscn")
-@onready var ENTITY := load("res://src/items/entity/Entity.tscn")
+@onready var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
 @onready var main_map: MainMap3D = $MainMap3d as MainMap3D
 @onready var entities: Node3D = %Entities
@@ -52,7 +52,7 @@ func create_world() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var new_grows_in_entity := PlantComponent.create_growth_spot(quantized_position)
 			
-			var new_tree: EntityDefinition = preload("res://src/items/item_data/plants/oak_tree.tres")
+			var new_tree: EntityDefinition = preload("res://src/entities/definitions/plants/oak_tree.tres")
 			var entity := (ENTITY.instantiate() as Entity) 
 			%Entities.add_child(entity)
 			entity.definition = new_tree
@@ -63,9 +63,9 @@ func create_world() -> void:
 	await get_tree().physics_frame
 #
 	var resources: Array[EntityDefinition] = [
-		preload("res://src/items/item_data/wood.tres"),
-		preload("res://src/items/item_data/stone.tres"),
-		preload("res://src/items/item_data/food/potato.tres"),
+		preload("res://src/entities/definitions/wood.tres"),
+		preload("res://src/entities/definitions/stone.tres"),
+		preload("res://src/entities/definitions/food/potato.tres"),
 		]
 #
 	for i in TEST_RESOURCES:
@@ -94,8 +94,8 @@ func create_world() -> void:
 				break
 	
 	var decal_items: Array[EntityDefinition] = [
-		preload("res://src/items/item_data/foliage/flower_1.tres"),
-		preload("res://src/items/item_data/foliage/flower_2.tres")
+		preload("res://src/entities/definitions/foliage/flower_1.tres"),
+		preload("res://src/entities/definitions/foliage/flower_2.tres")
 		]
 	for i in DECAL_AMOUNT:
 		var grid_position := Globals.get_map().get_random_coordinate()
@@ -189,7 +189,7 @@ func create_ground_entities() -> void:
 				entity.process_mode = Node.PROCESS_MODE_DISABLED
 				entity.component_container.component_owner = entity
 				var inventory: InventoryComponent = InventoryComponent.new()
-				inventory.pre_filled = [ItemRequirement.new(preload("res://src/items/item_data/water.tres"), 100)]
+				inventory.pre_filled = [ItemRequirement.new(preload("res://src/entities/definitions/water.tres"), 100)]
 				inventory.items_can_be_picked = false
 				entity.component_container.add_component(inventory)
 				var world_pos: WorldPositionComponent = WorldPositionComponent.new()

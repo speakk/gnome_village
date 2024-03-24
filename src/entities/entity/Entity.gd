@@ -2,7 +2,7 @@ extends Node3D
 
 class_name Entity
 
-@onready var ENTITY := load("res://src/items/entity/Entity.tscn")
+@onready var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
 @onready var component_container: ComponentContainer = $ComponentContainer
 
