@@ -18,6 +18,16 @@ const MAP_SIZE_X: int = 200
 const MAP_SIZE_Y: int = 150
 const CELL_SIZE := Vector2(1, 1)
 
+enum GroundCells {
+	Dirt = 0,
+	Water = 1,
+	Grass1 = 2,
+	Grass2 = 3,
+	Grass3 = 4,
+	RiverWater = 5,
+	RiverBank = 6
+}
+
 @onready var map_tile_selector := $MapTileSelector as MapTileSelector
 
 var selected_ui_action: UiAction
@@ -62,7 +72,8 @@ func _create_grass() -> void:
 		var norm_value := remap(noise_value, -1, 1, 0, 1)
 		var base_color: Color
 		
-		if ground_grid.get_cell_item(grid_pos) != 1:
+		var cell_item := ground_grid.get_cell_item(grid_pos)
+		if cell_item != GroundCells.Water and cell_item != GroundCells.RiverWater and cell_item != GroundCells.RiverBank:
 			base_color = grass_color0
 			if noise_value > 0 and noise_value < 0.2:
 				ground_grid.set_cell_item(grid_pos, 4)
@@ -154,19 +165,26 @@ func prepare_for_load(clear: bool) -> void:
 					ground_grid.set_cell_item(coord, 1)
 
 		var rivers: int = 1
-		
+
 		for i in rivers:
 			var river_start := Vector2i(randi_range(-MAP_SIZE_X/2, MAP_SIZE_X/2), MAP_SIZE_Y/2-1)
 			var river_start_angle := 3*PI/2
 			var river_coordinates: Array[Vector2i]
 			_create_river(river_start, 3, river_start_angle, river_coordinates)
 			for coordinate in river_coordinates:
-				ground_grid.set_cell_item(Globals.extend_vec2i(coordinate), 1)
-			
-		
+				var grid_coord := Globals.extend_vec2i(coordinate)
+				if ground_grid.get_cell_item(grid_coord) != GroundCells.Water:
+					ground_grid.set_cell_item(grid_coord, GroundCells.RiverWater)
+					grid.set_cell_item(grid_coord, -1)
+				
+					var surrounding := PathFinder.get_surrounding_coordinates(coordinate, true)
+					for surrounding_coord in surrounding:
+						var surrounding_cell := ground_grid.get_cell_item(Globals.extend_vec2i(surrounding_coord))
+						if surrounding_cell != GroundCells.RiverWater and surrounding_cell != GroundCells.Water:
+							ground_grid.set_cell_item(Globals.extend_vec2i(surrounding_coord), GroundCells.RiverBank)
+
 		_create_grass()
 		
-			
 		for x in MAP_SIZE_X:
 			for y in MAP_SIZE_Y:
 				var final_x: int = x - MAP_SIZE_X/2
