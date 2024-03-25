@@ -1,6 +1,6 @@
 [gd_scene load_steps=47 format=3 uid="uid://cxfu88mnhmgb7"]
 
-[ext_resource type="Script" path="res://src/map/MainMap3D.gd" id="1_hry08"]
+[ext_resource type="Script" path="res://src/map/MainMap.gd" id="1_hry08"]
 [ext_resource type="Script" path="res://src/map/MapTileSelector.gd" id="2_k2ptl"]
 [ext_resource type="MeshLibrary" uid="uid://cpsm4h5sl5dg6" path="res://src/map/map_mesh_library.tres" id="2_nprxo"]
 [ext_resource type="Material" uid="uid://602vpw2ulgrn" path="res://src/map/water_material_1.material" id="3_i6c31"]

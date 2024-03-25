@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://cdn5fwsgd0fpm"]
 
-[ext_resource type="Script" path="res://src/main_3d.gd" id="1_h0o83"]
-[ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap3D.tscn" id="2_l8r3t"]
+[ext_resource type="Script" path="res://src/in_game.gd" id="1_h0o83"]
+[ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap.tscn" id="2_l8r3t"]
 [ext_resource type="PackedScene" uid="uid://cs2fptc2k4veq" path="res://src/sky/Sky.tscn" id="2_vk0vx"]
 [ext_resource type="PackedScene" uid="uid://du6ros11u7s0m" path="res://src/zones/ZoneManager.tscn" id="3_v025i"]
 [ext_resource type="PackedScene" uid="uid://dk7vrm018wwop" path="res://src/systems/day_night_cycle.tscn" id="5_gc7w6"]
@@ -22,10 +22,10 @@ sunset_light = Color(0.871094, 0.6338, 0.466128, 1)
 day_light = Color(0.558594, 0.530995, 0.495655, 1)
 night_level_light = 0.58
 
-[node name="MainMap3d" parent="." instance=ExtResource("2_l8r3t")]
+[node name="MainMap" parent="." instance=ExtResource("2_l8r3t")]
 clear_on_load = true
 
-[node name="MapTileSelector" parent="MainMap3d" index="3" node_paths=PackedStringArray("selection_draw")]
+[node name="MapTileSelector" parent="MainMap" index="3" node_paths=PackedStringArray("selection_draw")]
 selection_draw = NodePath("../SelectionDraw")
 
 [node name="ZoneRenderer" parent="." instance=ExtResource("6_limgy")]
@@ -54,4 +54,4 @@ shadow_enabled = true
 
 [node name="Systems" type="Node" parent="."]
 
-[editable path="MainMap3d"]
+[editable path="MainMap"]

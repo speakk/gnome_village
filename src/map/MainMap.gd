@@ -1,4 +1,4 @@
-class_name MainMap3D extends Node3D
+class_name MainMap extends Node3D
 
 @export var clear_on_load: bool = false
 @export var rock_placement_noise: Noise
@@ -189,7 +189,8 @@ func prepare_for_load(clear: bool) -> void:
 			for y in MAP_SIZE_Y:
 				var final_x: int = x - MAP_SIZE_X/2
 				var final_y: int = y - MAP_SIZE_Y/2
-				if ground_grid.get_cell_item(Vector3i(final_x, 0, final_y)) == 1:
+				var cell := ground_grid.get_cell_item(Vector3i(final_x, 0, final_y))
+				if cell == GroundCells.Water or cell == GroundCells.RiverWater:
 					PathFinder.set_coordinate_invalid(Vector2i(final_x, final_y))
 
 var width_shapes: Dictionary = {

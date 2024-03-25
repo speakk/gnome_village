@@ -25,7 +25,7 @@ signal debug_visuals_set(value: bool)
 signal task_finished(task: Task)
 signal tasks_changed(tasks: Array[Node])
 
-signal map_ready(map: MainMap3D)
+signal map_ready(map: MainMap)
 signal solid_cell_placed(coordinate: Vector2i)
 signal solid_cell_removed(coordinate: Vector2i)
 signal map_changed(coordinate: Vector2i)

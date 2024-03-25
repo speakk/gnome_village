@@ -30,14 +30,14 @@ func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordina
 	# TODO: There's gotta be a better way :D
 	var start_position_orig := Globals.truncate_vec3(map.grid.map_to_local(Globals.extend_vec2i(rect_start_coordinate)))
 	var end_position_orig := Globals.truncate_vec3(map.grid.map_to_local(Globals.extend_vec2i(rect_end_coordinate)))
-	var start_position := Vector2(min(start_position_orig.x, end_position_orig.x), min(start_position_orig.y, end_position_orig.y)) - Vector2(MainMap3D.CELL_SIZE) / 2
-	var end_position := Vector2(max(start_position_orig.x, end_position_orig.x), max(start_position_orig.y, end_position_orig.y)) + Vector2(MainMap3D.CELL_SIZE) / 2
+	var start_position := Vector2(min(start_position_orig.x, end_position_orig.x), min(start_position_orig.y, end_position_orig.y)) - Vector2(MainMap.CELL_SIZE) / 2
+	var end_position := Vector2(max(start_position_orig.x, end_position_orig.x), max(start_position_orig.y, end_position_orig.y)) + Vector2(MainMap.CELL_SIZE) / 2
 	
-	var selection_rectangle := Rect2(start_position, (end_position - start_position).snapped(Vector2(MainMap3D.CELL_SIZE)))
+	var selection_rectangle := Rect2(start_position, (end_position - start_position).snapped(Vector2(MainMap.CELL_SIZE)))
 	selection_draw.selection_rectangle = selection_rectangle
 	
-	var snapped_start := map.grid.local_to_map(Globals.extend_vec2(start_position + Vector2(MainMap3D.CELL_SIZE) / 2))
-	var snapped_end := map.grid.local_to_map(Globals.extend_vec2(end_position - Vector2(MainMap3D.CELL_SIZE) / 2))
+	var snapped_start := map.grid.local_to_map(Globals.extend_vec2(start_position + Vector2(MainMap.CELL_SIZE) / 2))
+	var snapped_end := map.grid.local_to_map(Globals.extend_vec2(end_position - Vector2(MainMap.CELL_SIZE) / 2))
 	
 	#var snapped_start := map.grid.local_to_map(Globals.extend_vec2(start_position))
 	#var snapped_end := map.grid.local_to_map(Globals.extend_vec2(end_position))

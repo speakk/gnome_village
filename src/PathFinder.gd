@@ -9,8 +9,8 @@ func _ready() -> void:
 
 func _reset() -> void:
 	astar_grid = AStarGrid2D.new()
-	astar_grid.cell_size = MainMap3D.CELL_SIZE
-	astar_grid.region = Rect2i(-MainMap3D.MAP_SIZE_X/2, -MainMap3D.MAP_SIZE_Y/2, MainMap3D.MAP_SIZE_X, MainMap3D.MAP_SIZE_Y)
+	astar_grid.cell_size = MainMap.CELL_SIZE
+	astar_grid.region = Rect2i(-MainMap.MAP_SIZE_X/2, -MainMap.MAP_SIZE_Y/2, MainMap.MAP_SIZE_X, MainMap.MAP_SIZE_Y)
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
 

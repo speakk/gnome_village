@@ -1,7 +1,7 @@
 [gd_scene load_steps=26 format=3 uid="uid://coa800xi7xgd2"]
 
 [ext_resource type="Script" path="res://src/gui/main_menu/main_menu.gd" id="1_ojpbv"]
-[ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap3D.tscn" id="1_rn6i6"]
+[ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap.tscn" id="1_rn6i6"]
 [ext_resource type="PackedScene" uid="uid://cs2fptc2k4veq" path="res://src/sky/Sky.tscn" id="2_30k6m"]
 [ext_resource type="PackedScene" uid="uid://dqcfyoq58q7b7" path="res://src/entities/scenes/wooden_torch.tscn" id="3_kks4n"]
 [ext_resource type="Shader" path="res://src/sky/sky.gdshader" id="3_tj2dn"]

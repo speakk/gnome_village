@@ -1,6 +1,6 @@
 class_name TerrainComponent extends Component
 
-@export var target_layer: MainMap3D.Layers = MainMap3D.Layers.Building
+@export var target_layer: MainMap.Layers = MainMap.Layers.Building
 @export var mesh_id: MapMeshes.Id
 
 var _blueprint_status: bool

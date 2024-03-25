@@ -3,7 +3,7 @@ extends Node3D
 @onready var SETTLER := load("res://src/entities/scenes/settler/settler.tscn")
 @onready var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
-@onready var main_map: MainMap3D = $MainMap3d as MainMap3D
+@onready var main_map: MainMap = $MainMap as MainMap
 @onready var entities: Node3D = %Entities
 
 @onready var sky: DayNightCycleSky = $sky
@@ -41,8 +41,8 @@ func create_world() -> void:
 	main_map.prepare_for_load(true)
 	
 	var test_divider := 1
-	var map_size_real_x := MainMap3D.MAP_SIZE_X / test_divider
-	var map_size_real_y := MainMap3D.MAP_SIZE_Y / test_divider
+	var map_size_real_x := MainMap.MAP_SIZE_X / test_divider
+	var map_size_real_y := MainMap.MAP_SIZE_Y / test_divider
 	
 	print("Now spawning entities")
 	
@@ -171,10 +171,10 @@ func save(save_dict: Dictionary) -> void:
 #
 
 func create_ground_entities() -> void:
-	for iter_x in MainMap3D.MAP_SIZE_X:
-		for iter_y in MainMap3D.MAP_SIZE_Y:
-			var x: int = iter_x - MainMap3D.MAP_SIZE_X/2
-			var y: int = iter_y - MainMap3D.MAP_SIZE_Y/2
+	for iter_x in MainMap.MAP_SIZE_X:
+		for iter_y in MainMap.MAP_SIZE_Y:
+			var x: int = iter_x - MainMap.MAP_SIZE_X/2
+			var y: int = iter_y - MainMap.MAP_SIZE_Y/2
 			var mesh_id: int = main_map.ground_grid.get_cell_item(Vector3i(x, 0, y))
 			if mesh_id == 0:
 				var entity: Entity = ENTITY.instantiate()

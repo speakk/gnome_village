@@ -11,7 +11,7 @@ func correct_orientation() -> void:
 		return
 		
 	print("Actually doing it")
-	var self_coordinate := (Globals.get_map() as MainMap3D).global_position_to_coordinate(get_parent_node_3d().global_position)
+	var self_coordinate := (Globals.get_map() as MainMap).global_position_to_coordinate(get_parent_node_3d().global_position)
 	var surrounding_coordinates := PathFinder.get_surrounding_coordinates(self_coordinate, false)
 	for coordinate in surrounding_coordinates:
 		var coordinate_entities := Globals.get_map().get_map_entities(coordinate)
@@ -43,7 +43,7 @@ func _ready() -> void:
 # doing this for every door on the whole map
 func _map_changed(coordinate: Vector2i) -> void:
 	if get_parent_node_3d():
-		if get_parent_node_3d().global_position.distance_to(Globals.get_map().coordinate_to_global_position(coordinate)) < MainMap3D.CELL_SIZE.x * 2:
+		if get_parent_node_3d().global_position.distance_to(Globals.get_map().coordinate_to_global_position(coordinate)) < MainMap.CELL_SIZE.x * 2:
 			correct_orientation()
 
 func set_door(door_component: DoorComponent) -> void:

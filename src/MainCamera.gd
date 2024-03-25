@@ -51,20 +51,20 @@ const ground_plane := Plane.PLANE_XZ
 
 func _clamp_camera_to_world_bounds() -> void:
 	var plane_intersection: Rect2 = get_frustum_plane_intersection(ground_plane, self)
-	if plane_intersection.position.y < -MainMap3D.MAP_SIZE_Y/2:
-		var diff := - plane_intersection.position.y - MainMap3D.MAP_SIZE_Y/2
+	if plane_intersection.position.y < -MainMap.MAP_SIZE_Y/2:
+		var diff := - plane_intersection.position.y - MainMap.MAP_SIZE_Y/2
 		global_position.z += diff
 		
-	if plane_intersection.position.y + plane_intersection.size.y > MainMap3D.MAP_SIZE_Y/2:
-		var diff := plane_intersection.position.y + plane_intersection.size.y - MainMap3D.MAP_SIZE_Y/2
+	if plane_intersection.position.y + plane_intersection.size.y > MainMap.MAP_SIZE_Y/2:
+		var diff := plane_intersection.position.y + plane_intersection.size.y - MainMap.MAP_SIZE_Y/2
 		global_position.z -= diff
 	
-	if plane_intersection.position.x < -MainMap3D.MAP_SIZE_X/2:
-		var diff := - plane_intersection.position.x - MainMap3D.MAP_SIZE_X/2
+	if plane_intersection.position.x < -MainMap.MAP_SIZE_X/2:
+		var diff := - plane_intersection.position.x - MainMap.MAP_SIZE_X/2
 		global_position.x += diff
 		
-	if plane_intersection.position.x + plane_intersection.size.x > MainMap3D.MAP_SIZE_X/2:
-		var diff := plane_intersection.position.x + plane_intersection.size.x - MainMap3D.MAP_SIZE_X/2
+	if plane_intersection.position.x + plane_intersection.size.x > MainMap.MAP_SIZE_X/2:
+		var diff := plane_intersection.position.x + plane_intersection.size.x - MainMap.MAP_SIZE_X/2
 		global_position.x -= diff
 		
 

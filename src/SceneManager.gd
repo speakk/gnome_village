@@ -1,6 +1,6 @@
 class_name SceneManager extends Node
 
-@onready var IN_GAME := preload("res://src/main_3d.tscn")
+@onready var IN_GAME := preload("res://src/in_game.tscn")
 @onready var MENU := preload("res://src/gui/main_menu/main_menu.tscn")
 
 enum SceneId {
