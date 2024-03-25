@@ -14,7 +14,13 @@ var _current_durability: float = 10.0:
 			component_owner.queue_free()
 			_no_durability_emitted = true
 
-var reserved_for_dismantling := false
+var reserved_for_dismantling := false:
+	set(new_value):
+		reserved_for_dismantling = new_value
+		if new_value:
+			get_container().add_component(DismantleIndicatorComponent.new())
+		else:
+			get_container().remove_component(Components.Id.DismantleIndicator)
 
 var _inventory: InventoryComponent = InventoryComponent.new()
 
