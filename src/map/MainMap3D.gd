@@ -153,11 +153,11 @@ func prepare_for_load(clear: bool) -> void:
 				else:
 					ground_grid.set_cell_item(coord, 1)
 
-		var rivers: int = 2
+		var rivers: int = 1
 		
 		for i in rivers:
-			var river_start := Vector2i(randi_range(-MAP_SIZE_X/2, MAP_SIZE_X), -MAP_SIZE_Y/2 + 10)
-			var river_start_angle := -3*PI/2
+			var river_start := Vector2i(randi_range(-MAP_SIZE_X/2, MAP_SIZE_X/2), MAP_SIZE_Y/2-1)
+			var river_start_angle := 3*PI/2
 			var river_coordinates: Array[Vector2i]
 			_create_river(river_start, 3, river_start_angle, river_coordinates)
 			for coordinate in river_coordinates:
@@ -195,9 +195,9 @@ func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starti
 	var river_length: int = 300
 	var starting_point := coordinate_to_global_position(starting_coordinate)
 	var step_length: float = 1.0
-	var direction_range := PI/14
+	var direction_range := PI/24
 	var branching_chance := 0.02
-	var branch_angle_range := PI/2
+	var branch_angle_range := PI/8
 	var starting_width: float = 1.0
 	var width_variance: float = 0.1
 	var max_width: float = 3.0
@@ -217,7 +217,8 @@ func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starti
 		
 		# Terminate if hit existing water body or out of bounds
 		var current_cell := ground_grid.get_cell_item(Globals.extend_vec2i(current_coord))
-		if current_cell == 1 or current_cell == -1:
+		#if current_cell == 1 or current_cell == -1:
+		if current_cell == -1:
 			return
 		
 		for w in int(maxi(current_width, 1)):
