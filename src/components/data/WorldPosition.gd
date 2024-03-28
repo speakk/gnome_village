@@ -20,3 +20,14 @@ static func set_world_position(node: Node3D, world_position: Vector3) -> void:
 
 func _init() -> void:
 	id = Components.Id.WorldPosition
+
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["x"] = current_position.x 
+	dict["y"] = current_position.y
+	dict["z"] = current_position.z
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	current_position = Vector3(dict["x"], dict["y"], dict["z"])

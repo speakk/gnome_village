@@ -116,5 +116,6 @@ func clear_components() -> void:
 func deserialize(parent: Node, dict: Dictionary) -> void:
 	clear_components()
 	for component_dict: Dictionary in dict["components"]:
-		var component: Component = Component.deserialize(component_dict)
-		add_component(component)
+		var component: Component = Component.static_deserialize(component_dict)
+		component = add_component(component)
+		component.deserialize(component_dict)

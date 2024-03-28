@@ -55,7 +55,9 @@ func serialize() -> Dictionary:
 		resource_path = get_script().get_path()
 	}
 
-static func deserialize(dict: Dictionary) -> Component:
+static func static_deserialize(dict: Dictionary) -> Component:
 	var component: Component = load(dict["resource_path"]).new()
-	
 	return component
+
+func deserialize(dict: Dictionary) -> void:
+	pass

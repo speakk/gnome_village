@@ -83,5 +83,6 @@ static func deserialize(parent: Node, dict: Dictionary) -> Entity:
 	parent.add_child(entity)
 	if dict.has("definition"):
 		entity.definition = EntityDefinition.deserialize(dict["definition"])
+	entity.component_container.component_owner = entity
 	entity.component_container.deserialize(entity, dict["component_container"])
 	return entity

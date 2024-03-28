@@ -19,6 +19,20 @@ class CharacterStat:
 		display_name = _display_name
 		value = _value
 		value_delta = _value_delta
+	
+	func serialize() -> Dictionary:
+		return {
+			stat_id = stat_id,
+			display_name = display_name,
+			value = value,
+			value_delta = value_delta
+		}
+		
+	func deserialize(dict: Dictionary) -> void:
+		stat_id = dict["stat_id"]
+		display_name = dict["display_name"]
+		value = dict["value"]
+		value_delta = dict["value_delta"]
 
 var stats: Dictionary = {
 	Id.Happiness: CharacterStat.new(Id.Happiness, "Happiness", 1.0, -0.01),
@@ -68,4 +82,12 @@ func process_component(delta: float) -> void:
 
 func serialize() -> Dictionary:
 	var dict := super.serialize()
+	for id: Id in stats.keys():
+		dict[id] = stats[id].serialize()
+		
 	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	for id: Id in stats.keys():
+		stats[id] = CharacterStat.new(id, dict["display_name"], dict["value"], dict["value_delta"])

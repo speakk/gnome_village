@@ -32,3 +32,21 @@ func open_by_amount(amount: float) -> void:
 
 func is_open() -> bool:
 	return open_amount >= 1.0
+
+#region Serialization
+
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["self_close_timer"] = self_close_timer
+	dict["is_locked"] = is_locked
+	dict["open_amount"] = open_amount
+		
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	self_close_timer = dict["self_close_timer"]
+	is_locked = dict["is_locked"]
+	open_amount = dict["open_amount"]
+	
+#endregion

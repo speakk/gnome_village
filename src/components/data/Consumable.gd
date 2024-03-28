@@ -14,3 +14,22 @@ func consume() -> Array[Satisfaction]:
 	if is_instance_valid(get_owner()):
 		get_owner().queue_free()
 	return provides.duplicate()
+
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["reserved"] = reserved
+	dict["provides"] = provides.map(func(provides: Satisfaction) -> Dictionary:
+		return provides.serialize()
+		)
+		
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	reserved = dict["reserved"]
+	provides = dict["provides"].map(func(satisfaction_dict: Dictionary) -> Satisfaction:
+		var satisfaction := Satisfaction.new()
+		satisfaction.deserialize(satisfaction_dict)
+		return satisfaction
+		)
+	

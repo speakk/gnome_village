@@ -23,3 +23,13 @@ func load_save(save_dict: Dictionary) -> void:
 
 func get_class_name() -> String:
 	return 'ItemRequirement'
+
+func serialize() -> Dictionary:
+	return {
+		item = item.serialize(),
+		amonut = amount
+	}
+
+func deserialize(dict: Dictionary) -> void:
+	item = EntityDefinition.deserialize(dict["item"])
+	amount = dict["amount"]

@@ -93,3 +93,33 @@ func get_inventory() -> InventoryComponent:
 
 func reduce_durability(amount: float) -> void:
 	_current_durability -= amount
+
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	
+	dict["requirements"] = requirements.map(func(requirement: ItemRequirement) -> Dictionary:
+		return requirement.serialize())
+	dict["solid_when_started"] = solid_when_started
+	dict["can_be_dismantled"] = can_be_dismantled
+	dict["max_durability"] = max_durability
+	dict["_current_durability"] = _current_durability
+	dict["_current_progress"] = _current_progress
+	dict["_no_durability_emitted"] = _no_durability_emitted
+	dict["_inventory"] = _inventory.serialize()
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	requirements = dict["requirements"].map(func(requirement_dict: Dictionary) -> ItemRequirement:
+		var new_requirement := ItemRequirement.new()
+		new_requirement.deserialize(requirement_dict)
+		return new_requirement
+		)
+	solid_when_started = dict["solid_when_started"]
+	can_be_dismantled = dict["can_be_dismantled"]
+	max_durability = dict["max_durability"]
+	_current_durability = dict["_current_durability"]
+	_current_progress = dict["_current_progress"]
+	_no_durability_emitted = dict["_no_durability_emitted"]
+	var new_inventory := InventoryComponent.new()
+	new_inventory.deserialize(dict["_inventory"])

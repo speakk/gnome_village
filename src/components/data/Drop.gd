@@ -16,3 +16,21 @@ func on_exit() -> void:
 			Events.request_entity_add.emit(new_entity)
 			new_entity.definition = item_drop.item
 			WorldPositionComponent.set_world_position(new_entity, get_owner().global_position)
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["drops"] = drops.map(func(drop: ItemDrop) -> Dictionary:
+		return drop.serialize()
+		)
+		
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	drops = dict["drops"].map(func(drop_dict: Dictionary) -> ItemDrop:
+		var drop := ItemDrop.new()
+		drop.deserialize(drop_dict)
+		return drop
+		)
+#endregion
