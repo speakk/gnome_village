@@ -15,15 +15,15 @@ func _ready() -> void:
 		if _entity == target:
 			is_cancelled = true
 	)
-
-func save() -> Dictionary:
-	var save_dict: Dictionary = super.save()
-	save_dict["target_id"] = SaveSystem.save_entity(target)
-	return save_dict
-
-func load_save(save_dict: Dictionary) -> void:
-	super.load_save(save_dict)
-	target = SaveSystem.get_saved_entity(save_dict["target_id"])
+#
+#func save() -> Dictionary:
+	#var save_dict: Dictionary = super.save()
+	#save_dict["target_id"] = SaveSystem.save_entity(target)
+	#return save_dict
+#
+#func load_save(save_dict: Dictionary) -> void:
+	#super.load_save(save_dict)
+	#target = SaveSystem.get_saved_entity(save_dict["target_id"])
 
 func create_action(actor: Settler) -> ActorAction:
 	return DismantleActorAction.new(actor, self)

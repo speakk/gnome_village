@@ -1,10 +1,11 @@
-extends Node3D
+class_name InGame extends Node3D
 
 @onready var SETTLER := load("res://src/entities/scenes/settler/settler.tscn")
 @onready var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
 @onready var main_map: MainMap = $MainMap as MainMap
 @onready var entities: Node3D = %Entities
+@onready var save_system: SaveSystem = $SaveSystem
 
 @onready var sky: DayNightCycleSky = $sky
 
@@ -17,16 +18,17 @@ const TEST_SETTLERS = 40
 const DECAL_AMOUNT = 800
 
 func _ready() -> void:
-	Events.load_game_called.connect(func(save_dict: Dictionary) -> void: load_save(save_dict))
-	Events.save_game_called.connect(func(save_dict: Dictionary) -> void: save(save_dict))
-	
 	Events.request_entity_add.connect(func(entity: Node) -> void:
 		entities.add_child(entity)
 	)
 	
+	Events.load_started.connect(func() -> void:
+		for child in %Entities.get_children():
+			child.queue_free()
+		)
+	
 	Events.current_time_changed.connect(_current_time_changed)
 	
-	create_world()
 
 var debug_visuals := false
 
@@ -34,6 +36,9 @@ func _clear_entities() -> void:
 	for container in containers:
 		for entity in container["node"].get_children() as Array[Node]:
 			entity.queue_free()
+
+func new_game() -> void:
+	create_world()
 
 func create_world() -> void:
 	_clear_entities()
@@ -119,7 +124,7 @@ func _process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("reload_map"):
 		create_world()
-	
+
 # For now this is okay, but eventually Entities and
 # TaskHandler ought to have their own save methods
 @onready var containers := [
@@ -133,42 +138,49 @@ func _process(delta: float) -> void:
 	#},
 ] as Array[Dictionary]
 
-func load_save(data: Dictionary) -> void:
-	PathFinder.prepare_for_load()
-	main_map.prepare_for_load(true)
-	
-	await get_tree().physics_frame
-	
-	for container in containers:
-		for entity in container["node"].get_children() as Array[Node]:
-			entity.queue_free()
-		
-		var entity_ids: Array[int]
-		entity_ids.assign(data["main_data"][container["data_name"]])
-		
-		for entity_id in entity_ids:
-			var entity: Variant = SaveSystem.get_saved_entity(entity_id)
-			print("Adding child right?", entity)
-			if not entity is Resource:
-				container["node"].add_child(entity)
-			#SaveSystem.load_entity(entity)
+#func load_save(data: Dictionary) -> void:
+	#PathFinder.prepare_for_load()
+	#main_map.prepare_for_load(true)
+	#
+	#await get_tree().physics_frame
+	#
+	#for container in containers:
+		#for entity in container["node"].get_children() as Array[Node]:
+			#entity.queue_free()
+		#
+		#var entity_ids: Array[int]
+		#entity_ids.assign(data["main_data"][container["data_name"]])
+		#
+		#for entity_id in entity_ids:
+			#var entity: Variant = SaveSystem.get_saved_entity(entity_id)
+			#print("Adding child right?", entity)
+			#if not entity is Resource:
+				#container["node"].add_child(entity)
+			##SaveSystem.load_entity(entity)
 
-func save(save_dict: Dictionary) -> void:
-	var main_data: Dictionary = {}
-	main_data["entities"] = []
-	main_data["tasks"] = []
-	
-	for container in containers:
-		for entity in container["node"].get_children() as Array[Node]:
-			if entity.has_method("save"):
-				var entity_id := SaveSystem.save_entity(entity)
-				main_data[container["data_name"]].append(entity_id)
-			else:
-				pass
-				#push_warning("Entity did not have save method defined: ", entity)
-	
-	save_dict["main_data"] = main_data
-#
+# old save
+#func save(save_dict: Dictionary) -> void:
+	#var main_data: Dictionary = {}
+	#main_data["entities"] = []
+	#main_data["tasks"] = []
+	#
+	#for container in containers:
+		#for entity in container["node"].get_children() as Array[Node]:
+			#if entity.has_method("save"):
+				#var entity_id := SaveSystem.save_entity(entity)
+				#main_data[container["data_name"]].append(entity_id)
+			#else:
+				#pass
+				##push_warning("Entity did not have save method defined: ", entity)
+	#
+	#save_dict["main_data"] = main_data
+##
+
+func save_game() -> void:
+	save_system.save_game()
+
+func quick_load() -> void:
+	save_system.quick_load()
 
 func create_ground_entities() -> void:
 	for iter_x in MainMap.MAP_SIZE_X:
@@ -194,20 +206,4 @@ func create_ground_entities() -> void:
 
 
 func _current_time_changed(new_time: float) -> void:
-	#sky.set_time_of_day(new_time)
 	sky.time_of_day_setup = new_time
-	#var daylight_sampled := daylight_amount.sample(new_time)
-	#var red_green := daylight_sampled
-	#var yellow_amount := yellow_light_amount.sample(new_time)
-	##$CanvasModulate.color = Color(red_green, red_green - yellow_amount * 0.1, 1.0 - yellow_amount * 0.4)
-	#var shaderNode := %ShadowSpriteShader as Sprite2D
-	#shaderNode.material.set_shader_parameter("shadow_angle", - new_time * 360.0 * 2)
-	#shaderNode.material.set_shader_parameter("shadow_length", 200 - daylight_sampled * 190)
-	#shaderNode.material.set_shader_parameter("shadow_color", Color(Color.BLACK, maxf(0, daylight_sampled - 0.3)))
-	#
-	#var daylightNode := %DayLightSpriteShader as Sprite2D
-	#daylightNode.material.set_shader_parameter("daylight_amount", daylight_sampled)
-	#daylightNode.material.set_shader_parameter("yellow_amount", yellow_amount)
-	#
-	##shaderNode.material.set("shader_param/angle", -sin(new_time) * 360.0)
-	##print("New time", new_time)

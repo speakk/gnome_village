@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cdn5fwsgd0fpm"]
+[gd_scene load_steps=10 format=3 uid="uid://cdn5fwsgd0fpm"]
 
 [ext_resource type="Script" path="res://src/in_game.gd" id="1_h0o83"]
 [ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap.tscn" id="2_l8r3t"]
@@ -8,8 +8,9 @@
 [ext_resource type="PackedScene" uid="uid://hewmqp1k1i03" path="res://src/zones/zone_renderer.tscn" id="6_limgy"]
 [ext_resource type="PackedScene" uid="uid://w5t5a0o36hje" path="res://src/camera_3d.tscn" id="6_wahq5"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://src/gui/gui.tscn" id="7_vml5v"]
+[ext_resource type="Script" path="res://src/SaveSystem2.gd" id="9_ae7o8"]
 
-[node name="Main" type="Node3D"]
+[node name="InGame" type="Node3D"]
 script = ExtResource("1_h0o83")
 
 [node name="sky" parent="." instance=ExtResource("2_vk0vx")]
@@ -53,5 +54,10 @@ shadow_enabled = true
 [node name="SubViewport" type="SubViewport" parent="."]
 
 [node name="Systems" type="Node" parent="."]
+
+[node name="SaveSystem" type="Node" parent="." node_paths=PackedStringArray("map", "entity_container")]
+script = ExtResource("9_ae7o8")
+map = NodePath("../MainMap")
+entity_container = NodePath("../Entities")
 
 [editable path="MainMap"]

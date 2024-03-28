@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EntityDefinition" load_steps=5 format=3 uid="uid://b26vtx6b8lip2"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=5 format=3 uid="uid://dfjlxethwajaw"]
 
 [ext_resource type="PackedScene" uid="uid://coq0jscwmqbi7" path="res://assets/blender_models/wood.blend" id="1_xxm8b"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_20fp2"]

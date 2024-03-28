@@ -95,16 +95,3 @@ func clean_up() -> void:
 	if _item_amount_component:
 		var reservation := ItemAmountReservation.new(tree.actor, task.item_requirement.amount)
 		_item_amount_component.remove_reservation(reservation)
-
-func save() -> Dictionary:
-	var save_dict := super.save()
-	if _item_amount_component:
-		save_dict["_item_amount_component_id"] = SaveSystem.save_entity(_item_amount_component)
-	
-	return save_dict
-
-func load_save(save_dict: Dictionary) -> void:
-	super.load_save(save_dict)
-	
-	if save_dict.has("_item_amount_component_id"):
-		_item_amount_component = SaveSystem.get_saved_entity(save_dict["_item_amount_component_id"])

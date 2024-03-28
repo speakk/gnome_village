@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EntityDefinition" load_steps=5 format=3 uid="uid://c0eq21h86f5u7"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=5 format=3 uid="uid://bqwfwysg2xw0v"]
 
 [ext_resource type="PackedScene" uid="uid://7ixpbx54od41" path="res://assets/blender_models/foliage/flower_2.blend" id="1_tl1oe"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_wymjq"]

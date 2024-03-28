@@ -475,3 +475,7 @@ func coordinate_to_global_position(coordinate: Vector2i) -> Vector3:
 func global_position_to_coordinate(_global_position: Vector3) -> Vector2i:
 	var coordinate: Vector3i = grid.local_to_map(grid.to_local(_global_position))
 	return Vector2i(coordinate.x, coordinate.z)
+
+# TODO: Do
+func serialize() -> Dictionary:
+	return {}

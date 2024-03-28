@@ -152,10 +152,10 @@ transform = Transform3D(-0.810205, 0, 0.586146, 0, 1, 0, -0.586146, 0, -0.810205
 utility_agent = NodePath("UtilityAiAgent")
 task_handler = NodePath("TaskHandler")
 
-[node name="ComponentContainer" parent="SceneObjects/Settler" index="4"]
+[node name="ComponentContainer" parent="SceneObjects/Settler" index="3"]
 default_components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_iyosi"), SubResource("Resource_onuy6"), SubResource("Resource_ucd33"), SubResource("Resource_i1ikl"), SubResource("Resource_nolv0"), SubResource("Resource_67bq5")])
 
-[node name="UtilityAiEvaluators" parent="SceneObjects/Settler" index="9" node_paths=PackedStringArray("container")]
+[node name="UtilityAiEvaluators" parent="SceneObjects/Settler" index="8" node_paths=PackedStringArray("container")]
 container = NodePath("../ComponentContainer")
 
 [node name="Hunger" parent="SceneObjects/Settler/UtilityAiAgent/Eat/UtilityAiAggregation" index="0" node_paths=PackedStringArray("node")]
@@ -176,7 +176,7 @@ node = NodePath("../../../../UtilityAiEvaluators")
 [node name="TimeOfDay" parent="SceneObjects/Settler/UtilityAiAgent/Sleep/UtilityAiAggregation" index="2" node_paths=PackedStringArray("node")]
 node = NodePath("../../../../UtilityAiEvaluators")
 
-[node name="TaskHandler" parent="SceneObjects/Settler" index="11" node_paths=PackedStringArray("settler")]
+[node name="TaskHandler" parent="SceneObjects/Settler" index="10" node_paths=PackedStringArray("settler")]
 settler = NodePath("..")
 
 [node name="Menu" type="Node3D" parent="."]

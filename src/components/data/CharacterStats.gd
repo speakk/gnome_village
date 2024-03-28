@@ -65,3 +65,7 @@ func process_component(delta: float) -> void:
 		stat.value += stat.value_delta * delta * DELTA_MULTIPLIER
 		stat.value = clampf(stat.value, 0.0, 1.0)
 		
+
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	return dict

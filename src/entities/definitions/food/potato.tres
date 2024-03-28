@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EntityDefinition" load_steps=10 format=3 uid="uid://b2fhlwf6pm0jt"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=10 format=3 uid="uid://ch6mnsa8osjx5"]
 
 [ext_resource type="PackedScene" uid="uid://mkox0g6jfmf7" path="res://assets/blender_models/plants/potato_harvested.blend" id="1_yjs3m"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_ibrg3"]

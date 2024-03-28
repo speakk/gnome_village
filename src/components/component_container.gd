@@ -99,3 +99,22 @@ func _physics_process(delta: float) -> void:
 	for component in get_all():
 		if component.has_method("process_component"):
 			component.advance_process_timer(delta)
+
+func serialize() -> Dictionary:
+	var serialized_components: Array[Dictionary]
+	for component in get_all():
+		serialized_components.append(component.serialize())
+	
+	return {
+		components = serialized_components
+	}
+
+func clear_components() -> void:
+	for component in get_all():
+		remove_component(component.id)
+
+func deserialize(parent: Node, dict: Dictionary) -> void:
+	clear_components()
+	for component_dict: Dictionary in dict["components"]:
+		var component: Component = Component.deserialize(component_dict)
+		add_component(component)

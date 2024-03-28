@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="1_sxubs"]
 [ext_resource type="Script" path="res://src/components/data/GrowthSpot.gd" id="1_yxf7r"]
 [ext_resource type="Script" path="res://src/components/data/Blueprint.gd" id="3_4i3tg"]
-[ext_resource type="Resource" uid="uid://b26vtx6b8lip2" path="res://src/entities/definitions/wood.tres" id="3_c7ev3"]
+[ext_resource type="Resource" uid="uid://dfjlxethwajaw" path="res://src/entities/definitions/wood.tres" id="3_c7ev3"]
 [ext_resource type="Resource" uid="uid://10hahtgmxe11" path="res://src/entities/definitions/water.tres" id="3_v8bof"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="5_5qdnr"]
 [ext_resource type="Script" path="res://src/entities/ItemRequirement.gd" id="6_xcfl6"]

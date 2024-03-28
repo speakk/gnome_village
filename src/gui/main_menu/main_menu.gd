@@ -9,7 +9,7 @@ extends Node3D
 
 func _ready() -> void:
 	$sky.time_of_day = 0.327
-	new_game_button.pressed.connect(func() -> void: Events.scene_change_requested.emit(SceneManager.SceneId.InGame))
+	new_game_button.pressed.connect(func() -> void: Events.new_game_requested.emit())
 	#new_game_button.pressed.connect(func() -> void: Events.scene_change_requested(SceneManager.SceneId.InGame))
 	quit_button.pressed.connect(func() -> void:
 		#Globals.quitting = true

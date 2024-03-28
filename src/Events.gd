@@ -49,8 +49,10 @@ signal scene_change_requested(new_scene_id: SceneManager.SceneId)
 
 signal request_entity_add(entity: Node)
 
+signal load_started
 signal load_game_called(save_dict: Dictionary)
 signal save_game_called(save_dict: Dictionary)
+signal new_game_requested
 
 signal current_time_changed(new_time: float)
 

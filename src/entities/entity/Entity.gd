@@ -1,7 +1,5 @@
 class_name Entity extends Node3D
 
-#var ENTITY := load("res://src/entities/entity/Entity.tscn")
-
 @onready var component_container: ComponentContainer = $ComponentContainer
 
 var show_amount_number := true
@@ -9,20 +7,6 @@ var show_amount_number := true
 var definition: EntityDefinition:
 	set(new_definition):
 		definition = new_definition
-
-func save() -> Dictionary:
-	var save_dict := {
-		"position_x" = global_position.x,
-		"position_y" = global_position.y,
-	}
-	
-	return save_dict
-
-func load_save(save_dict: Dictionary) -> void:
-	global_position.x = save_dict["position_x"]
-	global_position.y = save_dict["position_y"]
-
-	Events.item_placed_on_ground.emit(self, global_position)
 
 func _amount_changed(new_amount: int) -> void:
 	if show_amount_number:
@@ -38,25 +22,20 @@ func _amount_changed(new_amount: int) -> void:
 func _ready() -> void:
 	set_notify_transform(true)
 	set_item_components()
-	var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
-	item_amount.amount_changed.connect(func(new_amount: int) -> void:
-		if new_amount > 1:
-			$ItemAmountLabel.text = new_amount
-			$ItemAmountLabel.show()
-		else:
-			$ItemAmountLabel.hide()
-		
-		if new_amount <= 0:
-			queue_free()
-		)
-	
+	#var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
+	#item_amount.amount_changed.connect(func(new_amount: int) -> void:
+		#if new_amount > 1:
+			#$ItemAmountLabel.text = new_amount
+			#$ItemAmountLabel.show()
+		#else:
+			#$ItemAmountLabel.hide()
+		#
+		#if new_amount <= 0:
+			#queue_free()
+		#)
 
 func _exit_tree() -> void:
 	Events.item_removed_from_ground.emit(self)
-
-func place_at_coordinate(coordinate: Vector2i) -> void:
-	var new_position := Globals.get_map().coordinate_to_global_position(coordinate)
-	WorldPositionComponent.set_world_position(self, new_position)
 
 func set_item_components() -> void:
 	if definition:
@@ -72,7 +51,6 @@ func set_item_components() -> void:
 
 		var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
 		item_amount.item = definition
-		#item_amount.amount = 1
 
 static func from_definition(entity_definition: EntityDefinition) -> Entity:
 	var custom_scene_component: Variant = entity_definition.get_component_by_id(Components.Id.Scene)
@@ -90,3 +68,20 @@ static func from_definition(entity_definition: EntityDefinition) -> Entity:
 	scene.definition = entity_definition
 	
 	return scene
+
+func serialize() -> Dictionary:
+	var dict := {}
+	if definition:
+		dict["definition"] = definition.serialize()
+	dict["component_container"] = component_container.serialize()
+	dict["scene_path"] = scene_file_path
+	
+	return dict
+
+static func deserialize(parent: Node, dict: Dictionary) -> Entity:
+	var entity: Entity = load(dict["scene_path"]).instantiate()
+	parent.add_child(entity)
+	if dict.has("definition"):
+		entity.definition = EntityDefinition.deserialize(dict["definition"])
+	entity.component_container.deserialize(entity, dict["component_container"])
+	return entity

@@ -6,6 +6,8 @@ var component_owner: Node3D
 
 var subscriptions: Array[Subscription]
 
+var _on_enter_called: bool
+
 var groups: Array[Groups.Id]:
 	set(new_value):
 		groups = new_value
@@ -46,3 +48,14 @@ func advance_process_timer(delta: float) -> void:
 		if has_method("process_component"):
 			call("process_component", _full_delta)
 		_full_delta = 0
+
+func serialize() -> Dictionary:
+	return {
+		#resource_path = get_script().get_path().get_basename().get_file().to_pascal_case()
+		resource_path = get_script().get_path()
+	}
+
+static func deserialize(dict: Dictionary) -> Component:
+	var component: Component = load(dict["resource_path"]).new()
+	
+	return component

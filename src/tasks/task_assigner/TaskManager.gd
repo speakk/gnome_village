@@ -165,3 +165,7 @@ func find_unfinished_task_in_tree(task: Task) -> NodeResult:
 		return NodeResult.new(null, NodeStatus.Unfinished)
 	else:
 		return NodeResult.new(task, NodeStatus.FoundTask)
+
+# TODO: Do
+func serialize() -> Dictionary:
+	return {}

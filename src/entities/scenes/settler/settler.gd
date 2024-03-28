@@ -31,9 +31,12 @@ func _ready() -> void:
 	super._ready()
 	name = "Settler"
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
-	inventory = component_container.get_by_id(Components.Id.Inventory)
-	inventory.item_added.connect(_inventory_item_added)
-	inventory.item_removed.connect(_inventory_item_removed)
+	component_container.component_added.connect(func(component: Component) -> void:
+		if component is InventoryComponent:
+			component.item_added.connect(self._inventory_item_added)
+			component.item_removed.connect(self._inventory_item_removed)
+		)
+
 	play_animation("Idle")
 	
 	var original_position := global_position
@@ -43,52 +46,8 @@ func _ready() -> void:
 
 	utility_agent.top_score_action_changed.connect(_utility_ai_action_changed)
 
-func save() -> Dictionary:
-	var save_dict := {
-		"position_x" = global_position.x,
-		"position_y" = global_position.y,
-		"walk_speed" = walk_speed,
-		"build_speed" = build_speed,
-		"dismantling_speed" = dismantling_speed,
-		"open_door_speed" = open_door_speed,
-		"velocity_x" = velocity.x,
-		"velocity_y" = velocity.y,
-	}
-	
-	save_dict["inventory_id"] = SaveSystem.save_entity(inventory)
-
-	# TODO: Actually serialize AiActuator
-	#if current_task_actuator:
-		##save_dict["current_task_actuator_id"] = SaveSystem.save_entity(current_task_actuator)
-		#save_dict["task_id"] = SaveSystem.save_entity(current_task_actuator.task)
-	
-	return save_dict
-
-func load_save(save_dict: Dictionary) -> void:
-	var position_component: WorldPositionComponent = component_container.get_by_id(Components.Id.WorldPosition)
-	position_component.current_position = Vector3(save_dict["position_x"], 0.5, save_dict["position_y"])
-	walk_speed = save_dict["walk_speed"]
-	build_speed = save_dict["build_speed"]
-	dismantling_speed = save_dict["dismantling_speed"]
-	open_door_speed = save_dict["open_door_speed"]
-	velocity.x = save_dict["velocity_x"]
-	velocity.y = save_dict["velocity_y"]
-	#if save_dict.has("current_task_actuator_id"):
-		#current_task_actuator = SaveSystem.get_saved_entity(save_dict["current_task_actuator_id"])
-		#add_child(current_task_actuator)
-	
-	# TODO: This
-	#if save_dict.has("task_id"):
-		#var task := SaveSystem.get_saved_entity(save_dict["task_id"]) as Task
-		##add_child(current_task_actuator)
-		#start_task(task)
-	
-	inventory = SaveSystem.get_saved_entity(save_dict["inventory_id"])
-
-	_refresh_carry_item()
-	
-	#if save_dict.has("current_task_save_id"):
-	#	SaveSystem.register_load_reference(self, "current_task_actuator", save_dict["current_task_save_id"], true)
+func _handle_new_component_container(old_container: ComponentContainer, new_container: ComponentContainer) -> void:
+	pass
 
 func _finished_path() -> void:
 	pass

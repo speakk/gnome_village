@@ -17,3 +17,12 @@ func get_component_by_id(component_id: Components.Id) -> Component:
 		return matching_components[0]
 	
 	return null
+
+func serialize() -> Dictionary:
+	return {
+		resource_path = resource_path
+	}
+
+static func deserialize(dict: Dictionary) -> EntityDefinition:
+	var definition: EntityDefinition = load(dict["resource_path"])
+	return definition
