@@ -75,6 +75,7 @@ func serialize() -> Dictionary:
 		dict["definition"] = definition.serialize()
 	dict["component_container"] = component_container.serialize()
 	dict["scene_path"] = scene_file_path
+	dict["save_id"] = SaveSystem.get_save_id(self)
 	
 	return dict
 
@@ -85,4 +86,6 @@ static func deserialize(parent: Node, dict: Dictionary) -> Entity:
 		entity.definition = EntityDefinition.deserialize(dict["definition"])
 	entity.component_container.component_owner = entity
 	entity.component_container.deserialize(entity, dict["component_container"])
+	entity.set_meta("save_id", dict["save_id"])
+	SaveSystem.register_entity_reference(entity)
 	return entity

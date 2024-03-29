@@ -29,6 +29,9 @@ func _ready() -> void:
 	
 	Events.current_time_changed.connect(_current_time_changed)
 	
+	var save_method := SaveSystem.SaveMethod.new("in_game", _save_callable, _load_callable)
+	SaveSystem.register_save_method(save_method)
+	
 
 var debug_visuals := false
 
@@ -176,8 +179,25 @@ func _process(delta: float) -> void:
 	#save_dict["main_data"] = main_data
 ##
 
-func save_game() -> void:
-	save_system.save_game()
+func _save_callable() -> Dictionary:
+	var entities := get_tree().get_nodes_in_group("entity")
+	var entity_dicts: Array[Dictionary]
+	for entity: Entity in entities as Array[Entity]:
+		var save_dict := entity.serialize()
+		entity_dicts.append(save_dict)
+	
+	var saved_map := main_map.serialize()
+	var task_manager: Dictionary = TaskManager.serialize()
+	
+	return {
+		entities = entity_dicts,
+		map = saved_map,
+		task_manager = task_manager
+	}
+	
+func _load_callable(save_dict: Dictionary) -> void:
+	for entity_dict: Dictionary in save_dict["entities"]:
+		var entity: Entity = Entity.deserialize(%Entities, entity_dict)
 
 func quick_load() -> void:
 	save_system.quick_load()

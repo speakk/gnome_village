@@ -50,8 +50,10 @@ func advance_process_timer(delta: float) -> void:
 		_full_delta = 0
 
 func serialize() -> Dictionary:
+	var save_dict: Dictionary
+	save_dict["resource_path"] = get_script().get_path()
+		
 	return {
-		#resource_path = get_script().get_path().get_basename().get_file().to_pascal_case()
 		resource_path = get_script().get_path()
 	}
 

@@ -28,6 +28,7 @@ ComponentDisplays="*res://src/gui/entity_info/ComponentDisplays.gd"
 TaskManager="*res://src/tasks/task_assigner/TaskManager.tscn"
 Groups="*res://src/misc/Groups.gd"
 Events="*res://src/Events.gd"
+SaveSystem="*res://src/SaveSystem2.gd"
 
 [debug]
 

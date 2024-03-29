@@ -5,7 +5,6 @@ signal plant_set(new_plant: EntityDefinition)
 var has_growing: bool
 
 var growth_requirement_inventory: InventoryComponent
-
 var plant_component: PlantComponent
 
 func _init() -> void:
@@ -34,3 +33,21 @@ func start_growing_plant(item: EntityDefinition) -> void:
 				break
 				
 		has_growing = true
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["has_growing"] = has_growing
+	dict["plant_component_owner_id"] = SaveSystem.get_save_id(plant_component.get_owner())
+		
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	has_growing = dict["has_growing"]
+	SaveSystem.queue_entity_reference_by_id(SaveSystem.EntityReferenceEntry.new(
+		dict["plant_component_owner_id"], func(owner: Entity) -> void:
+		plant_component = owner.component_container.get_by_id(Components.Id.Plant)
+		))
+	
+#endregion

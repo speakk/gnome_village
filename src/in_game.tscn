@@ -55,9 +55,7 @@ shadow_enabled = true
 
 [node name="Systems" type="Node" parent="."]
 
-[node name="SaveSystem" type="Node" parent="." node_paths=PackedStringArray("map", "entity_container")]
+[node name="SaveSystem" type="Node" parent="."]
 script = ExtResource("9_ae7o8")
-map = NodePath("../MainMap")
-entity_container = NodePath("../Entities")
 
 [editable path="MainMap"]
