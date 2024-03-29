@@ -53,9 +53,11 @@ func serialize() -> Dictionary:
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
 	scene = load(dict["scene_path"])
-	custom_subscriptions = dict["custom_subscriptions"].map(func(custom_subscription_dict: Dictionary) -> StringSubscription:
+	var new_cust: Array[StringSubscription]
+	new_cust.assign(dict["custom_subscriptions"].map(func(custom_subscription_dict: Dictionary) -> StringSubscription:
 		var custom_subscription := StringSubscription.new()
 		custom_subscription.deserialize(custom_subscription_dict)
 		return custom_subscription
-		)
+		))
+	custom_subscriptions = new_cust
 #endregion

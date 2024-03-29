@@ -34,12 +34,14 @@ func _scene_change_requested(new_scene_id: SceneId) -> void:
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("quicksave"):
 		if _current_scene_id == SceneId.InGame:
-			var in_game: InGame = get_child(0)
-			in_game.save_game()
+			SaveSystem.save_game()
+			#var in_game: InGame = get_child(0)
+			#in_game.save_game()
 	
 	if Input.is_action_just_pressed("quickload"):
 		_scene_change_requested(SceneId.InGame)
 		await get_tree().physics_frame
-		(get_child(0) as InGame).quick_load()
+		SaveSystem.quick_load()
+		#(get_child(0) as InGame).quick_load()
 		
 		

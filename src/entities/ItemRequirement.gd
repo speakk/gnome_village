@@ -27,7 +27,7 @@ func get_class_name() -> String:
 func serialize() -> Dictionary:
 	return {
 		item = item.serialize(),
-		amonut = amount
+		amount = amount
 	}
 
 func deserialize(dict: Dictionary) -> void:

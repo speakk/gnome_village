@@ -8,4 +8,4 @@ func serialize() -> Dictionary:
 	}
 
 func deserialize(dict: Dictionary) -> void:
-	mesh_scene = load(dict["mesh_scene_path"]).instantiate()
+	mesh_scene = load(dict["mesh_scene_path"])

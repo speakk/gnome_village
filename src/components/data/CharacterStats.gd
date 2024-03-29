@@ -90,4 +90,4 @@ func serialize() -> Dictionary:
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
 	for id: Id in stats.keys():
-		stats[id] = CharacterStat.new(id, dict["display_name"], dict["value"], dict["value_delta"])
+		stats[id] = CharacterStat.new(id, dict[id]["display_name"], dict[id]["value"], dict[id]["value_delta"])

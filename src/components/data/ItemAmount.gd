@@ -6,6 +6,9 @@ var item: EntityDefinition
 
 var _reservations: Array[ItemAmountReservation]
 
+# TODO: Make some variant for this without "item"
+# Just a kind of AmountComponent or something
+
 @export var amount: int = 1:
 	set(new_amount):
 		amount = new_amount
@@ -45,12 +48,16 @@ func _init(_item: EntityDefinition = null, _amount: int = 0) -> void:
 func serialize() -> Dictionary:
 	var dict := super.serialize()
 	dict["amount"] = amount
-	dict["item"] = item.serialize()
+	
+	# TODO: Should never actually be null
+	if item:
+		dict["item"] = item.serialize()
 		
 	return dict
 
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
 	amount = dict["amount"]
-	item = dict["item"].deserialize()
+	if dict.has("item"):
+		item = EntityDefinition.deserialize(dict["item"])
 #endregion

@@ -27,9 +27,9 @@ func serialize() -> Dictionary:
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
 	reserved = dict["reserved"]
-	provides = dict["provides"].map(func(satisfaction_dict: Dictionary) -> Satisfaction:
+	provides.assign(dict["provides"].map(func(satisfaction_dict: Dictionary) -> Satisfaction:
 		var satisfaction := Satisfaction.new()
 		satisfaction.deserialize(satisfaction_dict)
 		return satisfaction
-		)
+		))
 	

@@ -156,17 +156,17 @@ func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
 	growth_stage_time = dict["growth_stage_time"] 
 	growth_stage_time_variance = dict["growth_stage_time_variance"] 
-	growth_stages = dict["growth_stages"].map(func(growth_stage_dict: Dictionary) -> GrowthStage:
+	growth_stages.assign(dict["growth_stages"].map(func(growth_stage_dict: Dictionary) -> GrowthStage:
 		var growth_stage := GrowthStage.new()
 		growth_stage.deserialize(growth_stage_dict)
 		return growth_stage
-		)
+		))
 
-	growth_requirements = dict["growth_requirements"].map(func(growth_requirement_dict: Dictionary) -> ItemRequirement:
+	growth_requirements.assign(dict["growth_requirements"].map(func(growth_requirement_dict: Dictionary) -> ItemRequirement:
 		var growth_requirement := ItemRequirement.new()
 		growth_requirement.deserialize(growth_requirement_dict)
 		return growth_requirement
-		)
+		))
 	
 	managed_by_player = dict["managed_by_player"] 
 	lacks_growth_requirements_emitted = dict["lacks_growth_requirements_emitted"] 
@@ -174,10 +174,10 @@ func deserialize(dict: Dictionary) -> void:
 	current_growth_timer = dict["current_growth_timer"] 
 	current_growth_stage_index = dict["current_growth_stage_index"] 
 		
-	if dict["current_growth_scene_path"] is PackedScene:
+	if dict.has("current_growth_scene_path"):
 		current_growth_scene = load(dict["current_growth_scene_path"]).instantiate()
 	
-	if grows_in is GrowthSpotComponent:
+	if dict.has("grows_in_owner_id"):
 		SaveSystem.queue_entity_reference_by_id(SaveSystem.EntityReferenceEntry.new(
 			dict["grows_in_owner_id"], func(grows_in_owner: Entity) -> void:
 				grows_in = grows_in_owner.component_container.get_by_id(Components.Id.GrowthSpot)

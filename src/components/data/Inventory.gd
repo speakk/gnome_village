@@ -22,6 +22,7 @@ func _init() -> void:
 	id = Components.Id.Inventory
 
 func add_item_amount(item: EntityDefinition, amount: int) -> void:
+	assert(item)
 	if not item_amounts.has(item):
 		item_amounts[item] = ItemAmountComponent.new(item)
 		item_amounts[item].set_owner(component_owner)
