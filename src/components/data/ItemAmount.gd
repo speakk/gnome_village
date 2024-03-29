@@ -41,14 +41,16 @@ func _init(_item: EntityDefinition = null, _amount: int = 0) -> void:
 	item = _item
 	id = Components.Id.ItemAmount
 
-func save() -> Dictionary:
-	var save_dict := {
-		"amount": amount,
-		"item": item
-	}
-	
-	return save_dict
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["amount"] = amount
+	dict["item"] = item.serialize()
+		
+	return dict
 
-func load_save(save_dict: Dictionary) -> void:
-	amount = save_dict["amount"]
-	item = save_dict["item"]
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	amount = dict["amount"]
+	item = dict["item"].deserialize()
+#endregion

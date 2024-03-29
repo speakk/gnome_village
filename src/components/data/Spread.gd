@@ -31,3 +31,23 @@ func process_component(delta: float) -> void:
 			print("SPREAD!")
 		
 		_spread_check_timer = spread_check_rate
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["spread_check_rate"] = spread_check_rate
+	dict["spread_radius"] = spread_radius
+	dict["spread_chance"] = spread_chance
+	dict["_spread_check_timer"] = _spread_check_timer
+	dict["_active"] = _active
+		
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	spread_check_rate = dict["spread_check_rate"] 
+	spread_radius = dict["spread_radius"] 
+	spread_chance = dict["spread_chance"] 
+	_spread_check_timer = dict["_spread_check_timer"] 
+	_active = dict["_active"] 
+#endregion

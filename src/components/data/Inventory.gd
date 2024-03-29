@@ -74,16 +74,22 @@ func get_items() -> Array[ItemAmountComponent]:
 	items.assign(item_amounts.values())
 	return items
 	
-func save() -> Dictionary:
-	return {
-		item_amounts = item_amounts.values().map(func(item_amount: ItemAmountComponent) -> Dictionary: return item_amount.save())
-	}
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["item_amounts"] = item_amounts.values().map(
+		func(item_amount: ItemAmountComponent) -> Dictionary:
+			return item_amount.serialize()
+			)
+		
+	return dict
 
-func load_save(save_dict: Dictionary) -> void:
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
 	var item_amount_values: Array[ItemAmountComponent]
-	item_amount_values.assign(save_dict["item_amounts"].map(func(save_dict: Dictionary) -> ItemAmountComponent:
+	item_amount_values.assign(dict["item_amounts"].map(func(item_amount_dict: Dictionary) -> ItemAmountComponent:
 		var item_amount := ItemAmountComponent.new()
-		item_amount.load_save(save_dict)
+		item_amount.deserialize(item_amount_dict)
 		return item_amount
 	))
 	
@@ -91,3 +97,4 @@ func load_save(save_dict: Dictionary) -> void:
 	
 	for item_amount in item_amount_values:
 		item_amounts[item_amount.item] = item_amount
+#endregion

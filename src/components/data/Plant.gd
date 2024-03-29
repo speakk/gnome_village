@@ -2,6 +2,11 @@ class_name PlantComponent extends Component
 
 var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
+signal satisfies_growth_requirements
+signal lacks_growth_requirements
+signal advanced_growth_stage(new_stage_index: int)
+signal matured
+
 ## How long does it take to progress to next growth stage (in seconds)
 @export var growth_stage_time: float = 2.0
 @export var growth_stage_time_variance: float = 0.5
@@ -9,9 +14,9 @@ var ENTITY := load("res://src/entities/entity/Entity.tscn")
 @export var growth_requirements: Array[ItemRequirement]
 
 var managed_by_player := false
+var lacks_growth_requirements_emitted := false
 
 var _actual_grow_time: float
-
 
 var current_growth_timer: float = 0.0
 var current_growth_stage_index: int = -1:
@@ -20,12 +25,6 @@ var current_growth_stage_index: int = -1:
 		advanced_growth_stage.emit(current_growth_stage_index)
 
 var current_growth_scene: Variant
-
-signal satisfies_growth_requirements
-signal lacks_growth_requirements
-signal advanced_growth_stage(new_stage_index: int)
-signal matured
-
 var grows_in: GrowthSpotComponent
 
 func _init() -> void:
@@ -105,7 +104,6 @@ func advance_growth_stage() -> void:
 			if managed_by_player:
 				Events.plant.matured.emit(self)
 
-var lacks_growth_requirements_emitted := false
 
 func process_component(delta: float) -> void:
 	if not is_mature():
@@ -125,3 +123,64 @@ func process_component(delta: float) -> void:
 			
 			if managed_by_player:
 				Events.plant.lacks_growth_requirement.emit(grows_in)
+
+
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["growth_stage_time"] = growth_stage_time
+	dict["growth_stage_time_variance"] = growth_stage_time_variance
+	dict["growth_stages"] = growth_stages.map(func(growth_stage: GrowthStage) -> Dictionary:
+		return growth_stage.serialize()
+		)
+	dict["growth_requirements"] = growth_requirements.map(func(item_requirement: ItemRequirement) -> Dictionary:
+		return item_requirement.serialize()
+		)
+	
+	dict["managed_by_player"] = managed_by_player
+	dict["lacks_growth_requirements_emitted"] = lacks_growth_requirements_emitted
+	dict["_actual_grow_time"] = _actual_grow_time
+	dict["current_growth_timer"] = current_growth_timer
+	dict["current_growth_stage_index"] = current_growth_stage_index
+		
+	if current_growth_scene is PackedScene:
+		dict["current_growth_scene_path"] = current_growth_scene.resource_path
+	
+	if grows_in is GrowthSpotComponent:
+		dict["grows_in_owner_id"] = SaveSystem.get_save_id(grows_in.get_owner())
+	
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	growth_stage_time = dict["growth_stage_time"] 
+	growth_stage_time_variance = dict["growth_stage_time_variance"] 
+	growth_stages = dict["growth_stages"].map(func(growth_stage_dict: Dictionary) -> GrowthStage:
+		var growth_stage := GrowthStage.new()
+		growth_stage.deserialize(growth_stage_dict)
+		return growth_stage
+		)
+
+	growth_requirements = dict["growth_requirements"].map(func(growth_requirement_dict: Dictionary) -> ItemRequirement:
+		var growth_requirement := ItemRequirement.new()
+		growth_requirement.deserialize(growth_requirement_dict)
+		return growth_requirement
+		)
+	
+	managed_by_player = dict["managed_by_player"] 
+	lacks_growth_requirements_emitted = dict["lacks_growth_requirements_emitted"] 
+	_actual_grow_time = dict["_actual_grow_time"] 
+	current_growth_timer = dict["current_growth_timer"] 
+	current_growth_stage_index = dict["current_growth_stage_index"] 
+		
+	if dict["current_growth_scene_path"] is PackedScene:
+		current_growth_scene = load(dict["current_growth_scene_path"]).instantiate()
+	
+	if grows_in is GrowthSpotComponent:
+		SaveSystem.queue_entity_reference_by_id(SaveSystem.EntityReferenceEntry.new(
+			dict["grows_in_owner_id"], func(grows_in_owner: Entity) -> void:
+				grows_in = grows_in_owner.component_container.get_by_id(Components.Id.GrowthSpot)
+		))
+	
+#endregion

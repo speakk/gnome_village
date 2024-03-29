@@ -32,3 +32,17 @@ func on_exit() -> void:
 	super.on_exit()
 	var coordinate := Globals.get_map().global_position_to_coordinate(get_owner().global_position)
 	Events.terrain_cleared.emit(coordinate, _blueprint_status)
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["target_layer"] = target_layer
+	dict["mesh_id"] = mesh_id
+		
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	target_layer = dict["target_layer"]
+	mesh_id = dict["mesh_id"]
+#endregion

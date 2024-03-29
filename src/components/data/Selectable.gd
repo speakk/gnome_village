@@ -10,3 +10,15 @@ var selected: bool:
 			
 func _init() -> void:
 	id = Components.Id.Selectable
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["selected"] = selected
+		
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	selected = dict["selected"]
+#endregion
