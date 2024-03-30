@@ -14,6 +14,13 @@ class_name MainMap extends Node3D
 @onready var ground_grid: GridMap = $GroundGrid
 @onready var grass_multi_mesh: MultiMeshInstance3D = $GrassMultiMesh
 
+@onready var grid_definitions := {
+	grid = { map = grid, items = AboveGroundCells.values()},
+	blueprint_grid = { map = blueprint_grid, items = AboveGroundCells.values()},
+	ground_grid = { map = ground_grid, items = GroundCells.values()},
+}
+
+
 const MAP_SIZE_X: int = 200
 const MAP_SIZE_Y: int = 150
 const CELL_SIZE := Vector2(1, 1)
@@ -26,6 +33,12 @@ enum GroundCells {
 	Grass3 = 4,
 	RiverWater = 5,
 	RiverBank = 6
+}
+
+enum AboveGroundCells {
+	WoodenWall = 0,
+	Rock = 1,
+	Rock2 = 2
 }
 
 @onready var map_tile_selector := $MapTileSelector as MapTileSelector
@@ -134,64 +147,66 @@ func prepare_blueprint_grid() -> void:
 	
 	blueprint_grid.mesh_library = blueprint_mesh_library
 
-func prepare_for_load(clear: bool) -> void:
-	if clear:
-		map_entities.clear()
-		grid.clear()
-		blueprint_grid.clear()
-		ground_grid.clear()
-		PathFinder._reset()
-		
-		var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
-		var water_area_y_size := 40
-		var shore_wave_frequency := 0.05
-		var shore_wave_depth := 6
-		
-		for x in MAP_SIZE_X:
-			for y in MAP_SIZE_Y:
-				var coord := Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2)
-				if y < MAP_SIZE_Y - water_area_y_size - sin(x * shore_wave_frequency) * shore_wave_depth:
-					ground_grid.set_cell_item(coord, 0)
-					
-					var noise_value := rock_placement_noise.get_noise_2d(x, y)
-					if noise_value > 0.2:
-						var noise_value2 := rock_placement_noise.get_noise_2d(y*2, x*2)
-						if noise_value2 > -0.1:
-							grid.set_cell_item(coord, 1)
-						else:
-							grid.set_cell_item(coord, 2)
-						Events.solid_cell_placed.emit(Globals.truncate_vec3i(coord))
-				else:
-					ground_grid.set_cell_item(coord, 1)
+func clear_everything() -> void:
+	map_entities.clear()
+	grid.clear()
+	blueprint_grid.clear()
+	ground_grid.clear()
+	PathFinder._reset()
 
-		var rivers: int = 1
-
-		for i in rivers:
-			var river_start := Vector2i(randi_range(-MAP_SIZE_X/2, MAP_SIZE_X/2), MAP_SIZE_Y/2-1)
-			var river_start_angle := 3*PI/2
-			var river_coordinates: Array[Vector2i]
-			_create_river(river_start, 3, river_start_angle, river_coordinates)
-			for coordinate in river_coordinates:
-				var grid_coord := Globals.extend_vec2i(coordinate)
-				if ground_grid.get_cell_item(grid_coord) != GroundCells.Water:
-					ground_grid.set_cell_item(grid_coord, GroundCells.RiverWater)
-					grid.set_cell_item(grid_coord, -1)
+func create_world() -> void:
+	clear_everything()
+	
+	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
+	var water_area_y_size := 40
+	var shore_wave_frequency := 0.05
+	var shore_wave_depth := 6
+	
+	for x in MAP_SIZE_X:
+		for y in MAP_SIZE_Y:
+			var coord := Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2)
+			if y < MAP_SIZE_Y - water_area_y_size - sin(x * shore_wave_frequency) * shore_wave_depth:
+				ground_grid.set_cell_item(coord, 0)
 				
-					var surrounding := PathFinder.get_surrounding_coordinates(coordinate, true)
-					for surrounding_coord in surrounding:
-						var surrounding_cell := ground_grid.get_cell_item(Globals.extend_vec2i(surrounding_coord))
-						if surrounding_cell != GroundCells.RiverWater and surrounding_cell != GroundCells.Water:
-							ground_grid.set_cell_item(Globals.extend_vec2i(surrounding_coord), GroundCells.RiverBank)
+				var noise_value := rock_placement_noise.get_noise_2d(x, y)
+				if noise_value > 0.2:
+					var noise_value2 := rock_placement_noise.get_noise_2d(y*2, x*2)
+					if noise_value2 > -0.1:
+						grid.set_cell_item(coord, 1)
+					else:
+						grid.set_cell_item(coord, 2)
+					Events.solid_cell_placed.emit(Globals.truncate_vec3i(coord))
+			else:
+				ground_grid.set_cell_item(coord, 1)
 
-		_create_grass()
-		
-		for x in MAP_SIZE_X:
-			for y in MAP_SIZE_Y:
-				var final_x: int = x - MAP_SIZE_X/2
-				var final_y: int = y - MAP_SIZE_Y/2
-				var cell := ground_grid.get_cell_item(Vector3i(final_x, 0, final_y))
-				if cell == GroundCells.Water or cell == GroundCells.RiverWater:
-					PathFinder.set_coordinate_invalid(Vector2i(final_x, final_y))
+	var rivers: int = 1
+
+	for i in rivers:
+		var river_start := Vector2i(randi_range(-MAP_SIZE_X/2, MAP_SIZE_X/2), MAP_SIZE_Y/2-1)
+		var river_start_angle := 3*PI/2
+		var river_coordinates: Array[Vector2i]
+		_create_river(river_start, 3, river_start_angle, river_coordinates)
+		for coordinate in river_coordinates:
+			var grid_coord := Globals.extend_vec2i(coordinate)
+			if ground_grid.get_cell_item(grid_coord) != GroundCells.Water:
+				ground_grid.set_cell_item(grid_coord, GroundCells.RiverWater)
+				grid.set_cell_item(grid_coord, -1)
+			
+				var surrounding := PathFinder.get_surrounding_coordinates(coordinate, true)
+				for surrounding_coord in surrounding:
+					var surrounding_cell := ground_grid.get_cell_item(Globals.extend_vec2i(surrounding_coord))
+					if surrounding_cell != GroundCells.RiverWater and surrounding_cell != GroundCells.Water:
+						ground_grid.set_cell_item(Globals.extend_vec2i(surrounding_coord), GroundCells.RiverBank)
+
+	_create_grass()
+	
+	for x in MAP_SIZE_X:
+		for y in MAP_SIZE_Y:
+			var final_x: int = x - MAP_SIZE_X/2
+			var final_y: int = y - MAP_SIZE_Y/2
+			var cell := ground_grid.get_cell_item(Vector3i(final_x, 0, final_y))
+			if cell == GroundCells.Water or cell == GroundCells.RiverWater:
+				PathFinder.set_coordinate_invalid(Vector2i(final_x, final_y))
 
 var width_shapes: Dictionary = {
 	1: [Vector2i(0, 0)],
@@ -476,6 +491,38 @@ func global_position_to_coordinate(_global_position: Vector3) -> Vector2i:
 	var coordinate: Vector3i = grid.local_to_map(grid.to_local(_global_position))
 	return Vector2i(coordinate.x, coordinate.z)
 
+func _serialize_grid_map(items: Array, map: GridMap) -> Dictionary:
+	var dict: Dictionary
+	for item: int in items:
+		dict[item] = map.get_used_cells_by_item(item).map(func(vec: Vector3i) -> Dictionary:
+			return {
+				x = vec.x, y = vec.y, z = vec.z
+			}
+			)
+	
+	return {
+		map_cells_by_item = dict
+	}
+
 # TODO: Do
 func serialize() -> Dictionary:
-	return {}
+	var grids: Dictionary = {}
+	
+	for key: String in grid_definitions.keys():
+		var definition: Dictionary = grid_definitions[key]
+		grids[key] = _serialize_grid_map(definition.items, definition.map) 
+	
+	return {
+		grids = grids
+	}
+
+func deserialize(dict: Dictionary) -> void:
+	clear_everything()
+	
+	for grid_definition_key: String in dict["grids"].keys():
+		var grid_map: GridMap = grid_definitions[grid_definition_key].map
+		var grid_dict: Dictionary = dict["grids"][grid_definition_key]
+		for cell_id: int in grid_dict["map_cells_by_item"].keys():
+			for coord_dict: Dictionary in grid_dict["map_cells_by_item"][cell_id]:
+				var coord: Vector3i = Vector3i(coord_dict["x"], coord_dict["y"], coord_dict["z"])
+				grid_map.set_cell_item(coord, cell_id)

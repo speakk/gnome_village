@@ -46,7 +46,7 @@ func new_game() -> void:
 func create_world() -> void:
 	_clear_entities()
 	#PathFinder.prepare_for_load()
-	main_map.prepare_for_load(true)
+	main_map.create_world()
 	
 	var test_divider := 1
 	var map_size_real_x := MainMap.MAP_SIZE_X / test_divider
@@ -196,8 +196,10 @@ func _save_callable() -> Dictionary:
 	}
 	
 func _load_callable(save_dict: Dictionary) -> void:
+	main_map.deserialize(save_dict["map"])
+	
 	for entity_dict: Dictionary in save_dict["entities"]:
-		var entity: Entity = Entity.deserialize(%Entities, entity_dict)
+		Entity.deserialize(%Entities, entity_dict)
 
 func quick_load() -> void:
 	save_system.quick_load()
