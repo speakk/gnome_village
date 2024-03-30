@@ -30,3 +30,18 @@ func create_action(actor: Settler) -> ActorAction:
 
 func get_target(actor: Settler) -> Vector3:
 	return target.global_position
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["target_id"] = SaveSystem.get_save_id(target)
+	
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	SaveSystem.queue_entity_reference_by_id(
+		SaveSystem.EntityReferenceEntry.new(dict["target_id"], func(new_target: Entity) -> void:
+		target = new_target
+		))
+#endregion

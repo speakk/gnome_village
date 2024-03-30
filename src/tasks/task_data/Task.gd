@@ -11,7 +11,6 @@ signal cancelled()
 signal finished()
 
 var is_being_worked_on := false
-var tree_root := false
 
 enum OrderType {
 	Sequence, Parallel, None
@@ -88,6 +87,7 @@ func serialize() -> Dictionary:
 		resource_path = scene_file_path,
 		task_id = task_id,
 		task_name = task_name,
+		order_type = order_type,
 		animation_name = animation_name,
 		task_actuator_scene_path = task_actuator_scene.resource_path,
 		is_being_worked_on = is_being_worked_on,
@@ -108,6 +108,7 @@ func deserialize(dict: Dictionary) -> void:
 	task_id = dict["task_id"]
 	task_name = dict["task_name"]
 	animation_name = dict["animation_name"]
+	order_type = dict["order_type"]
 	task_actuator_scene = load(dict["task_actuator_scene_path"])
 	is_being_worked_on = dict["is_being_worked_on"]
 	is_finished = dict["is_finished"]
@@ -117,6 +118,11 @@ func deserialize(dict: Dictionary) -> void:
 		subtask.deserialize(subtask_dict)
 		return subtask
 		))
+	
+	if dict.has("_parent_task_id"):
+		SaveSystem.queue_entity_reference_by_id(SaveSystem.EntityReferenceEntry.new(dict["_parent_task_id"], func(new_parent: Variant) -> void:
+			_parent_task = new_parent
+			))
 
 static func static_deserialize(dict: Dictionary) -> Task:
 	var task: Task = load(dict["resource_path"]).initialize()

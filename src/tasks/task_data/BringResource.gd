@@ -32,3 +32,20 @@ func _init(params: Dictionary) -> void:
 	#inventory_component = SaveSystem.get_saved_entity(save_dict["inventory_component_id"])
 	#target_coordinate = Vector2i(save_dict["target_coordinate.x"], save_dict["target_coordinate.y"])
 	#item_requirement = SaveSystem.get_saved_entity(save_dict["item_requirement_id"])
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["target_coordinate.x"] = target_coordinate.x
+	dict["target_coordinate.y"] = target_coordinate.y
+	dict["item_requirement"] = item_requirement.serialize()
+	dict["inventory_owner_id"] = SaveSystem.get_save_id(inventory_component.get_owner())
+	
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	SaveSystem.queue_entity_reference_by_id(SaveSystem.EntityReferenceEntry.new(dict["inventory_owner_id"], func(inv_owner: Entity) -> void:
+		inventory_component = inv_owner.component_container.get_by_id(Components.Id.Inventory)
+		))
+#endregion

@@ -31,3 +31,16 @@ func _init(growth_spot: GrowthSpotComponent) -> void:
 
 func _handle_task_failure() -> void:
 	print("Feed plants bring task failed")
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["_growth_spot_owner_id"] = SaveSystem.get_save_id(_growth_spot.get_owner())
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	SaveSystem.queue_entity_reference_by_id(SaveSystem.EntityReferenceEntry.new(dict["_growth_spot_owner_id"], func(growth_spot_owner: Entity) -> void:
+		_growth_spot = growth_spot_owner.component_container.get_by_id(Components.Id.GrowthSpot)
+		))
+#endregion

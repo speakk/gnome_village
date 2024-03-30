@@ -48,3 +48,16 @@ func _ready() -> void:
 
 func _handle_task_failure() -> void:
 	pass
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["blueprint_id"] = SaveSystem.get_save_id(blueprint)
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	SaveSystem.queue_entity_reference_by_id(SaveSystem.EntityReferenceEntry.new(dict["blueprint_id"], func(new_blueprint: Entity) -> void:
+		blueprint = new_blueprint
+		))
+#endregion
