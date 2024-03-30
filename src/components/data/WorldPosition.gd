@@ -12,7 +12,8 @@ var current_position: Vector3:
 			position_changed.emit(current_position, new_value, coordinate, new_coordinate)
 		current_position = new_value
 		coordinate = new_coordinate
-		component_owner.global_position = new_value
+		if component_owner:
+			component_owner.global_position = new_value
 
 static func set_world_position(node: Node3D, world_position: Vector3) -> void:
 	var world_position_component: WorldPositionComponent = node.component_container.get_by_id(Components.Id.WorldPosition)

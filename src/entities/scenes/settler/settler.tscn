@@ -98,13 +98,13 @@ script = ExtResource("2_u05q8")
 utility_agent = NodePath("UtilityAiAgent")
 task_handler = NodePath("TaskHandler")
 
-[node name="CarryItemNode" type="Node3D" parent="." index="5"]
+[node name="CarryItemNode" type="Node3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.822335, 0)
 
-[node name="settler" parent="." index="6" instance=ExtResource("2_krb1r")]
+[node name="settler" parent="." index="5" instance=ExtResource("2_krb1r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00430357, -0.5, -0.097248)
 
-[node name="HammerSounds" type="Node3D" parent="." index="7"]
+[node name="HammerSounds" type="Node3D" parent="." index="6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00430357, -0.5, -0.097248)
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="HammerSounds" index="0"]
@@ -139,16 +139,16 @@ max_distance = 147.16
 bus = &"Environment"
 attenuation_filter_db = -9.1
 
-[node name="AnimationPlayerAudio" type="AnimationPlayer" parent="." index="8"]
+[node name="AnimationPlayerAudio" type="AnimationPlayer" parent="." index="7"]
 libraries = {
 "": SubResource("AnimationLibrary_tjr5p")
 }
 
-[node name="UtilityAiEvaluators" type="Node" parent="." index="9" node_paths=PackedStringArray("container")]
+[node name="UtilityAiEvaluators" type="Node" parent="." index="8" node_paths=PackedStringArray("container")]
 script = ExtResource("11_d4onw")
 container = NodePath("../ComponentContainer")
 
-[node name="UtilityAiAgent" type="Node" parent="." index="10"]
+[node name="UtilityAiAgent" type="Node" parent="." index="9"]
 script = ExtResource("7_5pobx")
 processing_interval = 0.5
 
@@ -208,10 +208,10 @@ node = NodePath("../../../../UtilityAiEvaluators")
 property_name = "get_time_of_day"
 curve = SubResource("Curve_1g8wt")
 
-[node name="TaskHandler" parent="." index="11" node_paths=PackedStringArray("settler") instance=ExtResource("12_xlj2u")]
+[node name="TaskHandler" parent="." index="10" node_paths=PackedStringArray("settler") instance=ExtResource("12_xlj2u")]
 settler = NodePath("..")
 
-[node name="EatingSound" type="AudioStreamPlayer3D" parent="." index="12"]
+[node name="EatingSound" type="AudioStreamPlayer3D" parent="." index="11"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00430357, 0.5, 0.097248)
 stream = ExtResource("13_nspl2")
 volume_db = 0.02
@@ -219,6 +219,6 @@ max_distance = 147.16
 bus = &"Environment"
 attenuation_filter_db = -9.1
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="13"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="12"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.476605, 0)
 mesh = SubResource("TorusMesh_p67ao")

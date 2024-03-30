@@ -35,8 +35,10 @@ func _ready() -> void:
 		if component is InventoryComponent:
 			component.item_added.connect(self._inventory_item_added)
 			component.item_removed.connect(self._inventory_item_removed)
+			
+			inventory = component
 		)
-
+		
 	play_animation("Idle")
 	
 	var original_position := global_position

@@ -110,11 +110,11 @@ func serialize() -> Dictionary:
 
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
-	requirements = dict["requirements"].map(func(requirement_dict: Dictionary) -> ItemRequirement:
+	requirements.assign(dict["requirements"].map(func(requirement_dict: Dictionary) -> ItemRequirement:
 		var new_requirement := ItemRequirement.new()
 		new_requirement.deserialize(requirement_dict)
 		return new_requirement
-		)
+		))
 	solid_when_started = dict["solid_when_started"]
 	can_be_dismantled = dict["can_be_dismantled"]
 	max_durability = dict["max_durability"]
