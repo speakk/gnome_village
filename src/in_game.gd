@@ -161,7 +161,7 @@ func _load_callable(save_dict: Dictionary) -> void:
 	main_map.deserialize(save_dict["map"])
 	
 	for entity_dict: Dictionary in save_dict["entities"]:
-		Entity.deserialize(%Entities, entity_dict)
+		Entity.static_deserialize(%Entities, entity_dict)
 	
 	TaskManager.deserialize(save_dict["task_manager"])
 

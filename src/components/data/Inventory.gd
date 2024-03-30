@@ -91,6 +91,7 @@ func deserialize(dict: Dictionary) -> void:
 	item_amount_values.assign(dict["item_amounts"].map(func(item_amount_dict: Dictionary) -> ItemAmountComponent:
 		var item_amount := ItemAmountComponent.new()
 		item_amount.deserialize(item_amount_dict)
+		item_amount.set_owner(component_owner)
 		return item_amount
 	))
 	

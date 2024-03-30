@@ -47,6 +47,7 @@ func recheck_processing_mode() -> void:
 
 func add_component(component: Component) -> Component:
 	var duplicated: Component = component.duplicate()
+	assert(component_owner, "Component owner missing in add_component")
 	duplicated.set_owner(component_owner)
 	_components.append(duplicated)
 	_components_by_id[duplicated.id] = duplicated

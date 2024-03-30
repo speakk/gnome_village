@@ -87,3 +87,17 @@ func is_available_for_work() -> bool:
 
 func get_task_status() -> int:
 	return current_task_actuator.get_last_tick_status()
+
+func serialize() -> Dictionary:
+	var dict: Dictionary
+	if current_task_actuator:
+		dict["task_id"] = SaveSystem.get_save_id(current_task_actuator.task)
+	
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	if dict.has("task_id"):
+		SaveSystem.queue_entity_reference_by_id(SaveSystem.EntityReferenceEntry.new(
+			dict["task_id"], func(new_task: Task) -> void:
+				call_deferred("start_task", new_task)
+		))

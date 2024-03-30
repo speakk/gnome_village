@@ -79,7 +79,7 @@ func serialize() -> Dictionary:
 	
 	return dict
 
-static func deserialize(parent: Node, dict: Dictionary) -> Entity:
+static func static_deserialize(parent: Node, dict: Dictionary) -> Entity:
 	var entity: Entity
 	
 	# TODO: Do we need this logic like this?
@@ -93,5 +93,9 @@ static func deserialize(parent: Node, dict: Dictionary) -> Entity:
 	entity.component_container.component_owner = entity
 	entity.component_container.deserialize(dict["component_container"])
 	entity.set_meta("save_id", dict["save_id"])
+	entity.deserialize(dict)
 	SaveSystem.register_entity_reference(entity)
 	return entity
+
+func deserialize(dict: Dictionary) -> void:
+	pass

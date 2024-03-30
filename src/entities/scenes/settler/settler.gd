@@ -168,3 +168,12 @@ func play_eating_sound() -> void:
 func _utility_ai_action_changed(utility_ai_task_id: String) -> void:
 	task_handler.handle_utility_ai_task(utility_ai_task_id)
 	#print("New action: %s" % utility_ai_task_id)
+
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["task_handler"] = task_handler.serialize()
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	task_handler.deserialize(dict["task_handler"])
