@@ -84,16 +84,19 @@ func get_target(actor: Settler) -> Vector3:
 
 func serialize() -> Dictionary:
 	var dict: Dictionary = {
-		resource_path = scene_file_path,
-		task_id = task_id,
-		task_name = task_name,
-		order_type = order_type,
-		animation_name = animation_name,
-		task_actuator_scene_path = task_actuator_scene.resource_path,
-		is_being_worked_on = is_being_worked_on,
-		is_finished = is_finished,
-		has_failed = has_failed,
+		"resource_path": get_script().get_path(),
+		"task_id": task_id,
+		"task_name": task_name,
+		"order_type": order_type,
+		"animation_name": animation_name,
+		"is_being_worked_on": is_being_worked_on,
+		"is_finished": is_finished,
+		"has_failed": has_failed,
+		"save_id": SaveSystem.get_save_id(self)
 	}
+	
+	if task_actuator_scene:
+		dict["task_actuator_scene_path"] = task_actuator_scene.resource_path
 	
 	if _parent_task:
 		dict["_parent_task_id"] = SaveSystem.get_save_id(_parent_task)
@@ -109,15 +112,21 @@ func deserialize(dict: Dictionary) -> void:
 	task_name = dict["task_name"]
 	animation_name = dict["animation_name"]
 	order_type = dict["order_type"]
-	task_actuator_scene = load(dict["task_actuator_scene_path"])
 	is_being_worked_on = dict["is_being_worked_on"]
 	is_finished = dict["is_finished"]
 	has_failed = dict["has_failed"]
-	_subtasks.assign(dict["_subtasks"].map(func(subtask_dict: Dictionary) -> Task:
+	
+	set_meta("save_id", dict["save_id"])
+	SaveSystem.register_entity_reference(self)
+	
+	if dict.has("task_actuator_scene_path"):
+		task_actuator_scene = load(dict["task_actuator_scene_path"])
+	
+	for subtask_dict: Dictionary in dict["_subtasks"]:
 		var subtask := static_deserialize(subtask_dict)
 		subtask.deserialize(subtask_dict)
-		return subtask
-		))
+		register_subtask(subtask)
+
 	
 	if dict.has("_parent_task_id"):
 		SaveSystem.queue_entity_reference_by_id(SaveSystem.EntityReferenceEntry.new(dict["_parent_task_id"], func(new_parent: Variant) -> void:
@@ -125,5 +134,5 @@ func deserialize(dict: Dictionary) -> void:
 			))
 
 static func static_deserialize(dict: Dictionary) -> Task:
-	var task: Task = load(dict["resource_path"]).initialize()
+	var task: Task = load(dict["resource_path"]).new()
 	return task

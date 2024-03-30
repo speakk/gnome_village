@@ -22,6 +22,9 @@ var reserved_for_dismantling := false:
 		else:
 			get_container().remove_component(Components.Id.DismantleIndicator)
 
+# TODO: This is the pain point
+# BringResource is serializing inventory with get_owner
+# then deserializing with.... Hmm
 var _inventory: InventoryComponent = InventoryComponent.new()
 
 var is_finished := false

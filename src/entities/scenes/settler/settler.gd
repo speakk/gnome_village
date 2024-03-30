@@ -27,17 +27,24 @@ enum TaskResult {
 	RUNNING
 }
 
+func prep_inventory(inventory_component: InventoryComponent) -> void:
+	inventory_component.item_added.connect(self._inventory_item_added)
+	inventory_component.item_removed.connect(self._inventory_item_removed)
+	inventory = inventory_component
+
 func _ready() -> void:
 	super._ready()
 	name = "Settler"
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
-	component_container.component_added.connect(func(component: Component) -> void:
-		if component is InventoryComponent:
-			component.item_added.connect(self._inventory_item_added)
-			component.item_removed.connect(self._inventory_item_removed)
-			
-			inventory = component
-		)
+	
+	var existing_inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
+	if existing_inventory:
+		prep_inventory(existing_inventory)
+	else:
+		component_container.component_added.connect(func(component: Component) -> void:
+			if component is InventoryComponent:
+				prep_inventory(component)
+			)
 		
 	play_animation("Idle")
 	

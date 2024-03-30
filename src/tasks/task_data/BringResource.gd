@@ -4,10 +4,13 @@ var target_coordinate: Vector2i
 var item_requirement: ItemRequirement
 var inventory_component: InventoryComponent
 
-func _init(params: Dictionary) -> void:
+func _init(params: Variant = null) -> void:
 	task_id = Tasks.TaskId.BringResource
 	task_name = "Bring resource"
 	task_actuator_scene = preload("res://src/tasks/task_actuators/bring_resource.tscn")
+	
+	if not params is Dictionary:
+		return
 	
 	if params.has("target_coordinate"):
 		target_coordinate = params["target_coordinate"]
@@ -45,7 +48,11 @@ func serialize() -> Dictionary:
 
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
+	target_coordinate = Vector2i(dict["target_coordinate.x"], dict["target_coordinate.y"])
+	item_requirement = ItemRequirement.new()
+	item_requirement.deserialize(dict["item_requirement"])
 	SaveSystem.queue_entity_reference_by_id(SaveSystem.EntityReferenceEntry.new(dict["inventory_owner_id"], func(inv_owner: Entity) -> void:
-		inventory_component = inv_owner.component_container.get_by_id(Components.Id.Inventory)
+		# TODO: Oof no
+		inventory_component = inv_owner.component_container.get_by_id(Components.Id.Constructable)._inventory
 		))
 #endregion

@@ -1,12 +1,17 @@
 class_name BlueprintTree extends Task
 
-var blueprint: Entity
+var blueprint: Entity:
+	set(_blueprint):
+		blueprint = _blueprint
 
-func _init(tile_target: Vector2i, _blueprint: Entity) -> void:
+func _init(tile_target: Variant = null, _blueprint: Entity = null) -> void:
 	task_name = "Construct blueprint"
 	name = "BlueprintTree"
 	order_type = Task.OrderType.Sequence
 	blueprint = _blueprint
+	
+	if not _blueprint:
+		return
 	
 	var item := blueprint.definition
 	var constructable_component: ConstructableComponent = _blueprint.component_container.get_by_id(Components.Id.Constructable)

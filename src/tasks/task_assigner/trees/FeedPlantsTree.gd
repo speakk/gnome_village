@@ -2,11 +2,14 @@ class_name FeedPlantsTree extends Task
 
 var _growth_spot: GrowthSpotComponent
 
-func _init(growth_spot: GrowthSpotComponent) -> void:
+func _init(growth_spot: GrowthSpotComponent = null) -> void:
 	task_name = "Tend plants"
 	name = "FeedPlantsTree"
-
 	order_type = Task.OrderType.Parallel
+	
+	if not growth_spot:
+		return
+	
 	_growth_spot = growth_spot
 	var plant_component: PlantComponent = growth_spot.plant_component
 	var growth_requirements := plant_component.growth_requirements

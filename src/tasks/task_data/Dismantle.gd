@@ -2,10 +2,12 @@ class_name DismantleTask extends Task
 
 var target: Entity
 
-func _init(params: Dictionary) -> void:
+func _init(params: Variant = null) -> void:
 	task_id = Tasks.TaskId.Dismantle
 	task_name = "Dismantle"
 	animation_name = "Build"
+	
+	if not params is Dictionary: return
 	
 	target = params["target"]
 	target.component_container.get_by_id(Components.Id.Constructable).reserved_for_dismantling = true

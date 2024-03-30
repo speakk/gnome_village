@@ -175,7 +175,7 @@ func serialize() -> Dictionary:
 	tasks.assign($Tasks.get_children())
 	
 	return {
-		tasks: tasks.map(func(task: Task) -> Dictionary:
+		"tasks": tasks.map(func(task: Task) -> Dictionary:
 			return task.serialize()
 			)
 	}
@@ -184,5 +184,6 @@ func deserialize(dict: Dictionary) -> void:
 	clear_tasks()
 	
 	for task_dict: Dictionary in dict["tasks"]:
-		var task := Task.static_deserialize(%Tasks, task_dict)
+		var task := Task.static_deserialize(task_dict)
+		$Tasks.add_child(task)
 		task.deserialize(task_dict)

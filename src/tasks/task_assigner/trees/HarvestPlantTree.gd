@@ -2,9 +2,13 @@ class_name HarvestPlantTree extends Task
 
 var _plant: PlantComponent
 
-func _init(plant: PlantComponent) -> void:
+func _init(plant: PlantComponent = null) -> void:
 	task_name = "Harvest plant"
 	order_type = Task.OrderType.Sequence
+	
+	if not plant:
+		return
+	
 	_plant = plant
 	
 	var task := DismantleTask.new({

@@ -2,10 +2,12 @@ class_name BuildTask extends Task
 
 var constructable_component: ConstructableComponent
 
-func _init(params: Dictionary) -> void:
+func _init(params: Variant = null) -> void:
 	task_id = Tasks.TaskId.Build
 	task_name = "Build"
 	animation_name = "Build"
+	
+	if not params is Dictionary: return
 	
 	constructable_component = params["constructable_component"]
 #

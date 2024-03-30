@@ -2,10 +2,12 @@ class_name EatTask extends Task
 
 var consumable: ConsumableComponent
 
-func _init(params: Dictionary) -> void:
+func _init(params: Variant = null) -> void:
 	task_id = Tasks.TaskId.Eat
 	task_name = "Eat food"
 	animation_name = "Eat"
+	
+	if not params is Dictionary: return
 	
 	consumable = params["consumable"]
 	consumable.reserved = true
