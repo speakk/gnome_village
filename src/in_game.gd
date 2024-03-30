@@ -200,6 +200,8 @@ func _load_callable(save_dict: Dictionary) -> void:
 	
 	for entity_dict: Dictionary in save_dict["entities"]:
 		Entity.deserialize(%Entities, entity_dict)
+	
+	TaskManager.deserialize(save_dict["task_manager"])
 
 func quick_load() -> void:
 	save_system.quick_load()

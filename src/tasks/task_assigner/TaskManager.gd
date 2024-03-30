@@ -166,6 +166,23 @@ func find_unfinished_task_in_tree(task: Task) -> NodeResult:
 	else:
 		return NodeResult.new(task, NodeStatus.FoundTask)
 
-# TODO: Do
+func clear_tasks() -> void:
+	for child in $Tasks.get_children():
+		child.queue_free()
+
 func serialize() -> Dictionary:
-	return {}
+	var tasks: Array[Task]
+	tasks.assign($Tasks.get_children())
+	
+	return {
+		tasks: tasks.map(func(task: Task) -> Dictionary:
+			return task.serialize()
+			)
+	}
+
+func deserialize(dict: Dictionary) -> void:
+	clear_tasks()
+	
+	for task_dict: Dictionary in dict["tasks"]:
+		var task := Task.static_deserialize(%Tasks, task_dict)
+		task.deserialize(task_dict)

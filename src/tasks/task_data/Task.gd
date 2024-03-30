@@ -83,16 +83,41 @@ func create_action(actor: Settler) -> ActorAction:
 func get_target(actor: Settler) -> Vector3:
 	return Vector3(-9999, -9999, -9999)
 
-func save() -> Dictionary:
-	var save_dict := {
-		"is_being_worked_on" = is_being_worked_on,
-		"is_finished" = is_finished,
-		"has_failed" = has_failed,
+func serialize() -> Dictionary:
+	var dict: Dictionary = {
+		resource_path = scene_file_path,
+		task_id = task_id,
+		task_name = task_name,
+		animation_name = animation_name,
+		task_actuator_scene_path = task_actuator_scene.resource_path,
+		is_being_worked_on = is_being_worked_on,
+		is_finished = is_finished,
+		has_failed = has_failed,
 	}
 	
-	return save_dict
+	if _parent_task:
+		dict["_parent_task_id"] = SaveSystem.get_save_id(_parent_task)
 
-func load_save(save_dict: Dictionary) -> void:
-	is_being_worked_on = save_dict["is_being_worked_on"]
-	is_finished = save_dict["is_finished"]
-	has_failed = save_dict["has_failed"]
+	dict["_subtasks"] = _subtasks.map(func(subtask: Task) -> Dictionary:
+		return subtask.serialize()
+		)
+	
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	task_id = dict["task_id"]
+	task_name = dict["task_name"]
+	animation_name = dict["animation_name"]
+	task_actuator_scene = load(dict["task_actuator_scene_path"])
+	is_being_worked_on = dict["is_being_worked_on"]
+	is_finished = dict["is_finished"]
+	has_failed = dict["has_failed"]
+	_subtasks.assign(dict["_subtasks"].map(func(subtask_dict: Dictionary) -> Task:
+		var subtask := static_deserialize(subtask_dict)
+		subtask.deserialize(subtask_dict)
+		return subtask
+		))
+
+static func static_deserialize(dict: Dictionary) -> Task:
+	var task: Task = load(dict["resource_path"]).initialize()
+	return task
