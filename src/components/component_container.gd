@@ -113,7 +113,7 @@ func clear_components() -> void:
 	for component in get_all():
 		remove_component(component.id)
 
-func deserialize(parent: Node, dict: Dictionary) -> void:
+func deserialize(dict: Dictionary) -> void:
 	clear_components()
 	for component_dict: Dictionary in dict["components"]:
 		var component: Component = Component.static_deserialize(component_dict)

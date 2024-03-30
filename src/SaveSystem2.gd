@@ -32,23 +32,33 @@ func register_save_method(save_method: SaveMethod) -> void:
 	save_methods.append(save_method)
 
 func save_game() -> void:
+	clear_state()
 	var save_dict: Dictionary
 	
 	for save_method in save_methods:
 		save_dict[save_method.dict_key] = save_method.save_callable.call()
 
+	save_dict["current_save_id"] = current_save_id
+	
 	var save_file := FileAccess.open("user://savegame.save", FileAccess.WRITE)
 	save_file.store_line(var_to_str(save_dict))
 
 func load_game(save_name: String) -> void:
+	clear_state()
 	var save_file := FileAccess.open("user://%s.save" % save_name, FileAccess.READ)
 	var dict: Dictionary = str_to_var(save_file.get_as_text())
+	
+	current_save_id = dict["current_save_id"]
 	
 	for save_method in save_methods:
 		save_method.load_callable.call(dict[save_method.dict_key])
 	
 	for entity_reference_entry in entity_reference_queue:
 		entity_reference_entry.callable.call(entity_references[entity_reference_entry.save_id])
+
+func clear_state() -> void:
+	entity_references.clear()
+	entity_reference_queue.clear()
 
 func quick_load() -> void:
 	load_game("savegame")

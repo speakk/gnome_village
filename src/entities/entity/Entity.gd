@@ -80,12 +80,18 @@ func serialize() -> Dictionary:
 	return dict
 
 static func deserialize(parent: Node, dict: Dictionary) -> Entity:
-	var entity: Entity = load(dict["scene_path"]).instantiate()
-	parent.add_child(entity)
+	var entity: Entity
+	
+	# TODO: Do we need this logic like this?
 	if dict.has("definition"):
-		entity.definition = EntityDefinition.deserialize(dict["definition"])
+		entity = from_definition(EntityDefinition.deserialize(dict["definition"]))
+	else:
+		entity = load(dict["scene_path"]).instantiate()
+	
+	parent.add_child(entity)
+	
 	entity.component_container.component_owner = entity
-	entity.component_container.deserialize(entity, dict["component_container"])
+	entity.component_container.deserialize(dict["component_container"])
 	entity.set_meta("save_id", dict["save_id"])
 	SaveSystem.register_entity_reference(entity)
 	return entity

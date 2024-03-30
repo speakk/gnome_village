@@ -35,7 +35,7 @@ func prep_inventory(inventory_component: InventoryComponent) -> void:
 func _ready() -> void:
 	super._ready()
 	name = "Settler"
-	Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
+	#Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
 	
 	var existing_inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
 	if existing_inventory:

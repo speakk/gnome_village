@@ -141,44 +141,6 @@ func _process(delta: float) -> void:
 	#},
 ] as Array[Dictionary]
 
-#func load_save(data: Dictionary) -> void:
-	#PathFinder.prepare_for_load()
-	#main_map.prepare_for_load(true)
-	#
-	#await get_tree().physics_frame
-	#
-	#for container in containers:
-		#for entity in container["node"].get_children() as Array[Node]:
-			#entity.queue_free()
-		#
-		#var entity_ids: Array[int]
-		#entity_ids.assign(data["main_data"][container["data_name"]])
-		#
-		#for entity_id in entity_ids:
-			#var entity: Variant = SaveSystem.get_saved_entity(entity_id)
-			#print("Adding child right?", entity)
-			#if not entity is Resource:
-				#container["node"].add_child(entity)
-			##SaveSystem.load_entity(entity)
-
-# old save
-#func save(save_dict: Dictionary) -> void:
-	#var main_data: Dictionary = {}
-	#main_data["entities"] = []
-	#main_data["tasks"] = []
-	#
-	#for container in containers:
-		#for entity in container["node"].get_children() as Array[Node]:
-			#if entity.has_method("save"):
-				#var entity_id := SaveSystem.save_entity(entity)
-				#main_data[container["data_name"]].append(entity_id)
-			#else:
-				#pass
-				##push_warning("Entity did not have save method defined: ", entity)
-	#
-	#save_dict["main_data"] = main_data
-##
-
 func _save_callable() -> Dictionary:
 	var entities := get_tree().get_nodes_in_group("entity")
 	var entity_dicts: Array[Dictionary]
@@ -205,29 +167,6 @@ func _load_callable(save_dict: Dictionary) -> void:
 
 func quick_load() -> void:
 	save_system.quick_load()
-
-func create_ground_entities() -> void:
-	for iter_x in MainMap.MAP_SIZE_X:
-		for iter_y in MainMap.MAP_SIZE_Y:
-			var x: int = iter_x - MainMap.MAP_SIZE_X/2
-			var y: int = iter_y - MainMap.MAP_SIZE_Y/2
-			var mesh_id: int = main_map.ground_grid.get_cell_item(Vector3i(x, 0, y))
-			if mesh_id == 0:
-				var entity: Entity = ENTITY.instantiate()
-				entity.show_amount_number = false
-				main_map.add_map_entity(Vector2i(x, y), entity)
-				entities.add_child(entity)
-				entity.hide()
-				entity.process_mode = Node.PROCESS_MODE_DISABLED
-				entity.component_container.component_owner = entity
-				var inventory: InventoryComponent = InventoryComponent.new()
-				inventory.pre_filled = [ItemRequirement.new(preload("res://src/entities/definitions/water.tres"), 100)]
-				inventory.items_can_be_picked = false
-				entity.component_container.add_component(inventory)
-				var world_pos: WorldPositionComponent = WorldPositionComponent.new()
-				world_pos = entity.component_container.add_component(world_pos)
-				world_pos.current_position = main_map.coordinate_to_global_position(Vector2i(x, y))
-
 
 func _current_time_changed(new_time: float) -> void:
 	sky.time_of_day_setup = new_time
