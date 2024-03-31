@@ -48,16 +48,11 @@ func _init(_item: EntityDefinition = null, _amount: int = 0) -> void:
 func serialize() -> Dictionary:
 	var dict := super.serialize()
 	dict["amount"] = amount
-	
-	# TODO: Should never actually be null
-	if item:
-		dict["item"] = item.serialize()
-		
+	dict["item"] = item.serialize()
 	return dict
 
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
 	amount = dict["amount"]
-	if dict.has("item"):
-		item = EntityDefinition.deserialize(dict["item"])
+	item = EntityDefinition.deserialize(dict["item"])
 #endregion

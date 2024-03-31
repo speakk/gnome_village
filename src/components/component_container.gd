@@ -46,6 +46,9 @@ func recheck_processing_mode() -> void:
 		process_mode = PROCESS_MODE_DISABLED
 
 func add_component(component: Component) -> Component:
+	if has_component(component.id):
+		remove_component(component.id)
+	
 	var duplicated: Component = component.duplicate()
 	assert(component_owner, "Component owner missing in add_component")
 	duplicated.set_owner(component_owner)
@@ -93,9 +96,6 @@ func remove_component(component_id: Components.Id) -> void:
 func subscribe(subscriber_id: Components.Id, target_id: Components.Id, callable: Callable) -> void:
 	_subscriptions.append(Subscription.new(subscriber_id, target_id, callable))
 
-func clear() -> void:
-	_components.clear()
-
 func _physics_process(delta: float) -> void:
 	for component in get_all():
 		if component.has_method("process_component"):
@@ -111,7 +111,7 @@ func serialize() -> Dictionary:
 	}
 
 func clear_components() -> void:
-	for component in get_all():
+	for component: Component in get_all().duplicate():
 		remove_component(component.id)
 
 func deserialize(dict: Dictionary) -> void:

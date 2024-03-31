@@ -526,5 +526,9 @@ func deserialize(dict: Dictionary) -> void:
 			for coord_dict: Dictionary in grid_dict["map_cells_by_item"][cell_id]:
 				var coord: Vector3i = Vector3i(coord_dict["x"], coord_dict["y"], coord_dict["z"])
 				grid_map.set_cell_item(coord, cell_id)
+				
+				# TODO: Handle grid map collisions properly
+				if grid_definition_key == "grid":
+					PathFinder.set_coordinate_invalid(Globals.truncate_vec3i(coord))
 
 	_create_grass()
