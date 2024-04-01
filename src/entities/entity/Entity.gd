@@ -10,6 +10,7 @@ var default_components: Array[Component] = [
 ]
 
 var show_amount_number := true
+var _should_set_components := true
 
 var definition: EntityDefinition:
 	set(new_definition):
@@ -28,7 +29,8 @@ func _amount_changed(new_amount: int) -> void:
 
 func _ready() -> void:
 	set_notify_transform(true)
-	set_item_components()
+	if _should_set_components:
+		set_item_components()
 	#var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
 	#item_amount.amount_changed.connect(func(new_amount: int) -> void:
 		#if new_amount > 1:
@@ -100,6 +102,8 @@ static func static_deserialize(parent: Node, dict: Dictionary) -> Entity:
 		entity = from_definition(EntityDefinition.deserialize(dict["definition"]), false)
 	else:
 		entity = load(dict["scene_path"]).instantiate()
+	
+	entity._should_set_components = false
 	
 	parent.add_child(entity)
 	

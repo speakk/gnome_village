@@ -80,8 +80,7 @@ func add_component(component: Component) -> Component:
 func remove_component(component_id: Components.Id) -> void:
 	var matching: Component = _components_by_id[component_id]
 	
-	if matching.has_method("on_exit"):
-		matching.on_exit()
+	matching.on_exit()
 	_components.erase(matching)
 	_components_by_id.erase(component_id)
 	

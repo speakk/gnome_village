@@ -6,8 +6,6 @@ var component_owner: Node3D
 
 var subscriptions: Array[Subscription]
 
-var _on_enter_called: bool
-
 var groups: Array[Groups.Id]:
 	set(new_value):
 		groups = new_value

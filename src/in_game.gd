@@ -14,7 +14,7 @@ class_name InGame extends Node3D
 
 const TEST_TREES = 100
 const TEST_RESOURCES = 400
-const TEST_SETTLERS = 1
+const TEST_SETTLERS = 10
 const DECAL_AMOUNT = 800
 
 func _ready() -> void:

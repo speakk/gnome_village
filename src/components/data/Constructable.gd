@@ -103,6 +103,8 @@ func serialize() -> Dictionary:
 	dict["requirements"] = requirements.map(func(requirement: ItemRequirement) -> Dictionary:
 		return requirement.serialize())
 	dict["solid_when_started"] = solid_when_started
+	dict["is_finished"] = is_finished
+	dict["is_started"] = is_started
 	dict["can_be_dismantled"] = can_be_dismantled
 	dict["max_durability"] = max_durability
 	dict["_current_durability"] = _current_durability
@@ -120,6 +122,8 @@ func deserialize(dict: Dictionary) -> void:
 		))
 	solid_when_started = dict["solid_when_started"]
 	can_be_dismantled = dict["can_be_dismantled"]
+	is_finished = dict["is_finished"]
+	is_started = dict["is_started"]
 	max_durability = dict["max_durability"]
 	_current_durability = dict["_current_durability"]
 	_current_progress = dict["_current_progress"]

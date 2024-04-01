@@ -179,7 +179,7 @@ func create_world() -> void:
 			else:
 				ground_grid.set_cell_item(coord, 1)
 
-	var rivers: int = 0
+	var rivers: int = 1
 
 	for i in rivers:
 		var river_start := Vector2i(randi_range(-MAP_SIZE_X/2, MAP_SIZE_X/2), MAP_SIZE_Y/2-1)

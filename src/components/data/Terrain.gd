@@ -3,7 +3,12 @@ class_name TerrainComponent extends Component
 @export var target_layer: MainMap.Layers = MainMap.Layers.Building
 @export var mesh_id: MapMeshes.Id
 
-var _blueprint_status: bool
+var _blueprint_status: bool:
+	set(new_status):
+		_blueprint_status = new_status
+		var coordinate := Globals.get_map().global_position_to_coordinate(get_owner().global_position)
+		Events.terrain_placed.emit(coordinate, mesh_id, _blueprint_status)
+		Events.terrain_cleared.emit(coordinate, not _blueprint_status)
 
 func _init() -> void:
 	id = Components.Id.Terrain
@@ -12,9 +17,13 @@ func _init() -> void:
 			world_position.position_changed.connect(self._on_position_changed)
 			),
 		Subscription.new(self.id, Components.Id.Blueprint, func (blueprint: BlueprintComponent) -> void:
-			set_blueprint(true)
+			_blueprint_status = true
+			# TODO: Serialization: For some reason this isn't called properly
+			# when loading a game. For now it was worked around by disabling
+			# set_components in Entity (which should've been done anyway)
 			blueprint.removed.connect(func() -> void:
-				set_blueprint(false))
+				_blueprint_status = false
+				)
 			)
 	]
 
@@ -23,10 +32,7 @@ func _on_position_changed(_old_position: Vector3, _global_position: Vector3, old
 	Events.terrain_cleared.emit(old_coordinate, _blueprint_status)
 
 func set_blueprint(status: bool) -> void:
-	var coordinate := Globals.get_map().global_position_to_coordinate(get_owner().global_position)
 	_blueprint_status = status
-	Events.terrain_placed.emit(coordinate, mesh_id, status)
-	Events.terrain_cleared.emit(coordinate, not status)
 
 func on_exit() -> void:
 	super.on_exit()
@@ -38,6 +44,7 @@ func serialize() -> Dictionary:
 	var dict := super.serialize()
 	dict["target_layer"] = target_layer
 	dict["mesh_id"] = mesh_id
+	dict["_blueprint_status"] = _blueprint_status
 		
 	return dict
 
@@ -45,4 +52,6 @@ func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
 	target_layer = dict["target_layer"]
 	mesh_id = dict["mesh_id"]
+	_blueprint_status = dict["_blueprint_status"]
+	
 #endregion
