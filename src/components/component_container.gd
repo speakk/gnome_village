@@ -17,8 +17,7 @@ var _processing_component_amount := 0
 func _ready() -> void:
 	process_mode = PROCESS_MODE_DISABLED
 	component_owner = get_parent()
-	for component in default_components:
-		add_component(component)
+
 
 func _exit_tree() -> void:
 	#if not Globals.quitting:
@@ -109,6 +108,10 @@ func serialize() -> Dictionary:
 	return {
 		components = serialized_components
 	}
+
+#func add_default_components() -> void:
+	#for component in default_components:
+		#add_component(component)
 
 func clear_components() -> void:
 	for component: Component in get_all().duplicate():

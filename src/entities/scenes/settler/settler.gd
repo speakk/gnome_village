@@ -37,6 +37,8 @@ func _ready() -> void:
 	name = "Settler"
 	#Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
 	
+	var original_position := global_position
+	
 	var existing_inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
 	if existing_inventory:
 		prep_inventory(existing_inventory)
@@ -44,14 +46,15 @@ func _ready() -> void:
 		component_container.component_added.connect(func(component: Component) -> void:
 			if component is InventoryComponent:
 				prep_inventory(component)
+			
+			if component is DisplayNameComponent:
+				component.display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
+			
+			if component is WorldPositionComponent:
+				WorldPositionComponent.set_world_position(self, original_position)
 			)
-		
+				
 	play_animation("Idle")
-	
-	var original_position := global_position
-	
-	component_container.get_by_id(Components.Id.DisplayName).display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
-	WorldPositionComponent.set_world_position(self, original_position)
 
 	utility_agent.top_score_action_changed.connect(_utility_ai_action_changed)
 

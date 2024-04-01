@@ -59,7 +59,6 @@ static func create_growth_spot(new_position: Vector3) -> Entity:
 	# TODO: This will not be needed when reworking itemAmount
 	# Right now removing this default as this entity doesn't have a definition
 	# and thus item amount causes issues in serialization
-	grows_container.remove_component(Components.Id.ItemAmount)
 	return new_grows_in_entity
 
 func _spreads(coordinate: Vector2i) -> void:

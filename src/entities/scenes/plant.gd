@@ -6,7 +6,7 @@ var plant: PlantComponent
 
 func _ready() -> void:
 	super._ready()
-	name = "PlastScene"
+	name = "PlantScene"
 
 func set_plant(_plant: PlantComponent) -> void:
 	plant = _plant

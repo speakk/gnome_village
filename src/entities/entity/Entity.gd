@@ -2,6 +2,13 @@ class_name Entity extends Node3D
 
 @onready var component_container: ComponentContainer = $ComponentContainer
 
+var default_components: Array[Component] = [
+	SelectableComponent.new(),
+	DisplayNameComponent.new(),
+	WorldPositionComponent.new(),
+	ItemAmountComponent.new(),
+]
+
 var show_amount_number := true
 
 var definition: EntityDefinition:
@@ -39,6 +46,9 @@ func _exit_tree() -> void:
 
 func set_item_components() -> void:
 	if definition:
+		for default_component: Component in default_components:
+			component_container.add_component(default_component)
+			
 		for component: Component in definition.components:
 			component_container.add_component(component)
 
@@ -47,12 +57,14 @@ func set_item_components() -> void:
 		# and everything breaks
 		@warning_ignore("untyped_declaration")
 		var display_name_component = component_container.get_by_id(Components.Id.DisplayName)
-		display_name_component.display_name = definition.display_name
+		if display_name_component:
+			display_name_component.display_name = definition.display_name
 
 		var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
-		item_amount.item = definition
+		if item_amount:
+			item_amount.item = definition
 
-static func from_definition(entity_definition: EntityDefinition) -> Entity:
+static func from_definition(entity_definition: EntityDefinition, add_default_components: bool = true) -> Entity:
 	var custom_scene_component: Variant = entity_definition.get_component_by_id(Components.Id.Scene)
 	var scene: Node3D
 	if custom_scene_component:
@@ -66,6 +78,9 @@ static func from_definition(entity_definition: EntityDefinition) -> Entity:
 		scene = load("res://src/entities/entity/Entity.tscn").instantiate()
 
 	scene.definition = entity_definition
+	
+	if not add_default_components:
+		scene.default_components.clear()
 	
 	return scene
 
@@ -84,7 +99,7 @@ static func static_deserialize(parent: Node, dict: Dictionary) -> Entity:
 	
 	# TODO: Do we need this logic like this?
 	if dict.has("definition"):
-		entity = from_definition(EntityDefinition.deserialize(dict["definition"]))
+		entity = from_definition(EntityDefinition.deserialize(dict["definition"]), false)
 	else:
 		entity = load(dict["scene_path"]).instantiate()
 	
