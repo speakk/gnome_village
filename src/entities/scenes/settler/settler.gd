@@ -1,7 +1,6 @@
 class_name Settler extends Entity
 
 @onready var animation_player_audio: AnimationPlayer = $AnimationPlayerAudio
-@onready var inventory: InventoryComponent
 
 @export var utility_agent: UtilityAiAgent
 @export var task_handler: TaskHandler
@@ -30,7 +29,7 @@ enum TaskResult {
 func prep_inventory(inventory_component: InventoryComponent) -> void:
 	inventory_component.item_added.connect(self._inventory_item_added)
 	inventory_component.item_removed.connect(self._inventory_item_removed)
-	inventory = inventory_component
+	_refresh_carry_item()
 
 func _ready() -> void:
 	super._ready()
@@ -39,20 +38,21 @@ func _ready() -> void:
 	
 	var original_position := global_position
 	
-	var existing_inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
-	if existing_inventory:
-		prep_inventory(existing_inventory)
-	else:
-		component_container.component_added.connect(func(component: Component) -> void:
-			if component is InventoryComponent:
-				prep_inventory(component)
-			
-			if component is DisplayNameComponent:
-				component.display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
-			
-			if component is WorldPositionComponent:
-				WorldPositionComponent.set_world_position(self, original_position)
-			)
+	component_container.component_added.connect(func(component: Component) -> void:
+		if component is InventoryComponent:
+			prep_inventory(component)
+		
+		if component is DisplayNameComponent:
+			component.display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
+		
+		if component is WorldPositionComponent:
+			WorldPositionComponent.set_world_position(self, original_position)
+		)
+		
+		#component_container.component_removed.connect(func(component_id: Components.Id) -> void:
+			#if component_id == Components.Id.Inventory:
+				#
+			#)
 				
 	play_animation("Idle")
 
@@ -124,6 +124,7 @@ func process_actions(delta: float) -> void:
 			action.process_action(delta)
 
 func _refresh_carry_item() -> void:
+	var inventory: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
 	var items := inventory.get_items()
 	for child in $CarryItemNode.get_children():
 		child.queue_free()

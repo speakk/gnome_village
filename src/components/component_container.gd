@@ -1,9 +1,9 @@
 class_name ComponentContainer extends Node
 
 signal component_added(component: Component)
+signal component_removed(component_id: Components.Id)
 
 var component_owner: Node
-@export var default_components: Array[Component]
 
 var _components: Array[Component]
 
@@ -90,6 +90,7 @@ func remove_component(component_id: Components.Id) -> void:
 	
 	#recheck_processing_mode()
 	
+	component_removed.emit(component_id)
 	Events.component.removed.emit(self, matching)
 
 func subscribe(subscriber_id: Components.Id, target_id: Components.Id, callable: Callable) -> void:

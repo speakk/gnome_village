@@ -52,19 +52,17 @@ func set_item_components() -> void:
 		for component: Component in definition.components:
 			component_container.add_component(component)
 
-		# This untyped display_name_component is here because of an OBSCURE bug
-		# If you type display_name_component here, basically all components become invalid
-		# and everything breaks
-		@warning_ignore("untyped_declaration")
-		var display_name_component = component_container.get_by_id(Components.Id.DisplayName)
+		var display_name_component: DisplayNameComponent = component_container.get_by_id(Components.Id.DisplayName)
 		if display_name_component:
 			display_name_component.display_name = definition.display_name
 
 		var item_amount: ItemAmountComponent = component_container.get_by_id(Components.Id.ItemAmount)
 		if item_amount:
 			item_amount.item = definition
+			if item_amount.amount == 0:
+				item_amount.amount = 1
 
-static func from_definition(entity_definition: EntityDefinition, add_default_components: bool = true) -> Entity:
+static func from_definition(entity_definition: EntityDefinition, add_components: bool = true) -> Entity:
 	var custom_scene_component: Variant = entity_definition.get_component_by_id(Components.Id.Scene)
 	var scene: Node3D
 	if custom_scene_component:
@@ -79,7 +77,7 @@ static func from_definition(entity_definition: EntityDefinition, add_default_com
 
 	scene.definition = entity_definition
 	
-	if not add_default_components:
+	if not add_components:
 		scene.default_components.clear()
 	
 	return scene

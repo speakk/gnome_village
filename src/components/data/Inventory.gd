@@ -95,8 +95,10 @@ func deserialize(dict: Dictionary) -> void:
 		return item_amount
 	))
 	
-	item_amounts = {}
+	for item_amount in get_items():
+		remove_item_amount(item_amount.item, item_amount.amount)
 	
 	for item_amount in item_amount_values:
-		item_amounts[item_amount.item] = item_amount
+		add_item_amount(item_amount.item, item_amount.amount)
+		
 #endregion
