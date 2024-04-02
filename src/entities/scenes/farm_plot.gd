@@ -1,7 +1,5 @@
 extends Entity
 
-@onready var growth_spot: GrowthSpotComponent
-
 const FARM_PLOT := preload("res://assets/blender_models/farm_plot.blend")
 
 var growth_rate: float = 0.1
@@ -11,21 +9,16 @@ var plant_component: PlantComponent
 
 func _plant_set(plant: EntityDefinition) -> void:
 	if not planted_plant:
-		planted_plant = ENTITY.instantiate()
+		planted_plant = Entity.from_definition(plant)
 		add_child(planted_plant)
-		planted_plant.definition = plant
 		plant_component = planted_plant.component_container.get_by_id(Components.Id.Plant)
 		# TODO: This is so that the can be "dismantled". Do this any other way
 		# in the future.
 		planted_plant.component_container.add_component(ConstructableComponent.new())
-		plant_component.grows_in = growth_spot
+		plant_component.grows_in = component_container.get_by_id(Components.Id.GrowthSpot)
 		plant_component.managed_by_player = true
 		plant_component.lacks_growth_requirements.connect(_lacks_growth_requirements)
 		plant_component.satisfies_growth_requirements.connect(_satisfies_growth_requirements)
-
-func set_growth_spot(_growth_spot: GrowthSpotComponent) -> void:
-	growth_spot = _growth_spot
-	growth_spot.plant_set.connect(_plant_set)
 
 func _lacks_growth_requirements() -> void:
 	$LacksGrowthRequirementIndicator.show()

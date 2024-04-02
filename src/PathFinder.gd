@@ -2,10 +2,20 @@ extends Node
 
 @onready var astar_grid := AStarGrid2D.new()
 
+signal map_changed(coordinate: Vector2i)
+
+var _path_cache: Dictionary = {} 
+
 func _ready() -> void:
 	_reset()
 	Events.solid_cell_placed.connect(_solid_cell_placed)
 	Events.solid_cell_removed.connect(_solid_cell_removed)
+	map_changed.connect(func(_coordinate: Vector2) -> void:
+		# TODO: Maybe iterate through path cache and clear only
+		# the ones that include coordinate.
+		# Better would be to somehow bucket the paths and coordinates
+		_path_cache.clear()
+		)
 
 func _reset() -> void:
 	astar_grid = AStarGrid2D.new()
@@ -16,10 +26,12 @@ func _reset() -> void:
 
 func _solid_cell_placed(coordinate: Vector2i) -> void:
 	astar_grid.set_point_solid(coordinate)
+	map_changed.emit(coordinate)
 	Events.map_changed.emit(coordinate)
 
 func _solid_cell_removed(coordinate: Vector2i) -> void:
 	astar_grid.set_point_solid(coordinate, false)
+	map_changed.emit(coordinate)
 	Events.map_changed.emit(coordinate)
 
 func is_position_solid(coordinate: Vector2i) -> bool:
@@ -78,7 +90,15 @@ func get_closest_free_point(coordinate: Vector2i, bias_towards_target: Variant =
 	return null
 
 func get_id_path(from: Vector2i, to: Vector2i) -> PackedVector2Array:
+	var cache_key := "%s%s" % [from, to]
+	if _path_cache.has(cache_key):
+		return _path_cache[cache_key]
+	
 	var found_path := astar_grid.get_id_path(from, to)
+	if found_path is Array[Vector2i]:
+		_path_cache[cache_key] = found_path
+	else:
+		_path_cache[cache_key] = false
 	return found_path
 
 func get_id_path_to_closest_point(from: Vector2i, to: Vector2i) -> PackedVector2Array:

@@ -9,9 +9,8 @@ func tick_zone() -> void:
 	for coordinate in get_coordinates():
 		var entities := Globals.get_map().get_map_entities(coordinate, true)
 		if entities.size() == 0:
-			var farm_plot := (ENTITY.instantiate() as Entity)
+			var farm_plot := Entity.from_definition(preload("res://src/entities/definitions/farm_plot.tres"))
 			Events.request_entity_add.emit(farm_plot)
-			farm_plot.definition = preload("res://src/entities/definitions/farm_plot.tres")
 			WorldPositionComponent.set_world_position(farm_plot, Globals.get_map().coordinate_to_global_position(coordinate))
 			farm_plot.component_container.add_component(BlueprintComponent.new())
 			Events.blueprint_placed.emit(coordinate, farm_plot)
