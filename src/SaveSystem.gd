@@ -1,140 +1,79 @@
 extends Node
 
-#var last_save_id: int = -1
-#
-#class LoadReference:
-	#var entity: Variant
-	#var property_name: String
-	#var reference_save_id: int
-	#var add_as_child: bool
-#
-#var load_references: Array[LoadReference] = []
-#
-#var saved_entities: Dictionary
-#var loaded_entities: Dictionary
-#var entity_dicts: Dictionary
-#
-#func _process(_delta: float) -> void:
-	#if Input.is_action_just_pressed("quicksave"):
-		#save_state()
-	#
-	#if Input.is_action_just_pressed("quickload"):
-		#load_state()
-#
-#func enrich_save_data(entity: Variant, entity_dict: Dictionary) -> void:
-	#entity_dict["save_id"] = get_object_save_id(entity)
-	##entity_dict["parent"] = entity.get_parent().get_path()
-	#if not entity is Resource:
-		#var file_path: String = entity.get_scene_file_path()
-		#entity_dict["filename"] = file_path
-		#assert(file_path)
-	#else:
-		##var classname := entity.get_class_name() as String
-		#var resource_path := entity.get_path() as String
-		#entity_dict["resource_path"] = resource_path
-#
-#func get_next_save_id() -> int:
-	#last_save_id += 1
-	#return last_save_id
-#
-#func load_state() -> void:
-	#load_references = []
-	#
-	#var save_game := FileAccess.open("user://savegame.save", FileAccess.READ)
-	#var save_dict: Variant = str_to_var(save_game.get_as_text())
-	#
-	#last_save_id = save_dict["last_save_id"]
-	#entity_dicts = save_dict["entities"]
-	#
-	#for entity_dict in save_dict["entities"].values() as Array[Dictionary]:
-		#var new_object: Variant
-		#if entity_dict.has("resource_path"):
-			#new_object = ResourceLoader.load(entity_dict.get("resource_path"))
-			##new_object = ClassDB.instantiate(entity_dict.get("class_name"))
-		#else:
-			#new_object = load(entity_dict["filename"]).instantiate()
-			#
-		##new_object.call_deferred("load_save", entity_dict)
-		#new_object.set_meta("save_id", entity_dict["save_id"] as int)
-		#loaded_entities[entity_dict["save_id"] as int] = new_object
-	#
-	#Events.load_game_called.emit(save_dict)
-	#
-	#await get_tree().physics_frame
-	#
-	#load_entity_saves(save_dict["entities"].values())
-	#
-	#await get_tree().physics_frame
-	#
-	##var main := get_node("/root/Main") as Main
-	##main.load_save(save_dict["main_data"])
-	#
-	## TODO: All "entities" stuff should probably be in Main eventually
-	#fill_in_references(save_dict["main_data"]["entities"])
-	#fill_in_references(save_dict["main_data"]["tasks"])
-#
-#func load_entity_saves(entities_orig: Array) -> void:
-	#var entities: Array[Dictionary]
-	#entities.assign(entities_orig)
-	#for entity_dict in entities:
-		#loaded_entities[entity_dict["save_id"] as int].load_save(entity_dict)
-#
-#func save_state() -> void:
-	#saved_entities = {}
-	#var save_game := FileAccess.open("user://savegame.save", FileAccess.WRITE)
-	#var save_dict: Dictionary = {}
-	#save_dict["last_save_id"] = last_save_id
-	#
-	##var main := get_node("/root/Main") as Main
-	##var main_dict := main.save()
-	#
-	#Events.save_game_called.emit(save_dict)
-	#
-	#await get_tree().physics_frame
-	#
-	##save_dict["main_data"] = main_dict
-	#
-	#save_dict["entities"] = saved_entities
-#
-	##save_game.store_line(JSON.stringify(save_dict))
-	#save_game.store_line(var_to_str(save_dict))
-#
-##SaveSystem.register_load_reference(self, "current_task", save_dict["current_task_save_id"])
-#
-#func register_load_reference(entity: Variant, property_name: String, reference_save_id: int, add_as_child: bool = false) -> void:
-	#var new_reference := LoadReference.new()
-	#new_reference.entity = entity
-	#new_reference.property_name = property_name
-	#new_reference.reference_save_id = reference_save_id
-	#new_reference.add_as_child = add_as_child
-	#
-	#load_references.append(new_reference)
-#
-#func get_object_save_id(entity: Variant) -> int:
-	#if entity.has_meta("save_id"):
-		#return entity.get_meta("save_id")
-		#
-	#var save_id := SaveSystem.get_next_save_id()
-	#entity.set_meta("save_id", save_id)
-	#
-	#return save_id
-#
-#func save_entity(entity: Variant) -> int:
-	#var save_dict := entity.save() as Dictionary
-	#enrich_save_data(entity, save_dict)
-	#saved_entities[get_object_save_id(entity)] = save_dict
-	#return get_object_save_id(entity)
-#
-#func load_entity(entity: Variant) -> void:
-	#var save_dict: Dictionary = entity_dicts["%s" % get_object_save_id(entity)]
-	#entity.load_save(save_dict)
-#
-#func get_saved_entity(entity_id: int) -> Variant:
-	#return loaded_entities[entity_id]
-#
-#func fill_in_references(entity_ids: Array) -> void:
-	#for reference in load_references:
-		#var referenced_entity: Variant = loaded_entities[reference.reference_save_id]
-		#reference.entity[reference.property_name] = referenced_entity
-		#if reference.add_as_child:
-			#reference.entity.add_child(referenced_entity)
+var current_save_id: int = 0
+var save_methods: Array[SaveMethod]
+var entity_references: Dictionary
+var entity_reference_queue: Array[EntityReferenceEntry]
+
+class EntityReferenceEntry:
+	var save_id: int
+	var callable: Callable
+	func _init(_save_id: int, _callable: Callable) -> void:
+		save_id = _save_id
+		callable = _callable
+
+class SaveMethod:
+	var dict_key: String
+	var save_callable: Callable
+	var load_callable: Callable
+	
+	func _init(_dict_key: String, _save_callable: Callable, _load_callable: Callable) -> void:
+		dict_key = _dict_key
+		save_callable = _save_callable
+		load_callable = _load_callable
+
+
+func register_save_method(save_method: SaveMethod) -> void:
+	for existing_method in save_methods:
+		if existing_method.dict_key == save_method.dict_key:
+			save_methods.erase(existing_method)
+			break
+			
+	save_methods.append(save_method)
+
+func save_game() -> void:
+	clear_state()
+	var save_dict: Dictionary
+	
+	for save_method in save_methods:
+		save_dict[save_method.dict_key] = save_method.save_callable.call()
+
+	save_dict["current_save_id"] = current_save_id
+	
+	var save_file := FileAccess.open("user://savegame.save", FileAccess.WRITE)
+	save_file.store_line(var_to_str(save_dict))
+
+func load_game(save_name: String) -> void:
+	clear_state()
+	var save_file := FileAccess.open("user://%s.save" % save_name, FileAccess.READ)
+	var dict: Dictionary = str_to_var(save_file.get_as_text())
+	
+	current_save_id = dict["current_save_id"]
+	
+	for save_method in save_methods:
+		save_method.load_callable.call(dict[save_method.dict_key])
+	
+	for entity_reference_entry in entity_reference_queue:
+		entity_reference_entry.callable.call(entity_references[entity_reference_entry.save_id])
+
+func clear_state() -> void:
+	entity_references.clear()
+	entity_reference_queue.clear()
+
+func quick_load() -> void:
+	load_game("savegame")
+
+func _get_next_save_id() -> int:
+	current_save_id += 1
+	return current_save_id
+
+func get_save_id(object: Variant) -> int:
+	if not object.has_meta("save_id"):
+		object.set_meta("save_id", _get_next_save_id())
+	return object.get_meta("save_id")
+	
+func register_entity_reference(object: Variant) -> void:
+	entity_references[object.get_meta("save_id")] = object
+
+func queue_entity_reference_by_id(entity_reference_entry: EntityReferenceEntry) -> void:
+	entity_reference_queue.append(entity_reference_entry)

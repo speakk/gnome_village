@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://hewmqp1k1i03" path="res://src/zones/zone_renderer.tscn" id="6_limgy"]
 [ext_resource type="PackedScene" uid="uid://w5t5a0o36hje" path="res://src/camera_3d.tscn" id="6_wahq5"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://src/gui/gui.tscn" id="7_vml5v"]
-[ext_resource type="Script" path="res://src/SaveSystem2.gd" id="9_ae7o8"]
+[ext_resource type="Script" path="res://src/SaveSystem.gd" id="9_ae7o8"]
 
 [node name="InGame" type="Node3D"]
 script = ExtResource("1_h0o83")
