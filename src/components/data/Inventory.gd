@@ -1,6 +1,6 @@
 class_name InventoryComponent extends Component
 
-@export var items_can_be_picked: bool = true
+@export var items_can_be_picked: bool = false
 @export var pre_filled: Array[ItemRequirement]:
 	set(new_value):
 		pre_filled = new_value

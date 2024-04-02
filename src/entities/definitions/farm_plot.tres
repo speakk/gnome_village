@@ -30,7 +30,7 @@ amount = 10
 
 [sub_resource type="Resource" id="Resource_uort6"]
 script = ExtResource("7_4nsy2")
-items_can_be_picked = false
+items_can_be_picked = true
 pre_filled = Array[ExtResource("6_xcfl6")]([SubResource("Resource_nfmyc")])
 
 [sub_resource type="Resource" id="Resource_egpa4"]

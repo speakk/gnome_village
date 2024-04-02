@@ -27,9 +27,9 @@ func serialize() -> Dictionary:
 
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
-	drops = dict["drops"].map(func(drop_dict: Dictionary) -> ItemDrop:
+	drops.assign(dict["drops"].map(func(drop_dict: Dictionary) -> ItemDrop:
 		var drop := ItemDrop.new()
 		drop.deserialize(drop_dict)
 		return drop
-		)
+		))
 #endregion
