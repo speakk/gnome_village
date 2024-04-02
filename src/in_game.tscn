@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cdn5fwsgd0fpm"]
+[gd_scene load_steps=11 format=3 uid="uid://cdn5fwsgd0fpm"]
 
 [ext_resource type="Script" path="res://src/in_game.gd" id="1_h0o83"]
 [ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap.tscn" id="2_l8r3t"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://w5t5a0o36hje" path="res://src/camera_3d.tscn" id="6_wahq5"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://src/gui/gui.tscn" id="7_vml5v"]
 [ext_resource type="Script" path="res://src/SaveSystem.gd" id="9_ae7o8"]
+[ext_resource type="PackedScene" uid="uid://cq13ybyxtu5xa" path="res://src/systems/sound_ambiance.tscn" id="10_gchmc"]
 
 [node name="InGame" type="Node3D"]
 script = ExtResource("1_h0o83")
@@ -57,5 +58,7 @@ shadow_enabled = true
 
 [node name="SaveSystem" type="Node" parent="."]
 script = ExtResource("9_ae7o8")
+
+[node name="SoundAmbiance" parent="." instance=ExtResource("10_gchmc")]
 
 [editable path="MainMap"]

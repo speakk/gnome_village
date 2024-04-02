@@ -12,9 +12,12 @@ func on_exit() -> void:
 		if randf() <= item_drop.probability:
 			var amount := randi_range(item_drop.amount_min, item_drop.amount_max)
 			var new_entity := Entity.from_definition(item_drop.item)
+			var global_pos := get_owner().global_position
 			# TODO: Randomize position slightly
-			Events.request_entity_add.emit(new_entity)
-			WorldPositionComponent.set_world_position(new_entity, get_owner().global_position)
+			(func() -> void:
+				Events.request_entity_add.emit(new_entity)
+				WorldPositionComponent.set_world_position.call_deferred(new_entity, global_pos)
+				).call_deferred()
 
 #region Serialization
 func serialize() -> Dictionary:

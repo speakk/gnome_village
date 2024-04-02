@@ -1,4 +1,4 @@
-[gd_resource type="AudioBusLayout" load_steps=2 format=3 uid="uid://cc77ov7oke7nc"]
+[gd_resource type="AudioBusLayout" load_steps=3 format=3 uid="uid://cc77ov7oke7nc"]
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_4a7ku"]
 resource_name = "Reverb"
@@ -6,6 +6,13 @@ room_size = 0.12
 damping = 0.81
 spread = 0.0
 hipass = 0.51
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_csota"]
+resource_name = "Reverb"
+room_size = 0.43
+damping = 0.47
+dry = 0.67
+wet = 0.21
 
 [resource]
 bus/1/name = &"Environment"
@@ -16,3 +23,17 @@ bus/1/volume_db = 0.0
 bus/1/send = &"Master"
 bus/1/effect/0/effect = SubResource("AudioEffectReverb_4a7ku")
 bus/1/effect/0/enabled = true
+bus/2/name = &"Birds"
+bus/2/solo = false
+bus/2/mute = false
+bus/2/bypass_fx = false
+bus/2/volume_db = -15.795
+bus/2/send = &"Master"
+bus/2/effect/0/effect = SubResource("AudioEffectReverb_csota")
+bus/2/effect/0/enabled = true
+bus/3/name = &"Music"
+bus/3/solo = false
+bus/3/mute = true
+bus/3/bypass_fx = false
+bus/3/volume_db = -9.63278
+bus/3/send = &"Master"

@@ -1,0 +1,44 @@
+[gd_scene load_steps=8 format=3 uid="uid://cq13ybyxtu5xa"]
+
+[ext_resource type="AudioStream" uid="uid://bprqqxp6u5ag6" path="res://assets/sounds/birds/bird1.ogg" id="1_akamm"]
+[ext_resource type="Script" path="res://src/systems/sound_ambiance.gd" id="1_htld1"]
+[ext_resource type="AudioStream" uid="uid://t6uwnl3rc7hx" path="res://assets/sounds/birds/bird2.ogg" id="2_q1mn2"]
+[ext_resource type="AudioStream" uid="uid://dcl582k1xikhu" path="res://assets/sounds/birds/bird3.ogg" id="3_2i1x8"]
+[ext_resource type="AudioStream" uid="uid://jcbcmdwdr870" path="res://assets/sounds/birds/bird4.ogg" id="4_51wsj"]
+[ext_resource type="AudioStream" uid="uid://bjcterld4gk7c" path="res://assets/sounds/birds/bird5.ogg" id="5_fvjyd"]
+[ext_resource type="AudioStream" uid="uid://dxsnetguhrfly" path="res://assets/sounds/music/ambient_5.ogg" id="7_fdmy8"]
+
+[node name="SoundAmbiance" type="Node"]
+script = ExtResource("1_htld1")
+
+[node name="Birds" type="Node" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Birds"]
+stream = ExtResource("1_akamm")
+bus = &"Birds"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="Birds"]
+stream = ExtResource("2_q1mn2")
+bus = &"Birds"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="Birds"]
+stream = ExtResource("3_2i1x8")
+bus = &"Birds"
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="Birds"]
+stream = ExtResource("4_51wsj")
+bus = &"Birds"
+
+[node name="AudioStreamPlayer5" type="AudioStreamPlayer" parent="Birds"]
+stream = ExtResource("5_fvjyd")
+bus = &"Birds"
+
+[node name="AudioStreamPlayer6" type="AudioStreamPlayer" parent="Birds"]
+stream = ExtResource("1_akamm")
+bus = &"Birds"
+
+[node name="Music" type="Node" parent="."]
+
+[node name="Ambient5" type="AudioStreamPlayer" parent="Music"]
+stream = ExtResource("7_fdmy8")
+bus = &"Music"
