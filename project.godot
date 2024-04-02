@@ -33,7 +33,6 @@ SaveSystem="*res://src/SaveSystem2.gd"
 [debug]
 
 gdscript/warnings/untyped_declaration=2
-gdscript/warnings/unsafe_property_access=1
 
 [display]
 

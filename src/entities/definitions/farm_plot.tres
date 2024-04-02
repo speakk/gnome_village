@@ -8,7 +8,7 @@
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="5_5qdnr"]
 [ext_resource type="Script" path="res://src/entities/ItemRequirement.gd" id="6_xcfl6"]
 [ext_resource type="Script" path="res://src/components/data/Inventory.gd" id="7_4nsy2"]
-[ext_resource type="PackedScene" uid="uid://brtx1wa87ft0g" path="res://src/entities/scenes/farm_plot.tscn" id="9_xx8xp"]
+[ext_resource type="PackedScene" uid="uid://cpolcxj8j4c21" path="res://src/entities/scenes/farm_plot.tscn" id="9_xx8xp"]
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="11_ypnkl"]
 
 [sub_resource type="Resource" id="Resource_kiryq"]
@@ -39,7 +39,7 @@ script = ExtResource("1_yxf7r")
 [sub_resource type="Resource" id="Resource_x6j1b"]
 script = ExtResource("3_4i3tg")
 
-[sub_resource type="Resource" id="Resource_wo3jf"]
+[sub_resource type="Resource" id="Resource_hxe71"]
 script = ExtResource("5_5qdnr")
 scene = ExtResource("9_xx8xp")
 custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
@@ -47,4 +47,4 @@ custom_subscriptions = Array[Resource("res://src/components/StringSubscription.g
 [resource]
 script = ExtResource("11_ypnkl")
 display_name = "Farm Plot"
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_h10c2"), SubResource("Resource_uort6"), SubResource("Resource_egpa4"), SubResource("Resource_x6j1b"), SubResource("Resource_wo3jf")])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_h10c2"), SubResource("Resource_uort6"), SubResource("Resource_egpa4"), SubResource("Resource_x6j1b"), SubResource("Resource_hxe71")])

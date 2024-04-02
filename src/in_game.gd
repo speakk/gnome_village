@@ -64,6 +64,7 @@ func create_world() -> void:
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			entity.component_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
 			entity.component_container.get_by_id(Components.Id.Plant).current_growth_stage_index = randi_range(0, 3)
+			entity.name = "oak_tree"
 			
 	await get_tree().physics_frame
 #

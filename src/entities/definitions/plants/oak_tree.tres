@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://xeh85gspxejx" path="res://assets/blender_models/plants/oak_tree_2.blend" id="4_5h2r7"]
 [ext_resource type="PackedScene" uid="uid://b0chxrd57lc3i" path="res://assets/blender_models/plants/oak_tree_3.blend" id="5_dq7p0"]
 [ext_resource type="Script" path="res://src/components/data/Plant.gd" id="6_03736"]
-[ext_resource type="Script" path="res://src/components/data/PlantScene.gd" id="8_6tdx3"]
+[ext_resource type="Script" path="res://src/components/data/PlantSceneComponent.gd" id="8_6tdx3"]
 [ext_resource type="Script" path="res://src/components/data/Spread.gd" id="9_yjcyv"]
 [ext_resource type="PackedScene" uid="uid://dhfow2ks5xt7l" path="res://src/entities/scenes/Plant.tscn" id="10_mcb8v"]
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="12_gwc38"]

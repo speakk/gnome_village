@@ -1,7 +1,5 @@
 class_name PlantComponent extends Component
 
-var ENTITY := load("res://src/entities/entity/Entity.tscn")
-
 signal satisfies_growth_requirements
 signal lacks_growth_requirements
 signal advanced_growth_stage(new_stage_index: int)
@@ -65,9 +63,8 @@ func _spreads(coordinate: Vector2i) -> void:
 	var global_pos: Vector3 = Globals.get_map().coordinate_to_global_position(coordinate)
 	var new_grows_in_entity := PlantComponent.create_growth_spot(global_pos)
 	
-	var new_plant: Entity = ENTITY.instantiate()
+	var new_plant: Entity = Entity.from_definition(get_owner().definition)
 	Events.request_entity_add.emit(new_plant)
-	new_plant.definition = get_owner().definition.duplicate(true)
 	var comp_container: ComponentContainer = new_plant.component_container
 	comp_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
 	WorldPositionComponent.set_world_position(new_plant, global_pos)

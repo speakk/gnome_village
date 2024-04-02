@@ -71,7 +71,7 @@ func add_component(component: Component) -> Component:
 	if duplicated.has_method("process_component"):
 		_processing_component_amount += 1
 	
-	#recheck_processing_mode()
+	recheck_processing_mode()
 	
 	component_added.emit(duplicated)
 	
@@ -87,7 +87,7 @@ func remove_component(component_id: Components.Id) -> void:
 	if matching.has_method("process_component"):
 		_processing_component_amount -= 1
 	
-	#recheck_processing_mode()
+	recheck_processing_mode()
 	
 	component_removed.emit(component_id)
 	Events.component.removed.emit(self, matching)

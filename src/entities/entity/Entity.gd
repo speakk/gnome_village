@@ -64,7 +64,7 @@ func set_item_components() -> void:
 			if item_amount.amount == 0:
 				item_amount.amount = 1
 
-static func from_definition(entity_definition: EntityDefinition, add_components: bool = true) -> Entity:
+static func from_definition(entity_definition: EntityDefinition) -> Entity:
 	var custom_scene_component: Variant = entity_definition.get_component_by_id(Components.Id.Scene)
 	var scene: Node3D
 	if custom_scene_component:
@@ -78,9 +78,6 @@ static func from_definition(entity_definition: EntityDefinition, add_components:
 		scene = load("res://src/entities/entity/Entity.tscn").instantiate()
 
 	scene.definition = entity_definition
-	
-	if not add_components:
-		scene.default_components.clear()
 	
 	return scene
 
@@ -99,7 +96,7 @@ static func static_deserialize(parent: Node, dict: Dictionary) -> Entity:
 	
 	# TODO: Do we need this logic like this?
 	if dict.has("definition"):
-		entity = from_definition(EntityDefinition.deserialize(dict["definition"]), false)
+		entity = from_definition(EntityDefinition.deserialize(dict["definition"]))
 	else:
 		entity = load(dict["scene_path"]).instantiate()
 	

@@ -1,6 +1,6 @@
 class_name GrowthSpotComponent extends Component
 
-signal plant_set(new_plant: EntityDefinition)
+signal plant_set(plant_component: PlantComponent)
 
 var has_growing: bool
 
@@ -22,15 +22,18 @@ func consume_growth_requirement(growth_requirement_item: EntityDefinition, amoun
 func increase_growth_requirement(growth_requirement_item: EntityDefinition, amount: int) -> void:
 	growth_requirement_inventory.add_item_amount(growth_requirement_item, amount)
 
-func start_growing_plant(item: EntityDefinition) -> void:
+func start_growing_plant(plant: EntityDefinition) -> void:
 	if not has_growing:
-		plant_set.emit(item)
-		# TODO: Just implement get_by_id for components as well to avoid this? (already in component_container)
-		var components := item.components
-		for component in components:
-			if component.id == Components.Id.Plant:
-				plant_component = component
-				break
+		var planted_plant := Entity.from_definition(plant)
+		Events.request_entity_add.emit(planted_plant)
+		WorldPositionComponent.set_world_position(planted_plant, get_owner().global_position)
+		plant_component = planted_plant.component_container.get_by_id(Components.Id.Plant)
+		# TODO: This is so that the can be "dismantled". Do this any other way
+		# in the future.
+		planted_plant.component_container.add_component(ConstructableComponent.new())
+		plant_component.grows_in = self
+		plant_component.managed_by_player = true
+		plant_set.emit(plant_component)
 				
 		has_growing = true
 
