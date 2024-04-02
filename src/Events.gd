@@ -53,6 +53,7 @@ signal load_started
 signal load_game_called(save_dict: Dictionary)
 signal save_game_called(save_dict: Dictionary)
 signal new_game_requested
+signal quick_load_requested
 
 signal current_time_changed(new_time: float)
 

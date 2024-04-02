@@ -2,6 +2,7 @@ extends Node3D
 
 @onready var camera_3d: Camera3D = $Camera3D
 
+@onready var continue_button: MainMenuButton = %ContinueGameButton
 @onready var new_game_button: MainMenuButton = %NewGameButton
 @onready var options_button: MainMenuButton = %OptionsButton
 @onready var quit_button: MainMenuButton = %QuitButton
@@ -10,6 +11,15 @@ extends Node3D
 func _ready() -> void:
 	$sky.time_of_day = 0.327
 	new_game_button.pressed.connect(func() -> void: Events.new_game_requested.emit())
+	
+	if FileAccess.file_exists("user://savegame.save"):
+		continue_button.show()
+	else:
+		continue_button.hide()
+	
+	continue_button.pressed.connect(func() -> void:
+		Events.quick_load_requested.emit()
+		)
 	#new_game_button.pressed.connect(func() -> void: Events.scene_change_requested(SceneManager.SceneId.InGame))
 	quit_button.pressed.connect(func() -> void:
 		#Globals.quitting = true

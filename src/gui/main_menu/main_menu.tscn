@@ -113,6 +113,9 @@ far = 57.56
 [node name="WoodenTorch4" parent="SceneObjects" instance=ExtResource("3_kks4n")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.55118, 0, 1.19487)
 
+[node name="WoodenTorch7" parent="SceneObjects" instance=ExtResource("3_kks4n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5354, 0, -1.43141)
+
 [node name="WoodenTorch5" parent="SceneObjects" instance=ExtResource("3_kks4n")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.77782, 0, 1.19487)
 
@@ -121,19 +124,24 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.30203, 0, -3.79306)
 
 [node name="Menu" type="Node3D" parent="."]
 
+[node name="ContinueGameButton" parent="Menu" instance=ExtResource("5_wk6eu")]
+unique_name_in_owner = true
+transform = Transform3D(-0.8, 0, 1.20797e-07, 0, 0.8, 0, -1.20797e-07, 0, -0.8, 1, 2.10697, 0)
+text = "Continue..."
+
 [node name="NewGameButton" parent="Menu" instance=ExtResource("5_wk6eu")]
 unique_name_in_owner = true
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 1, 2, 0)
+transform = Transform3D(-0.8, 0, 1.20797e-07, 0, 0.8, 0, -1.20797e-07, 0, -0.8, 1, 1.61434, 0)
 text = "New Game"
 
 [node name="OptionsButton" parent="Menu" instance=ExtResource("5_wk6eu")]
 unique_name_in_owner = true
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 1, 1.3087, 0)
+transform = Transform3D(-0.8, 0, 1.20797e-07, 0, 0.8, 0, -1.20797e-07, 0, -0.8, 1, 1.13164, 0)
 text = "Settings"
 
 [node name="QuitButton" parent="Menu" instance=ExtResource("5_wk6eu")]
 unique_name_in_owner = true
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 1, 0.605485, 0)
+transform = Transform3D(-0.8, 0, 1.20797e-07, 0, 0.8, 0, -1.20797e-07, 0, -0.8, 1, 0.605485, 0)
 text = "Quit"
 
 [node name="settler" parent="." instance=ExtResource("9_27vms")]

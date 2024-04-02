@@ -16,6 +16,9 @@ func _ready() -> void:
 		await get_tree().physics_frame
 		(get_child(0) as InGame).new_game()
 		)
+	Events.quick_load_requested.connect(func() -> void:
+		_quick_load()
+		)
 	var default_scene := MENU.instantiate()
 	add_child(default_scene)
 
@@ -39,9 +42,12 @@ func _process(delta: float) -> void:
 			#in_game.save_game()
 	
 	if Input.is_action_just_pressed("quickload"):
-		_scene_change_requested(SceneId.InGame)
-		await get_tree().physics_frame
-		SaveSystem.quick_load()
+		_quick_load()
 		#(get_child(0) as InGame).quick_load()
 		
 		
+
+func _quick_load() -> void:
+	_scene_change_requested(SceneId.InGame)
+	await get_tree().physics_frame
+	SaveSystem.quick_load()
