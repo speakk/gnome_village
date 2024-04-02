@@ -1,68 +1,40 @@
-[gd_scene load_steps=6 format=3 uid="uid://dqcfyoq58q7b7"]
+[gd_scene load_steps=8 format=3 uid="uid://kyo8fxwvjl2q"]
 
-[sub_resource type="GDScript" id="GDScript_5narw"]
-script/source = "extends Node3D
+[ext_resource type="PackedScene" uid="uid://c7vlpvn5eoky4" path="res://assets/blender_models/wooden_torch.blend" id="1_ocj6c"]
+[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/Entity.tscn" id="1_xsuix"]
+[ext_resource type="Script" path="res://src/entities/scenes/wooden_torch.gd" id="2_leofc"]
 
-var MODEL_SCENE := preload(\"res://assets/blender_models/wooden_torch.blend\")
-
-var _scene: Node3D
-
-func _ready() -> void:
-	_scene = MODEL_SCENE.instantiate()
-	#_scene.get_node(\"Torch\").cast_shadow = true
-	add_child(_scene)
-
-func set_blueprint(is_blueprint: bool) -> void:
-	print(\"Set as blueprint: \", is_blueprint)
-	if _scene:
-		_scene.queue_free()
-		
-	_scene = MODEL_SCENE.instantiate()
-	#_scene.get_node(\"Torch\").cast_shadow = true
-		
-	if is_blueprint:
-		Globals.apply_blueprint_material(_scene)
-
-	add_child(_scene)
-
-func set_active(active: bool) -> void:
-	if active:
-		$OmniLight3D.visible = true
-		$GPUParticles3D.visible = true
-	else:
-		$OmniLight3D.visible = false
-		$GPUParticles3D.visible = false
-"
-
-[sub_resource type="Curve" id="Curve_ie0t3"]
+[sub_resource type="Curve" id="Curve_enaco"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_sh1ay"]
-curve = SubResource("Curve_ie0t3")
+curve = SubResource("Curve_enaco")
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_r1nn7"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lnc34"]
 emission_shape = 1
 emission_sphere_radius = 0.07
 gravity = Vector3(0, 0.5, 0)
 scale_curve = SubResource("CurveTexture_sh1ay")
 
-[sub_resource type="BoxMesh" id="BoxMesh_ix2gd"]
+[sub_resource type="BoxMesh" id="BoxMesh_ucm4t"]
 size = Vector3(0.03, 0.03, 0.03)
 
-[node name="WoodenTorch" type="Node3D" groups=["radial_light"]]
-script = SubResource("GDScript_5narw")
+[node name="WoodenTorch" instance=ExtResource("1_xsuix")]
+script = ExtResource("2_leofc")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="."]
+[node name="OmniLight3D" type="OmniLight3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.729958, 0)
 light_color = Color(0.949219, 0.678864, 0.458375, 1)
 omni_shadow_mode = 0
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." index="5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.576111, 0)
 cast_shadow = 0
 amount_ratio = 0.6025
 lifetime = 1.76
 randomness = 0.78
-process_material = SubResource("ParticleProcessMaterial_r1nn7")
-draw_pass_1 = SubResource("BoxMesh_ix2gd")
+process_material = SubResource("ParticleProcessMaterial_lnc34")
+draw_pass_1 = SubResource("BoxMesh_ucm4t")
+
+[node name="wooden_torch" parent="." index="6" instance=ExtResource("1_ocj6c")]

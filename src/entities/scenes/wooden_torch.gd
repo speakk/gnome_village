@@ -5,6 +5,7 @@ var MODEL_SCENE := preload("res://assets/blender_models/wooden_torch.blend")
 var _scene: Node3D
 
 func _ready() -> void:
+	super._ready()
 	_scene = MODEL_SCENE.instantiate()
 	#_scene.get_node("Torch").cast_shadow = true
 	add_child(_scene)
@@ -12,10 +13,11 @@ func _ready() -> void:
 func set_blueprint(is_blueprint: bool) -> void:
 	print("Set as blueprint: ", is_blueprint)
 	if _scene:
+		if has_node("wooden_torch"):
+			$wooden_torch.queue_free()
 		_scene.queue_free()
 		
 	_scene = MODEL_SCENE.instantiate()
-	#_scene.get_node("Torch").cast_shadow = true
 		
 	if is_blueprint:
 		Globals.apply_blueprint_material(_scene)

@@ -82,11 +82,17 @@ func serialize() -> Dictionary:
 		func(item_amount: ItemAmountComponent) -> Dictionary:
 			return item_amount.serialize()
 			)
-		
+	dict["items_can_be_picked"] = items_can_be_picked
+	
 	return dict
 
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
+	if dict.has("items_can_be_picked"):
+		items_can_be_picked = dict["items_can_be_picked"]
+	else:
+		items_can_be_picked = false
+	
 	var item_amount_values: Array[ItemAmountComponent]
 	item_amount_values.assign(dict["item_amounts"].map(func(item_amount_dict: Dictionary) -> ItemAmountComponent:
 		var item_amount := ItemAmountComponent.new()

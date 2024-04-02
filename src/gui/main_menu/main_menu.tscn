@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://src/gui/main_menu/main_menu.gd" id="1_ojpbv"]
 [ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap.tscn" id="1_rn6i6"]
 [ext_resource type="PackedScene" uid="uid://cs2fptc2k4veq" path="res://src/sky/Sky.tscn" id="2_30k6m"]
-[ext_resource type="PackedScene" uid="uid://dqcfyoq58q7b7" path="res://src/entities/scenes/wooden_torch.tscn" id="3_kks4n"]
+[ext_resource type="PackedScene" uid="uid://kyo8fxwvjl2q" path="res://src/entities/scenes/wooden_torch.tscn" id="3_kks4n"]
 [ext_resource type="Shader" path="res://src/sky/sky.gdshader" id="3_tj2dn"]
 [ext_resource type="Texture2D" uid="uid://skgrbq3iahcg" path="res://src/sky/moon.png" id="4_y78nw"]
 [ext_resource type="Texture2D" uid="uid://5c1w1lvrch1i" path="res://src/sky/starfield.png" id="5_fom0y"]
@@ -110,17 +110,17 @@ far = 57.56
 
 [node name="SceneObjects" type="Node3D" parent="."]
 
+[node name="WoodenTorch2" parent="SceneObjects" instance=ExtResource("3_kks4n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.52265, -4.76837e-07, 1.31495)
+
+[node name="WoodenTorch" parent="SceneObjects" instance=ExtResource("3_kks4n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.74892, 0, 1.23536)
+
+[node name="WoodenTorch3" parent="SceneObjects" instance=ExtResource("3_kks4n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.38132, 0, -3.56038)
+
 [node name="WoodenTorch4" parent="SceneObjects" instance=ExtResource("3_kks4n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.55118, 0, 1.19487)
-
-[node name="WoodenTorch7" parent="SceneObjects" instance=ExtResource("3_kks4n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5354, 0, -1.43141)
-
-[node name="WoodenTorch5" parent="SceneObjects" instance=ExtResource("3_kks4n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.77782, 0, 1.19487)
-
-[node name="WoodenTorch6" parent="SceneObjects" instance=ExtResource("3_kks4n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.30203, 0, -3.79306)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.49971, 0, -1.28563)
 
 [node name="Menu" type="Node3D" parent="."]
 
