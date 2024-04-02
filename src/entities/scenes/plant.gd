@@ -5,13 +5,15 @@ var current_growth_scene: Node3D
 var plant: PlantComponent
 
 func _ready() -> void:
+	component_container.component_added.connect(func(component: Component) -> void:
+		if component is PlantComponent:
+			plant = component
+			plant.advanced_growth_stage.connect(_advance_growth_stage)
+			plant.matured.connect(_matured)
+		)
+	
 	super._ready()
 	name = "PlantScene"
-
-func set_plant(_plant: PlantComponent) -> void:
-	plant = _plant
-	plant.advanced_growth_stage.connect(_advance_growth_stage)
-	plant.matured.connect(_matured)
 
 func _matured() -> void:
 	$ParticlesMatured.emitting = true
