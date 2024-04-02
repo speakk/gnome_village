@@ -32,7 +32,6 @@ func prep_inventory(inventory_component: InventoryComponent) -> void:
 	_refresh_carry_item()
 
 func _ready() -> void:
-	super._ready()
 	name = "Settler"
 	#Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
 	
@@ -53,7 +52,9 @@ func _ready() -> void:
 			#if component_id == Components.Id.Inventory:
 				#
 			#)
-				
+	
+	super._ready()
+	
 	play_animation("Idle")
 
 	utility_agent.top_score_action_changed.connect(_utility_ai_action_changed)
