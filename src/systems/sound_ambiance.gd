@@ -1,6 +1,6 @@
 extends Node
 
-@export var bird_chance: float = 0.005
+@export var bird_chance: float = 0.0015
 
 func _physics_process(delta: float) -> void:
 	if randf() < bird_chance:

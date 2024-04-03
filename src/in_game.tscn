@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://cdn5fwsgd0fpm"]
+[gd_scene load_steps=12 format=3 uid="uid://cdn5fwsgd0fpm"]
 
 [ext_resource type="Script" path="res://src/in_game.gd" id="1_h0o83"]
 [ext_resource type="PackedScene" uid="uid://cxfu88mnhmgb7" path="res://src/map/MainMap.tscn" id="2_l8r3t"]
 [ext_resource type="PackedScene" uid="uid://cs2fptc2k4veq" path="res://src/sky/Sky.tscn" id="2_vk0vx"]
 [ext_resource type="PackedScene" uid="uid://du6ros11u7s0m" path="res://src/zones/ZoneManager.tscn" id="3_v025i"]
 [ext_resource type="PackedScene" uid="uid://dk7vrm018wwop" path="res://src/systems/day_night_cycle.tscn" id="5_gc7w6"]
+[ext_resource type="PackedScene" uid="uid://bawvjskshe5nd" path="res://src/misc/clouds.tscn" id="5_iswvu"]
 [ext_resource type="PackedScene" uid="uid://hewmqp1k1i03" path="res://src/zones/zone_renderer.tscn" id="6_limgy"]
 [ext_resource type="PackedScene" uid="uid://w5t5a0o36hje" path="res://src/camera_3d.tscn" id="6_wahq5"]
 [ext_resource type="PackedScene" uid="uid://cynniosvk7y2r" path="res://src/gui/gui.tscn" id="7_vml5v"]
@@ -35,6 +36,9 @@ selection_draw = NodePath("../SelectionDraw")
 [node name="Entities" type="Node3D" parent="."]
 unique_name_in_owner = true
 
+[node name="Clouds" parent="." instance=ExtResource("5_iswvu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.4532, 0)
+
 [node name="ZoneManager" parent="." instance=ExtResource("3_v025i")]
 unique_name_in_owner = true
 
@@ -42,7 +46,7 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="Camera3D" parent="." instance=ExtResource("6_wahq5")]
-transform = Transform3D(1, 0, 0, 0, 0.790967, 0.611858, 0, -0.611858, 0.790967, 1.42875, 35.3241, 23.6879)
+transform = Transform3D(1, 0, 0, 0, 0.790967, 0.611858, 0, -0.611858, 0.790967, 1.42875, 51.3449, 23.6879)
 far = 139.14
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]

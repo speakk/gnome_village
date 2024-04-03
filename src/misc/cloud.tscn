@@ -1,0 +1,67 @@
+[gd_scene load_steps=11 format=3 uid="uid://c00mkfcby6thc"]
+
+[sub_resource type="Gradient" id="Gradient_lmauq"]
+offsets = PackedFloat32Array(0.364557, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nqkl6"]
+frequency = 0.0068
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_oab5x"]
+width = 256
+height = 256
+in_3d_space = true
+seamless = true
+color_ramp = SubResource("Gradient_lmauq")
+noise = SubResource("FastNoiseLite_nqkl6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bvgkl"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.576471)
+albedo_texture = SubResource("NoiseTexture2D_oab5x")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_eayrw"]
+material = SubResource("StandardMaterial3D_bvgkl")
+radius = 1.0
+height = 4.0
+radial_segments = 12
+rings = 3
+
+[sub_resource type="Gradient" id="Gradient_dd6bk"]
+offsets = PackedFloat32Array(0.364557, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7yjb3"]
+frequency = 0.0068
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_jumpy"]
+width = 256
+height = 256
+in_3d_space = true
+seamless = true
+color_ramp = SubResource("Gradient_dd6bk")
+noise = SubResource("FastNoiseLite_7yjb3")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wvwg4"]
+albedo_color = Color(1, 1, 1, 0.576471)
+albedo_texture = SubResource("NoiseTexture2D_jumpy")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_voby6"]
+material = SubResource("StandardMaterial3D_wvwg4")
+radius = 1.5
+height = 6.0
+radial_segments = 12
+rings = 3
+
+[node name="Cloud" type="Node3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_eayrw")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+cast_shadow = 3
+mesh = SubResource("CapsuleMesh_voby6")

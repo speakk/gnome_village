@@ -15,7 +15,7 @@
 script = ExtResource("2_2s8wd")
 
 [node name="BeehaveTree" parent="." index="0" node_paths=PackedStringArray("blackboard")]
-blackboard = NodePath("@Node@17262")
+blackboard = NodePath("@Node@17386")
 
 [node name="SelectorComposite" type="Node" parent="BeehaveTree" index="0"]
 script = ExtResource("4_t3tmc")
