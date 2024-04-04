@@ -1,8 +1,62 @@
-[gd_scene load_steps=8 format=3 uid="uid://bawvjskshe5nd"]
+[gd_scene load_steps=11 format=3 uid="uid://bawvjskshe5nd"]
 
 [ext_resource type="Script" path="res://src/misc/clouds.gd" id="1_i882t"]
-[ext_resource type="PackedScene" uid="uid://c00mkfcby6thc" path="res://src/misc/cloud.tscn" id="1_l5svj"]
-[ext_resource type="Shader" path="res://src/misc/clouds.gdshader" id="3_vc0yh"]
+
+[sub_resource type="Shader" id="Shader_ag2xx"]
+code = "shader_type spatial;
+render_mode depth_prepass_alpha, depth_draw_opaque, unshaded;
+
+uniform sampler2D noiseTexture;
+uniform sampler2D ditherNoise;
+uniform bool isSoft = false;
+uniform float speed : hint_range(0.0, 1.0) = 0.1;
+uniform float brightness: hint_range(0.0, 2.0) = 0.1;
+uniform float threshold : hint_range(0.0, 2.0) = 0.1;
+uniform float fluffiness : hint_range(0.0, 2.0) = 0.1;
+uniform float ditherScale : hint_range(0.0, 300.0) = 1.0;
+uniform float ditherThreshold : hint_range(0.0, 1.0) = 0.5;
+uniform bool dither = false;
+
+
+void fragment() {
+    // Mixing two time-shifted textures to create fluffiness
+    vec4 noise1 = texture(noiseTexture, mod(UV + TIME * 2.5 * speed / 10.0, 0.0));
+    vec4 noise2 = texture(noiseTexture, mod(UV + TIME * (2.5 + fluffiness * 3.0) * speed / 10.0, 0.0));
+    vec4 combinedNoise = noise1 + noise2;
+
+    if (isSoft == true) {
+        // Creating smooth transitions using smoothstep
+        combinedNoise.a = combinedNoise.r;
+        ALBEDO = smoothstep(threshold - 0.3, threshold + 0.3, combinedNoise).rgb * brightness;
+        ALPHA =  smoothstep(threshold - 0.3, threshold + 0.3, combinedNoise).a;
+
+		if (false) {
+			float ditherValue = texture(ditherNoise, UV * ditherScale + TIME * 2.5 * speed / 10.0).r;
+			if ((ditherValue + combinedNoise.r) / 3.0 < ditherThreshold) {
+				discard;
+			}
+		}
+    }
+    else {
+        // Creating hard transitions
+        ALBEDO = combinedNoise.rgb * brightness;
+        if (combinedNoise.r < threshold) {
+            ALPHA = 0.0;
+        }
+        else {
+            ALPHA = 1.0;
+        }
+    }
+}"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_x5g5l"]
+noise_type = 0
+seed = 2
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e2dl6"]
+seamless = true
+noise = SubResource("FastNoiseLite_x5g5l")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_5vlku"]
 fractal_octaves = 3
@@ -11,37 +65,53 @@ fractal_octaves = 3
 seamless = true
 noise = SubResource("FastNoiseLite_5vlku")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_wmpaf"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_78vkx"]
 render_priority = 0
-shader = ExtResource("3_vc0yh")
+shader = SubResource("Shader_ag2xx")
 shader_parameter/isSoft = true
 shader_parameter/speed = 0.022
 shader_parameter/brightness = 1.08
 shader_parameter/threshold = 1.446
 shader_parameter/fluffiness = 0.727
+shader_parameter/ditherScale = 10.488
+shader_parameter/ditherThreshold = 0.5
+shader_parameter/dither = false
 shader_parameter/noiseTexture = SubResource("NoiseTexture2D_yeh2p")
+shader_parameter/ditherNoise = SubResource("NoiseTexture2D_e2dl6")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_qbo8j"]
+material = SubResource("ShaderMaterial_78vkx")
+size = Vector2(250, 250)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1hfn1"]
+render_priority = 0
+shader = SubResource("Shader_ag2xx")
+shader_parameter/isSoft = true
+shader_parameter/speed = 0.022
+shader_parameter/brightness = 1.08
+shader_parameter/threshold = 1.446
+shader_parameter/fluffiness = 0.727
+shader_parameter/ditherScale = 34.018
+shader_parameter/ditherThreshold = 0.673
+shader_parameter/dither = true
+shader_parameter/noiseTexture = SubResource("NoiseTexture2D_yeh2p")
+shader_parameter/ditherNoise = SubResource("NoiseTexture2D_e2dl6")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_6jpn1"]
-material = SubResource("ShaderMaterial_wmpaf")
+material = SubResource("ShaderMaterial_1hfn1")
 size = Vector2(250, 250)
 
 [node name="Clouds" type="Node3D"]
 script = ExtResource("1_i882t")
-
-[node name="Cloud" parent="." instance=ExtResource("1_l5svj")]
-visible = false
-
-[node name="Cloud2" parent="." instance=ExtResource("1_l5svj")]
-transform = Transform3D(7, 0, 0, 0, 7, 0, 0, 0, 7, 2.2084, 0, 3.81217)
-visible = false
-
-[node name="Cloud3" parent="." instance=ExtResource("1_l5svj")]
-transform = Transform3D(7, 0, 0, 0, 7, 0, 0, 0, 7, -8.1603, 0, -13.3417)
-visible = false
-
-[node name="Cloud4" parent="." instance=ExtResource("1_l5svj")]
-transform = Transform3D(7, 0, 0, 0, 7, 0, 0, 0, 7, 5.22326, 0, -4.72408)
-visible = false
+cloud_speed_multiplier = 1.2
+cloud_chance = 0.03
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_qbo8j")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+visible = false
+cast_shadow = 3
 mesh = SubResource("PlaneMesh_6jpn1")

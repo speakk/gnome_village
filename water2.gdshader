@@ -158,5 +158,5 @@ void fragment() {
 	ALBEDO.rgb = final_color;
 	METALLIC = metallic;
 	ROUGHNESS = roughness;
-	NORMAL_MAP = normal_blend;
+	//NORMAL_MAP = normal_blend;
 }

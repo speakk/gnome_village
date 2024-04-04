@@ -47,7 +47,7 @@ unique_name_in_owner = true
 
 [node name="Camera3D" parent="." instance=ExtResource("6_wahq5")]
 transform = Transform3D(1, 0, 0, 0, 0.790967, 0.611858, 0, -0.611858, 0.790967, 1.42875, 51.3449, 23.6879)
-far = 139.14
+far = 203.34
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.333182, 0.666705, 0.666704, -0.526942, -0.454702, 0.718038, 0.781871, -0.590552, 0.199816, 0, 12.5409, 16.4982)
