@@ -19,8 +19,7 @@ func _ready() -> void:
 	component_owner = get_parent()
 
 
-func _exit_tree() -> void:
-	#if not Globals.quitting:
+func on_delete() -> void:
 	for component in _components:
 		Events.component.removed.emit(self, component)
 		if component.has_method("on_exit"):

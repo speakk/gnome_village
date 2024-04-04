@@ -113,3 +113,7 @@ static func static_deserialize(parent: Node, dict: Dictionary) -> Entity:
 
 func deserialize(dict: Dictionary) -> void:
 	pass
+
+func delete() -> void:
+	component_container.on_delete()
+	queue_free()

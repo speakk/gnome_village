@@ -11,7 +11,7 @@ var _current_durability: float = 10.0:
 		_current_durability = new_value
 		if _current_durability <= 0 and not _no_durability_emitted:
 			no_durability_left.emit()
-			component_owner.queue_free()
+			component_owner.delete()
 			_no_durability_emitted = true
 
 var reserved_for_dismantling := false:
