@@ -52,9 +52,10 @@ func start_task(task: Task) -> void:
 		task_actuator = preload("res://src/tasks/task_actuators/simple_actuator.tscn").instantiate()
 		
 	task_actuator.initialize(task)
-	task.tree_exited.connect(_clean_up_actuator)
-	task.failed.connect(_task_failed)
-	task.cancelled.connect(func() -> void: _clean_up_actuator())
+	#task.tree_exited.connect(_clean_up_actuator)
+	task.failed.connect(_clean_up_actuator)
+	#task.cancelled.connect(_clean_up_actuator)
+	task.removed.connect(_clean_up_actuator)
 	settler.add_child(task_actuator)
 	current_task_actuator = task_actuator
 	current_task_actuator.start_work()
@@ -62,8 +63,9 @@ func start_task(task: Task) -> void:
 
 func _clean_up_actuator() -> void:
 	if current_task_actuator:
-		current_task_actuator.task.failed.disconnect(_task_failed)
-		current_task_actuator.task.tree_exited.disconnect(_clean_up_actuator)
+		current_task_actuator.task.failed.disconnect(_clean_up_actuator)
+		current_task_actuator.task.removed.disconnect(_clean_up_actuator)
+		#current_task_actuator.task.tree_exited.disconnect(_clean_up_actuator)
 		settler.remove_child(current_task_actuator)
 		settler.stop_animation()
 		current_task_actuator.process_mode = Node.PROCESS_MODE_DISABLED

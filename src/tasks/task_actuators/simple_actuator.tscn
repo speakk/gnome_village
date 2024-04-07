@@ -12,12 +12,12 @@
 script = ExtResource("2_s0ehm")
 
 [node name="BeehaveTree" parent="." index="0" node_paths=PackedStringArray("blackboard")]
-blackboard = NodePath("@Node@17240")
+blackboard = NodePath("@Node@28312")
 
 [node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0"]
 script = ExtResource("3_77d5b")
 
-[node name="GoToBlueprint" parent="BeehaveTree/SequenceComposite" index="0" instance=ExtResource("4_tif4i")]
+[node name="GoToTarget" parent="BeehaveTree/SequenceComposite" index="0" instance=ExtResource("4_tif4i")]
 unique_name_in_owner = true
 
 [node name="PlayAnimationAction" type="Node" parent="BeehaveTree/SequenceComposite" index="1"]

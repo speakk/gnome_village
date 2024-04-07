@@ -41,7 +41,7 @@ func start_growing_plant(plant: EntityDefinition) -> void:
 func serialize() -> Dictionary:
 	var dict := super.serialize()
 	dict["has_growing"] = has_growing
-	if plant_component:
+	if plant_component and is_instance_valid(plant_component.get_owner()):
 		dict["plant_component_owner_id"] = SaveSystem.get_save_id(plant_component.get_owner())
 		
 	return dict

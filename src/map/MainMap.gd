@@ -462,9 +462,9 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 func _cancel_blueprint(coordinates: Array[Vector2i]) -> void:
 	for coordinate in coordinates:
 		var entities := get_map_entities(coordinate)
-		for entity in entities:
+		for entity: Entity in entities:
 			if entity.component_container.has_component(Components.Id.Blueprint):
-				entity.queue_free()
+				entity.delete()
 
 func _terrain_placed(coordinate: Vector2i, mesh_id: MapMeshes.Id, blueprint: bool) -> void:
 	var grid_map: GridMap = grid if not blueprint else blueprint_grid

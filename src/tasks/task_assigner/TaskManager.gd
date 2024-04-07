@@ -161,7 +161,7 @@ func find_unfinished_task_in_tree(task: Task) -> NodeResult:
 		else:
 			return NodeResult.new(null, NodeStatus.Unfinished)
 	# Leaf
-	if task.is_being_worked_on:
+	if task.is_being_worked_on or task.is_on_timeout:
 		return NodeResult.new(null, NodeStatus.Unfinished)
 	else:
 		return NodeResult.new(task, NodeStatus.FoundTask)

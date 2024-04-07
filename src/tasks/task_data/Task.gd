@@ -5,12 +5,17 @@ var task_name: String
 
 var task_actuator_scene: PackedScene
 var animation_name: String
+var timeout_length: float = 5 # Seconds
+@onready var _timeout_timer: float = timeout_length # Seconds
 
 signal failed()
 signal cancelled()
 signal finished()
+signal removed()
 
 var is_being_worked_on := false
+var is_on_timeout := false
+
 
 enum OrderType {
 	Sequence, Parallel, None
@@ -37,12 +42,16 @@ var has_failed := false:
 			failed.emit()
 			print("Task: %s failed" % task_name)
 			is_being_worked_on = false
+			is_on_timeout = true
 
 var is_cancelled := false:
 	set(new_value):
 		is_cancelled = new_value
-		if new_value:
-			clean_up(true)
+		if _parent_task:
+			cancelled.emit()
+		else:
+			if new_value:
+				clean_up(true)
 
 func register_subtask(task: Task) -> void:
 	_subtasks.append(task)
@@ -56,7 +65,11 @@ func register_subtask(task: Task) -> void:
 	task.failed.connect(func() -> void:
 		failed.emit()
 		)
-
+	
+	task.cancelled.connect(func() -> void:
+		is_cancelled = true
+		)
+	
 func get_subtasks() -> Array[Task]:
 	return _subtasks
 
@@ -66,13 +79,15 @@ func is_root() -> bool:
 func is_leaf() -> bool:
 	return _subtasks.size() == 0
 
-func clean_up(_cancelled: bool) -> void:
+func clean_up(_cancelled: bool, should_emit_signal: bool = true) -> void:
 	if _cancelled:
-		cancelled.emit()
+		if should_emit_signal:
+			cancelled.emit()
 		
 	for subtask in _subtasks:
-		subtask.clean_up(_cancelled)
+		subtask.clean_up(_cancelled, false)
 	
+	removed.emit()
 	queue_free()
 
 func create_action(actor: Settler) -> ActorAction:
@@ -136,3 +151,13 @@ func deserialize(dict: Dictionary) -> void:
 static func static_deserialize(dict: Dictionary) -> Task:
 	var task: Task = load(dict["resource_path"]).new()
 	return task
+
+func _process(delta: float) -> void:
+	for subtask in _subtasks:
+		subtask._process(delta)
+	
+	if is_on_timeout:
+		_timeout_timer -= delta
+		if _timeout_timer <= 0:
+			_timeout_timer = timeout_length
+			is_on_timeout = false

@@ -34,7 +34,6 @@ func _init(tile_target: Variant = null, _blueprint: Entity = null) -> void:
 					item_requirement = requirement,
 					inventory_component = constructable_component.get_inventory()
 				})
-				task.failed.connect(_handle_task_failure)
 				bring_resources.register_subtask(task)
 		
 		register_subtask(bring_resources)
@@ -42,7 +41,6 @@ func _init(tile_target: Variant = null, _blueprint: Entity = null) -> void:
 	var build_task := BuildTask.new({
 		constructable_component = constructable_component
 	})
-	build_task.failed.connect(_handle_task_failure)
 	register_subtask(build_task)
 
 func _ready() -> void:
@@ -50,9 +48,6 @@ func _ready() -> void:
 		if _blueprint == blueprint:
 			is_cancelled = true
 	)
-
-func _handle_task_failure() -> void:
-	pass
 
 #region Serialization
 func serialize() -> Dictionary:

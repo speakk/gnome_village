@@ -54,6 +54,9 @@ func load_game(save_name: String) -> void:
 		save_method.load_callable.call(dict[save_method.dict_key])
 	
 	for entity_reference_entry in entity_reference_queue:
+		if not entity_references.has(entity_reference_entry.save_id):
+			push_error("No entity found for it: %s" % entity_reference_entry.save_id)
+			continue
 		entity_reference_entry.callable.call(entity_references[entity_reference_entry.save_id])
 
 func clear_state() -> void:

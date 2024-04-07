@@ -38,7 +38,7 @@ var debug_visuals := false
 func _clear_entities() -> void:
 	for container in containers:
 		for entity in container["node"].get_children() as Array[Node]:
-			entity.queue_free()
+			entity.delete()
 
 func new_game() -> void:
 	create_world()

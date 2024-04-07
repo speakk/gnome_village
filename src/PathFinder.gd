@@ -101,6 +101,11 @@ func get_id_path(from: Vector2i, to: Vector2i) -> PackedVector2Array:
 		_path_cache[cache_key] = false
 	return found_path
 
+func is_path_marked_unreachable(from: Vector2i, to: Vector2i) -> bool:
+	var path: Variant =  _path_cache.get("%s%s" % [from, to], null)
+	
+	return path == false
+
 func get_id_path_to_closest_point(from: Vector2i, to: Vector2i) -> PackedVector2Array:
 	var found_path := astar_grid.get_id_path(from, to)
 	if not found_path:

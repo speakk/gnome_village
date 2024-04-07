@@ -18,7 +18,15 @@ func find_closest_material(_item_requirement: ItemRequirement) -> Entity:
 			if container.has_component(Components.Id.ItemAmount):
 				var item_amount: ItemAmountComponent = container.get_by_id(Components.Id.ItemAmount)
 				if item_amount.has_item_amount(_item_requirement.item, _item_requirement.amount):
-					return true
+					
+					# Filter out items that were already marked unreachable
+					var actor_position: Vector3 = tree.actor.global_position
+					var from: Vector2i = Globals.get_map().global_position_to_coordinate(actor_position)
+					var to: Vector2i = Globals.get_map().global_position_to_coordinate(material.global_position)
+					var path_invalid := PathFinder.is_path_marked_unreachable(from, to)
+					
+					if not path_invalid:
+						return true
 			
 		if container.has_component(Components.Id.Inventory):
 			var inventory: InventoryComponent = container.get_by_id(Components.Id.Inventory)
@@ -66,6 +74,10 @@ func start_work() -> void:
 	if task.target_coordinate:
 		%GoToBlueprint.target_coordinate = task.target_coordinate
 	else:
+		if not is_instance_valid(task.inventory_component.get_owner()):
+			task.has_failed = true
+			return
+			
 		%GoToBlueprint.target_coordinate = Globals.get_map().global_position_to_coordinate(task.inventory_component.get_owner().global_position)
 	
 	

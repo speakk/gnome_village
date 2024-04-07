@@ -10,6 +10,9 @@ func _init(params: Variant = null) -> void:
 	if not params is Dictionary: return
 	
 	constructable_component = params["constructable_component"]
+	constructable_component.removed.connect(func() -> void:
+		is_cancelled = true
+		)
 #
 #func save() -> Dictionary:
 	#var save_dict: Dictionary = super.save()

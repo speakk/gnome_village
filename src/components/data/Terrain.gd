@@ -38,6 +38,7 @@ func on_exit() -> void:
 	super.on_exit()
 	var coordinate := Globals.get_map().global_position_to_coordinate(get_owner().global_position)
 	Events.terrain_cleared.emit(coordinate, _blueprint_status)
+	Events.terrain_cleared.emit(coordinate, !_blueprint_status)
 
 #region Serialization
 func serialize() -> Dictionary:
