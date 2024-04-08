@@ -339,6 +339,9 @@ func _ready() -> void:
 	)
 	
 	Events.ui_action_selected.connect(_handle_ui_action_selection)
+	Events.ui.action_cleared.connect(func() -> void:
+		selected_ui_action = null
+		)
 	
 	Events.map_ready.emit(self)
 

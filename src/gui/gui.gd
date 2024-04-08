@@ -31,6 +31,7 @@ func show_submenu(menu: Node, button: Node) -> void:
 		button.button_pressed = true
 
 func hide_submenu() -> void:
+	Events.ui.action_cleared.emit()
 	%BuildMenu.hide()
 	%PlantMenu.hide()
 	%OrderMenu.hide()
