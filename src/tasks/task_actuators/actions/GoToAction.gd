@@ -13,9 +13,6 @@ func before_run(actor: Node, blackboard: Blackboard) -> void:
 			door = door
 		})
 		)
-	%FailToFindPath.failed.connect(func() -> void:
-		failed.emit()
-		)
 
 @warning_ignore("untyped_declaration")
 func tick(_node, _blackboard) -> int:

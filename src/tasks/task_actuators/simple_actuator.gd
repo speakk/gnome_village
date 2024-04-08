@@ -10,8 +10,3 @@ func start_work() -> void:
 	%GoToTarget.target_coordinate = Globals.get_map().global_position_to_coordinate(task.get_target(actor))
 	%DoAction.action = task.create_action(actor)
 	%PlayAnimationAction.animation_name = task.animation_name
-	
-	%GoToTarget.failed.connect(func() -> void:
-		fail()
-		)
-

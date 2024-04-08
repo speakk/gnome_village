@@ -10,5 +10,6 @@ signal failed
 func tick(actor: Node, blackboard: Blackboard) -> int:
 	print("Task failed, not noice: %s" % fail_message)
 	#actor.task_handler.fail_current_task()
-	failed.emit()
+	(blackboard.get_value("actuator") as TaskActuator).fail()
+	#failed.emit()
 	return FAILURE

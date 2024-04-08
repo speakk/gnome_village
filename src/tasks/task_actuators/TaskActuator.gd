@@ -22,6 +22,7 @@ func start_work() -> void:
 	print("Start work")
 	tree.actor = get_parent()
 	tree.enable()
+	tree.blackboard.set_value("actuator", self)
 	task.is_being_worked_on = true
 	actor = get_parent()
 	
