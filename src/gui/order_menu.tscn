@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5qq5ulcoywia"]
+
+[ext_resource type="Script" path="res://src/gui/order_menu.gd" id="1_mdm7w"]
+
+[node name="OrderMenu" type="MarginContainer"]
+auto_translate_mode = 1
+visible = false
+script = ExtResource("1_mdm7w")
+
+[node name="OrderOptions" type="VBoxContainer" parent="."]
+auto_translate_mode = 1
+layout_mode = 2
+
+[node name="DismantleButton" type="Button" parent="OrderOptions"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Dismantle"
+
+[node name="ChopTreesButton" type="Button" parent="OrderOptions"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Chop trees"
+
+[connection signal="pressed" from="OrderOptions/DismantleButton" to="." method="_on_dismantle_button_pressed"]
+[connection signal="pressed" from="OrderOptions/ChopTreesButton" to="." method="_on_chop_trees_button_pressed"]

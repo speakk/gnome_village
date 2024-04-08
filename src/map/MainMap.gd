@@ -412,7 +412,15 @@ func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 				var constructable_component: ConstructableComponent = container.get_by_id(Components.Id.Constructable)
 				if constructable_component:
 					if constructable_component.can_be_dismantled and not constructable_component.reserved_for_dismantling:
-						Events.dismantle_issued.emit(entity)
+						var selected_action: UiAction.Dismantle = selected_ui_action
+						var has_all := true
+						for component_filter in selected_action.target_component_filters:
+							if not entity.component_container.has_component(component_filter):
+								has_all = false
+								break
+						
+						if has_all:
+							Events.dismantle_issued.emit(entity)
 
 func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
 	var zone := (selected_ui_action as UiAction.ZoneAddTiles).zone
@@ -464,6 +472,7 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 			Events.request_entity_add.emit(blueprint)
 			WorldPositionComponent.set_world_position(blueprint, coordinate_to_global_position(tile_position))
 			blueprint.component_container.add_component(BlueprintComponent.new())
+			blueprint.component_container.add_component(PlayerMadeComponent.new())
 			Events.blueprint_placed.emit(tile_position, blueprint)
 			_create_placement_juice(blueprint, _index)
 			_index += 1
