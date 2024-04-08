@@ -90,14 +90,17 @@ func start_work() -> void:
 	# somehow just fail things automatically
 	%GoToBlueprint.failed.connect(func() -> void:
 		push_warning("gotoblueprint failed")
+		print("gotoblueprint failed")
 		fail()
 		)
 	%GoToResource.failed.connect(func() -> void:
 		push_warning("gotoresource failed")
+		print("gotoresource failed")
 		fail()
 		)
 	%FailTask.failed.connect(func() -> void:
 		push_warning("failtask failed lol")
+		print("failtask failed")
 		fail()
 		)
 	

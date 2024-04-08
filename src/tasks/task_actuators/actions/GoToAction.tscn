@@ -34,6 +34,7 @@ script = ExtResource("2_1psy6")
 [node name="FailToFindPath" type="Node" parent="ConditionalLoopDecorator/SequenceComposite/GetPathOrFail"]
 unique_name_in_owner = true
 script = ExtResource("6_1rsww")
+fail_message = "Fail to find path"
 
 [node name="PlayAnimationAction" type="Node" parent="ConditionalLoopDecorator/SequenceComposite"]
 script = ExtResource("5_8gaoi")

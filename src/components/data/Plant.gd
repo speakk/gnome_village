@@ -11,6 +11,9 @@ signal matured
 @export var growth_stages: Array[GrowthStage]
 @export var growth_requirements: Array[ItemRequirement]
 
+## When to add Solid component. -1 for never.
+@export var becomes_solid_at_stage_index: int = -1
+
 var managed_by_player := false
 var lacks_growth_requirements_emitted := false
 
@@ -99,6 +102,9 @@ func advance_growth_stage() -> void:
 	if not is_mature():
 		current_growth_stage_index += 1
 		
+		if current_growth_stage_index == becomes_solid_at_stage_index:
+			get_container().add_component(SolidComponent.new())
+		
 		if is_mature():
 			matured.emit()
 			if managed_by_player:
@@ -143,6 +149,7 @@ func serialize() -> Dictionary:
 	dict["_actual_grow_time"] = _actual_grow_time
 	dict["current_growth_timer"] = current_growth_timer
 	dict["current_growth_stage_index"] = current_growth_stage_index
+	dict["becomes_solid_at_stage_index"] = becomes_solid_at_stage_index
 		
 	if current_growth_scene is PackedScene:
 		dict["current_growth_scene_path"] = current_growth_scene.resource_path
@@ -172,7 +179,9 @@ func deserialize(dict: Dictionary) -> void:
 	lacks_growth_requirements_emitted = dict["lacks_growth_requirements_emitted"] 
 	_actual_grow_time = dict["_actual_grow_time"] 
 	current_growth_timer = dict["current_growth_timer"] 
-	current_growth_stage_index = dict["current_growth_stage_index"] 
+	current_growth_stage_index = dict["current_growth_stage_index"]
+	if dict.has("becomes_solid_at_stage_index"):
+		becomes_solid_at_stage_index = dict["becomes_solid_at_stage_index"]
 		
 	if dict.has("current_growth_scene_path"):
 		current_growth_scene = load(dict["current_growth_scene_path"]).instantiate()

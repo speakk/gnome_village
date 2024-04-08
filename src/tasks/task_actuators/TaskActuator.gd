@@ -19,6 +19,7 @@ func clean_up() -> void:
 	pass
 
 func start_work() -> void:
+	print("Start work")
 	tree.actor = get_parent()
 	tree.enable()
 	task.is_being_worked_on = true
@@ -35,3 +36,4 @@ func fail() -> void:
 		task.has_failed = true
 		task.is_being_worked_on = false
 		task.is_finished = false
+		tree.disable()
