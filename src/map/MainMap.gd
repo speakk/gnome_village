@@ -179,29 +179,9 @@ func create_world() -> void:
 			else:
 				ground_grid.set_cell_item(coord, 1)
 
-	var rivers: int = 1
-
-	for i in rivers:
-		var river_start := Vector2i(randi_range(-MAP_SIZE_X/2, MAP_SIZE_X/2), MAP_SIZE_Y/2-1)
-		var river_start_angle := 3*PI/2
-		var river_coordinates: Array[Vector2i]
-		_create_river(river_start, 3, river_start_angle, river_coordinates)
-		for coordinate in river_coordinates:
-			var grid_coord := Globals.extend_vec2i(coordinate)
-			var cell_item := ground_grid.get_cell_item(grid_coord)
-			if cell_item != GroundCells.Water and cell_item != -1:
-				ground_grid.set_cell_item(grid_coord, GroundCells.RiverWater)
-				PathFinder.set_coordinate_invalid(Globals.truncate_vec3i(grid_coord))
-				grid.set_cell_item(grid_coord, -1)
-			
-				var surrounding := PathFinder.get_surrounding_coordinates(coordinate, true)
-				for surrounding_coord in surrounding:
-					var surrounding_cell := ground_grid.get_cell_item(Globals.extend_vec2i(surrounding_coord))
-					
-					if surrounding_cell != GroundCells.RiverWater and surrounding_cell != GroundCells.Water and surrounding_cell != -1:
-						ground_grid.set_cell_item(Globals.extend_vec2i(surrounding_coord), GroundCells.RiverBank)
-						PathFinder.set_coordinate_invalid(surrounding_coord)
-						
+	
+	_create_rocks()
+	_create_rivers()
 	_create_grass()
 	
 	for x in MAP_SIZE_X:
@@ -227,6 +207,57 @@ var width_shapes: Dictionary = {
 		Vector2i(-1, 1),
 	]
 }
+
+func _create_rocks() -> void:
+	for x in MAP_SIZE_X:
+		for y in MAP_SIZE_Y:
+			var coord := Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2)
+			var noise_value := rock_placement_noise.get_noise_2d(x, y)
+			if noise_value > 0.2:
+				var noise_value2 := rock_placement_noise.get_noise_2d(y*2, x*2)
+				grid.set_cell_item(coord, 1)
+				var entity: Entity = load("res://src/entities/entity/Entity.tscn").instantiate()
+				Events.request_entity_add.emit(entity)
+				var container: ComponentContainer = entity.component_container
+				container.add_component(SelectableComponent.new())
+				container.add_component(DisplayNameComponent.new()).display_name = "Rock"
+				container.add_component(WorldPositionComponent.new())
+				container.add_component(SolidComponent.new())
+				var constructable: ConstructableComponent = container.add_component(ConstructableComponent.new())
+				WorldPositionComponent.set_world_position(entity, coordinate_to_global_position(Globals.truncate_vec3i(coord)))
+				constructable.can_be_dismantled = true
+				constructable.max_durability = 5
+				var terrain: TerrainComponent = container.add_component(TerrainComponent.new())
+				if noise_value2 > -0.1:
+					terrain.mesh_id = AboveGroundCells.Rock
+				else:
+					terrain.mesh_id = AboveGroundCells.Rock2
+				#Events.solid_cell_placed.emit(Globals.truncate_vec3i(coord))
+
+
+func _create_rivers() -> void:
+	var rivers: int = 1
+
+	for i in rivers:
+		var river_start := Vector2i(randi_range(-MAP_SIZE_X/2, MAP_SIZE_X/2), MAP_SIZE_Y/2-1)
+		var river_start_angle := 3*PI/2
+		var river_coordinates: Array[Vector2i]
+		_create_river(river_start, 3, river_start_angle, river_coordinates)
+		for coordinate in river_coordinates:
+			var grid_coord := Globals.extend_vec2i(coordinate)
+			var cell_item := ground_grid.get_cell_item(grid_coord)
+			if cell_item != GroundCells.Water and cell_item != -1:
+				ground_grid.set_cell_item(grid_coord, GroundCells.RiverWater)
+				PathFinder.set_coordinate_invalid(Globals.truncate_vec3i(grid_coord))
+				grid.set_cell_item(grid_coord, -1)
+			
+				var surrounding := PathFinder.get_surrounding_coordinates(coordinate, true)
+				for surrounding_coord in surrounding:
+					var surrounding_cell := ground_grid.get_cell_item(Globals.extend_vec2i(surrounding_coord))
+					
+					if surrounding_cell != GroundCells.RiverWater and surrounding_cell != GroundCells.Water and surrounding_cell != -1:
+						ground_grid.set_cell_item(Globals.extend_vec2i(surrounding_coord), GroundCells.RiverBank)
+						PathFinder.set_coordinate_invalid(surrounding_coord)
 
 func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starting_angle: float, array_to_fill: Array[Vector2i]) -> void:
 	#region Invariables

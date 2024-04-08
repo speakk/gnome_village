@@ -1,7 +1,7 @@
 class_name TerrainComponent extends Component
 
 @export var target_layer: MainMap.Layers = MainMap.Layers.Building
-@export var mesh_id: MapMeshes.Id
+@export var mesh_id: MainMap.AboveGroundCells
 
 var _blueprint_status: bool:
 	set(new_status):
