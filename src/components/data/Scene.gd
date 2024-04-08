@@ -1,5 +1,7 @@
 class_name SceneComponent extends Component
 
+var _active: bool
+
 @export var scene: PackedScene
 @export var custom_subscriptions: Array[StringSubscription]:
 	set(new_value):
@@ -19,7 +21,12 @@ func _init() -> void:
 			blueprint.removed.connect(func() -> void: set_blueprint(false))
 			),
 		Subscription.new(self.id, Components.Id.Constructable, func (constructable: ConstructableComponent) -> void:
-			set_active(false)
+			
+			if constructable.is_finished:
+				set_active(true)
+			else:
+				set_active(false)
+				
 			constructable.finished.connect(func() -> void:
 				set_active(true)
 				)
@@ -33,6 +40,7 @@ func on_exit() -> void:
 	super.on_exit()
 
 func set_active(active: bool) -> void:
+	_active = active
 	if get_owner().has_method("set_active"):
 		get_owner().set_active(active)
 
@@ -43,6 +51,7 @@ func set_blueprint(is_blueprint: bool) -> void:
 #region Serialization
 func serialize() -> Dictionary:
 	var dict := super.serialize()
+	dict["_active"] = _active
 	dict["scene_path"] = scene.resource_path
 	dict["custom_subscriptions"] = custom_subscriptions.map(func(custom_subscription: StringSubscription) -> Dictionary:
 		return custom_subscription.serialize()
@@ -53,6 +62,7 @@ func serialize() -> Dictionary:
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
 	scene = load(dict["scene_path"])
+	_active = dict["_active"]
 	var new_cust: Array[StringSubscription]
 	new_cust.assign(dict["custom_subscriptions"].map(func(custom_subscription_dict: Dictionary) -> StringSubscription:
 		var custom_subscription := StringSubscription.new()

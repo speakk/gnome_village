@@ -188,16 +188,20 @@ func create_world() -> void:
 		_create_river(river_start, 3, river_start_angle, river_coordinates)
 		for coordinate in river_coordinates:
 			var grid_coord := Globals.extend_vec2i(coordinate)
-			if ground_grid.get_cell_item(grid_coord) != GroundCells.Water:
+			var cell_item := ground_grid.get_cell_item(grid_coord)
+			if cell_item != GroundCells.Water and cell_item != -1:
 				ground_grid.set_cell_item(grid_coord, GroundCells.RiverWater)
+				PathFinder.set_coordinate_invalid(Globals.truncate_vec3i(grid_coord))
 				grid.set_cell_item(grid_coord, -1)
 			
 				var surrounding := PathFinder.get_surrounding_coordinates(coordinate, true)
 				for surrounding_coord in surrounding:
 					var surrounding_cell := ground_grid.get_cell_item(Globals.extend_vec2i(surrounding_coord))
-					if surrounding_cell != GroundCells.RiverWater and surrounding_cell != GroundCells.Water:
+					
+					if surrounding_cell != GroundCells.RiverWater and surrounding_cell != GroundCells.Water and surrounding_cell != -1:
 						ground_grid.set_cell_item(Globals.extend_vec2i(surrounding_coord), GroundCells.RiverBank)
-
+						PathFinder.set_coordinate_invalid(surrounding_coord)
+						
 	_create_grass()
 	
 	for x in MAP_SIZE_X:
@@ -378,7 +382,9 @@ func select_next_entity(coordinates: Array[Vector2i]) -> void:
 		
 		if entity_to_select:
 			print("Setting as selected")
-			entity_to_select.component_container.get_by_id(Components.Id.Selectable).selected = true
+			var selectable: SelectableComponent = entity_to_select.component_container.get_by_id(Components.Id.Selectable)
+			if selectable:
+				selectable.selected = true
 	
 	else:
 		clear_selections()
@@ -504,7 +510,6 @@ func _serialize_grid_map(items: Array, map: GridMap) -> Dictionary:
 		map_cells_by_item = dict
 	}
 
-# TODO: Do
 func serialize() -> Dictionary:
 	var grids: Dictionary = {}
 	
@@ -527,8 +532,14 @@ func deserialize(dict: Dictionary) -> void:
 				var coord: Vector3i = Vector3i(coord_dict["x"], coord_dict["y"], coord_dict["z"])
 				grid_map.set_cell_item(coord, cell_id)
 				
-				# TODO: Handle grid map collisions properly
-				if grid_definition_key == "grid":
-					PathFinder.set_coordinate_invalid(Globals.truncate_vec3i(coord))
+				## TODO: Handle grid map collisions properly
+				## TODO 2: Actually should just serialize PathFinder probably
+				## Would be MUCH better
+				#if grid_definition_key == "grid":
+					#PathFinder.set_coordinate_invalid(Globals.truncate_vec3i(coord))
+				#
+				#if grid_definition_key == "ground_grid":
+					#if cell_id == GroundCells.Water or cell_id == GroundCells.RiverWater:
+						#PathFinder.set_coordinate_invalid(Globals.truncate_vec3i(coord))
 
 	_create_grass()

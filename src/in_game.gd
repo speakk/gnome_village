@@ -151,11 +151,13 @@ func _save_callable() -> Dictionary:
 	
 	var saved_map := main_map.serialize()
 	var task_manager: Dictionary = TaskManager.serialize()
+	var path_finder: Dictionary = PathFinder.serialize()
 	
 	return {
 		entities = entity_dicts,
 		map = saved_map,
-		task_manager = task_manager
+		task_manager = task_manager,
+		path_finder = path_finder
 	}
 	
 func _load_callable(save_dict: Dictionary) -> void:
@@ -165,6 +167,7 @@ func _load_callable(save_dict: Dictionary) -> void:
 		Entity.static_deserialize(%Entities, entity_dict)
 	
 	TaskManager.deserialize(save_dict["task_manager"])
+	PathFinder.deserialize(save_dict["path_finder"])
 
 func quick_load() -> void:
 	save_system.quick_load()

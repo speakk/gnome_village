@@ -91,35 +91,66 @@ func get_closest_free_point(coordinate: Vector2i, bias_towards_target: Variant =
 
 func get_id_path(from: Vector2i, to: Vector2i) -> PackedVector2Array:
 	var cache_key := "%s%s" % [from, to]
-	if _path_cache.has(cache_key):
+	var value: Variant = _path_cache.get(cache_key)
+	if value is PackedVector2Array:
 		return _path_cache[cache_key]
 	
+	if value is String and value == "unreachable":
+		return []
+	
 	var found_path := astar_grid.get_id_path(from, to)
-	if found_path is Array[Vector2i]:
+	if found_path is Array[Vector2i] and found_path.size() > 0:
 		_path_cache[cache_key] = found_path
 	else:
-		_path_cache[cache_key] = false
+		_path_cache[cache_key] = "unreachable"
 	return found_path
 
 func is_path_marked_unreachable(from: Vector2i, to: Vector2i) -> bool:
 	var path: Variant =  _path_cache.get("%s%s" % [from, to], null)
 	
-	return path == false
+	return path is String and path == "unreachable"
 
 func get_id_path_to_closest_point(from: Vector2i, to: Vector2i) -> PackedVector2Array:
-	var found_path := astar_grid.get_id_path(from, to)
-	if not found_path:
+	if not is_position_solid(to):
+		return get_id_path(from, to)
+	else:
+		print("No path found for: %s to %s" %  [from, to])
 		var direction := Vector2(from).direction_to(Vector2(to))
 		var all_directions_clone := all_directions.duplicate()
 		all_directions_clone.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
 				return Vector2(a).angle_to(direction) < Vector2(b).angle_to(direction)
 		)
 		for new_direction in all_directions_clone as Array[Vector2i]:
-			var new_path := astar_grid.get_id_path(from, to + new_direction)
-			if new_path:
-				return new_path
-		
-	return found_path
-
+			var new_target := to + new_direction
+			if not is_position_solid(new_target):
+				var new_path := get_id_path(from, to + new_direction)
+				if new_path:
+					return new_path
+				else:
+					print("Also no path found for: %s to %s" %  [from, new_target])
+	
+	return []
+	
 func set_coordinate_invalid(coordinate: Vector2i) -> void:
 	astar_grid.set_point_solid(coordinate)
+
+func serialize() -> Dictionary:
+	var solid_points: Array[Dictionary]
+	
+	for x in range(-MainMap.MAP_SIZE_X/2, MainMap.MAP_SIZE_X/2):
+		for y in  range(-MainMap.MAP_SIZE_Y/2, MainMap.MAP_SIZE_Y/2):
+			if astar_grid.is_point_solid(Vector2i(x, y)):
+				solid_points.append({
+					x = x,
+					y = y
+				})
+	
+	return {
+		solid_points = solid_points
+	}
+
+func deserialize(dict: Dictionary) -> void:
+	_reset()
+	var solid_points_dict: Array = dict["solid_points"]
+	for solid_point_dict: Dictionary in solid_points_dict:
+		astar_grid.set_point_solid(Vector2i(solid_point_dict["x"], solid_point_dict["y"]))

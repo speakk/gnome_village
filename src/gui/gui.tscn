@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://d3hc65n7bfkm3" path="res://src/gui/day_night_cycle_indicator.tscn" id="5_dfwll"]
 [ext_resource type="PackedScene" uid="uid://c13wfhh44yr61" path="res://src/gui/entity_info/entity_selection_panel.tscn" id="6_uim4i"]
 [ext_resource type="AudioStream" uid="uid://g1f6rs6xy8io" path="res://assets/sounds/ui/click.ogg" id="7_alwiq"]
-[ext_resource type="PackedScene" uid="uid://bvtrf7nc178ou" path="res://src/gui/debug_ui/task_debug_ui.tscn" id="7_rxkft"]
+[ext_resource type="PackedScene" uid="uid://cfbyhkvk72xh0" path="res://src/gui/debug_ui/debug_ui.tscn" id="7_wmamy"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oammu"]
 
@@ -205,11 +205,7 @@ theme_override_constants/margin_bottom = 120
 [node name="EntitySelectionPanel" parent="EntitySelectionPanel" instance=ExtResource("6_uim4i")]
 layout_mode = 2
 
-[node name="DebugUI" type="MarginContainer" parent="."]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="TaskDebugUI" parent="DebugUI" instance=ExtResource("7_rxkft")]
+[node name="DebugUI" parent="." instance=ExtResource("7_wmamy")]
 layout_mode = 2
 
 [node name="ClickSoundPlayer" type="AudioStreamPlayer" parent="."]

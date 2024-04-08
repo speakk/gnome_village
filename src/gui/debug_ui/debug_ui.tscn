@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfbyhkvk72xh0"]
+
+[ext_resource type="PackedScene" uid="uid://bvtrf7nc178ou" path="res://src/gui/debug_ui/task_debug_ui.tscn" id="1_neaq4"]
+[ext_resource type="PackedScene" uid="uid://cqdh760cmgy8v" path="res://src/gui/debug_ui/hover_info.tscn" id="2_618ip"]
+
+[node name="DebugUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TaskDebugUI" parent="." instance=ExtResource("1_neaq4")]
+layout_mode = 0
+
+[node name="HoverInfo" parent="." instance=ExtResource("2_618ip")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -228.0
+offset_right = 0.0
+grow_horizontal = 0
