@@ -12,7 +12,7 @@
 script = ExtResource("2_s0ehm")
 
 [node name="BeehaveTree" parent="." index="0" node_paths=PackedStringArray("blackboard")]
-blackboard = NodePath("@Node@21151")
+blackboard = NodePath("@Node@28778")
 
 [node name="SequenceComposite" type="Node" parent="BeehaveTree" index="0"]
 script = ExtResource("3_77d5b")
@@ -29,9 +29,9 @@ animation_name = "Build"
 unique_name_in_owner = true
 script = ExtResource("6_qo0je")
 
-[node name="FinishTask" type="Node" parent="BeehaveTree/SequenceComposite" index="3"]
-script = ExtResource("7_ebxy2")
-
-[node name="PlayAnimationAction2" type="Node" parent="BeehaveTree/SequenceComposite" index="4"]
+[node name="PlayAnimationAction2" type="Node" parent="BeehaveTree/SequenceComposite" index="3"]
 script = ExtResource("5_lhb5f")
 animation_name = "Idle"
+
+[node name="FinishTask" type="Node" parent="BeehaveTree/SequenceComposite" index="4"]
+script = ExtResource("7_ebxy2")

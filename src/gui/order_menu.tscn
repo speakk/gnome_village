@@ -21,5 +21,11 @@ auto_translate_mode = 1
 layout_mode = 2
 text = "Chop trees"
 
+[node name="MineButton" type="Button" parent="OrderOptions"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Mine"
+
 [connection signal="pressed" from="OrderOptions/DismantleButton" to="." method="_on_dismantle_button_pressed"]
 [connection signal="pressed" from="OrderOptions/ChopTreesButton" to="." method="_on_chop_trees_button_pressed"]
+[connection signal="pressed" from="OrderOptions/MineButton" to="." method="_on_mine_button_pressed"]

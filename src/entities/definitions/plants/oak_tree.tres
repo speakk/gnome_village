@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://dhfow2ks5xt7l" path="res://src/entities/scenes/Plant.tscn" id="10_mcb8v"]
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="12_gwc38"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="12_nm1c1"]
-[ext_resource type="Script" path="res://src/components/data/Tree.gd" id="13_4m1mc"]
+[ext_resource type="Script" path="res://src/components/data/Tag.gd" id="13_68pjt"]
 
 [sub_resource type="Resource" id="Resource_yj5ua"]
 script = ExtResource("1_j48q8")
@@ -62,10 +62,11 @@ solid_when_started = true
 can_be_dismantled = true
 max_durability = 10.0
 
-[sub_resource type="Resource" id="Resource_lusmv"]
-script = ExtResource("13_4m1mc")
+[sub_resource type="Resource" id="Resource_dov7g"]
+script = ExtResource("13_68pjt")
+tags = Array[int]([0])
 
 [resource]
 script = ExtResource("12_gwc38")
 display_name = "Oak Tree"
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_f4xcm"), SubResource("Resource_e6kwd"), SubResource("Resource_133qg"), SubResource("Resource_wdqux"), SubResource("Resource_lusmv")])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_f4xcm"), SubResource("Resource_e6kwd"), SubResource("Resource_133qg"), SubResource("Resource_wdqux"), SubResource("Resource_dov7g")])

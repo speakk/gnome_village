@@ -223,6 +223,7 @@ func _create_rocks() -> void:
 				container.add_component(DisplayNameComponent.new()).display_name = "Rock"
 				container.add_component(WorldPositionComponent.new())
 				container.add_component(SolidComponent.new())
+				container.add_component(TagComponent.new()).add_tag(TagComponent.Tag.Rock)
 				var constructable: ConstructableComponent = container.add_component(ConstructableComponent.new())
 				WorldPositionComponent.set_world_position(entity, coordinate_to_global_position(Globals.truncate_vec3i(coord)))
 				constructable.can_be_dismantled = true
@@ -445,8 +446,9 @@ func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 					if constructable_component.can_be_dismantled and not constructable_component.reserved_for_dismantling:
 						var selected_action: UiAction.Dismantle = selected_ui_action
 						var has_all := true
-						for component_filter in selected_action.target_component_filters:
-							if not entity.component_container.has_component(component_filter):
+						for tag in selected_action.target_tag_filters:
+							var tag_component: TagComponent = entity.component_container.get_by_id(Components.Id.Tag)
+							if not tag_component or not tag_component.has_tag(tag):
 								has_all = false
 								break
 						
@@ -503,7 +505,7 @@ func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 			Events.request_entity_add.emit(blueprint)
 			WorldPositionComponent.set_world_position(blueprint, coordinate_to_global_position(tile_position))
 			blueprint.component_container.add_component(BlueprintComponent.new())
-			blueprint.component_container.add_component(PlayerMadeComponent.new())
+			blueprint.component_container.add_component(TagComponent.new()).add_tag(TagComponent.Tag.PlayerMade)
 			Events.blueprint_placed.emit(tile_position, blueprint)
 			_create_placement_juice(blueprint, _index)
 			_index += 1

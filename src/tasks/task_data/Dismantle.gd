@@ -35,7 +35,9 @@ func _ready() -> void:
 		#)
 
 func create_action(actor: Settler) -> ActorAction:
-	return DismantleActorAction.new(actor, self)
+	var action: DismantleActorAction = DismantleActorAction.new(actor, self)
+	action.finished.connect(func() -> void: finished.emit())
+	return action
 
 func get_target(actor: Settler) -> Vector3:
 	return target.global_position

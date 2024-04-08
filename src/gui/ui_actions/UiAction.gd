@@ -24,7 +24,7 @@ class ZoneAddTiles extends UiAction:
 		ui_action_id = UiActionId.ZoneAddTiles
 
 class Dismantle extends UiAction:
-	var target_component_filters: Array[Components.Id]
-	func _init(_target_component_filters: Array[Components.Id]) -> void:
+	var target_tag_filters: Array[TagComponent.Tag]
+	func _init(_target_tag_filters: Array[TagComponent.Tag]) -> void:
 		ui_action_id = UiActionId.Dismantle
-		target_component_filters = _target_component_filters
+		target_tag_filters = _target_tag_filters
