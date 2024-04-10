@@ -17,3 +17,16 @@ func add_tag(tag: Tag) -> void:
 
 func has_tag(tag: Tag) -> bool:
 	return tags.has(tag)
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["tags"] = tags
+		
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	if dict.has("tags"):
+		tags = dict["tags"]
+#endregion

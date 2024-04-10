@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://wdu1yxvs7gcs"]
+
+[ext_resource type="Script" path="res://src/fx/single_rock_piece.gd" id="1_2ynbm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_rquby"]
+size = Vector3(0.2, 0.2, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b8sw7"]
+size = Vector3(0.2, 0.2, 0.2)
+
+[node name="SingleRockPiece" type="RigidBody3D"]
+script = ExtResource("1_2ynbm")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_rquby")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_b8sw7")

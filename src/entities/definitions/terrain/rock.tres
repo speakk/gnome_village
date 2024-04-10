@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=20 format=3 uid="uid://5gwtkxhvwcge"]
+
+[ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="1_2mt2u"]
+[ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="1_i6iu2"]
+[ext_resource type="PackedScene" uid="uid://cjk2jx416hwmg" path="res://src/fx/rock_dismantle.tscn" id="2_ld2i6"]
+[ext_resource type="Script" path="res://src/components/helper_models/Effect.gd" id="3_3ddme"]
+[ext_resource type="Script" path="res://src/components/data/DropFx.gd" id="4_bv18v"]
+[ext_resource type="Script" path="res://src/components/data/Terrain.gd" id="5_jk0dl"]
+[ext_resource type="Script" path="res://src/components/data/Solid.gd" id="6_wwjfy"]
+[ext_resource type="Script" path="res://src/components/data/Tag.gd" id="7_7yxw8"]
+[ext_resource type="Resource" uid="uid://dw0g46snnxs3q" path="res://src/entities/definitions/ores/copper_ore.tres" id="8_imqxe"]
+[ext_resource type="Script" path="res://src/entities/ItemDrop.gd" id="9_cpfw2"]
+[ext_resource type="Script" path="res://src/components/data/Drop.gd" id="10_tny5y"]
+
+[sub_resource type="Resource" id="Resource_ld58y"]
+script = ExtResource("1_2mt2u")
+requirements = Array[Resource("res://src/entities/ItemRequirement.gd")]([])
+solid_when_started = false
+can_be_dismantled = true
+max_durability = 10.0
+
+[sub_resource type="Resource" id="Resource_j2hm7"]
+script = ExtResource("3_3ddme")
+effect_scene = ExtResource("2_ld2i6")
+
+[sub_resource type="Resource" id="Resource_ke7xj"]
+script = ExtResource("4_bv18v")
+effects = Array[ExtResource("3_3ddme")]([SubResource("Resource_j2hm7")])
+
+[sub_resource type="Resource" id="Resource_0olcy"]
+script = ExtResource("5_jk0dl")
+target_layer = 1
+mesh_id = 1
+
+[sub_resource type="Resource" id="Resource_vqfo3"]
+script = ExtResource("6_wwjfy")
+
+[sub_resource type="Resource" id="Resource_5fwuj"]
+script = ExtResource("7_7yxw8")
+tags = Array[int]([2])
+
+[sub_resource type="Resource" id="Resource_i6s20"]
+script = ExtResource("9_cpfw2")
+item = ExtResource("8_imqxe")
+amount_min = 1
+amount_max = 1
+probability = 0.1
+
+[sub_resource type="Resource" id="Resource_u60ci"]
+script = ExtResource("10_tny5y")
+drops = Array[ExtResource("9_cpfw2")]([SubResource("Resource_i6s20")])
+
+[resource]
+script = ExtResource("1_i6iu2")
+display_name = "Rock"
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_ld58y"), SubResource("Resource_ke7xj"), SubResource("Resource_0olcy"), SubResource("Resource_vqfo3"), SubResource("Resource_5fwuj"), SubResource("Resource_u60ci")])

@@ -7,7 +7,8 @@ func _ready() -> void:
 		"res://src/entities/definitions",
 		"res://src/entities/definitions/plants",
 		"res://src/entities/definitions/food",
-		"res://src/entities/definitions/foliage"
+		"res://src/entities/definitions/foliage",
+		"res://src/entities/definitions/stations"
 		]
 	for path in paths:
 		var data_dir := DirAccess.open(path)

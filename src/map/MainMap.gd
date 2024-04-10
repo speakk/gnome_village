@@ -216,24 +216,15 @@ func _create_rocks() -> void:
 			if noise_value > 0.2:
 				var noise_value2 := rock_placement_noise.get_noise_2d(y*2, x*2)
 				grid.set_cell_item(coord, 1)
-				var entity: Entity = load("res://src/entities/entity/Entity.tscn").instantiate()
+				var entity: Entity = Entity.from_definition(load("res://src/entities/definitions/terrain/rock.tres"))
 				Events.request_entity_add.emit(entity)
 				var container: ComponentContainer = entity.component_container
-				container.add_component(SelectableComponent.new())
-				container.add_component(DisplayNameComponent.new()).display_name = "Rock"
-				container.add_component(WorldPositionComponent.new())
-				container.add_component(SolidComponent.new())
-				container.add_component(TagComponent.new()).add_tag(TagComponent.Tag.Rock)
-				var constructable: ConstructableComponent = container.add_component(ConstructableComponent.new())
 				WorldPositionComponent.set_world_position(entity, coordinate_to_global_position(Globals.truncate_vec3i(coord)))
-				constructable.can_be_dismantled = true
-				constructable.max_durability = 5
-				var terrain: TerrainComponent = container.add_component(TerrainComponent.new())
+				var terrain: TerrainComponent = container.get_by_id(Components.Id.Terrain)
 				if noise_value2 > -0.1:
 					terrain.mesh_id = AboveGroundCells.Rock
 				else:
 					terrain.mesh_id = AboveGroundCells.Rock2
-				#Events.solid_cell_placed.emit(Globals.truncate_vec3i(coord))
 
 
 func _create_rivers() -> void:

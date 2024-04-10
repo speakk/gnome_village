@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=9 format=3 uid="uid://b6agm3crxp6at"]
+
+[ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="1_duxi4"]
+[ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="1_uu1oa"]
+[ext_resource type="PackedScene" uid="uid://b5ovrp2xpjjhu" path="res://src/entities/scenes/stations/smelter.tscn" id="2_ybnq2"]
+[ext_resource type="Script" path="res://src/components/data/Scene.gd" id="3_4dgu4"]
+[ext_resource type="Script" path="res://src/components/data/Size.gd" id="4_v0xjv"]
+
+[sub_resource type="Resource" id="Resource_fm6yf"]
+script = ExtResource("1_uu1oa")
+requirements = Array[Resource("res://src/entities/ItemRequirement.gd")]([])
+solid_when_started = true
+can_be_dismantled = true
+max_durability = 10.0
+
+[sub_resource type="Resource" id="Resource_dyegp"]
+script = ExtResource("3_4dgu4")
+scene = ExtResource("2_ybnq2")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+
+[sub_resource type="Resource" id="Resource_4y03f"]
+script = ExtResource("4_v0xjv")
+size = Vector2i(2, 1)
+
+[resource]
+script = ExtResource("1_duxi4")
+display_name = "Smelter"
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_fm6yf"), SubResource("Resource_dyegp"), SubResource("Resource_4y03f")])
