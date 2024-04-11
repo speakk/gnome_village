@@ -4,7 +4,7 @@ enum Id {
 	Selectable, Door, WorldPosition, DisplayName, CharacterStats, Inventory,
 	GrowthSpot, ItemAmount, Constructable, Terrain,
 	Blueprint, Scene, Solid, Plant, PlantScene, Spread, Drop, Consumable,
-	DismantleIndicator, Tag, DropFx, Size
+	DismantleIndicator, Tag, DropFx, Shape
 }
 
 var component_by_id: Dictionary
