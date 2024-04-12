@@ -7,6 +7,7 @@ var default_components: Array[Component] = [
 	DisplayNameComponent.new(),
 	WorldPositionComponent.new(),
 	ItemAmountComponent.new(),
+	ShapeComponent.new()
 ]
 
 var show_amount_number := true

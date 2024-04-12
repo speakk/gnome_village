@@ -142,8 +142,6 @@ func _process(_delta: float) -> void:
 	
 	if Input.is_action_pressed("secondary_action_modifier"):
 		signal_to_emit = tiles_selected_secondary
-	#if mouse_pressed_2:
-		#signal_to_emit = tiles_selected_secondary
 	
 	if mouse_pressed_1:
 		mouse_latch = true
@@ -213,6 +211,11 @@ func set_line_end(coordinate: Vector2i) -> void:
 
 #Bresenham's line algorithm
 func get_tile_line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
+	var shape_size := Vector2i(1, 1)
+	if selected_ui_action is UiAction.Build:
+		var shape_component: ShapeComponent = selected_ui_action.item.get_component_by_id(Components.Id.Shape)
+		if shape_component:
+			shape_size = selected_ui_action.item.get_component_by_id(Components.Id.Shape).get_size()
 	var points: Array[Vector2i] = []
 	var dx := absi(to.x - from.x)
 	var dy := -absi(to.y - from.y)
@@ -221,7 +224,10 @@ func get_tile_line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 	var sx := 1 if from.x < to.x else -1
 	var sy := 1 if from.y < to.y else -1
 	while true:
-		points.append(Vector2i(from.x, from.y))
+		var coord := Vector2i(from.x, from.y)
+		var quantized_coord := coord.snapped(shape_size)
+		if not points.has(quantized_coord):
+			points.append(quantized_coord)
 		if from.x == to.x and from.y == to.y:
 			break
 		e2 = 2 * err
@@ -232,3 +238,25 @@ func get_tile_line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 			err += dx
 			from.y += sy
 	return points
+
+#Bresenham's line algorithm
+#func get_tile_line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
+	#var points: Array[Vector2i] = []
+	#var dx := absi(to.x - from.x)
+	#var dy := -absi(to.y - from.y)
+	#var err := dx + dy
+	#var e2 := 2 * err
+	#var sx := 1 if from.x < to.x else -1
+	#var sy := 1 if from.y < to.y else -1
+	#while true:
+		#points.append(Vector2i(from.x, from.y))
+		#if from.x == to.x and from.y == to.y:
+			#break
+		#e2 = 2 * err
+		#if e2 >= dy:
+			#err += dy
+			#from.x += sx
+		#if e2 <= dx:
+			#err += dx
+			#from.y += sy
+	#return points
