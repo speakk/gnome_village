@@ -113,7 +113,7 @@ func get_available_task(actor_position: Vector3) -> Task:
 			if not b_location is Vector3:
 				return true
 			
-			return a_location.distance_to(actor_position) < b_location.distance_to(actor_position)
+			return a_location.distance_to_squared(actor_position) < b_location.distance_to_squared(actor_position)
 			)
 	
 	if all_available_tasks.size() > 0:

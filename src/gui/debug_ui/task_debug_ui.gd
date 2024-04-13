@@ -14,7 +14,7 @@ func _ready() -> void:
 	
 func _refresh_debug_tree(tasks: Array[Task]) -> void:
 	_cached_tasks = tasks
-	if not debug_ui_tree.visible:
+	if not visible:
 		return
 	debug_ui_tree.clear()
 	var root := debug_ui_tree.create_item()

@@ -450,32 +450,13 @@ func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
 	var zone := (selected_ui_action as UiAction.ZoneAddTiles).zone
 	zone.add_coordinates(coordinates)
 
-func _create_placement_juice(entity: Entity, index: int) -> void:
+func _handle_terrain_juice(entity: Entity, index: int) -> void:
 	var container: ComponentContainer = entity.component_container
-	var node: Node3D
-	var removed_component: Component
-	var position_correction := Vector3(0, 0, 0)
-	if container.has_component(Components.Id.Terrain):
-		var terrain_component: TerrainComponent = container.get_by_id(Components.Id.Terrain)
-		container.remove_component(Components.Id.Terrain)
-		node = MeshInstance3D.new()
-		node.mesh = blueprint_grid.mesh_library.get_item_mesh(terrain_component.mesh_id)
-		removed_component = terrain_component
-		position_correction = Vector3(0, 0.5, 0)
-	elif container.has_component(Components.Id.Scene):
-		var scene_component: SceneComponent = container.get_by_id(Components.Id.Scene)
-		container.remove_component(Components.Id.Scene)
-		node = scene_component.scene.instantiate()
-		if node.has_method("set_blueprint"):
-			node.set_blueprint(true)
-		
-		if node.has_method("set_active"):
-			node.set_active(false)
-		removed_component = scene_component
-	
-	if not node:
-		return
-	
+	var terrain_component: TerrainComponent = container.get_by_id(Components.Id.Terrain)
+	container.remove_component(Components.Id.Terrain)
+	var node: Node3D = MeshInstance3D.new()
+	node.mesh = blueprint_grid.mesh_library.get_item_mesh(terrain_component.mesh_id)
+	var position_correction := Vector3(0, 0.5, 0)
 	await get_tree().create_timer(float(index) * 0.02).timeout
 	add_child(node)
 	var pos: Vector3 = container.get_by_id(Components.Id.WorldPosition).current_position + position_correction
@@ -485,8 +466,29 @@ func _create_placement_juice(entity: Entity, index: int) -> void:
 	await create_tween().tween_property(node, "global_position", pos, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BOUNCE).finished
 	node.queue_free()
 	if not container: return
-	container.add_component(removed_component)
+	container.add_component(terrain_component)
 
+func _handle_scene_juice(entity: Entity, index: int) -> void:
+	var container: ComponentContainer = entity.component_container
+	var node: Node3D = entity
+	
+	await get_tree().create_timer(float(index) * 0.02).timeout
+	var pos: Vector3 = container.get_by_id(Components.Id.WorldPosition).current_position
+	node.global_position = pos + Vector3(0, 1.0, 0)
+	$PlacementJuicePlayer.pitch_scale = 1 + randf_range(-0.1, 0.1)
+	$PlacementJuicePlayer.play()
+	await create_tween().tween_property(node, "global_position", pos, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BOUNCE).finished
+	if not container: return
+
+func _create_placement_juice(entity: Entity, index: int) -> void:
+	var terrain_component: TerrainComponent = entity.component_container.get_by_id(Components.Id.Terrain)
+	if terrain_component:
+		_handle_terrain_juice(entity, index)
+
+	var scene_component: SceneComponent = entity.component_container.get_by_id(Components.Id.Scene)
+	if scene_component:
+		_handle_scene_juice(entity, index)
+		
 func _place_blueprint(coordinates: Array[Vector2i]) -> void:
 	var item := (selected_ui_action as UiAction.Build).item
 	var _index: int = 0

@@ -1,15 +1,8 @@
 [gd_scene load_steps=3 format=3 uid="uid://b5ovrp2xpjjhu"]
 
 [ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/Entity.tscn" id="1_vkptl"]
-[ext_resource type="PackedScene" uid="uid://s60eeinvr3r6" path="res://assets/blender_models/stations/smelter.blend" id="2_w115g"]
+[ext_resource type="PackedScene" uid="uid://s60eeinvr3r6" path="res://assets/blender_models/stations/smelter.blend" id="2_weot3"]
 
 [node name="Entity" instance=ExtResource("1_vkptl")]
 
-[node name="smelter" parent="." index="4" instance=ExtResource("2_w115g")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.018345, -0.0461841, -0.06776)
-
-[node name="OmniLight3D" type="OmniLight3D" parent="." index="5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.274592, 0)
-light_color = Color(1, 0.808199, 0.52956, 1)
-light_energy = 2.784
-shadow_enabled = true
+[node name="smelter" parent="." index="4" instance=ExtResource("2_weot3")]

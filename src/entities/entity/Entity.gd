@@ -2,6 +2,8 @@ class_name Entity extends Node3D
 
 @onready var component_container: ComponentContainer = $ComponentContainer
 
+static var ENTITY := preload("res://src/entities/entity/Entity.tscn")
+
 var default_components: Array[Component] = [
 	SelectableComponent.new(),
 	DisplayNameComponent.new(),
@@ -66,6 +68,7 @@ func set_item_components() -> void:
 				item_amount.amount = 1
 
 static func from_definition(entity_definition: EntityDefinition) -> Entity:
+	var time := Time.get_ticks_msec()
 	var custom_scene_component: Variant = entity_definition.get_component_by_id(Components.Id.Scene)
 	var scene: Node3D
 	if custom_scene_component:
@@ -73,10 +76,10 @@ static func from_definition(entity_definition: EntityDefinition) -> Entity:
 		if custom_scene is Entity:
 			scene = custom_scene
 		else:
-			scene = load("res://src/entities/entity/Entity.tscn").instantiate()
+			scene = ENTITY.instantiate()
 			scene.add_child(custom_scene)
 	else:
-		scene = load("res://src/entities/entity/Entity.tscn").instantiate()
+		scene = ENTITY.instantiate()
 
 	scene.definition = entity_definition
 	
