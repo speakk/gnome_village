@@ -20,7 +20,8 @@ custom_subscriptions = Array[Resource("res://src/components/StringSubscription.g
 
 [sub_resource type="Resource" id="Resource_tjsvs"]
 script = ExtResource("4_4xu1u")
-shape_definition = "11"
+shape_definition = "11
+11"
 origin = Vector2i(0, 0)
 
 [resource]

@@ -49,6 +49,12 @@ func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordina
 			var real_x := x + snapped_start.x
 			new_rect_selection_coordinates.append(Vector2i(real_x, real_y))
 	
+	var shape_size: Vector2i = Vector2i(1, 1)
+	if selected_ui_action is UiAction.Build:
+		var shape_component: ShapeComponent = selected_ui_action.item.get_component_by_id(Components.Id.Shape)
+		if shape_component:
+			shape_size = selected_ui_action.item.get_component_by_id(Components.Id.Shape).get_size()
+
 	var final_coordinates: Array[Vector2i]
 	
 	if hollow:
@@ -62,6 +68,11 @@ func _set_rectangle_selection(rect_start_coordinate: Vector2i, rect_end_coordina
 	else:
 		final_coordinates.assign(new_rect_selection_coordinates)
 
+	if not (shape_size.x == 1 and shape_size.y == 1):
+		final_coordinates.assign(final_coordinates.map(func(coord: Vector2i) -> Vector2i:
+			return coord.snapped(shape_size)
+			))
+	
 	rect_tile_coords = final_coordinates
 	selection_draw.line_coords = final_coordinates
 

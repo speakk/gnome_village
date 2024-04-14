@@ -6,3 +6,12 @@
 [node name="Entity" instance=ExtResource("1_vkptl")]
 
 [node name="smelter" parent="." index="4" instance=ExtResource("2_weot3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.510433, 0, 0.453718)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.510433, 0.314148, 0.453718)
+visible = false
+light_color = Color(1, 0.856242, 0.572877, 1)
+light_energy = 0.425
+omni_range = 2.0
+omni_shadow_mode = 0
