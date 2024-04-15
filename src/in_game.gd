@@ -46,13 +46,15 @@ func new_game() -> void:
 func create_world() -> void:
 	_clear_entities()
 	#PathFinder.prepare_for_load()
-	main_map.create_world()
+	await main_map.create_world()
 	
 	var test_divider := 1
 	var map_size_real_x := MainMap.MAP_SIZE_X / test_divider
 	var map_size_real_y := MainMap.MAP_SIZE_Y / test_divider
 	
 	print("Now spawning entities")
+	
+	Events.world_creation.entities.emit()
 	
 	for i in TEST_TREES:
 		var grid_position := Globals.get_map().get_random_coordinate()

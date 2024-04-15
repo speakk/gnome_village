@@ -3,6 +3,7 @@ extends Node
 var component := ComponentEvents.new()
 var plant := PlantEvents.new()
 var ui := UiEvents.new()
+var world_creation := WorldCreationEvents.new()
 
 class ComponentEvents:
 	signal added(container: ComponentContainer, component: Component)
@@ -14,6 +15,15 @@ class PlantEvents:
 
 class UiEvents:
 	signal action_cleared
+
+class WorldCreationEvents:
+	signal begin
+	signal finished
+	signal ground_and_ocean
+	signal rocks
+	signal rivers
+	signal grass
+	signal entities
 
 signal blueprint_placed(tile_position: Vector2i, blueprint: Entity)
 signal construction_finished(item: Entity)

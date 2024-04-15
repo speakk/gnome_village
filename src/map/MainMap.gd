@@ -62,6 +62,8 @@ enum Layers {
 var map_entities := {} as Dictionary
 
 func _create_grass() -> void:
+	Events.world_creation.grass.emit()
+	
 	var multi_mesh := MultiMesh.new()
 	multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
 	multi_mesh.mesh = preload("res://assets/blender_models/foliage/grass_blade_mesh.res")
@@ -155,12 +157,17 @@ func clear_everything() -> void:
 	PathFinder._reset()
 
 func create_world() -> void:
+	Events.world_creation.begin.emit()
+	await get_tree().process_frame
 	clear_everything()
 	
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
 	var water_area_y_size := 40
 	var shore_wave_frequency := 0.05
 	var shore_wave_depth := 6
+	
+	Events.world_creation.ground_and_ocean.emit()
+	await get_tree().process_frame
 	
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
@@ -179,10 +186,13 @@ func create_world() -> void:
 			else:
 				ground_grid.set_cell_item(coord, 1)
 
-	
 	_create_rocks()
+	await get_tree().process_frame
 	_create_rivers()
+	await get_tree().process_frame
 	_create_grass()
+	await get_tree().process_frame
+	
 	
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
@@ -191,6 +201,8 @@ func create_world() -> void:
 			var cell := ground_grid.get_cell_item(Vector3i(final_x, 0, final_y))
 			if cell == GroundCells.Water or cell == GroundCells.RiverWater:
 				PathFinder.set_coordinate_invalid(Vector2i(final_x, final_y))
+	
+	Events.world_creation.finished.emit()
 
 var width_shapes: Dictionary = {
 	1: [Vector2i(0, 0)],
@@ -209,6 +221,7 @@ var width_shapes: Dictionary = {
 }
 
 func _create_rocks() -> void:
+	Events.world_creation.rocks.emit()
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
 			var coord := Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2)
@@ -228,6 +241,7 @@ func _create_rocks() -> void:
 
 
 func _create_rivers() -> void:
+	Events.world_creation.rivers.emit()
 	var rivers: int = 1
 
 	for i in rivers:
