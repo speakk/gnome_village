@@ -15,6 +15,7 @@ func _init() -> void:
 	id = Components.Id.Terrain
 	subscriptions = [
 		Subscription.new(self.id, Components.Id.WorldPosition, func (world_position: WorldPositionComponent) -> void:
+			_cached_coordinate = world_position.coordinate
 			world_position.position_changed.connect(self._on_position_changed)
 			),
 		Subscription.new(self.id, Components.Id.Blueprint, func (blueprint: BlueprintComponent) -> void:
