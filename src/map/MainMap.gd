@@ -157,7 +157,6 @@ func clear_everything() -> void:
 	PathFinder._reset()
 
 func create_world() -> void:
-	Events.world_creation.begin.emit()
 	await get_tree().process_frame
 	clear_everything()
 	
@@ -202,7 +201,6 @@ func create_world() -> void:
 			if cell == GroundCells.Water or cell == GroundCells.RiverWater:
 				PathFinder.set_coordinate_invalid(Vector2i(final_x, final_y))
 	
-	Events.world_creation.finished.emit()
 
 var width_shapes: Dictionary = {
 	1: [Vector2i(0, 0)],

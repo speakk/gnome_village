@@ -44,6 +44,7 @@ func new_game() -> void:
 	create_world()
 
 func create_world() -> void:
+	Events.world_creation.begin.emit()
 	_clear_entities()
 	#PathFinder.prepare_for_load()
 	await main_map.create_world()
@@ -55,6 +56,7 @@ func create_world() -> void:
 	print("Now spawning entities")
 	
 	Events.world_creation.entities.emit()
+	await get_tree().process_frame
 	
 	for i in TEST_TREES:
 		var grid_position := Globals.get_map().get_random_coordinate()
@@ -67,7 +69,6 @@ func create_world() -> void:
 			entity.component_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
 			entity.component_container.get_by_id(Components.Id.Plant).current_growth_stage_index = randi_range(0, 3)
 			
-	await get_tree().physics_frame
 #
 	var resources: Array[EntityDefinition] = [
 		preload("res://src/entities/definitions/wood.tres"),
@@ -112,6 +113,8 @@ func create_world() -> void:
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			entity.component_container.get_by_id(Components.Id.Scene).get_scene().rotate_y(randf_range(0, PI*2))
 
+	Events.world_creation.finished.emit()
+	
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("debug_toggle"):
 		debug_visuals = not debug_visuals
