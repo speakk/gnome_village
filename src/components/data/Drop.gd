@@ -10,7 +10,7 @@ func on_exit() -> void:
 		if randf() <= item_drop.probability:
 			var amount := randi_range(item_drop.amount_min, item_drop.amount_max)
 			var new_entity := Entity.from_definition(item_drop.item)
-			var global_pos := get_owner().global_position
+			var global_pos: Vector3 = get_owner().component_container.get_by_id(Components.Id.WorldPosition).current_position
 			# TODO: Randomize position slightly
 			(func() -> void:
 				Events.request_entity_add.emit(new_entity)

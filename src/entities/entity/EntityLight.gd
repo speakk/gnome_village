@@ -3,6 +3,9 @@ class_name Entity extends Resource
 var component_container: ComponentContainer = ComponentContainer.new()
 var definition: EntityDefinition
 
+# Ease of access READ ONLY except from world pos component
+var global_position: Vector3
+
 var default_components: Array[Component] = [
 	SelectableComponent.new(),
 	DisplayNameComponent.new(),

@@ -26,7 +26,7 @@ func start_growing_plant(plant: EntityDefinition) -> void:
 	if not has_growing:
 		var planted_plant := Entity.from_definition(plant)
 		Events.request_entity_add.emit(planted_plant)
-		WorldPositionComponent.set_world_position(planted_plant, get_owner().global_position)
+		WorldPositionComponent.set_world_position(planted_plant, get_owner().component_container.get_by_id(Components.Id.WorldPosition).current_position)
 		plant_component = planted_plant.component_container.get_by_id(Components.Id.Plant)
 		# TODO: This is so that the can be "dismantled". Do this any other way
 		# in the future.

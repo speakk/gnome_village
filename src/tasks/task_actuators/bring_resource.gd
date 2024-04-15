@@ -4,7 +4,10 @@ var _item_amount_component: ItemAmountComponent
 
 # TODO: Handle amounts
 func find_closest_material(_item_requirement: ItemRequirement) -> Entity:
-	var materials_on_ground := get_tree().get_nodes_in_group("entity") as Array[Node]
+	#var materials_on_ground := get_tree().get_nodes_in_group("entity") as Array[Node]
+	var entity_handler: EntityHandler = get_tree().get_first_node_in_group("entity_handler")
+	# TODO: Some kind of filter, or spatial thing??
+	var materials_on_ground := entity_handler.get_all()
 	
 	# TODO: Doesn't handle reservations yet with material.item_amount
 	var correct_materials := materials_on_ground.filter(func(material: Entity) -> bool:
@@ -22,7 +25,7 @@ func find_closest_material(_item_requirement: ItemRequirement) -> Entity:
 					# Filter out items that were already marked unreachable
 					var actor_position: Vector3 = tree.actor.global_position
 					var from: Vector2i = Globals.get_map().global_position_to_coordinate(actor_position)
-					var to: Vector2i = Globals.get_map().global_position_to_coordinate(material.global_position)
+					var to: Vector2i = material.component_container.get_by_id(Components.Id.WorldPosition).coordinate
 					var path_invalid := PathFinder.is_path_marked_unreachable(from, to)
 					
 					if not path_invalid:
@@ -39,7 +42,7 @@ func find_closest_material(_item_requirement: ItemRequirement) -> Entity:
 	var closest_distance := 99999999.0
 	var closest_material: Entity
 	for material_on_ground in correct_materials as Array[Entity]:
-		var distance: float = tree.actor.global_position.distance_to(material_on_ground.global_position)
+		var distance: float = tree.actor.global_position.distance_to(material_on_ground.component_container.get_by_id(Components.Id.WorldPosition).current_position)
 		if distance < closest_distance:
 			closest_distance = distance
 			closest_material = material_on_ground
@@ -66,7 +69,7 @@ func start_work() -> void:
 		var reservation := ItemAmountReservation.new(tree.actor, task.item_requirement.amount)
 		_item_amount_component.add_reservation(reservation)
 		
-	%GoToResource.target_coordinate = Globals.get_map().global_position_to_coordinate(_item_amount_component.get_owner().global_position)
+	%GoToResource.target_coordinate = Globals.get_map().global_position_to_coordinate(_item_amount_component.get_owner().component_container.get_by_id(Components.Id.WorldPosition).current_position)
 	
 	%GetItemFromGround.item_amount_component = _item_amount_component
 	%GetItemFromGround.item_requirement = task.item_requirement
@@ -78,7 +81,7 @@ func start_work() -> void:
 			task.has_failed = true
 			return
 			
-		%GoToBlueprint.target_coordinate = Globals.get_map().global_position_to_coordinate(task.inventory_component.get_owner().global_position)
+		%GoToBlueprint.target_coordinate = task.inventory_component.get_owner().component_container.get_by_id(Components.Id.WorldPosition).coordinate
 	
 	
 	# TODO: Support for just placing items down instead of adding to inventory

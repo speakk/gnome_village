@@ -3,12 +3,13 @@ class_name TerrainComponent extends Component
 @export var target_layer: MainMap.Layers = MainMap.Layers.Building
 @export var mesh_id: MainMap.AboveGroundCells
 
+var _cached_coordinate: Vector2i
+
 var _blueprint_status: bool:
 	set(new_status):
 		_blueprint_status = new_status
-		var coordinate := Globals.get_map().global_position_to_coordinate(get_owner().global_position)
-		Events.terrain_placed.emit(coordinate, mesh_id, _blueprint_status)
-		Events.terrain_cleared.emit(coordinate, not _blueprint_status)
+		Events.terrain_placed.emit(_cached_coordinate, mesh_id, _blueprint_status)
+		Events.terrain_cleared.emit(_cached_coordinate, not _blueprint_status)
 
 func _init() -> void:
 	id = Components.Id.Terrain
@@ -30,15 +31,16 @@ func _init() -> void:
 func _on_position_changed(_old_position: Vector3, _global_position: Vector3, old_coordinate: Vector2i, coordinate: Vector2i) -> void:
 	Events.terrain_placed.emit(coordinate, mesh_id, _blueprint_status)
 	Events.terrain_cleared.emit(old_coordinate, _blueprint_status)
+	
+	_cached_coordinate = coordinate
 
 func set_blueprint(status: bool) -> void:
 	_blueprint_status = status
 
 func on_exit() -> void:
 	super.on_exit()
-	var coordinate := Globals.get_map().global_position_to_coordinate(get_owner().global_position)
-	Events.terrain_cleared.emit(coordinate, _blueprint_status)
-	Events.terrain_cleared.emit(coordinate, !_blueprint_status)
+	Events.terrain_cleared.emit(_cached_coordinate, _blueprint_status)
+	Events.terrain_cleared.emit(_cached_coordinate, !_blueprint_status)
 
 #region Serialization
 func serialize() -> Dictionary:

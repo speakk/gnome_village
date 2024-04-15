@@ -16,7 +16,9 @@ func _init() -> void:
 	]
 
 func _change_cell_state(coordinate: Vector2i, placed: bool) -> void:
-	var shape: Array[ShapeRow]
+	var _default_shape_row := ShapeRow.new()
+	_default_shape_row.row = [true]
+	var shape: Array[ShapeRow] = [_default_shape_row]
 	var origin: Vector2i
 	
 	if shape_component:

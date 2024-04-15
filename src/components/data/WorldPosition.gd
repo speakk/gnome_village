@@ -17,8 +17,8 @@ var current_position: Vector3:
 			
 		current_position = new_value
 		coordinate = new_coordinate
-		if component_owner is Node3D:
-			component_owner.global_position = new_value
+		
+		get_owner().global_position = current_position
 
 static func set_world_position(node: Entity, world_position: Vector3) -> void:
 	var world_position_component: WorldPositionComponent = node.component_container.get_by_id(Components.Id.WorldPosition)
