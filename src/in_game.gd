@@ -109,7 +109,6 @@ func create_world() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var entity: Entity = Entity.from_definition(decal_items.pick_random())
 			entity_handler.add_entity(entity)
-			
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			entity.component_container.get_by_id(Components.Id.Scene).get_scene().rotate_y(randf_range(0, PI*2))
 

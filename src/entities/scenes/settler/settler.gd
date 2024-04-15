@@ -36,8 +36,6 @@ func _ready() -> void:
 	name = "Settler"
 	#Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
 	
-	var original_position := global_position
-	
 	ai_evaluators.container = component_container
 	
 	component_container.component_added.connect(func(component: Component) -> void:
@@ -46,11 +44,7 @@ func _ready() -> void:
 		
 		if component is DisplayNameComponent:
 			component.display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
-		
-		if component is WorldPositionComponent:
-			WorldPositionComponent.set_world_position(self, original_position)
-		)
-		
+	)
 		#component_container.component_removed.connect(func(component_id: Components.Id) -> void:
 			#if component_id == Components.Id.Inventory:
 				#

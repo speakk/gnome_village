@@ -3,6 +3,7 @@ class_name SceneComponent extends Component
 var _active: bool
 
 var _instantiated_scene: Node3D
+var _initial_position: Vector3
 
 @export var scene: PackedScene
 @export var custom_subscriptions: Array[StringSubscription]:
@@ -33,6 +34,17 @@ func _init() -> void:
 				set_active(true)
 				)
 			),
+		Subscription.new(self.id, Components.Id.WorldPosition, func (world_position: WorldPositionComponent) -> void:
+			#signal position_changed(_old_position: Vector3, _global_position: Vector3, _old_coordinate: Vector2i, _coordinate: Vector2i)
+			_initial_position = world_position.current_position
+			if _instantiated_scene:
+				_instantiated_scene.global_position = _initial_position
+				
+			world_position.position_changed.connect(
+				func(_old_position: Vector3, global_position: Vector3, _old_coordinate: Vector2i, _coordinate: Vector2i) -> void:
+					_instantiated_scene.global_position = global_position
+					)
+			),
 	])
 
 func on_enter() -> void:
@@ -41,6 +53,7 @@ func on_enter() -> void:
 	if _instantiated_scene is EntityScene:
 		_instantiated_scene.component_container = get_container()
 	Events.request_entity_scene_add.emit(_instantiated_scene)
+	_instantiated_scene.global_position = _initial_position
 
 func get_scene() -> Node3D:
 	return _instantiated_scene
