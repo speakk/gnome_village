@@ -4,6 +4,7 @@ class_name DropComponent extends Component
 
 func _init() -> void:
 	id = Components.Id.Drop
+	invariant = true
 
 func on_exit() -> void:
 	for item_drop in drops:

@@ -21,7 +21,6 @@ func _ready() -> void:
 	process_mode = PROCESS_MODE_DISABLED
 	component_owner = get_parent()
 
-
 func on_delete() -> void:
 	for component in _components:
 		Events.component.removed.emit(self, component)
@@ -52,7 +51,13 @@ func add_component(component: Component) -> Component:
 	if has_component(component.id):
 		remove_component(component.id)
 	
-	var duplicated: Component = component.duplicate()
+	var duplicated: Component
+	
+	if component.invariant:
+		duplicated = component
+	else:
+		duplicated = component.duplicate()
+	
 	assert(component_owner, "Component owner missing in add_component")
 	duplicated.set_owner(component_owner)
 	_components.append(duplicated)

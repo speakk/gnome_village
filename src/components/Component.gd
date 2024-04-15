@@ -6,6 +6,8 @@ var component_owner: Object
 
 var subscriptions: Array[Subscription]
 
+var invariant: bool = false
+
 #var groups: Array[Groups.Id]:
 	#set(new_value):
 		#groups = new_value
