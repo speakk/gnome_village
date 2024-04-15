@@ -229,8 +229,8 @@ func _create_rocks() -> void:
 			if noise_value > 0.2:
 				var noise_value2 := rock_placement_noise.get_noise_2d(y*2, x*2)
 				grid.set_cell_item(coord, 1)
-				var entity: EntityLight = EntityLight.from_definition(load("res://src/entities/definitions/terrain/rock.tres"))
-				Events.request_entity_light_add.emit(entity)
+				var entity: Entity = Entity.from_definition(load("res://src/entities/definitions/terrain/rock.tres"))
+				Events.request_entity_add.emit(entity)
 				var container: ComponentContainer = entity.component_container
 				WorldPositionComponent.set_world_position(entity, coordinate_to_global_position(Globals.truncate_vec3i(coord)))
 				var terrain: TerrainComponent = container.get_by_id(Components.Id.Terrain)
@@ -479,7 +479,7 @@ func _handle_terrain_juice(entity: Entity, index: int) -> void:
 
 func _handle_scene_juice(entity: Entity, index: int) -> void:
 	var container: ComponentContainer = entity.component_container
-	var node: Node3D = entity
+	var node: Node3D = container.get_by_id(Components.Id.Scene).get_scene()
 	
 	await get_tree().create_timer(float(index) * 0.02).timeout
 	var pos: Vector3 = container.get_by_id(Components.Id.WorldPosition).current_position

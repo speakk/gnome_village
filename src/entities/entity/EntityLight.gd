@@ -1,4 +1,4 @@
-class_name EntityLight extends Resource
+class_name Entity extends Resource
 
 var component_container: ComponentContainer = ComponentContainer.new()
 var definition: EntityDefinition
@@ -11,11 +11,11 @@ var default_components: Array[Component] = [
 	ShapeComponent.new()
 ]
 
-static func from_definition(entity_definition: EntityDefinition) -> EntityLight:
-	var entity_light := EntityLight.new()
-	entity_light.definition = entity_definition
+static func from_definition(entity_definition: EntityDefinition) -> Entity:
+	var entity := Entity.new()
+	entity.definition = entity_definition
 	
-	return entity_light
+	return entity
 
 func on_enter() -> void:
 	component_container.component_owner = self
@@ -38,3 +38,35 @@ func set_item_components() -> void:
 			item_amount.item = definition
 			if item_amount.amount == 0:
 				item_amount.amount = 1
+
+
+func _exit_tree() -> void:
+	Events.item_removed_from_ground.emit(self)
+
+func serialize() -> Dictionary:
+	var dict := {}
+	if definition:
+		dict["definition"] = definition.serialize()
+	dict["component_container"] = component_container.serialize()
+	dict["save_id"] = SaveSystem.get_save_id(self)
+	
+	return dict
+
+static func static_deserialize(dict: Dictionary) -> Entity:
+	var entity: Entity = Entity.new()
+	
+	entity._should_set_components = false
+	
+	entity.component_container.component_owner = entity
+	entity.component_container.deserialize(dict["component_container"])
+	entity.set_meta("save_id", dict["save_id"])
+	entity.deserialize(dict)
+	SaveSystem.register_entity_reference(entity)
+	return entity
+
+func deserialize(dict: Dictionary) -> void:
+	pass
+
+func delete() -> void:
+	component_container.on_delete()
+	free()

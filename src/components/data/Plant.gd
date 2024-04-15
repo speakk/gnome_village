@@ -47,7 +47,7 @@ func _set_spread_component(spread_component: SpreadComponent) -> void:
 		spread_component.set_active(false)
 
 static func create_growth_spot(new_position: Vector3) -> Entity:
-	var new_grows_in_entity: Entity = load("res://src/entities/entity/Entity.tscn").instantiate()
+	var new_grows_in_entity: Entity = Entity.new()
 	#var new_grows_in_entity
 	Events.request_entity_add.emit(new_grows_in_entity)
 	var grows_container: ComponentContainer = new_grows_in_entity.component_container

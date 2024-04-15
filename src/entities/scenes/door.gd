@@ -1,4 +1,4 @@
-extends Entity
+extends EntityScene
 
 @onready var original_rotation := rotation_degrees
 @onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D

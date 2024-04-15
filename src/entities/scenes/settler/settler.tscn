@@ -1,6 +1,6 @@
 [gd_scene load_steps=25 format=3 uid="uid://d1nl0c8gv5jup"]
 
-[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/Entity.tscn" id="1_x603s"]
+[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/EntityScene.tscn" id="1_x603s"]
 [ext_resource type="PackedScene" uid="uid://d0bhvo3gwo2q8" path="res://assets/blender_models/settler.blend" id="2_krb1r"]
 [ext_resource type="Script" path="res://src/entities/scenes/settler/settler.gd" id="2_u05q8"]
 [ext_resource type="AudioStream" uid="uid://b0d3ruteyyooq" path="res://assets/sounds/hammer1.ogg" id="3_7bfkx"]
@@ -93,18 +93,19 @@ outer_radius = 0.4
 rings = 16
 ring_segments = 16
 
-[node name="Settler" node_paths=PackedStringArray("utility_agent", "task_handler") instance=ExtResource("1_x603s")]
+[node name="Settler" node_paths=PackedStringArray("utility_agent", "task_handler", "ai_evaluators") instance=ExtResource("1_x603s")]
 script = ExtResource("2_u05q8")
 utility_agent = NodePath("UtilityAiAgent")
 task_handler = NodePath("TaskHandler")
+ai_evaluators = NodePath("UtilityAiEvaluators")
 
-[node name="CarryItemNode" type="Node3D" parent="." index="4"]
+[node name="CarryItemNode" type="Node3D" parent="." index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.822335, 0)
 
-[node name="settler" parent="." index="5" instance=ExtResource("2_krb1r")]
+[node name="settler" parent="." index="4" instance=ExtResource("2_krb1r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00430357, -0.5, -0.097248)
 
-[node name="HammerSounds" type="Node3D" parent="." index="6"]
+[node name="HammerSounds" type="Node3D" parent="." index="5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00430357, -0.5, -0.097248)
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="HammerSounds" index="0"]
@@ -139,16 +140,15 @@ max_distance = 147.16
 bus = &"Environment"
 attenuation_filter_db = -9.1
 
-[node name="AnimationPlayerAudio" type="AnimationPlayer" parent="." index="7"]
+[node name="AnimationPlayerAudio" type="AnimationPlayer" parent="." index="6"]
 libraries = {
 "": SubResource("AnimationLibrary_tjr5p")
 }
 
-[node name="UtilityAiEvaluators" type="Node" parent="." index="8" node_paths=PackedStringArray("container")]
+[node name="UtilityAiEvaluators" type="Node" parent="." index="7"]
 script = ExtResource("11_d4onw")
-container = NodePath("../ComponentContainer")
 
-[node name="UtilityAiAgent" type="Node" parent="." index="9"]
+[node name="UtilityAiAgent" type="Node" parent="." index="8"]
 script = ExtResource("7_5pobx")
 processing_interval = 0.5
 
@@ -208,10 +208,10 @@ node = NodePath("../../../../UtilityAiEvaluators")
 property_name = "get_time_of_day"
 curve = SubResource("Curve_1g8wt")
 
-[node name="TaskHandler" parent="." index="10" node_paths=PackedStringArray("settler") instance=ExtResource("12_xlj2u")]
+[node name="TaskHandler" parent="." index="9" node_paths=PackedStringArray("settler") instance=ExtResource("12_xlj2u")]
 settler = NodePath("..")
 
-[node name="EatingSound" type="AudioStreamPlayer3D" parent="." index="11"]
+[node name="EatingSound" type="AudioStreamPlayer3D" parent="." index="10"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00430357, 0.5, 0.097248)
 stream = ExtResource("13_nspl2")
 volume_db = 0.02
@@ -219,6 +219,6 @@ max_distance = 147.16
 bus = &"Environment"
 attenuation_filter_db = -9.1
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="12"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="11"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.476605, 0)
 mesh = SubResource("TorusMesh_p67ao")

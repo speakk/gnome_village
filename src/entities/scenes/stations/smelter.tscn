@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b5ovrp2xpjjhu"]
 
-[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/Entity.tscn" id="1_vkptl"]
+[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/EntityScene.tscn" id="1_vkptl"]
 [ext_resource type="PackedScene" uid="uid://s60eeinvr3r6" path="res://assets/blender_models/stations/smelter.blend" id="2_weot3"]
 
 [node name="Entity" instance=ExtResource("1_vkptl")]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cpolcxj8j4c21"]
 
-[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/Entity.tscn" id="1_lihr2"]
+[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/EntityScene.tscn" id="1_lihr2"]
 [ext_resource type="Script" path="res://src/entities/scenes/farm_plot.gd" id="2_h0yqm"]
 [ext_resource type="PackedScene" uid="uid://cddq71md6hpru" path="res://assets/blender_models/farm_plot.blend" id="3_jupx8"]
 [ext_resource type="FontFile" uid="uid://dtfb4n2n8qq7m" path="res://assets/fonts/m5x7.ttf" id="4_63wa7"]

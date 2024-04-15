@@ -1,4 +1,4 @@
-extends Entity
+extends EntityScene
 
 const FARM_PLOT := preload("res://assets/blender_models/farm_plot.blend")
 

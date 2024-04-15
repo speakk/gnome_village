@@ -1,4 +1,4 @@
-class_name PlantScene extends Entity
+class_name PlantScene extends EntityScene
 
 var current_growth_scene: Node3D
 

@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://f30j7nr3ioc4"]
+[gd_scene load_steps=7 format=3 uid="uid://f30j7nr3ioc4"]
 
-[ext_resource type="Script" path="res://src/entities/entity/Entity.gd" id="1_j80v7"]
+[ext_resource type="Script" path="res://src/entities/entity/EntityScene.gd" id="1_j80v7"]
 [ext_resource type="FontFile" uid="uid://dtfb4n2n8qq7m" path="res://assets/fonts/m5x7.ttf" id="3_s7v4j"]
-[ext_resource type="Script" path="res://src/components/component_container.gd" id="4_vrjrf"]
 
 [sub_resource type="Gradient" id="Gradient_fm3l8"]
 colors = PackedColorArray(0.492029, 0.550781, 0.333705, 1, 1, 0.936739, 0.577836, 1)
@@ -55,6 +54,3 @@ text = "2"
 font = ExtResource("3_s7v4j")
 font_size = 16
 outline_size = 8
-
-[node name="ComponentContainer" type="Node3D" parent="."]
-script = ExtResource("4_vrjrf")

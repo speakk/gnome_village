@@ -61,8 +61,8 @@ signal clear_entity_selections()
 
 signal scene_change_requested(new_scene_id: SceneManager.SceneId)
 
-signal request_entity_add(entity: Node)
-signal request_entity_light_add(entity: EntityLight)
+signal request_entity_add(entity: Entity)
+signal request_entity_scene_add(entity_scene: Node3D)
 
 signal load_started
 signal load_game_called(save_dict: Dictionary)

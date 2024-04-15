@@ -1,10 +1,10 @@
 class_name InGame extends Node3D
 
 @onready var SETTLER := load("res://src/entities/scenes/settler/settler.tscn")
-@onready var ENTITY := load("res://src/entities/entity/Entity.tscn")
 
 @onready var main_map: MainMap = $MainMap as MainMap
-@onready var entities: Node3D = %Entities
+@onready var entity_scenes: Node3D = %EntityScenes
+@onready var entity_handler: EntityHandler = %EntityHandler
 @onready var save_system: SaveSystem = $SaveSystem
 
 @onready var sky: DayNightCycleSky = $sky
@@ -18,12 +18,12 @@ const TEST_SETTLERS = 10
 const DECAL_AMOUNT = 800
 
 func _ready() -> void:
-	Events.request_entity_add.connect(func(entity: Node) -> void:
-		entities.add_child(entity)
+	Events.request_entity_scene_add.connect(func(entity_scene: Node3D) -> void:
+		entity_scenes.add_child(entity_scene)
 	)
 	
 	Events.load_started.connect(func() -> void:
-		for child in %Entities.get_children():
+		for child in %EntityScenes.get_children():
 			child.queue_free()
 		)
 	
@@ -62,11 +62,10 @@ func create_world() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var new_grows_in_entity := PlantComponent.create_growth_spot(quantized_position)
 			var entity: Entity = Entity.from_definition(load("res://src/entities/definitions/plants/oak_tree.tres"))
-			%Entities.add_child(entity)
+			entity_handler.add_entity(entity)
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			entity.component_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
 			entity.component_container.get_by_id(Components.Id.Plant).current_growth_stage_index = randi_range(0, 3)
-			entity.name = "oak_tree"
 			
 	await get_tree().physics_frame
 #
@@ -81,7 +80,7 @@ func create_world() -> void:
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
 			var entity: Entity = Entity.from_definition(resources.pick_random())
-			%Entities.add_child(entity)
+			entity_handler.add_entity(entity)
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			
 	
@@ -92,9 +91,9 @@ func create_world() -> void:
 		var grid_position := Globals.get_map().get_random_coordinate() * settler_radius_modifier
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
-			var settler: Settler = Entity.from_definition(load("res://src/entities/definitions/settler.tres"))
-			%Entities.add_child(settler)
-			WorldPositionComponent.set_world_position(settler, quantized_position)
+			var entity: Entity = Entity.from_definition(load("res://src/entities/definitions/settler.tres"))
+			entity_handler.add_entity(entity)
+			WorldPositionComponent.set_world_position(entity, quantized_position)
 			
 			settlers_to_place -= 1
 			if settlers_to_place <= 0:
@@ -109,10 +108,10 @@ func create_world() -> void:
 		var quantized_position := Globals.get_map().coordinate_to_global_position(grid_position)
 		if not PathFinder.is_position_solid(grid_position):
 			var entity: Entity = Entity.from_definition(decal_items.pick_random())
-			%Entities.add_child(entity)
+			entity_handler.add_entity(entity)
 			
 			WorldPositionComponent.set_world_position(entity, quantized_position)
-			entity.rotate_y(randf_range(0, PI*2))
+			entity.component_container.get_by_id(Components.Id.Scene).get_scene().rotate_y(randf_range(0, PI*2))
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("debug_toggle"):
@@ -136,7 +135,7 @@ func _process(delta: float) -> void:
 @onready var containers := [
 	{
 		data_name = "entities",
-		node = %Entities,
+		node = %EntityScenes,
 	},
 	#{
 		#data_name = "tasks",
@@ -166,7 +165,7 @@ func _load_callable(save_dict: Dictionary) -> void:
 	main_map.deserialize(save_dict["map"])
 	
 	for entity_dict: Dictionary in save_dict["entities"]:
-		Entity.static_deserialize(%Entities, entity_dict)
+		Entity.static_deserialize(entity_dict)
 	
 	TaskManager.deserialize(save_dict["task_manager"])
 	PathFinder.deserialize(save_dict["path_finder"])

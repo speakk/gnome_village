@@ -1,9 +1,10 @@
-class_name Settler extends Entity
+class_name Settler extends EntityScene
 
 @onready var animation_player_audio: AnimationPlayer = $AnimationPlayerAudio
 
 @export var utility_agent: UtilityAiAgent
 @export var task_handler: TaskHandler
+@export var ai_evaluators: UtilityAiEvaluators
 
 const REACH_DISTANCE := 2.5
 const AT_DISTANCE := 1.0
@@ -36,6 +37,8 @@ func _ready() -> void:
 	#Events.debug_visuals_set.connect(func(new_value: bool) -> void: $Line2D.visible = new_value)
 	
 	var original_position := global_position
+	
+	ai_evaluators.container = component_container
 	
 	component_container.component_added.connect(func(component: Component) -> void:
 		if component is InventoryComponent:
@@ -175,10 +178,11 @@ func _utility_ai_action_changed(utility_ai_task_id: String) -> void:
 	#print("New action: %s" % utility_ai_task_id)
 
 func serialize() -> Dictionary:
-	var dict := super.serialize()
+	#var dict := super.serialize()
+	var dict := {}
 	dict["task_handler"] = task_handler.serialize()
 	return dict
 
 func deserialize(dict: Dictionary) -> void:
-	super.deserialize(dict)
+	#super.deserialize(dict)
 	task_handler.deserialize(dict["task_handler"])

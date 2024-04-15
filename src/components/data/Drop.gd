@@ -1,7 +1,5 @@
 class_name DropComponent extends Component
 
-var ENTITY := load("res://src/entities/entity/Entity.tscn")
-
 @export var drops: Array[ItemDrop]
 
 func _init() -> void:

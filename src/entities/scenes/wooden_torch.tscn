@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://kyo8fxwvjl2q"]
 
 [ext_resource type="PackedScene" uid="uid://c7vlpvn5eoky4" path="res://assets/blender_models/wooden_torch.blend" id="1_ocj6c"]
-[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/Entity.tscn" id="1_xsuix"]
+[ext_resource type="PackedScene" uid="uid://f30j7nr3ioc4" path="res://src/entities/entity/EntityScene.tscn" id="1_xsuix"]
 [ext_resource type="Script" path="res://src/entities/scenes/wooden_torch.gd" id="2_leofc"]
 
 [sub_resource type="Curve" id="Curve_enaco"]

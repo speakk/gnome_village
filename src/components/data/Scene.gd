@@ -2,6 +2,8 @@ class_name SceneComponent extends Component
 
 var _active: bool
 
+var _instantiated_scene: Node3D
+
 @export var scene: PackedScene
 @export var custom_subscriptions: Array[StringSubscription]:
 	set(new_value):
@@ -35,6 +37,13 @@ func _init() -> void:
 
 func on_enter() -> void:
 	set_active(false)
+	_instantiated_scene = scene.instantiate()
+	if _instantiated_scene is EntityScene:
+		_instantiated_scene.component_container = get_container()
+	Events.request_entity_scene_add.emit(_instantiated_scene)
+
+func get_scene() -> Node3D:
+	return _instantiated_scene
 
 func on_exit() -> void:
 	super.on_exit()

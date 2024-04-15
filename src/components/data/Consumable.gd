@@ -7,7 +7,7 @@ var reserved := false
 
 func _init() -> void:
 	id = Components.Id.Consumable
-	groups = [Groups.Id.Consumable]
+	#groups = [Groups.Id.Consumable]
 
 func consume() -> Array[Satisfaction]:
 	# TODO: Something going wrong here to need to check

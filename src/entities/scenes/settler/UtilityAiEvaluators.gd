@@ -1,10 +1,14 @@
-extends Node
+class_name UtilityAiEvaluators extends Node
 
 var _time_of_day: float
 
-@export var container: ComponentContainer:
+var container: ComponentContainer:
 	set(new_value):
 		container = new_value
+		var stats_component: CharacterStatsComponent = container.get_by_id(Components.Id.CharacterStats)
+		if stats_component:
+			stats = stats_component
+			
 		container.component_added.connect(func(component: Component) -> void:
 			if component.id == Components.Id.CharacterStats:
 				stats = component

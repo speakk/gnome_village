@@ -1,4 +1,4 @@
-extends Entity
+extends EntityScene
 
 var MODEL_SCENE := preload("res://assets/blender_models/wooden_torch.blend")
 
