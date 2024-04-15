@@ -5,7 +5,7 @@ func _init() -> void:
 
 func tick_zone() -> void:
 	for coordinate in get_coordinates():
-		var entities := Globals.get_map().get_map_entities(coordinate, true)
+		var entities := Globals.get_map().get_map_entities(coordinate)
 		if entities.size() == 0:
 			var farm_plot := Entity.from_definition(preload("res://src/entities/definitions/farm_plot.tres"))
 			Events.request_entity_add.emit(farm_plot)

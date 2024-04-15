@@ -2,7 +2,7 @@ extends PanelContainer
 
 @onready var ENTITY_INFO_DISPLAY := preload("res://src/gui/entity_info/entity_info_display.tscn")
 
-var selected_entities: Array[Node3D]
+var selected_entities: Array[Object]
 
 func _ready() -> void:
 	Events.entity_selected.connect(_entity_selected)
@@ -17,12 +17,12 @@ func _process(delta: float) -> void:
 		redraw()
 		queue_redraw = false
 
-func _entity_selected(entity: Node3D) -> void:
+func _entity_selected(entity: Object) -> void:
 	if not selected_entities.has(entity):
 		selected_entities.append(entity)
 		queue_redraw = true
 
-func _entity_deselected(entity: Node3D) -> void:
+func _entity_deselected(entity: Object) -> void:
 	if selected_entities.has(entity):
 		selected_entities.erase(entity)
 		queue_redraw = true

@@ -3,7 +3,10 @@ class_name ComponentContainer extends Node
 signal component_added(component: Component)
 signal component_removed(component_id: Components.Id)
 
-var component_owner: Node
+signal is_processable
+signal is_not_processable
+
+var component_owner: Object
 
 var _components: Array[Component]
 
@@ -40,8 +43,10 @@ func get_all() -> Array[Component]:
 func recheck_processing_mode() -> void:
 	if _processing_component_amount > 0:
 		process_mode = PROCESS_MODE_INHERIT
+		is_processable.emit()
 	else:
 		process_mode = PROCESS_MODE_DISABLED
+		is_not_processable.emit()
 
 func add_component(component: Component) -> Component:
 	if has_component(component.id):

@@ -54,7 +54,7 @@ func _init() -> void:
 			)
 	)
 
-func set_owner(_owner: Node) -> void:
+func set_owner(_owner: Object) -> void:
 	super.set_owner(_owner)
 	_inventory.set_owner(_owner)
 

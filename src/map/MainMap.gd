@@ -186,11 +186,11 @@ func create_world() -> void:
 			else:
 				ground_grid.set_cell_item(coord, 1)
 
-	_create_rocks()
+	await _create_rocks()
 	await get_tree().process_frame
-	_create_rivers()
+	await _create_rivers()
 	await get_tree().process_frame
-	_create_grass()
+	await _create_grass()
 	await get_tree().process_frame
 	
 	
@@ -229,8 +229,8 @@ func _create_rocks() -> void:
 			if noise_value > 0.2:
 				var noise_value2 := rock_placement_noise.get_noise_2d(y*2, x*2)
 				grid.set_cell_item(coord, 1)
-				var entity: Entity = Entity.from_definition(load("res://src/entities/definitions/terrain/rock.tres"))
-				Events.request_entity_add.emit(entity)
+				var entity: EntityLight = EntityLight.from_definition(load("res://src/entities/definitions/terrain/rock.tres"))
+				Events.request_entity_light_add.emit(entity)
 				var container: ComponentContainer = entity.component_container
 				WorldPositionComponent.set_world_position(entity, coordinate_to_global_position(Globals.truncate_vec3i(coord)))
 				var terrain: TerrainComponent = container.get_by_id(Components.Id.Terrain)
@@ -312,26 +312,22 @@ func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starti
 			_create_river(current_coord, max_branches_left, new_angle, array_to_fill)
 		
 
-func add_map_entity(coordinate: Vector2i, entity: Node3D) -> void:
+func add_map_entity(coordinate: Vector2i, entity: Object) -> void:
 	if not map_entities.has(coordinate):
 		map_entities[coordinate] = []
 	
 	if not map_entities[coordinate].has(entity):
 		map_entities[coordinate].append(entity)
 
-func remove_map_entity(coordinate: Vector2i, entity: Node3D) -> void:
+func remove_map_entity(coordinate: Vector2i, entity: Object) -> void:
 	if map_entities.has(coordinate):
 		map_entities[coordinate].erase(entity)
 
-func get_map_entities(coordinate: Vector2i, items_only: bool = false) -> Array[Node3D]:
-	var result: Array[Node3D]
+func get_map_entities(coordinate: Vector2i) -> Array[Object]:
+	var result: Array[Object]
 	if map_entities.has(coordinate):
 		result.assign(map_entities[coordinate])
-		result = result.filter(func(entity: Node3D) -> bool:
-			if items_only:
-				return entity is Entity
-			return true
-			)
+
 	return result
 
 func is_coordinate_occupied(coordinate: Vector2i) -> bool:
@@ -362,7 +358,7 @@ func _ready() -> void:
 	Events.terrain_placed.connect(_terrain_placed)
 	Events.terrain_cleared.connect(_terrain_cleared)
 	
-	Events.world_position_changed.connect(func(entity: Node3D, old_position: Vector3, new_position: Vector3) -> void:
+	Events.world_position_changed.connect(func(entity: Object, old_position: Vector3, new_position: Vector3) -> void:
 			var old_coordinate := global_position_to_coordinate(old_position)
 			remove_map_entity(old_coordinate, entity)
 			
@@ -400,7 +396,7 @@ func clear_selections() -> void:
 func select_next_entity(coordinates: Array[Vector2i]) -> void:
 	if coordinates.size() == 1:
 		print("Select next entity")
-		var entity_to_select: Node3D
+		var entity_to_select: Object
 		var coordinate := coordinates[0]
 		var entities := get_map_entities(coordinate)
 		for entity in entities:
@@ -443,22 +439,21 @@ func _tiles_selected_secondary(coordinates: Array[Vector2i]) -> void:
 func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 	for tile_position in coordinates:
 		var entities := get_map_entities(tile_position)
-		for entity in entities as Array[Node]:
-			if entity is Entity:
-				var container: ComponentContainer = entity.component_container
-				var constructable_component: ConstructableComponent = container.get_by_id(Components.Id.Constructable)
-				if constructable_component:
-					if constructable_component.can_be_dismantled and not constructable_component.reserved_for_dismantling:
-						var selected_action: UiAction.Dismantle = selected_ui_action
-						var has_all := true
-						for tag in selected_action.target_tag_filters:
-							var tag_component: TagComponent = entity.component_container.get_by_id(Components.Id.Tag)
-							if not tag_component or not tag_component.has_tag(tag):
-								has_all = false
-								break
-						
-						if has_all:
-							Events.dismantle_issued.emit(entity)
+		for entity in entities as Array[Object]:
+			var container: ComponentContainer = entity.component_container
+			var constructable_component: ConstructableComponent = container.get_by_id(Components.Id.Constructable)
+			if constructable_component:
+				if constructable_component.can_be_dismantled and not constructable_component.reserved_for_dismantling:
+					var selected_action: UiAction.Dismantle = selected_ui_action
+					var has_all := true
+					for tag in selected_action.target_tag_filters:
+						var tag_component: TagComponent = entity.component_container.get_by_id(Components.Id.Tag)
+						if not tag_component or not tag_component.has_tag(tag):
+							has_all = false
+							break
+					
+					if has_all:
+						Events.dismantle_issued.emit(entity)
 
 func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
 	var zone := (selected_ui_action as UiAction.ZoneAddTiles).zone

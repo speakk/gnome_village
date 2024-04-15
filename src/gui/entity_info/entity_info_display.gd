@@ -2,7 +2,7 @@ extends MarginContainer
 
 var component_ui_priority_list: Array[Components.Id] = [Components.Id.DisplayName, Components.Id.CharacterStats]
 
-func set_entity(entity: Node3D) -> void:
+func set_entity(entity: Object) -> void:
 	var component_container: ComponentContainer = entity.component_container
 	var all_components := component_container.get_all()
 	all_components.sort_custom(func(a: Component, b: Component) -> bool:

@@ -2,7 +2,7 @@ class_name Component extends Resource
 
 var id: Components.Id
 
-var component_owner: Node3D
+var component_owner: Object
 
 var subscriptions: Array[Subscription]
 
@@ -19,7 +19,7 @@ signal removed
 var _process_rate: float = 1.0
 var _process_timer: float = _process_rate
 
-func set_owner(_new_owner: Node3D) -> void:
+func set_owner(_new_owner: Object) -> void:
 	component_owner = _new_owner
 	for group in groups:
 		component_owner.add_to_group(Groups.get_group_name(group))

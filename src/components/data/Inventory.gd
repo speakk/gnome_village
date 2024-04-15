@@ -13,7 +13,7 @@ var reservations: Dictionary = {}
 signal item_added(item: EntityDefinition, amount: int)
 signal item_removed(item: EntityDefinition, amount: int)
 
-func set_owner(_new_owner: Node) -> void:
+func set_owner(_new_owner: Object) -> void:
 	super.set_owner(_new_owner)
 	for item_amount in get_items():
 		item_amount.set_owner(_new_owner)
