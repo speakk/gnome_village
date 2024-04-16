@@ -38,6 +38,14 @@ func _ready() -> void:
 	
 	ai_evaluators.container = component_container
 	
+	var inventory_component: InventoryComponent = component_container.get_by_id(Components.Id.Inventory)
+	if inventory_component:
+		prep_inventory(inventory_component)
+	
+	var name_component: DisplayNameComponent = component_container.get_by_id(Components.Id.DisplayName)
+	if name_component:
+		name_component.display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
+	
 	component_container.component_added.connect(func(component: Component) -> void:
 		if component is InventoryComponent:
 			prep_inventory(component)
@@ -45,10 +53,7 @@ func _ready() -> void:
 		if component is DisplayNameComponent:
 			component.display_name = ["Fred", "Mary", "Bob", "Susanne"].pick_random()
 	)
-		#component_container.component_removed.connect(func(component_id: Components.Id) -> void:
-			#if component_id == Components.Id.Inventory:
-				#
-			#)
+
 	
 	super._ready()
 	
