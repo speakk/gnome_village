@@ -48,7 +48,8 @@ func _init() -> void:
 	])
 
 func on_enter() -> void:
-	_instantiated_scene = scene.instantiate()
+	if not _instantiated_scene:
+		_instantiated_scene = scene.instantiate()
 	set_active(false)
 	if _instantiated_scene is EntityScene:
 		_instantiated_scene.component_container = get_container()
@@ -75,6 +76,8 @@ func serialize() -> Dictionary:
 	var dict := super.serialize()
 	dict["_active"] = _active
 	dict["scene_path"] = scene.resource_path
+	if _instantiated_scene.has_method("serialize"):
+		dict["scene_dict"] = _instantiated_scene.serialize()
 	dict["custom_subscriptions"] = custom_subscriptions.map(func(custom_subscription: StringSubscription) -> Dictionary:
 		return custom_subscription.serialize()
 		)
@@ -84,8 +87,10 @@ func serialize() -> Dictionary:
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
 	scene = load(dict["scene_path"])
-	if not scene:
-		print("HUH")
+	_instantiated_scene = scene.instantiate()
+	if dict.has("scene_dict"):
+		_instantiated_scene.deserialize(dict["scene_dict"])
+	
 	_active = dict["_active"]
 	var new_cust: Array[StringSubscription]
 	new_cust.assign(dict["custom_subscriptions"].map(func(custom_subscription_dict: Dictionary) -> StringSubscription:
