@@ -61,6 +61,9 @@ static func static_deserialize(dict: Dictionary) -> Entity:
 	
 	entity._should_set_components = false
 	
+	if dict.has("definition"):
+		entity.definition = EntityDefinition.deserialize(dict["definition"])
+		
 	entity.component_container.component_owner = entity
 	entity.component_container.deserialize(dict["component_container"])
 	entity.set_meta("save_id", dict["save_id"])
