@@ -48,8 +48,8 @@ func _init() -> void:
 	])
 
 func on_enter() -> void:
-	set_active(false)
 	_instantiated_scene = scene.instantiate()
+	set_active(false)
 	if _instantiated_scene is EntityScene:
 		_instantiated_scene.component_container = get_container()
 	Events.request_entity_scene_add.emit(_instantiated_scene)
@@ -63,12 +63,12 @@ func on_exit() -> void:
 
 func set_active(active: bool) -> void:
 	_active = active
-	if get_owner().has_method("set_active"):
-		get_owner().set_active(active)
+	if _instantiated_scene.has_method("set_active"):
+		_instantiated_scene.set_active(active)
 
 func set_blueprint(is_blueprint: bool) -> void:
-	if get_owner().has_method("set_blueprint"):
-		get_owner().set_blueprint(is_blueprint)
+	if _instantiated_scene.has_method("set_blueprint"):
+		_instantiated_scene.set_blueprint(is_blueprint)
 
 #region Serialization
 func serialize() -> Dictionary:
