@@ -39,12 +39,8 @@ func get_constructable_items() -> Array[EntityDefinition]:
 	return result
 
 func get_item_render_scene(item: EntityDefinition) -> Node3D:
-	var results := item.components.filter(func(component: Component) -> bool:
-		return component.id == Components.Id.Scene
-		)
-	
-	if results.size() > 0:
-		var scene_component: SceneComponent = results[0]
+	var scene_component: SceneComponent = item.get_component_by_id(Components.Id.Scene)
+	if scene_component:
 		var scene := scene_component.scene.instantiate()
 		return scene
 	
