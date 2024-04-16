@@ -6,8 +6,6 @@ var component_owner: Object
 
 var subscriptions: Array[Subscription]
 
-var invariant: bool = false
-
 #var groups: Array[Groups.Id]:
 	#set(new_value):
 		#groups = new_value
@@ -16,6 +14,7 @@ var invariant: bool = false
 				#component_owner.add_to_group(Groups.get_group_name(group))
 
 signal removed
+var _being_deleted: bool = false
 
 # Once a second
 var _process_rate: float = 1.0
@@ -36,6 +35,7 @@ func get_subscriptions() -> Array[Subscription]:
 	return subscriptions
 
 func on_exit() -> void:
+	_being_deleted = true
 	removed.emit()
 
 var _full_delta: float = 0

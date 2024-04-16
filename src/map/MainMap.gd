@@ -459,7 +459,7 @@ func _zone_add_tiles(coordinates: Array[Vector2i]) -> void:
 
 func _handle_terrain_juice(entity: Entity, index: int) -> void:
 	var container: ComponentContainer = entity.component_container
-	var terrain_component: TerrainComponent = container.get_by_id(Components.Id.Terrain)
+	var terrain_component: TerrainComponent = container.get_by_id(Components.Id.Terrain).duplicate()
 	container.remove_component(Components.Id.Terrain)
 	var node: Node3D = MeshInstance3D.new()
 	node.mesh = blueprint_grid.mesh_library.get_item_mesh(terrain_component.mesh_id)

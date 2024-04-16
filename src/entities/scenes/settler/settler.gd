@@ -89,10 +89,11 @@ func _physics_process(delta: float) -> void:
 
 func ensure_valid_position() -> void:
 	if not is_in_valid_position():
-		var free_coordinate := PathFinder.get_closest_free_point(Globals.get_map().global_position_to_coordinate(global_position)) as Vector2i
+		var position_component: WorldPositionComponent = component_container.get_by_id(Components.Id.WorldPosition)
+		var coordinate := position_component.coordinate
+		var free_coordinate := PathFinder.get_closest_free_point(coordinate) as Vector2i
 		if free_coordinate:
 			var new_position := Globals.get_map().coordinate_to_global_position(free_coordinate)
-			var position_component: WorldPositionComponent = component_container.get_by_id(Components.Id.WorldPosition)
 			get_tree().create_tween().tween_property(position_component, "current_position", Vector3(new_position.x, 0.5, new_position.z), 0.5)
 
 func is_in_valid_position() -> bool:

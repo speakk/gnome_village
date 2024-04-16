@@ -1,5 +1,7 @@
 class_name Entity extends Resource
 
+signal delete_called
+
 var component_container: ComponentContainer = ComponentContainer.new()
 var definition: EntityDefinition
 
@@ -27,10 +29,10 @@ func on_enter() -> void:
 func set_item_components() -> void:
 	if definition:
 		for default_component: Component in default_components:
-			component_container.add_component(default_component)
+			component_container.add_component(default_component, true)
 			
 		for component: Component in definition.components:
-			component_container.add_component(component)
+			component_container.add_component(component, true)
 
 		var display_name_component: DisplayNameComponent = component_container.get_by_id(Components.Id.DisplayName)
 		if display_name_component:
@@ -41,10 +43,6 @@ func set_item_components() -> void:
 			item_amount.item = definition
 			if item_amount.amount == 0:
 				item_amount.amount = 1
-
-
-func _exit_tree() -> void:
-	Events.item_removed_from_ground.emit(self)
 
 func serialize() -> Dictionary:
 	var dict := {}
@@ -71,5 +69,7 @@ func deserialize(dict: Dictionary) -> void:
 	pass
 
 func delete() -> void:
+	Events.item_removed_from_ground.emit(self)
 	component_container.on_delete()
-	free()
+	component_container = null
+	delete_called.emit()

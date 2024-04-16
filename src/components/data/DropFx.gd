@@ -4,7 +4,6 @@ class_name DropFxComponent extends Component
 
 func _init() -> void:
 	id = Components.Id.DropFx
-	invariant = true
 
 func on_exit() -> void:
 	for effect in effects:

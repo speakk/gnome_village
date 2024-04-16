@@ -7,22 +7,21 @@ var _cached_coordinate: Vector2i
 
 var _blueprint_status: bool:
 	set(new_status):
-		_blueprint_status = new_status
-		Events.terrain_placed.emit(_cached_coordinate, mesh_id, _blueprint_status)
-		Events.terrain_cleared.emit(_cached_coordinate, not _blueprint_status)
+		if not _being_deleted:
+			_blueprint_status = new_status
+			Events.terrain_placed.emit(_cached_coordinate, mesh_id, _blueprint_status)
+			Events.terrain_cleared.emit(_cached_coordinate, not _blueprint_status)
 
 func _init() -> void:
 	id = Components.Id.Terrain
 	subscriptions = [
 		Subscription.new(self.id, Components.Id.WorldPosition, func (world_position: WorldPositionComponent) -> void:
 			_cached_coordinate = world_position.coordinate
-			world_position.position_changed.connect(self._on_position_changed)
+			if not world_position.position_changed.is_connected(self._on_position_changed):
+				world_position.position_changed.connect(self._on_position_changed)
 			),
 		Subscription.new(self.id, Components.Id.Blueprint, func (blueprint: BlueprintComponent) -> void:
 			_blueprint_status = true
-			# TODO: Serialization: For some reason this isn't called properly
-			# when loading a game. For now it was worked around by disabling
-			# set_components in Entity (which should've been done anyway)
 			blueprint.removed.connect(func() -> void:
 				_blueprint_status = false
 				)

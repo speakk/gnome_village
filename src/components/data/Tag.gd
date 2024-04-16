@@ -8,7 +8,6 @@ enum Tag {
 
 func _init() -> void:
 	id = Components.Id.Tag
-	invariant = true
 
 func add_tag(tag: Tag) -> void:
 	if tags.has(tag):

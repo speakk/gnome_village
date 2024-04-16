@@ -22,10 +22,14 @@ func _ready() -> void:
 	component_owner = get_parent()
 
 func on_delete() -> void:
-	for component in _components:
+	for i in range(_components.size() - 1, -1, -1):
+		var component: Component = _components[i]
 		Events.component.removed.emit(self, component)
 		if component.has_method("on_exit"):
 			component.on_exit()
+			
+		_components.erase(component)
+			
 
 func has_component(component_id: Components.Id) -> bool:
 	return _components_by_id.has(component_id)
@@ -47,16 +51,15 @@ func recheck_processing_mode() -> void:
 		process_mode = PROCESS_MODE_DISABLED
 		is_not_processable.emit()
 
-func add_component(component: Component) -> Component:
+func add_component(component: Component, duplicate: bool = false) -> Component:
 	if has_component(component.id):
 		remove_component(component.id)
 	
 	var duplicated: Component
-	
-	if component.invariant:
-		duplicated = component
-	else:
+	if duplicate:
 		duplicated = component.duplicate()
+	else:
+		duplicated = component
 	
 	assert(component_owner, "Component owner missing in add_component")
 	duplicated.set_owner(component_owner)

@@ -4,7 +4,6 @@ var shape_component: ShapeComponent
 
 func _init() -> void:
 	id = Components.Id.Solid
-	invariant = true
 
 	subscriptions = [
 		Subscription.new(self.id, Components.Id.WorldPosition, func (world_position: WorldPositionComponent) -> void:

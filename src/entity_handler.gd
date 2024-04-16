@@ -20,6 +20,11 @@ func add_entity(entity: Entity) -> void:
 		if _processable_entities.has(entity):
 			_processable_entities.erase(entity)
 		)
+	
+	entity.delete_called.connect(func() -> void:
+		entities.erase(entity)
+		_processable_entities.erase(entity)
+		)
 
 func _process(delta: float) -> void:
 	for entity: Entity in _processable_entities:

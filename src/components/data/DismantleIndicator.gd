@@ -4,7 +4,6 @@ var SCENE := preload("res://src/components/data/scenes/DismantleIndicator.tscn")
 
 func _init() -> void:
 	id = Components.Id.DismantleIndicator
-	invariant = true
 
 func on_enter() -> void:
 	var scene := SCENE.instantiate()

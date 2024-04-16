@@ -36,7 +36,6 @@ func get_size() -> Vector2i:
 
 func _init() -> void:
 	id = Components.Id.Shape
-	invariant = true
 
 #region Serialization
 func serialize() -> Dictionary:

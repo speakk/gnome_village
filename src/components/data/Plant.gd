@@ -57,6 +57,7 @@ static func create_growth_spot(new_position: Vector3) -> Entity:
 	inventory.items_can_be_picked = false
 	var grows_world_pos_component: WorldPositionComponent = grows_container.add_component(WorldPositionComponent.new())
 	grows_world_pos_component.current_position = new_position
+	
 	# TODO: This will not be needed when reworking itemAmount
 	# Right now removing this default as this entity doesn't have a definition
 	# and thus item amount causes issues in serialization
