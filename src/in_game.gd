@@ -43,10 +43,11 @@ func new_game() -> void:
 	create_world()
 
 func create_world() -> void:
+	var seed := randi()
 	Events.world_creation.begin.emit()
 	_clear_entity_scenes()
 	
-	await main_map.create_world()
+	await main_map.create_world(seed)
 	
 	var test_divider := 1
 	var map_size_real_x := MainMap.MAP_SIZE_X / test_divider

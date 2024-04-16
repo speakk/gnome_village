@@ -1,8 +1,8 @@
 class_name MainMap extends Node3D
 
 @export var clear_on_load: bool = false
-@export var rock_placement_noise: Noise
-@export var grass_placement_noise: Noise
+@export var rock_placement_noise: FastNoiseLite
+@export var grass_placement_noise: FastNoiseLite
 @export var grass_color0: Color
 @export var grass_color1: Color
 @export var grass_color2: Color
@@ -156,9 +156,12 @@ func clear_everything() -> void:
 	ground_grid.clear()
 	PathFinder._reset()
 
-func create_world() -> void:
+func create_world(seed: int) -> void:
 	await get_tree().process_frame
 	clear_everything()
+	
+	rock_placement_noise.seed = seed
+	grass_placement_noise.seed = seed
 	
 	var world_center := Vector2(MAP_SIZE_X * CELL_SIZE.x / 2, MAP_SIZE_Y * CELL_SIZE.y / 2)
 	var water_area_y_size := 40
@@ -223,6 +226,10 @@ func _create_rocks() -> void:
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
 			var coord := Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2)
+			var cell := ground_grid.get_cell_item(coord)
+			if cell == GroundCells.Water or cell == GroundCells.RiverWater:
+				continue
+				
 			var noise_value := rock_placement_noise.get_noise_2d(x, y)
 			if noise_value > 0.2:
 				var noise_value2 := rock_placement_noise.get_noise_2d(y*2, x*2)
