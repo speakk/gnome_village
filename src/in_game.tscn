@@ -32,6 +32,9 @@ clear_on_load = true
 [node name="MapTileSelector" parent="MainMap" index="3" node_paths=PackedStringArray("selection_draw")]
 selection_draw = NodePath("../SelectionDraw")
 
+[node name="EntitySelector" parent="MainMap" index="9" node_paths=PackedStringArray("main_map")]
+main_map = NodePath("..")
+
 [node name="ZoneRenderer" parent="." instance=ExtResource("6_limgy")]
 
 [node name="EntityHandler" parent="." instance=ExtResource("5_06rcu")]

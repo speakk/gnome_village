@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://c67ua8jdle4ma" path="res://src/map/SelectionDraw.tscn" id="4_u51vp"]
 [ext_resource type="PackedScene" uid="uid://58s8ouhd1j86" path="res://src/map/EntitySelectionDraw.tscn" id="6_tt6bd"]
 [ext_resource type="AudioStream" uid="uid://b84nhjvx33esl" path="res://assets/sounds/placement.ogg" id="7_f2b3f"]
+[ext_resource type="PackedScene" uid="uid://cv0okgv308mwi" path="res://src/map/entity_selector.tscn" id="9_ips2r"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ov800"]
 noise_type = 3
@@ -254,10 +255,6 @@ item/6/navigation_layers = 1
 [sub_resource type="BoxShape3D" id="BoxShape3D_bylo6"]
 size = Vector3(200, 1, 200)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_y0iy8"]
-material = SubResource("StandardMaterial3D_44mkl")
-size = Vector2(200, 200)
-
 [node name="MainMap3d" type="Node3D"]
 script = ExtResource("1_hry08")
 rock_placement_noise = SubResource("FastNoiseLite_ov800")
@@ -300,10 +297,6 @@ selection_draw = NodePath("../SelectionDraw")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("BoxShape3D_bylo6")
 
-[node name="GroundPlane" type="MeshInstance3D" parent="."]
-visible = false
-mesh = SubResource("PlaneMesh_y0iy8")
-
 [node name="EntitySelectionDraw" parent="." instance=ExtResource("6_tt6bd")]
 
 [node name="PlacementJuicePlayer" type="AudioStreamPlayer" parent="."]
@@ -313,3 +306,6 @@ max_polyphony = 10
 
 [node name="GrassMultiMesh" type="MultiMeshInstance3D" parent="."]
 cast_shadow = 0
+
+[node name="EntitySelector" parent="." node_paths=PackedStringArray("main_map") instance=ExtResource("9_ips2r")]
+main_map = NodePath("..")

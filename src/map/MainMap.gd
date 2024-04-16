@@ -14,6 +14,8 @@ class_name MainMap extends Node3D
 @onready var ground_grid: GridMap = $GroundGrid
 @onready var grass_multi_mesh: MultiMeshInstance3D = $GrassMultiMesh
 
+@onready var entity_selector: EntitySelector = $EntitySelector
+
 @onready var grid_definitions := {
 	grid = { map = grid, items = AboveGroundCells.values()},
 	blueprint_grid = { map = blueprint_grid, items = AboveGroundCells.values()},
@@ -390,50 +392,7 @@ func _tiles_selected(coordinates: Array[Vector2i]) -> void:
 	if selected_ui_action:
 		action_handlers[selected_ui_action.ui_action_id].call(coordinates)
 	else:
-		select_next_entity(coordinates)
-
-func clear_selections() -> void:
-	for entities: Array in map_entities.values():
-		for entity: Variant in entities:
-			if entity.component_container.has_component(Components.Id.Selectable):
-				entity.component_container.get_by_id(Components.Id.Selectable).selected = false
-
-func select_next_entity(coordinates: Array[Vector2i]) -> void:
-	if coordinates.size() == 1:
-		print("Select next entity")
-		var entity_to_select: Entity
-		var coordinate := coordinates[0]
-		var entities := get_map_entities(coordinate)
-		for entity in entities:
-			print("Going though entity", entity)
-			if entity.component_container.has_component(Components.Id.Selectable):
-				print("Had selectable")
-				if not entity.component_container.get_by_id(Components.Id.Selectable).selected:
-					entity_to_select = entity
-					break
-		
-		
-		if not entity_to_select:
-			if entities.size() > 1:
-				entity_to_select = entities[0]
-			elif entities.size() == 1:
-				return
-		
-		clear_selections()
-		
-		if entity_to_select:
-			print("Setting as selected")
-			var selectable: SelectableComponent = entity_to_select.component_container.get_by_id(Components.Id.Selectable)
-			if selectable:
-				selectable.selected = true
-	
-	else:
-		clear_selections()
-		for coordinate in coordinates:
-			var entities := get_map_entities(coordinate)
-			for entity in entities:
-				if entity.component_container.has_component(Components.Id.Selectable):
-					entity.component_container.get_by_id(Components.Id.Selectable).selected = true
+		entity_selector.select_next_entity(coordinates)
 
 func _tiles_selected_secondary(coordinates: Array[Vector2i]) -> void:
 	print("Secondary called", coordinates)

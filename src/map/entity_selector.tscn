@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cv0okgv308mwi"]
+
+[ext_resource type="Script" path="res://src/map/entity_selector.gd" id="1_0kjmd"]
+
+[node name="EntitySelector" type="Node"]
+script = ExtResource("1_0kjmd")
