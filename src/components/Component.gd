@@ -2,7 +2,7 @@ class_name Component extends Resource
 
 var id: Components.Id
 
-var component_owner: Object
+var component_owner: Entity
 
 var subscriptions: Array[Subscription]
 
@@ -20,12 +20,12 @@ var _being_deleted: bool = false
 var _process_rate: float = 1.0
 var _process_timer: float = _process_rate
 
-func set_owner(_new_owner: Object) -> void:
+func set_owner(_new_owner: Entity) -> void:
 	component_owner = _new_owner
 	#for group in groups:
 		#component_owner.add_to_group(Groups.get_group_name(group))
 
-func get_owner() -> Node3D:
+func get_owner() -> Entity:
 	return component_owner
 
 func get_container() -> ComponentContainer:

@@ -32,3 +32,19 @@ func _process(delta: float) -> void:
 
 func get_all() -> Array[Entity]:
 	return entities
+
+func serialize() -> Dictionary:
+	var entity_dicts: Array[Dictionary]
+	for entity: Entity in get_all():
+		var save_dict := entity.serialize()
+		entity_dicts.append(save_dict)
+	
+	return {
+		entities = entity_dicts
+	}
+
+func deserialize(save_dict: Dictionary) -> void:
+	for entity_dict: Dictionary in save_dict["entities"]:
+		var entity := Entity.static_deserialize(entity_dict)
+		add_entity(entity)
+	

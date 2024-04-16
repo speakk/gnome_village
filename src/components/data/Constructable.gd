@@ -54,7 +54,7 @@ func _init() -> void:
 			)
 	)
 
-func set_owner(_owner: Object) -> void:
+func set_owner(_owner: Entity) -> void:
 	super.set_owner(_owner)
 	_inventory.set_owner(_owner)
 

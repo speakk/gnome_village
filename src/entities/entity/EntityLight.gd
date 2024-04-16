@@ -5,6 +5,8 @@ signal delete_called
 var component_container: ComponentContainer = ComponentContainer.new()
 var definition: EntityDefinition
 
+var _should_set_components := true
+
 # Ease of access READ ONLY except from world pos component
 var global_position: Vector3
 
@@ -25,9 +27,10 @@ static func from_definition(entity_definition: EntityDefinition) -> Entity:
 func on_enter() -> void:
 	component_container.component_owner = self
 	set_item_components()
+	component_container.on_enter()
 
 func set_item_components() -> void:
-	if definition:
+	if definition and _should_set_components:
 		for default_component: Component in default_components:
 			component_container.add_component(default_component, true)
 			

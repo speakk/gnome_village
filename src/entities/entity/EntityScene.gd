@@ -5,7 +5,6 @@ var component_container: ComponentContainer
 #static var ENTITY_SCENE := preload("res://src/entities/entity/EntityScene.tscn")
 
 var show_amount_number := true
-var _should_set_components := true
 
 var definition: EntityDefinition:
 	set(new_definition):

@@ -84,6 +84,8 @@ func serialize() -> Dictionary:
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
 	scene = load(dict["scene_path"])
+	if not scene:
+		print("HUH")
 	_active = dict["_active"]
 	var new_cust: Array[StringSubscription]
 	new_cust.assign(dict["custom_subscriptions"].map(func(custom_subscription_dict: Dictionary) -> StringSubscription:

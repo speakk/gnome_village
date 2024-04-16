@@ -30,9 +30,9 @@ signal construction_finished(item: Entity)
 signal construction_started(container: ComponentContainer)
 signal blueprint_cancel_issued(blueprint: Entity)
 
-signal dismantle_issued(entity: Object)
-signal dismantle_finished(entity: Object)
-signal dismantle_cancel_issued(entity: Object)
+signal dismantle_issued(entity: Entity)
+signal dismantle_finished(entity: Entity)
+signal dismantle_cancel_issued(entity: Entity)
 
 signal debug_visuals_set(value: bool)
 
@@ -51,12 +51,12 @@ signal terrain_cleared(coordinate: Vector2i, blueprint: bool)
 
 signal ui_action_selected(ui_action: UiAction)
 
-signal item_placed_on_ground(item: Object, item_position: Vector2)
-signal item_removed_from_ground(item: Object, item_position: Vector2)
+signal item_placed_on_ground(item: Entity, item_position: Vector2)
+signal item_removed_from_ground(item: Entity, item_position: Vector2)
 
-signal world_position_changed(entity: Object, old_position: Vector3, new_position: Vector3)
-signal entity_selected(entity: Object)
-signal entity_deselected(entity: Object)
+signal world_position_changed(entity: Entity, old_position: Vector3, new_position: Vector3)
+signal entity_selected(entity: Entity)
+signal entity_deselected(entity: Entity)
 signal clear_entity_selections()
 
 signal scene_change_requested(new_scene_id: SceneManager.SceneId)

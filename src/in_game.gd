@@ -35,18 +35,17 @@ func _ready() -> void:
 
 var debug_visuals := false
 
-func _clear_entities() -> void:
-	for container in containers:
-		for entity in container["node"].get_children() as Array[Node]:
-			entity.delete()
+func _clear_entity_scenes() -> void:
+	for entity in %EntityScenes.get_children():
+		entity.queue_free()
 
 func new_game() -> void:
 	create_world()
 
 func create_world() -> void:
 	Events.world_creation.begin.emit()
-	_clear_entities()
-	#PathFinder.prepare_for_load()
+	_clear_entity_scenes()
+	
 	await main_map.create_world()
 	
 	var test_divider := 1
@@ -132,32 +131,14 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("reload_map"):
 		create_world()
 
-# For now this is okay, but eventually Entities and
-# TaskHandler ought to have their own save methods
-@onready var containers := [
-	{
-		data_name = "entities",
-		node = %EntityScenes,
-	},
-	#{
-		#data_name = "tasks",
-		#node = %TaskManager.get_node("Tasks"),
-	#},
-] as Array[Dictionary]
-
-func _save_callable() -> Dictionary:
-	var entities := get_tree().get_nodes_in_group("entity")
-	var entity_dicts: Array[Dictionary]
-	for entity: Entity in entities as Array[Entity]:
-		var save_dict := entity.serialize()
-		entity_dicts.append(save_dict)
-	
+func _save_callable() -> Dictionary:	
 	var saved_map := main_map.serialize()
+	var entity_handler: Dictionary = entity_handler.serialize()
 	var task_manager: Dictionary = TaskManager.serialize()
 	var path_finder: Dictionary = PathFinder.serialize()
 	
 	return {
-		entities = entity_dicts,
+		entity_handler = entity_handler,
 		map = saved_map,
 		task_manager = task_manager,
 		path_finder = path_finder
@@ -165,10 +146,7 @@ func _save_callable() -> Dictionary:
 	
 func _load_callable(save_dict: Dictionary) -> void:
 	main_map.deserialize(save_dict["map"])
-	
-	for entity_dict: Dictionary in save_dict["entities"]:
-		Entity.static_deserialize(entity_dict)
-	
+	entity_handler.deserialize(save_dict["entity_handler"])
 	TaskManager.deserialize(save_dict["task_manager"])
 	PathFinder.deserialize(save_dict["path_finder"])
 

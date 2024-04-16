@@ -310,19 +310,19 @@ func _create_river(starting_coordinate: Vector2i, max_branches_left: int, starti
 			_create_river(current_coord, max_branches_left, new_angle, array_to_fill)
 		
 
-func add_map_entity(coordinate: Vector2i, entity: Object) -> void:
+func add_map_entity(coordinate: Vector2i, entity: Entity) -> void:
 	if not map_entities.has(coordinate):
 		map_entities[coordinate] = []
 	
 	if not map_entities[coordinate].has(entity):
 		map_entities[coordinate].append(entity)
 
-func remove_map_entity(coordinate: Vector2i, entity: Object) -> void:
+func remove_map_entity(coordinate: Vector2i, entity: Entity) -> void:
 	if map_entities.has(coordinate):
 		map_entities[coordinate].erase(entity)
 
-func get_map_entities(coordinate: Vector2i) -> Array[Object]:
-	var result: Array[Object]
+func get_map_entities(coordinate: Vector2i) -> Array[Entity]:
+	var result: Array[Entity]
 	if map_entities.has(coordinate):
 		result.assign(map_entities[coordinate])
 
@@ -356,7 +356,7 @@ func _ready() -> void:
 	Events.terrain_placed.connect(_terrain_placed)
 	Events.terrain_cleared.connect(_terrain_cleared)
 	
-	Events.world_position_changed.connect(func(entity: Object, old_position: Vector3, new_position: Vector3) -> void:
+	Events.world_position_changed.connect(func(entity: Entity, old_position: Vector3, new_position: Vector3) -> void:
 			var old_coordinate := global_position_to_coordinate(old_position)
 			remove_map_entity(old_coordinate, entity)
 			
@@ -394,7 +394,7 @@ func clear_selections() -> void:
 func select_next_entity(coordinates: Array[Vector2i]) -> void:
 	if coordinates.size() == 1:
 		print("Select next entity")
-		var entity_to_select: Object
+		var entity_to_select: Entity
 		var coordinate := coordinates[0]
 		var entities := get_map_entities(coordinate)
 		for entity in entities:
@@ -437,7 +437,7 @@ func _tiles_selected_secondary(coordinates: Array[Vector2i]) -> void:
 func _dismantle_in_position(coordinates: Array[Vector2i]) -> void:
 	for tile_position in coordinates:
 		var entities := get_map_entities(tile_position)
-		for entity in entities as Array[Object]:
+		for entity in entities as Array[Entity]:
 			var container: ComponentContainer = entity.component_container
 			var constructable_component: ConstructableComponent = container.get_by_id(Components.Id.Constructable)
 			if constructable_component:

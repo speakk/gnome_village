@@ -26,7 +26,7 @@ func _harvest_plant(plant: PlantComponent) -> void:
 	var task_tree := HarvestPlantTree.new(plant)
 	$Tasks.add_child(task_tree)
 
-func _dismantle_issued(entity: Object) -> void:
+func _dismantle_issued(entity: Entity) -> void:
 	var task_tree := DismantleTask.new({target = entity})
 	$Tasks.add_child(task_tree)
 

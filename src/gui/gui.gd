@@ -43,7 +43,7 @@ func _ready() -> void:
 		child.button_pressed = false
 	hide_submenu()
 	
-	Events.entity_selected.connect(func(_entity: Object) -> void: $ClickSoundPlayer.play())
+	Events.entity_selected.connect(func(_entity: Entity) -> void: $ClickSoundPlayer.play())
 
 
 func _process(delta: float) -> void:

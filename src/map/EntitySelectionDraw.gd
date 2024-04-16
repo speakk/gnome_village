@@ -2,7 +2,7 @@ class_name EntitySelectionDraw extends Node3D
 
 @export var entity_selection_mesh: Mesh
 
-var selected_entities: Array[Object]
+var selected_entities: Array[Entity]
 
 func _ready() -> void:
 	Events.entity_selected.connect(_entity_selected)
@@ -13,11 +13,11 @@ func _clear_entity_selections() -> void:
 	selected_entities.clear()
 	redraw()
 
-func _entity_selected(entity: Object) -> void:
+func _entity_selected(entity: Entity) -> void:
 	selected_entities.append(entity)
 	redraw()
 
-func _entity_deselected(entity: Object) -> void:
+func _entity_deselected(entity: Entity) -> void:
 	selected_entities.erase(entity)
 	redraw()
 
