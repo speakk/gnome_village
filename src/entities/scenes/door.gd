@@ -11,7 +11,7 @@ func correct_orientation() -> void:
 		return
 		
 	print("Actually doing it")
-	var self_coordinate := (Globals.get_map() as MainMap).global_position_to_coordinate(get_parent_node_3d().global_position)
+	var self_coordinate: Vector2i = component_container.get_by_id(Components.Id.WorldPosition).coordinate
 	var surrounding_coordinates := PathFinder.get_surrounding_coordinates(self_coordinate, false)
 	for coordinate in surrounding_coordinates:
 		var coordinate_entities := Globals.get_map().get_map_entities(coordinate)
@@ -38,18 +38,18 @@ func correct_orientation() -> void:
 func _ready() -> void:
 	correct_orientation()
 	Events.map_changed.connect(_map_changed)
+	component_container.component_added.connect(func(component: Component) -> void:
+		if component is DoorComponent:
+			component.open_amount_changed.connect(func(new_amount: float) -> void:
+				rotation_degrees = Vector3(0, original_rotation.y + new_amount * 90, 0)
+			)
+		)
 
 # TODO: Some kind of bigger cells/quadtree instead of literally
 # doing this for every door on the whole map
 func _map_changed(coordinate: Vector2i) -> void:
-	if get_parent_node_3d():
-		if get_parent_node_3d().global_position.distance_to(Globals.get_map().coordinate_to_global_position(coordinate)) < MainMap.CELL_SIZE.x * 2:
-			correct_orientation()
-
-func set_door(door_component: DoorComponent) -> void:
-	door_component.open_amount_changed.connect(func(new_amount: float) -> void:
-			rotation_degrees = Vector3(0, original_rotation.y + new_amount * 90, 0)
-			)
+	if global_position.distance_to(Globals.get_map().coordinate_to_global_position(coordinate)) < MainMap.CELL_SIZE.x * 2:
+		correct_orientation()
 	
 func set_blueprint(is_blueprint: bool) -> void:
 	if is_blueprint:
