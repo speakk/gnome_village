@@ -6,6 +6,8 @@ var component_owner: Entity
 
 var subscriptions: Array[Subscription]
 
+signal ready
+
 #var groups: Array[Groups.Id]:
 	#set(new_value):
 		#groups = new_value

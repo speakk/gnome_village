@@ -7,11 +7,15 @@ func _init() -> void:
 
 func on_exit() -> void:
 	for effect in effects:
-		var scene: EffectScene = effect.effect_scene.instantiate()
-		get_owner().get_parent_node_3d().add_child(scene)
-		scene.global_position = get_owner().component_container.get_by_id(Components.Id.WorldPosition).current_position
+		var effect_entity := Entity.new()
+		Events.request_entity_add.emit(effect_entity)
+		var container: ComponentContainer = effect_entity.component_container
+		var scene_component: SceneComponent = container.add_component(SceneComponent.new(effect.effect_scene))
+		var position_component: WorldPositionComponent = effect_entity.component_container.add_component(WorldPositionComponent.new())
+		position_component.current_position = get_container().get_by_id(Components.Id.WorldPosition).current_position
+		var scene: EffectScene = scene_component.get_scene()
 		scene.start()
 		scene.finished.connect(func() -> void:
-			scene.queue_free()
+			effect_entity.delete()
 			)
 			

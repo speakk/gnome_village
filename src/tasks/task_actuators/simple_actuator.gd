@@ -1,6 +1,5 @@
 class_name SimpleActuator extends TaskActuator
 
-
 func initialize(_task: Task) -> TaskActuator:
 	task = _task
 	return self

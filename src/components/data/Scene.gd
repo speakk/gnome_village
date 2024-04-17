@@ -1,5 +1,7 @@
 class_name SceneComponent extends Component
 
+var ENTITY_SCENE := preload("res://src/entities/entity/EntityScene.tscn")
+
 var _active: bool
 
 var _instantiated_scene: Node3D
@@ -16,8 +18,12 @@ var _initial_position: Vector3
 					)
 			))
 
-func _init() -> void:
+func _init(_scene: PackedScene = null) -> void:
 	id = Components.Id.Scene
+	
+	if _scene:
+		scene = _scene
+	
 	subscriptions.append_array([
 		Subscription.new(self.id, Components.Id.Blueprint, func (blueprint: BlueprintComponent) -> void:
 			set_blueprint(true)
@@ -49,17 +55,26 @@ func _init() -> void:
 
 func on_enter() -> void:
 	if not _instantiated_scene:
-		_instantiated_scene = scene.instantiate()
+		if scene:
+			_instantiated_scene = scene.instantiate()
+		else:
+			_instantiated_scene = ENTITY_SCENE.instantiate()
+			
 	set_active(false)
 	if _instantiated_scene is EntityScene:
 		_instantiated_scene.component_container = get_container()
 	Events.request_entity_scene_add.emit(_instantiated_scene)
 	_instantiated_scene.global_position = _initial_position
+	ready.emit()
 
 func get_scene() -> Node3D:
 	return _instantiated_scene
 
+func add_child(node: Node3D) -> void:
+	_instantiated_scene.add_child(node)
+
 func on_exit() -> void:
+	_instantiated_scene.queue_free()
 	super.on_exit()
 
 func set_active(active: bool) -> void:

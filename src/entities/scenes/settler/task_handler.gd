@@ -56,6 +56,7 @@ func start_task(task: Task) -> void:
 	task.failed.connect(_clean_up_actuator)
 	#task.cancelled.connect(_clean_up_actuator)
 	task.removed.connect(_clean_up_actuator)
+	task.finished.connect(_clean_up_actuator)
 	settler.add_child(task_actuator)
 	current_task_actuator = task_actuator
 	current_task_actuator.start_work()

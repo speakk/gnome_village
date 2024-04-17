@@ -7,4 +7,10 @@ func _init() -> void:
 
 func on_enter() -> void:
 	var scene := SCENE.instantiate()
-	get_owner().add_child(scene)
+	var scene_component: SceneComponent = get_container().get_by_id(Components.Id.Scene)
+	if scene_component:
+		scene_component.add_child(scene)
+	else:
+		scene_component = get_container().add_component(SceneComponent.new())
+	
+	scene_component.add_child(scene)

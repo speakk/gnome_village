@@ -10,6 +10,9 @@ func _init(params: Variant = null) -> void:
 	if not params is Dictionary: return
 	
 	target = params["target"]
+	#target.delete_called.connect(func() -> void:
+		#cancelled.emit()
+		#)
 	target.component_container.get_by_id(Components.Id.Constructable).reserved_for_dismantling = true
 
 func _ready() -> void:
@@ -36,7 +39,9 @@ func _ready() -> void:
 
 func create_action(actor: Settler) -> ActorAction:
 	var action: DismantleActorAction = DismantleActorAction.new(actor, self)
-	action.finished.connect(func() -> void: finished.emit())
+	action.finished.connect(func() -> void:
+		is_finished = true
+		)
 	return action
 
 func get_target(actor: Settler) -> Vector3:

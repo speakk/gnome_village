@@ -13,7 +13,8 @@ func _init(actor: Settler, task: Task) -> void:
 	task = task as DismantleTask
 	target = task.target
 	constructable = task.target.component_container.get_by_id(Components.Id.Constructable)
-	constructable.no_durability_left.connect(func() -> void: finished.emit())
+	constructable.no_durability_left.connect(func() -> void:
+		finished.emit())
 
 func process_action(delta: float) -> void:
 	if constructable:

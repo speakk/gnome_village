@@ -7,6 +7,7 @@ var _started: bool
 var actor: Settler
 
 signal finished()
+signal cancelled
 signal validation_failed()
 
 func process_action(delta: float) -> void:
