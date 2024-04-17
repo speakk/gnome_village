@@ -64,6 +64,7 @@ func create_world() -> void:
 		if not PathFinder.is_position_solid(grid_position):
 			var new_grows_in_entity := PlantComponent.create_growth_spot(quantized_position)
 			var entity: Entity = Entity.from_definition(load("res://src/entities/definitions/plants/oak_tree.tres"))
+			entity_handler.add_entity(new_grows_in_entity)
 			entity_handler.add_entity(entity)
 			WorldPositionComponent.set_world_position(entity, quantized_position)
 			entity.component_container.get_by_id(Components.Id.Plant).grows_in = new_grows_in_entity.component_container.get_by_id(Components.Id.GrowthSpot)
