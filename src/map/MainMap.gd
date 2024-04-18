@@ -65,6 +65,7 @@ var map_entities := {} as Dictionary
 
 func _create_grass() -> void:
 	Events.world_creation.grass.emit()
+	await get_tree().process_frame
 	
 	var multi_mesh := MultiMesh.new()
 	multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
@@ -225,6 +226,7 @@ var width_shapes: Dictionary = {
 
 func _create_rocks() -> void:
 	Events.world_creation.rocks.emit()
+	await get_tree().process_frame
 	for x in MAP_SIZE_X:
 		for y in MAP_SIZE_Y:
 			var coord := Vector3i(x - MAP_SIZE_X/2, 0, y - MAP_SIZE_Y/2)
@@ -249,6 +251,7 @@ func _create_rocks() -> void:
 
 func _create_rivers() -> void:
 	Events.world_creation.rivers.emit()
+	await get_tree().process_frame
 	var rivers: int = 1
 
 	for i in rivers:
