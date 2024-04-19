@@ -7,7 +7,7 @@ signal map_changed(coordinate: Vector2i)
 var _path_cache: Dictionary = {} 
 
 func _ready() -> void:
-	_reset()
+	reset()
 	Events.solid_cell_placed.connect(_solid_cell_placed)
 	Events.solid_cell_removed.connect(_solid_cell_removed)
 	map_changed.connect(func(_coordinate: Vector2) -> void:
@@ -17,12 +17,21 @@ func _ready() -> void:
 		_path_cache.clear()
 		)
 
-func _reset() -> void:
-	astar_grid = AStarGrid2D.new()
+func reset() -> void:
+	astar_grid.clear()
 	astar_grid.cell_size = MainMap.CELL_SIZE
 	astar_grid.region = Rect2i(-MainMap.MAP_SIZE_X/2, -MainMap.MAP_SIZE_Y/2, MainMap.MAP_SIZE_X, MainMap.MAP_SIZE_Y)
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
+
+func get_all_solid() -> Array[Vector2i]:
+	var result: Array[Vector2i]
+	for x in range(-MainMap.MAP_SIZE_X/2, MainMap.MAP_SIZE_X/2):
+		for y in range(-MainMap.MAP_SIZE_Y/2, MainMap.MAP_SIZE_Y/2):
+			if is_position_solid(Vector2i(x, y)):
+				result.append(Vector2i(x, y))
+	
+	return result
 
 func _solid_cell_placed(coordinate: Vector2i) -> void:
 	astar_grid.set_point_solid(coordinate)
@@ -150,7 +159,7 @@ func serialize() -> Dictionary:
 	}
 
 func deserialize(dict: Dictionary) -> void:
-	_reset()
+	reset()
 	var solid_points_dict: Array = dict["solid_points"]
 	for solid_point_dict: Dictionary in solid_points_dict:
 		astar_grid.set_point_solid(Vector2i(solid_point_dict["x"], solid_point_dict["y"]))

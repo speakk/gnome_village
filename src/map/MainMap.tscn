@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://cxfu88mnhmgb7"]
+[gd_scene load_steps=48 format=3 uid="uid://cxfu88mnhmgb7"]
 
 [ext_resource type="Script" path="res://src/map/MainMap.gd" id="1_hry08"]
 [ext_resource type="Script" path="res://src/map/MapTileSelector.gd" id="2_k2ptl"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://58s8ouhd1j86" path="res://src/map/EntitySelectionDraw.tscn" id="6_tt6bd"]
 [ext_resource type="AudioStream" uid="uid://b84nhjvx33esl" path="res://assets/sounds/placement.ogg" id="7_f2b3f"]
 [ext_resource type="PackedScene" uid="uid://cv0okgv308mwi" path="res://src/map/entity_selector.tscn" id="9_ips2r"]
+[ext_resource type="PackedScene" uid="uid://ddflny8ti34fr" path="res://src/map/debug/solid_visualizer.tscn" id="10_afddc"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ov800"]
 noise_type = 3
@@ -309,3 +310,7 @@ cast_shadow = 0
 
 [node name="EntitySelector" parent="." node_paths=PackedStringArray("main_map") instance=ExtResource("9_ips2r")]
 main_map = NodePath("..")
+
+[node name="DebugVisuals" type="Node3D" parent="."]
+
+[node name="SolidVisualizer" parent="DebugVisuals" instance=ExtResource("10_afddc")]

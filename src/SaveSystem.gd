@@ -59,8 +59,8 @@ func load_game(save_name: String) -> void:
 			continue
 		entity_reference_entry.callable.call(entity_references[entity_reference_entry.save_id])
 
-func clear_state() -> void:
 	entity_references.clear()
+func clear_state() -> void:
 	entity_reference_queue.clear()
 
 func quick_load() -> void:

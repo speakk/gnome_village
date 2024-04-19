@@ -4,6 +4,7 @@ var component := ComponentEvents.new()
 var plant := PlantEvents.new()
 var ui := UiEvents.new()
 var world_creation := WorldCreationEvents.new()
+var debug := DebugEvents.new()
 
 class ComponentEvents:
 	signal added(container: ComponentContainer, component: Component)
@@ -24,6 +25,9 @@ class WorldCreationEvents:
 	signal rivers
 	signal grass
 	signal entities
+
+class DebugEvents:
+	signal toggle_solid_visualizer
 
 signal blueprint_placed(tile_position: Vector2i, blueprint: Entity)
 signal construction_finished(item: Entity)

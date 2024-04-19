@@ -166,6 +166,9 @@ func find_unfinished_task_in_tree(task: Task) -> NodeResult:
 	else:
 		return NodeResult.new(task, NodeStatus.FoundTask)
 
+func reset() -> void:
+	clear_tasks()
+
 func clear_tasks() -> void:
 	for child in $Tasks.get_children():
 		child.queue_free()

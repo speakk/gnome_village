@@ -39,7 +39,14 @@ func _clear_entity_scenes() -> void:
 	for entity in %EntityScenes.get_children():
 		entity.queue_free()
 
+func reset_all() -> void:
+	main_map.reset()
+	entity_handler.reset()
+	TaskManager.reset()
+	PathFinder.reset()
+
 func new_game() -> void:
+	reset_all()
 	create_world()
 
 func create_world() -> void:
@@ -131,6 +138,7 @@ func _process(delta: float) -> void:
 		Engine.time_scale = 9.0
 	
 	if Input.is_action_just_pressed("reload_map"):
+		reset_all()
 		create_world()
 
 func _save_callable() -> Dictionary:	
@@ -147,6 +155,7 @@ func _save_callable() -> Dictionary:
 	}
 	
 func _load_callable(save_dict: Dictionary) -> void:
+	reset_all()
 	main_map.deserialize(save_dict["map"])
 	entity_handler.deserialize(save_dict["entity_handler"])
 	TaskManager.deserialize(save_dict["task_manager"])

@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddflny8ti34fr"]
+
+[ext_resource type="Script" path="res://src/map/debug/solid_visualizer.gd" id="1_vf3wm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_q0xko"]
+
+[sub_resource type="MultiMesh" id="MultiMesh_4pukg"]
+transform_format = 1
+mesh = SubResource("BoxMesh_q0xko")
+
+[node name="SolidVisualizer" type="Node3D"]
+script = ExtResource("1_vf3wm")
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+multimesh = SubResource("MultiMesh_4pukg")

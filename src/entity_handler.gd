@@ -33,6 +33,10 @@ func _process(delta: float) -> void:
 func get_all() -> Array[Entity]:
 	return entities
 
+func reset() -> void:
+	entities.clear()
+	_processable_entities.clear()
+
 func serialize() -> Dictionary:
 	var entity_dicts: Array[Dictionary]
 	for entity: Entity in get_all():

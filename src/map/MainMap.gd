@@ -152,12 +152,14 @@ func prepare_blueprint_grid() -> void:
 	
 	blueprint_grid.mesh_library = blueprint_mesh_library
 
+func reset() -> void:
+	clear_everything()
+
 func clear_everything() -> void:
 	map_entities.clear()
 	grid.clear()
 	blueprint_grid.clear()
 	ground_grid.clear()
-	PathFinder._reset()
 
 func create_world(seed: int) -> void:
 	await get_tree().process_frame
