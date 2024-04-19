@@ -7,9 +7,9 @@ var _cached_tasks: Array[Task]
 func _ready() -> void:
 	Events.tasks_changed.connect(_refresh_debug_tree)
 	Events.debug_visuals_set.connect(func(new_value: bool) -> void:
+		visible = new_value
 		if new_value:
 			_refresh_debug_tree(_cached_tasks)
-		visible = new_value
 )
 	
 func _refresh_debug_tree(tasks: Array[Task]) -> void:
