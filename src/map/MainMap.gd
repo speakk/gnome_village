@@ -14,6 +14,7 @@ class_name MainMap extends Node3D
 @onready var ground_grid: GridMap = $GroundGrid
 @onready var grass_multi_mesh: MultiMeshInstance3D = $GrassMultiMesh
 
+@onready var entity_selection_draw: EntitySelectionDraw = $EntitySelectionDraw
 @onready var entity_selector: EntitySelector = $EntitySelector
 
 @onready var grid_definitions := {
@@ -156,6 +157,8 @@ func reset() -> void:
 	clear_everything()
 
 func clear_everything() -> void:
+	entity_selector.reset()
+	entity_selection_draw.reset()
 	map_entities.clear()
 	grid.clear()
 	blueprint_grid.clear()

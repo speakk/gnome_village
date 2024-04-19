@@ -4,6 +4,9 @@ class_name EntitySelector extends Node
 
 var _selected_entites: Array[Entity]
 
+func reset() -> void:
+	clear_selections()
+
 func clear_selections() -> void:
 	for entity in _selected_entites:
 		if entity.component_container.has_component(Components.Id.Selectable):

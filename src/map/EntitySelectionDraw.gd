@@ -9,6 +9,9 @@ func _ready() -> void:
 	Events.entity_deselected.connect(_entity_deselected)
 	Events.clear_entity_selections.connect(_clear_entity_selections)
 
+func reset() -> void:
+	selected_entities.clear()
+
 func _clear_entity_selections() -> void:
 	selected_entities.clear()
 	redraw()

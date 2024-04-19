@@ -14,11 +14,11 @@ func _init() -> void:
 #region Serialization
 func serialize() -> Dictionary:
 	var dict := super.serialize()
-	dict["selected"] = selected
+	#dict["selected"] = selected
 		
 	return dict
 
 func deserialize(dict: Dictionary) -> void:
 	super.deserialize(dict)
-	selected = dict["selected"]
+	#selected = dict["selected"]
 #endregion
