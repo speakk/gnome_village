@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="EntityDefinition" load_steps=9 format=3 uid="uid://b6agm3crxp6at"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=12 format=3 uid="uid://b6agm3crxp6at"]
 
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="1_duxi4"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="1_uu1oa"]
 [ext_resource type="PackedScene" uid="uid://b5ovrp2xpjjhu" path="res://src/entities/scenes/stations/smelter.tscn" id="2_ybnq2"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="3_4dgu4"]
 [ext_resource type="Script" path="res://src/components/data/Shape.gd" id="4_4xu1u"]
+[ext_resource type="Script" path="res://src/components/data/Smelter.gd" id="5_pptly"]
+[ext_resource type="Resource" uid="uid://1m2500et57ul" path="res://src/recipes/copper_ingot.tres" id="6_fdpx5"]
 
 [sub_resource type="Resource" id="Resource_fm6yf"]
 script = ExtResource("1_uu1oa")
@@ -24,7 +26,12 @@ shape_definition = "11
 11"
 origin = Vector2i(0, 0)
 
+[sub_resource type="Resource" id="Resource_sadrj"]
+script = ExtResource("5_pptly")
+smelting_time_modifier = 1.0
+supported_recipes = Array[Resource("res://src/recipes/recipe.gd")]([ExtResource("6_fdpx5")])
+
 [resource]
 script = ExtResource("1_duxi4")
 display_name = "Smelter"
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_fm6yf"), SubResource("Resource_dyegp"), SubResource("Resource_tjsvs")])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_fm6yf"), SubResource("Resource_dyegp"), SubResource("Resource_tjsvs"), SubResource("Resource_sadrj")])

@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bxfimxuvv4v2s"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://bxfimxuvv4v2s"]
 
 [ext_resource type="FontFile" uid="uid://dtfb4n2n8qq7m" path="res://assets/fonts/m5x7.ttf" id="1_7prsm"]
 
@@ -60,6 +60,21 @@ corner_radius_top_right = 15
 shadow_size = 4
 shadow_offset = Vector2(3, 3)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kjtdp"]
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 15.0
+content_margin_bottom = 10.0
+bg_color = Color(0.408605, 0.496094, 0.194259, 1)
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.339844, 0.193215, 0.205909, 1)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [resource]
 default_font = ExtResource("1_7prsm")
 default_font_size = 32
@@ -72,3 +87,5 @@ MarginContainer/constants/margin_left = 10
 MarginContainer/constants/margin_right = 10
 MarginContainer/constants/margin_top = 10
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_12m7h")
+YesButton/base_type = &"Button"
+YesButton/styles/normal = SubResource("StyleBoxFlat_kjtdp")

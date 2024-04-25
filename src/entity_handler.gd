@@ -1,12 +1,39 @@
 class_name EntityHandler extends Node3D
 
 var entities: Array[Entity]
-
 var _processable_entities: Array[Entity]
+
+# Map item type to Array[ItemAmountComponent]
+var item_amount_map: Dictionary
+
+class ItemLocationEntry:
+	var item_amount: ItemAmountComponent
+	var entity: Entity
+	var coordinate: Vector2i
 
 func _ready() -> void:
 	add_to_group("entity_handler")
 	Events.request_entity_add.connect(add_entity)
+	Events.component.item_amount_changed.connect(_item_amount_changed)
+
+func _item_amount_changed(item_amount: ItemAmountComponent) -> void:
+	var entity_definition := item_amount.item
+	if not item_amount_map.has(entity_definition):
+		item_amount_map[entity_definition] = []
+	
+	var list_of_items: Array = item_amount_map.get(entity_definition)
+
+	if list_of_items.has(item_amount):
+		if item_amount.amount == 0:
+			list_of_items.erase(item_amount)
+		return
+	else:
+		list_of_items.append(item_amount)
+	
+func get_items_of_type(entity_definition: EntityDefinition) -> Array[ItemLocationEntry]:
+	var result: Array[ItemLocationEntry] = []
+	result.assign(item_amount_map.get(entity_definition))
+	return result
 
 func add_entity(entity: Entity) -> void:
 	entities.append(entity)
@@ -38,7 +65,7 @@ func reset() -> void:
 	_processable_entities.clear()
 
 func serialize() -> Dictionary:
-	var entity_dicts: Array[Dictionary]
+	var entity_dicts: Array[Dictionary] = []
 	for entity: Entity in get_all():
 		var save_dict := entity.serialize()
 		entity_dicts.append(save_dict)

@@ -13,6 +13,8 @@ var _reservations: Array[ItemAmountReservation]
 	set(new_amount):
 		amount = new_amount
 		amount_changed.emit(new_amount)
+		if Events:
+			Events.component.item_amount_changed.emit(self)
 
 func add_reservation(item_amount_reservation: ItemAmountReservation) -> void:
 	_reservations.append(item_amount_reservation)

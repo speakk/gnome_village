@@ -1,0 +1,89 @@
+[gd_scene load_steps=3 format=3 uid="uid://dl4k503lxr04g"]
+
+[ext_resource type="Theme" uid="uid://bxfimxuvv4v2s" path="res://theme/main_theme.tres" id="1_cgv2i"]
+[ext_resource type="Script" path="res://src/gui/entity_info/component_display/smelter/add_job_section.gd" id="1_sq5h7"]
+
+[node name="AddJobSection" type="VBoxContainer"]
+auto_translate_mode = 1
+script = ExtResource("1_sq5h7")
+
+[node name="AddJobContainer" type="HBoxContainer" parent="."]
+auto_translate_mode = 1
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AddJobContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+
+[node name="RecipeSelector" type="OptionButton" parent="AddJobContainer/HBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+selected = 0
+allow_reselect = true
+item_count = 2
+popup/item_0/text = "Copper Ingot"
+popup/item_0/id = 0
+popup/item_1/text = "Iron Ingot"
+popup/item_1/id = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="AddJobContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+
+[node name="Label" type="Label" parent="AddJobContainer/HBoxContainer2"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Amount:"
+
+[node name="AmountSelector" type="HBoxContainer" parent="AddJobContainer/HBoxContainer2"]
+auto_translate_mode = 1
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="AddJobContainer/HBoxContainer2/AmountSelector"]
+auto_translate_mode = 1
+layout_mode = 2
+max_value = 99.0
+value = 1.0
+alignment = 1
+update_on_text_changed = true
+
+[node name="AmountTypeSelector" type="OptionButton" parent="AddJobContainer/HBoxContainer2/AmountSelector"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+selected = 0
+allow_reselect = true
+item_count = 2
+popup/item_0/text = "One off"
+popup/item_0/id = 0
+popup/item_1/text = "Ensure stocks have X"
+popup/item_1/id = 1
+
+[node name="AddJobButton" type="Button" parent="AddJobContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+theme = ExtResource("1_cgv2i")
+theme_type_variation = &"YesButton"
+text = "Add job"
+
+[node name="HBoxContainer" type="VBoxContainer" parent="."]
+auto_translate_mode = 1
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="HBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Will use: 2 Copper Ore / Copper Ingot = 2 Copper Ore"
+editable = false
+
+[node name="LineEdit2" type="LineEdit" parent="HBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Can afford: 6 Copper Ingot (13 Copper Ore available)"
+editable = false
+
+[connection signal="pressed" from="AddJobContainer/AddJobButton" to="." method="_on_add_job_button_pressed"]

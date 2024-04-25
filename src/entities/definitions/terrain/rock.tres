@@ -8,7 +8,7 @@
 [ext_resource type="Script" path="res://src/components/data/Terrain.gd" id="5_jk0dl"]
 [ext_resource type="Script" path="res://src/components/data/Solid.gd" id="6_wwjfy"]
 [ext_resource type="Script" path="res://src/components/data/Tag.gd" id="7_7yxw8"]
-[ext_resource type="Resource" uid="uid://dw0g46snnxs3q" path="res://src/entities/definitions/ores/copper_ore.tres" id="8_imqxe"]
+[ext_resource type="Resource" uid="uid://dw0g46snnxs3q" path="res://src/entities/definitions/minerals/copper_ore.tres" id="8_imqxe"]
 [ext_resource type="Script" path="res://src/entities/ItemDrop.gd" id="9_cpfw2"]
 [ext_resource type="Script" path="res://src/components/data/Drop.gd" id="10_tny5y"]
 

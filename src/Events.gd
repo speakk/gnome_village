@@ -9,6 +9,7 @@ var debug := DebugEvents.new()
 class ComponentEvents:
 	signal added(container: ComponentContainer, component: Component)
 	signal removed(container: ComponentContainer, component: Component)
+	signal item_amount_changed(item_amount_component: ItemAmountComponent)
 
 class PlantEvents:
 	signal matured(plant: PlantComponent)

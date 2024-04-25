@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Recipe" load_steps=7 format=3 uid="uid://1m2500et57ul"]
+
+[ext_resource type="Resource" uid="uid://bfy2xbhd37oga" path="res://src/entities/definitions/minerals/copper_ingot.tres" id="1_qt8m8"]
+[ext_resource type="Script" path="res://src/recipes/recipe.gd" id="1_tto7e"]
+[ext_resource type="Script" path="res://src/entities/ItemRequirement.gd" id="2_n5yxf"]
+[ext_resource type="Resource" uid="uid://dw0g46snnxs3q" path="res://src/entities/definitions/minerals/copper_ore.tres" id="3_tytty"]
+
+[sub_resource type="Resource" id="Resource_4us8s"]
+script = ExtResource("2_n5yxf")
+item = ExtResource("1_qt8m8")
+amount = 1
+
+[sub_resource type="Resource" id="Resource_q73ac"]
+script = ExtResource("2_n5yxf")
+item = ExtResource("3_tytty")
+amount = 2
+
+[resource]
+script = ExtResource("1_tto7e")
+requires = Array[ExtResource("2_n5yxf")]([SubResource("Resource_q73ac")])
+produces = Array[ExtResource("2_n5yxf")]([SubResource("Resource_4us8s")])

@@ -71,7 +71,7 @@ func reserve_item_requirement(item_requirement: ItemRequirement) -> void:
 	reserve_item_amount(item_requirement.item, item_requirement.amount)
 
 func get_items() -> Array[ItemAmountComponent]:
-	var items: Array[ItemAmountComponent]
+	var items: Array[ItemAmountComponent] = []
 	items.assign(item_amounts.values())
 	return items
 	
@@ -93,7 +93,7 @@ func deserialize(dict: Dictionary) -> void:
 	else:
 		items_can_be_picked = false
 	
-	var item_amount_values: Array[ItemAmountComponent]
+	var item_amount_values: Array[ItemAmountComponent] = []
 	item_amount_values.assign(dict["item_amounts"].map(func(item_amount_dict: Dictionary) -> ItemAmountComponent:
 		var item_amount := ItemAmountComponent.new()
 		item_amount.deserialize(item_amount_dict)
