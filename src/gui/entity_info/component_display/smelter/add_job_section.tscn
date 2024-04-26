@@ -72,18 +72,12 @@ text = "Add job"
 auto_translate_mode = 1
 layout_mode = 2
 
-[node name="LineEdit" type="LineEdit" parent="HBoxContainer"]
+[node name="CostLineEdit" type="LineEdit" parent="HBoxContainer"]
+unique_name_in_owner = true
 auto_translate_mode = 1
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Will use: 2 Copper Ore / Copper Ingot = 2 Copper Ore"
-editable = false
-
-[node name="LineEdit2" type="LineEdit" parent="HBoxContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Can afford: 6 Copper Ingot (13 Copper Ore available)"
+text = "Cost: 2 Copper Ore"
 editable = false
 
 [connection signal="pressed" from="AddJobContainer/AddJobButton" to="." method="_on_add_job_button_pressed"]

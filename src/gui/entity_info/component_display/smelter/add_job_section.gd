@@ -6,9 +6,21 @@ var recipe_selector_id_map := {}
 
 func _ready() -> void:
 	%AmountTypeSelector.clear()
+	%RecipeSelector.item_selected.connect(_recipe_selected)
 	
 	for amount_type: int in JobAmountType.Id.values():
 		%AmountTypeSelector.add_item(JobAmountType.get_label(amount_type), amount_type)
+
+func _recipe_selected(index: int) -> void:
+	var recipe: Recipe = recipe_selector_id_map[index]
+	var cost_text := "Cost: "
+	for i in recipe.requires.size():
+		var item_requirement: ItemRequirement = recipe.requires[i]
+		cost_text += "(%s x %s)" % [item_requirement.amount, item_requirement.item.display_name]
+		if i < recipe.requires.size() - 1:
+			cost_text += ", "
+			
+	%CostLineEdit.text = cost_text
 
 func set_smelter(_smelter: SmelterComponent) -> void:
 	smelter = _smelter
