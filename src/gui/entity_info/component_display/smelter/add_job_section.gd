@@ -34,6 +34,14 @@ func set_smelter(_smelter: SmelterComponent) -> void:
 		%RecipeSelector.add_item(label, recipe_index)
 		recipe_selector_id_map[recipe_index] = recipe
 		recipe_index += 1
+	
+	%RecipeSelector.select(0)
 
 func _on_add_job_button_pressed() -> void:
-	pass # Replace with function body.
+	var smelting_job := SmeltingJob.create(
+		recipe_selector_id_map[%RecipeSelector.selected],
+		%AmountSpinBox.value,
+		%AmountTypeSelector.selected
+	)
+	
+	smelter.add_job(smelting_job)

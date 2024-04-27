@@ -41,7 +41,8 @@ text = "Amount:"
 auto_translate_mode = 1
 layout_mode = 2
 
-[node name="SpinBox" type="SpinBox" parent="AddJobContainer/HBoxContainer2/AmountSelector"]
+[node name="AmountSpinBox" type="SpinBox" parent="AddJobContainer/HBoxContainer2/AmountSelector"]
+unique_name_in_owner = true
 auto_translate_mode = 1
 layout_mode = 2
 max_value = 99.0

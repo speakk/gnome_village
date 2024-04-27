@@ -30,6 +30,9 @@ func _dismantle_issued(entity: Entity) -> void:
 	var task_tree := DismantleTask.new({target = entity})
 	$Tasks.add_child(task_tree)
 
+func add_task(task: Task) -> void:
+	$Tasks.add_child(task)
+
 func get_available_settler(task: Variant) -> Settler:
 	var settlers := get_tree().get_nodes_in_group("settler") as Array[Node]
 	
