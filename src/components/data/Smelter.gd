@@ -6,6 +6,9 @@ class_name SmelterComponent extends Component
 var _inventory: InventoryComponent = InventoryComponent.new()
 var jobs: Array[SmeltingJob]
 
+var _smelting_progress: float = 0
+signal smelting_finished
+
 func _init() -> void:
 	id = Components.Id.Smelter
 
@@ -19,5 +22,21 @@ func add_job(smelting_job: SmeltingJob) -> void:
 	jobs.append(smelting_job)
 	smelting_job.start(self)
 
+func generate_recipe_drop(recipe: Recipe) -> void:
+	for item in recipe.produces:
+		var entity := Entity.from_definition(item.item)
+		Events.request_entity_add.emit(entity)
+		var item_amount: ItemAmountComponent = entity.component_container.get_by_id(Components.Id.ItemAmount)
+		item_amount.amount = item.amount
+		var free_coord: Vector2i = PathFinder.get_closest_free_point(get_container().get_by_id(Components.Id.WorldPosition).coordinate)
+		WorldPositionComponent.set_coordinate(entity, free_coord)
+
 func smelt(amount: float) -> void:
-	pass
+	for job in jobs:
+		if not job.is_finished:
+			_smelting_progress += amount
+			if _smelting_progress >= 1:
+				smelting_finished.emit()
+				_smelting_progress = 0
+		
+		break

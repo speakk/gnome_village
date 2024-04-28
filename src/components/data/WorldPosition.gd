@@ -25,6 +25,11 @@ static func set_world_position(node: Entity, world_position: Vector3) -> void:
 	var world_position_component: WorldPositionComponent = node.component_container.get_by_id(Components.Id.WorldPosition)
 	world_position_component.current_position = world_position
 
+static func set_coordinate(entity: Entity, _coordinate: Vector2i) -> void:
+	var world_position_component: WorldPositionComponent = entity.component_container.get_by_id(Components.Id.WorldPosition)
+	world_position_component.coordinate = _coordinate
+	
+
 func _init() -> void:
 	id = Components.Id.WorldPosition
 

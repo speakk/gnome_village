@@ -11,6 +11,7 @@ const AT_DISTANCE := 1.0
 
 var walk_speed := 5.0
 var build_speed := 0.3
+var smelt_speed := 0.3
 var dismantling_speed := 3
 var open_door_speed := 1.2
 

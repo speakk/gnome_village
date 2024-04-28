@@ -2,7 +2,7 @@ class_name SmeltTask extends Task
 
 var smelter_component: SmelterComponent
 
-func _init(_smelter_component: SmelterComponent) -> void:
+func _init(_smelter_component: SmelterComponent = null) -> void:
 	task_id = Tasks.TaskId.Smelt
 	task_name = "Smelt"
 	animation_name = "Build"
@@ -15,8 +15,8 @@ func _init(_smelter_component: SmelterComponent) -> void:
 func create_action(actor: Settler) -> ActorAction:
 	return SmeltActorAction.new(actor, self)
 
-# func get_target(actor: Settler) -> Vector3:
-# 	return constructable_component.get_owner().global_position
+func get_target(actor: Settler) -> Vector3:
+	return smelter_component.get_owner().global_position
 
 #region Serialization
 func serialize() -> Dictionary:

@@ -11,7 +11,7 @@ func _init(_actor: Settler, task: Task) -> void:
 	super._init(_actor, task)
 	task = task as SmeltTask
 	smelter_component = task.smelter_component
-	smelter_component.smelt_finished.connect(func() -> void: finished.emit())
+	smelter_component.smelting_finished.connect(func() -> void: finished.emit())
 
 func process_action(delta: float) -> void:
 	smelter_component.smelt(actor.smelt_speed * delta)
