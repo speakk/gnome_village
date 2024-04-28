@@ -6,6 +6,14 @@ var component_owner: Entity
 
 var subscriptions: Array[Subscription]
 
+var position: Vector3:
+	get():
+		return get_container().get_by_id(Components.Id.WorldPosition).current_position
+
+var coordinate: Vector2i:
+	get():
+		return get_container().get_by_id(Components.Id.WorldPosition).current_coordinate
+
 signal ready
 
 #var groups: Array[Groups.Id]:

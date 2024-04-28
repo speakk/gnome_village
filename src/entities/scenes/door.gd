@@ -11,15 +11,14 @@ func correct_orientation() -> void:
 		return
 		
 	print("Actually doing it")
-	var self_coordinate: Vector2i = component_container.get_by_id(Components.Id.WorldPosition).coordinate
-	var surrounding_coordinates := PathFinder.get_surrounding_coordinates(self_coordinate, false)
+	var surrounding_coordinates := PathFinder.get_surrounding_coordinates(self.coordinate, false)
 	for coordinate in surrounding_coordinates:
 		var coordinate_entities := Globals.get_map().get_map_entities(coordinate)
 		for coordinate_entity in coordinate_entities:
 			print("Entity in surrounding")
 			if coordinate_entity.component_container.has_component(Components.Id.Constructable):
 				if (coordinate_entity.component_container.get_by_id(Components.Id.Constructable) as ConstructableComponent).solid_when_started:
-					var angle_to := Vector2(self_coordinate).angle_to_point(Vector2(coordinate))
+					var angle_to := Vector2(self.coordinate).angle_to_point(Vector2(coordinate))
 					if is_equal_approx(angle_to, 2*PI) or is_equal_approx(angle_to, 0):
 						mesh_instance_3d.rotation_degrees = Vector3(0, 0, 0)
 						mesh_instance_3d.position.x = 0.5

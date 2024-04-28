@@ -16,7 +16,7 @@ func create_action(actor: Settler) -> ActorAction:
 	return SmeltActorAction.new(actor, self)
 
 func get_target(actor: Settler) -> Vector3:
-	return smelter_component.get_owner().global_position
+	return smelter_component.position
 
 #region Serialization
 func serialize() -> Dictionary:

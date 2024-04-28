@@ -1,6 +1,6 @@
 class_name WorldPositionComponent extends Component
 
-var coordinate: Vector2i
+var current_coordinate: Vector2i
 
 var _emitted_once := false
 

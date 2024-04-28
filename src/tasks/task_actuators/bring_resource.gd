@@ -25,7 +25,7 @@ func find_closest_material(_item_requirement: ItemRequirement) -> Entity:
 					# Filter out items that were already marked unreachable
 					var actor_position: Vector3 = tree.actor.global_position
 					var from: Vector2i = Globals.get_map().global_position_to_coordinate(actor_position)
-					var to: Vector2i = material.component_container.get_by_id(Components.Id.WorldPosition).coordinate
+					var to: Vector2i = material.component_container.get_by_id(Components.Id.WorldPosition).current_coordinate
 					var path_invalid := PathFinder.is_path_marked_unreachable(from, to)
 					
 					if not path_invalid:
@@ -81,7 +81,7 @@ func start_work() -> void:
 			task.has_failed = true
 			return
 			
-		%GoToBlueprint.target_coordinate = task.inventory_component.get_owner().component_container.get_by_id(Components.Id.WorldPosition).coordinate
+		%GoToBlueprint.target_coordinate = task.inventory_component.coordinate
 	
 	
 	# TODO: Support for just placing items down instead of adding to inventory

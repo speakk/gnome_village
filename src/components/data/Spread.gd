@@ -22,8 +22,7 @@ func process_component(delta: float) -> void:
 	_spread_check_timer -= delta
 	if _spread_check_timer <= 0:
 		if randf() < spread_chance:
-			var owner_coordinate: Vector2i = get_container().get_by_id(Components.Id.WorldPosition).coordinate
-			var spread_coordinate := owner_coordinate + Vector2i(
+			var spread_coordinate := coordinate + Vector2i(
 				randf_range(-spread_radius/2, spread_radius/2),
 				randf_range(-spread_radius/2, spread_radius/2)
 			)

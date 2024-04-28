@@ -1,8 +1,15 @@
-[gd_resource type="Resource" script_class="EntityDefinition" load_steps=2 format=3 uid="uid://bfy2xbhd37oga"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=5 format=3 uid="uid://bfy2xbhd37oga"]
 
+[ext_resource type="PackedScene" uid="uid://2a4wmocredu" path="res://assets/blender_models/refined/copper_ingot.blend" id="1_73dcj"]
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="1_kw8eq"]
+[ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_nqj3g"]
+
+[sub_resource type="Resource" id="Resource_s8h04"]
+script = ExtResource("2_nqj3g")
+scene = ExtResource("1_73dcj")
+custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
 
 [resource]
 script = ExtResource("1_kw8eq")
 display_name = "Copper Ingot"
-components = Array[Resource("res://src/components/Component.gd")]([])
+components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_s8h04")])

@@ -28,7 +28,7 @@ func generate_recipe_drop(recipe: Recipe) -> void:
 		Events.request_entity_add.emit(entity)
 		var item_amount: ItemAmountComponent = entity.component_container.get_by_id(Components.Id.ItemAmount)
 		item_amount.amount = item.amount
-		var free_coord: Vector2i = PathFinder.get_closest_free_point(get_container().get_by_id(Components.Id.WorldPosition).coordinate)
+		var free_coord: Vector2i = PathFinder.get_closest_free_point(self.coordinate)
 		WorldPositionComponent.set_coordinate(entity, free_coord)
 
 func smelt(amount: float) -> void:
@@ -36,6 +36,7 @@ func smelt(amount: float) -> void:
 		if not job.is_finished:
 			_smelting_progress += amount
 			if _smelting_progress >= 1:
+				generate_recipe_drop(job.recipe)
 				smelting_finished.emit()
 				_smelting_progress = 0
 		

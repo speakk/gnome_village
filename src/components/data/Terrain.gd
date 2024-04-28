@@ -16,7 +16,7 @@ func _init() -> void:
 	id = Components.Id.Terrain
 	subscriptions = [
 		Subscription.new(self.id, Components.Id.WorldPosition, func (world_position: WorldPositionComponent) -> void:
-			_cached_coordinate = world_position.coordinate
+			_cached_coordinate = world_position.current_coordinate
 			if not world_position.position_changed.is_connected(self._on_position_changed):
 				world_position.position_changed.connect(self._on_position_changed)
 			),

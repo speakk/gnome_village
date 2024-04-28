@@ -103,7 +103,7 @@ func ensure_valid_position() -> void:
 			get_tree().create_tween().tween_property(position_component, "current_position", Vector3(new_position.x, 0.5, new_position.z), 0.5)
 
 func is_in_valid_position() -> bool:
-	return not Globals.get_map().is_coordinate_occupied(component_container.get_by_id(Components.Id.WorldPosition).coordinate)
+	return not Globals.get_map().is_coordinate_occupied(component_container.get_by_id(Components.Id.WorldPosition).current_coordinate)
 
 func is_at_target(_target: Vector3) -> bool:
 	return global_position.distance_to(_target) <= AT_DISTANCE
