@@ -40,4 +40,4 @@ func smelt(amount: float) -> void:
 				smelting_finished.emit()
 				_smelting_progress = 0
 		
-		break
+			break

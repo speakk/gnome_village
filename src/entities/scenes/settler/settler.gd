@@ -96,7 +96,7 @@ func _physics_process(delta: float) -> void:
 func ensure_valid_position() -> void:
 	if not is_in_valid_position():
 		var position_component: WorldPositionComponent = component_container.get_by_id(Components.Id.WorldPosition)
-		var coordinate := position_component.coordinate
+		var coordinate := position_component.current_coordinate
 		var free_coordinate := PathFinder.get_closest_free_point(coordinate) as Vector2i
 		if free_coordinate:
 			var new_position := Globals.get_map().coordinate_to_global_position(free_coordinate)

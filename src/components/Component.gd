@@ -12,6 +12,8 @@ var position: Vector3:
 
 var coordinate: Vector2i:
 	get():
+		if self.id == Components.Id.WorldPosition:
+			push_error("Coordinate accessed in WorldPosition, use current_coordinate instead")
 		return get_container().get_by_id(Components.Id.WorldPosition).current_coordinate
 
 signal ready

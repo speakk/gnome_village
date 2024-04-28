@@ -19,3 +19,22 @@ func on_exit() -> void:
 			effect_entity.delete()
 			)
 			
+
+
+#region Serialization
+func serialize() -> Dictionary:
+	var dict := super.serialize()
+	dict["effects"] = effects.map(func(effect: Effect) -> Dictionary:
+		return effect.serialize()
+		)
+		
+	return dict
+
+func deserialize(dict: Dictionary) -> void:
+	super.deserialize(dict)
+	effects.assign(dict["effects"].map(func(effect_dict: Dictionary) -> Effect:
+		var effect := Effect.new()
+		effect.deserialize(effect_dict)
+		return effect
+		))
+#endregion

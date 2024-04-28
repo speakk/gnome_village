@@ -12,11 +12,11 @@ var current_position: Vector3:
 		#if not _emitted_once or current_position.distance_to(new_value) > 0.01:
 		if Events:
 			Events.world_position_changed.emit(component_owner, current_position, new_value)
-		position_changed.emit(current_position, new_value, coordinate, new_coordinate)
+		position_changed.emit(current_position, new_value, current_coordinate, new_coordinate)
 		_emitted_once = true
 			
 		current_position = new_value
-		coordinate = new_coordinate
+		current_coordinate = new_coordinate
 		
 		(func() -> void: get_owner().global_position = current_position).call_deferred()
 		#get_owner().global_position = current_position
@@ -27,7 +27,8 @@ static func set_world_position(node: Entity, world_position: Vector3) -> void:
 
 static func set_coordinate(entity: Entity, _coordinate: Vector2i) -> void:
 	var world_position_component: WorldPositionComponent = entity.component_container.get_by_id(Components.Id.WorldPosition)
-	world_position_component.coordinate = _coordinate
+	var position := Globals.get_map().coordinate_to_global_position(_coordinate)
+	world_position_component.current_position = position
 	
 
 func _init() -> void:

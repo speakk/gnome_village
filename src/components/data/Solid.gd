@@ -8,7 +8,7 @@ func _init() -> void:
 	subscriptions = [
 		Subscription.new(self.id, Components.Id.WorldPosition, func (world_position: WorldPositionComponent) -> void:
 			world_position.position_changed.connect(self._on_position_changed)
-			_change_cell_state(world_position.coordinate, true)
+			_change_cell_state(world_position.current_coordinate, true)
 			),
 		Subscription.new(self.id, Components.Id.Shape, func (_shape_component: ShapeComponent) -> void:
 			shape_component = _shape_component
@@ -40,10 +40,10 @@ func _on_position_changed(_old_position: Vector3, _global_position: Vector3, old
 	_change_cell_state(old_coordinate, false)
 
 func on_enter() -> void:
-	_change_cell_state(get_container().get_by_id(Components.Id.WorldPosition).coordinate, true)
+	_change_cell_state(get_container().get_by_id(Components.Id.WorldPosition).current_coordinate, true)
 	
 
 func on_exit() -> void:
 	super.on_exit()
-	_change_cell_state(get_container().get_by_id(Components.Id.WorldPosition).coordinate, false)
+	_change_cell_state(get_container().get_by_id(Components.Id.WorldPosition).current_coordinate, false)
 	
