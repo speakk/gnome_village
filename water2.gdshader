@@ -107,10 +107,10 @@ vec3 get_ssr_color(vec3 surface_view_position, vec3 normal_view_space, vec3 view
 	return resulting_color;
 }
 
-float border(float cur_depth)
-{
-	return border_near * border_far / (border_far + (2.0 * cur_depth - 1.0) * (border_near - border_far));
-}
+//float border(float cur_depth)
+//{
+	//return border_near * border_far / (border_far + (2.0 * cur_depth - 1.0) * (border_near - border_far));
+//}
 
 float normalize_float(float min_v, float max_v, float value) {
 	float clamped_value = clamp(value, min_v, max_v);
@@ -130,12 +130,12 @@ vec2 get_refracted_uv(vec2 raw_screen_uv, float screen_depth_raw, vec3 view, vec
 void fragment() {
 	float screen_depth_raw = texture(DEPTH_TEXTURE, SCREEN_UV).x;
 
-	vec2 refraction_uv = refraction_intensity > 0.0 ? get_refracted_uv(SCREEN_UV, screen_depth_raw, VIEW, NORMAL, PROJECTION_MATRIX, INV_PROJECTION_MATRIX) : SCREEN_UV;
+	vec2 refraction_uv = refraction_intensity < 0.0 ? get_refracted_uv(SCREEN_UV, screen_depth_raw, VIEW, NORMAL, PROJECTION_MATRIX, INV_PROJECTION_MATRIX) : SCREEN_UV;
 
 	float screen_depth = texture(DEPTH_TEXTURE, refraction_uv).x;
-	float surface_depth = FRAGCOORD.z;
+	float surface_depth = abs(FRAGCOORD.z);
 
-	float border_diff = border(screen_depth_raw) - border(surface_depth);
+	//float border_diff = border(screen_depth_raw) - border(surface_depth);
 
 	vec2 time_vector = (TIME * surface_normals_move_direction_a) * surface_texture_time_scale;
 	vec2 time_vector2 = (TIME * surface_normals_move_direction_b) * surface_texture_time_scale;
@@ -153,7 +153,8 @@ void fragment() {
 	vec3 color_with_transparency 	= mix(surface_color, screen_color, transparency);
 	vec3 depth_color 				= mix(color_deep.rgb, color_with_transparency, depth_opacity);
 	vec3 water_color 				= (ssr_color.x >= 0.0) ? mix(depth_color, ssr_color, ssr_mix_strength) : depth_color;
-	vec3 final_color				= mix(border_color, water_color, step(border_scale, border_diff));
+	//vec3 final_color				= mix(border_color, water_color, step(border_scale, border_diff));
+	vec3 final_color				= water_color;
 
 	ALBEDO.rgb = final_color;
 	METALLIC = metallic;
