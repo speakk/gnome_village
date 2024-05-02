@@ -1,15 +1,17 @@
-[gd_resource type="Resource" script_class="EntityDefinition" load_steps=5 format=3 uid="uid://b0l3k4a15kvyh"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=7 format=3 uid="uid://b0l3k4a15kvyh"]
 
+[ext_resource type="Script" path="res://src/components/Component.gd" id="1_8kcr6"]
 [ext_resource type="PackedScene" uid="uid://c2urqve3go2t2" path="res://assets/blender_models/foliage/flower_1.blend" id="1_auj4l"]
+[ext_resource type="Script" path="res://src/components/StringSubscription.gd" id="2_4784e"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_gduj1"]
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="3_0cigs"]
 
 [sub_resource type="Resource" id="Resource_iwk67"]
 script = ExtResource("2_gduj1")
 scene = ExtResource("1_auj4l")
-custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+custom_subscriptions = Array[ExtResource("2_4784e")]([])
 
 [resource]
 script = ExtResource("3_0cigs")
 display_name = "Flower"
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_iwk67")])
+components = Array[ExtResource("1_8kcr6")]([SubResource("Resource_iwk67")])

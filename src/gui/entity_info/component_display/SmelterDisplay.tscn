@@ -88,7 +88,6 @@ selected = 0
 allow_reselect = true
 item_count = 2
 popup/item_0/text = "Copper Ingot"
-popup/item_0/id = 0
 popup/item_1/text = "Iron Ingot"
 popup/item_1/id = 1
 
@@ -122,6 +121,5 @@ selected = 1
 allow_reselect = true
 item_count = 2
 popup/item_0/text = "One off"
-popup/item_0/id = 0
 popup/item_1/text = "Ensure stocks have X"
 popup/item_1/id = 1

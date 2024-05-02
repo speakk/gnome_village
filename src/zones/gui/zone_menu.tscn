@@ -14,3 +14,4 @@ current_tab = 0
 
 [node name="ZoneTypeTab" parent="ZoneTypesTabs" instance=ExtResource("2_nvvs5")]
 layout_mode = 2
+metadata/_tab_index = 0
