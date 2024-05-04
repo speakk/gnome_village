@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://cynniosvk7y2r"]
+[gd_scene load_steps=23 format=3 uid="uid://cynniosvk7y2r"]
 
 [ext_resource type="Script" path="res://src/gui/gui.gd" id="1_jqq6f"]
 [ext_resource type="FontFile" uid="uid://4nfdi1tps2fv" path="res://assets/fonts/ThaleahFat.ttf" id="2_egltv"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://c13wfhh44yr61" path="res://src/gui/entity_info/entity_selection_panel.tscn" id="6_uim4i"]
 [ext_resource type="AudioStream" uid="uid://g1f6rs6xy8io" path="res://assets/sounds/ui/click.ogg" id="7_alwiq"]
 [ext_resource type="PackedScene" uid="uid://cfbyhkvk72xh0" path="res://src/gui/debug_ui/debug_ui.tscn" id="7_wmamy"]
+[ext_resource type="PackedScene" uid="uid://dom0261fxnkev" path="res://src/gui/material_info/MaterialInfo.tscn" id="8_2jffg"]
 [ext_resource type="PackedScene" uid="uid://c1rv0ka83xrkm" path="res://src/gui/creating_world_screen.tscn" id="10_sn8iw"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oammu"]
@@ -199,6 +200,11 @@ theme_override_constants/margin_bottom = 120
 [node name="EntitySelectionPanel" parent="EntitySelectionPanel" instance=ExtResource("6_uim4i")]
 layout_mode = 2
 
+[node name="MaterialInfo" parent="." instance=ExtResource("8_2jffg")]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
 [node name="DebugUI" parent="." instance=ExtResource("7_wmamy")]
 layout_mode = 2
 
@@ -207,6 +213,7 @@ stream = ExtResource("7_alwiq")
 volume_db = -15.63
 
 [node name="CreatingWorldScreen" parent="." instance=ExtResource("10_sn8iw")]
+visible = false
 layout_mode = 2
 
 [connection signal="pressed" from="Buttons/MainButtons/BuildButton" to="." method="_on_build_button_pressed"]

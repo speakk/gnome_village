@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://dom0261fxnkev"]
+
+[ext_resource type="Script" path="res://src/gui/material_info/material_info.gd" id="1_e0sr7"]
+[ext_resource type="PackedScene" uid="uid://cxdi0brkd30b3" path="res://src/gui/material_info/single_category.tscn" id="2_acfxl"]
+
+[node name="MaterialInfo" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_e0sr7")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 20.0
+offset_bottom = 20.0
+
+[node name="CategoryList" type="HBoxContainer" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SingleCategory" parent="MarginContainer/CategoryList" instance=ExtResource("2_acfxl")]
+layout_mode = 2

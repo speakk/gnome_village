@@ -5,11 +5,15 @@ var plant := PlantEvents.new()
 var ui := UiEvents.new()
 var world_creation := WorldCreationEvents.new()
 var debug := DebugEvents.new()
+var entities := EntityEvents.new()
 
 class ComponentEvents:
 	signal added(container: ComponentContainer, component: Component)
 	signal removed(container: ComponentContainer, component: Component)
 	signal item_amount_changed(item_amount_component: ItemAmountComponent)
+
+class EntityEvents:
+	signal item_amounts_changed(entities: Array[Entity])
 
 class PlantEvents:
 	signal matured(plant: PlantComponent)

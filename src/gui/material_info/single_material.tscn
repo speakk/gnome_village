@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddw67b3qe8urv"]
+
+[ext_resource type="Script" path="res://src/gui/material_info/single_material.gd" id="1_ynrg4"]
+
+[node name="SingleMaterial" type="HBoxContainer"]
+script = ExtResource("1_ynrg4")
+
+[node name="Description" type="Label" parent="."]
+layout_mode = 2

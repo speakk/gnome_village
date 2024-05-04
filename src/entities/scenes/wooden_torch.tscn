@@ -23,12 +23,12 @@ size = Vector3(0.03, 0.03, 0.03)
 [node name="WoodenTorch" instance=ExtResource("1_xsuix")]
 script = ExtResource("2_leofc")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="." index="4"]
+[node name="OmniLight3D" type="OmniLight3D" parent="." index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.729958, 0)
 light_color = Color(0.949219, 0.678864, 0.458375, 1)
 omni_shadow_mode = 0
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="." index="5"]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.576111, 0)
 cast_shadow = 0
 amount_ratio = 0.6025
@@ -37,4 +37,4 @@ randomness = 0.78
 process_material = SubResource("ParticleProcessMaterial_lnc34")
 draw_pass_1 = SubResource("BoxMesh_ucm4t")
 
-[node name="wooden_torch" parent="." index="6" instance=ExtResource("1_ocj6c")]
+[node name="wooden_torch" parent="." index="5" instance=ExtResource("1_ocj6c")]

@@ -1,15 +1,22 @@
-[gd_resource type="Resource" script_class="EntityDefinition" load_steps=5 format=3 uid="uid://dw0g46snnxs3q"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=9 format=3 uid="uid://dw0g46snnxs3q"]
 
 [ext_resource type="PackedScene" uid="uid://ngsny480s37v" path="res://assets/blender_models/copper_ore.blend" id="1_1by11"]
+[ext_resource type="Script" path="res://src/components/Component.gd" id="1_7a826"]
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="1_s3q0m"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_7ytp6"]
+[ext_resource type="Script" path="res://src/components/StringSubscription.gd" id="2_p1nvs"]
+[ext_resource type="Script" path="res://src/components/data/Tag.gd" id="5_83h65"]
 
 [sub_resource type="Resource" id="Resource_c4wp5"]
 script = ExtResource("2_7ytp6")
 scene = ExtResource("1_1by11")
-custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+custom_subscriptions = Array[ExtResource("2_p1nvs")]([])
+
+[sub_resource type="Resource" id="Resource_s4bsq"]
+script = ExtResource("5_83h65")
+tags = Array[int]([4])
 
 [resource]
 script = ExtResource("1_s3q0m")
 display_name = "Copper Ore"
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_c4wp5")])
+components = Array[ExtResource("1_7a826")]([SubResource("Resource_c4wp5"), SubResource("Resource_s4bsq")])

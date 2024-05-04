@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="EntityDefinition" load_steps=12 format=3 uid="uid://qp3qm2tlm81y"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=14 format=3 uid="uid://qp3qm2tlm81y"]
 
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="1_4j5er"]
+[ext_resource type="Script" path="res://src/components/Component.gd" id="1_8qcdu"]
 [ext_resource type="Script" path="res://src/components/data/Scene.gd" id="2_k7huv"]
+[ext_resource type="Script" path="res://src/components/StringSubscription.gd" id="2_miw22"]
 [ext_resource type="PackedScene" uid="uid://kyo8fxwvjl2q" path="res://src/entities/scenes/wooden_torch.tscn" id="2_ueooe"]
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="3_dya6g"]
 [ext_resource type="Resource" uid="uid://dfjlxethwajaw" path="res://src/entities/definitions/wood.tres" id="3_s1i11"]
@@ -11,7 +13,7 @@
 [sub_resource type="Resource" id="Resource_k8glm"]
 script = ExtResource("2_k7huv")
 scene = ExtResource("2_ueooe")
-custom_subscriptions = Array[Resource("res://src/components/StringSubscription.gd")]([])
+custom_subscriptions = Array[ExtResource("2_miw22")]([])
 
 [sub_resource type="Resource" id="Resource_ui2c1"]
 script = ExtResource("4_jfr8t")
@@ -31,4 +33,4 @@ script = ExtResource("4_s32c3")
 [resource]
 script = ExtResource("1_4j5er")
 display_name = "Wooden Torch"
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_k8glm"), SubResource("Resource_c6xkv"), SubResource("Resource_te1k0")])
+components = Array[ExtResource("1_8qcdu")]([SubResource("Resource_k8glm"), SubResource("Resource_c6xkv"), SubResource("Resource_te1k0")])
