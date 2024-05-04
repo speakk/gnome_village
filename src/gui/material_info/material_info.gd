@@ -38,12 +38,14 @@ func _process(delta: float) -> void:
 		_update_buffer_timer = 0
 
 func _queue_update(all_materials: Array[Entity]) -> void:
-	_latest_items = all_materials
+	_latest_items = all_materials.duplicate()
 	_update_buffer_timer = 0
 
 func _update_materials(all_materials: Array[Entity]) -> void:
 	var by_category := {}
 	for material: Entity in all_materials:
+		if not material.component_container:
+			continue
 		var tag_comp: TagComponent = material.component_container.get_by_id(Components.Id.Tag)
 		if tag_comp:
 			var fitting_categories: Array[CategoryId]

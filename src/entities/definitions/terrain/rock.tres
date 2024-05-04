@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="EntityDefinition" load_steps=20 format=3 uid="uid://5gwtkxhvwcge"]
+[gd_resource type="Resource" script_class="EntityDefinition" load_steps=22 format=3 uid="uid://5gwtkxhvwcge"]
 
 [ext_resource type="Script" path="res://src/components/data/Constructable.gd" id="1_2mt2u"]
+[ext_resource type="Script" path="res://src/components/Component.gd" id="1_a8gg4"]
 [ext_resource type="Script" path="res://src/entities/EntityDefinition.gd" id="1_i6iu2"]
+[ext_resource type="Script" path="res://src/entities/ItemRequirement.gd" id="2_juimi"]
 [ext_resource type="PackedScene" uid="uid://cjk2jx416hwmg" path="res://src/fx/rock_dismantle.tscn" id="2_ld2i6"]
 [ext_resource type="Script" path="res://src/components/helper_models/Effect.gd" id="3_3ddme"]
 [ext_resource type="Script" path="res://src/components/data/DropFx.gd" id="4_bv18v"]
@@ -14,7 +16,7 @@
 
 [sub_resource type="Resource" id="Resource_ld58y"]
 script = ExtResource("1_2mt2u")
-requirements = Array[Resource("res://src/entities/ItemRequirement.gd")]([])
+requirements = Array[ExtResource("2_juimi")]([])
 solid_when_started = false
 can_be_dismantled = true
 max_durability = 10.0
@@ -53,4 +55,4 @@ drops = Array[ExtResource("9_cpfw2")]([SubResource("Resource_i6s20")])
 [resource]
 script = ExtResource("1_i6iu2")
 display_name = "Rock"
-components = Array[Resource("res://src/components/Component.gd")]([SubResource("Resource_ld58y"), SubResource("Resource_ke7xj"), SubResource("Resource_0olcy"), SubResource("Resource_vqfo3"), SubResource("Resource_5fwuj"), SubResource("Resource_u60ci")])
+components = Array[ExtResource("1_a8gg4")]([SubResource("Resource_ld58y"), SubResource("Resource_ke7xj"), SubResource("Resource_0olcy"), SubResource("Resource_vqfo3"), SubResource("Resource_5fwuj"), SubResource("Resource_u60ci")])

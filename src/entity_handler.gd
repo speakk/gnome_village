@@ -36,8 +36,12 @@ func _ready() -> void:
 func _item_amount_changed(item_amount: ItemAmountComponent) -> void:
 	var entity_definition := item_amount.item
 	var item_owner := item_amount.get_owner()
+	if not item_owner:
+		return
+		
 	if item_amount.amount == 0:
-		all_items_with_amounts.erase(item_owner)
+		if all_items_with_amounts.has(item_owner):
+			all_items_with_amounts.erase(item_owner)
 	else:
 		if not all_items_with_amounts.has(item_owner):
 			all_items_with_amounts.append(item_owner)
