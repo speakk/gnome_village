@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://cbvkk7edsnobq"]
+
+[ext_resource type="StyleBox" uid="uid://c6187r4a0453r" path="res://src/gui/entity_info/component_display/smelter/existing_job_label_style.tres" id="1_3xu5t"]
+[ext_resource type="Script" path="res://src/gui/entity_info/component_display/smelter/job_info_container.gd" id="1_rdhrp"]
+
+[node name="JobInfoContainer" type="HBoxContainer"]
+auto_translate_mode = 1
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+script = ExtResource("1_rdhrp")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+auto_translate_mode = 1
+layout_mode = 2
+
+[node name="RecipeLabel" type="Label" parent="HBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("1_3xu5t")
+text = "Copper Ingot"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+auto_translate_mode = 1
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer2"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Amount:"
+
+[node name="AmountSelector" type="HBoxContainer" parent="HBoxContainer2"]
+auto_translate_mode = 1
+layout_mode = 2
+
+[node name="AmountLabel" type="Label" parent="HBoxContainer2/AmountSelector"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+theme_override_styles/normal = ExtResource("1_3xu5t")
+text = "10"
+
+[node name="AmountTypeLabel" type="Label" parent="HBoxContainer2/AmountSelector"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+theme_override_styles/normal = ExtResource("1_3xu5t")
+text = "Ensure stocks have X"

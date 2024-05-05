@@ -9,6 +9,8 @@ var jobs: Array[SmeltingJob]
 var _smelting_progress: float = 0
 signal smelting_finished
 
+signal job_added(job: SmeltingJob)
+
 func _init() -> void:
 	id = Components.Id.Smelter
 
@@ -21,6 +23,7 @@ func get_inventory() -> InventoryComponent:
 func add_job(smelting_job: SmeltingJob) -> void:
 	jobs.append(smelting_job)
 	smelting_job.start(self)
+	job_added.emit(smelting_job)
 
 func generate_recipe_drop(recipe: Recipe) -> void:
 	for item in recipe.produces:

@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://d2yo3ho445sts"]
+[gd_scene load_steps=7 format=3 uid="uid://d2yo3ho445sts"]
 
 [ext_resource type="FontFile" uid="uid://4nfdi1tps2fv" path="res://assets/fonts/ThaleahFat.ttf" id="1_lnclx"]
 [ext_resource type="Script" path="res://src/gui/entity_info/component_display/smelter_display.gd" id="1_pd02s"]
 [ext_resource type="PackedScene" uid="uid://dl4k503lxr04g" path="res://src/gui/entity_info/component_display/smelter/add_job_section.tscn" id="3_3drxg"]
+[ext_resource type="PackedScene" uid="uid://mgjy6u4gpcji" path="res://src/gui/entity_info/component_display/smelter/existing_jobs_section.tscn" id="4_hsckt"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_1f3gi"]
 font = ExtResource("1_lnclx")
@@ -45,81 +46,6 @@ theme_override_constants/margin_bottom = 15
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ExistingJobsSection" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ExistingJobsSection" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_hsckt")]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/margin_top = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-text = "Existing jobs:"
-
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jbknd")
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer"]
-layout_mode = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer/MarginContainer"]
-custom_minimum_size = Vector2(250, 200)
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer"]
-layout_mode = 2
-
-[node name="AddJobContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/AddJobContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-
-[node name="OptionButton" type="OptionButton" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/AddJobContainer/HBoxContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-disabled = true
-selected = 0
-allow_reselect = true
-item_count = 2
-popup/item_0/text = "Copper Ingot"
-popup/item_1/text = "Iron Ingot"
-popup/item_1/id = 1
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/AddJobContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/AddJobContainer/HBoxContainer2"]
-auto_translate_mode = 1
-layout_mode = 2
-text = "Amount:"
-
-[node name="AmountSelector" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/AddJobContainer/HBoxContainer2"]
-auto_translate_mode = 1
-layout_mode = 2
-
-[node name="SpinBox" type="SpinBox" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/AddJobContainer/HBoxContainer2/AmountSelector"]
-auto_translate_mode = 1
-layout_mode = 2
-max_value = 99.0
-value = 10.0
-alignment = 1
-editable = false
-update_on_text_changed = true
-
-[node name="OptionButton" type="OptionButton" parent="PanelContainer/MarginContainer/VBoxContainer/ExistingJobsSection/VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/AddJobContainer/HBoxContainer2/AmountSelector"]
-auto_translate_mode = 1
-layout_mode = 2
-disabled = true
-selected = 1
-allow_reselect = true
-item_count = 2
-popup/item_0/text = "One off"
-popup/item_1/text = "Ensure stocks have X"
-popup/item_1/id = 1

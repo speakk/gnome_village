@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://mgjy6u4gpcji"]
+
+[ext_resource type="Script" path="res://src/gui/entity_info/component_display/smelter/existing_jobs_section.gd" id="1_wpy15"]
+[ext_resource type="PackedScene" uid="uid://cbvkk7edsnobq" path="res://src/gui/entity_info/component_display/smelter/job_info_container.tscn" id="2_tvy2i"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jbknd"]
+bg_color = Color(0.47, 0.2867, 0.43945, 0.501961)
+shadow_size = 4
+shadow_offset = Vector2(3, 3)
+
+[node name="ExistingJobsSection" type="MarginContainer"]
+theme_override_constants/margin_top = 20
+script = ExtResource("1_wpy15")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Existing jobs:"
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jbknd")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(600, 200)
+layout_mode = 2
+
+[node name="JobList" type="VBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="JobInfoContainer" parent="VBoxContainer/PanelContainer/MarginContainer/ScrollContainer/JobList" instance=ExtResource("2_tvy2i")]
+layout_mode = 2
