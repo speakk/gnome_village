@@ -1,25 +1,45 @@
-[gd_scene load_steps=3 format=3 uid="uid://cxdi0brkd30b3"]
+[gd_scene load_steps=6 format=3 uid="uid://cxdi0brkd30b3"]
 
 [ext_resource type="Script" path="res://src/gui/material_info/single_category.gd" id="1_y4act"]
+[ext_resource type="FontFile" uid="uid://dtfb4n2n8qq7m" path="res://assets/fonts/m5x7.ttf" id="2_drvkk"]
 [ext_resource type="PackedScene" uid="uid://ddw67b3qe8urv" path="res://src/gui/material_info/single_material.tscn" id="2_yxp4w"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_ypghk"]
+font = ExtResource("2_drvkk")
+font_size = 24
+shadow_color = Color(0, 0, 0, 0.823529)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_svplo"]
+color = Color(0.941406, 0.941406, 0.941406, 1)
+thickness = 2
+
 [node name="SingleCategory" type="Control"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_y4act")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 20.0
+offset_bottom = 20.0
 
-[node name="CategoryName" type="Label" parent="VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="CategoryName" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Unrefined"
+label_settings = SubResource("LabelSettings_ypghk")
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_svplo")
+
+[node name="MaterialList" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="MaterialList" type="VBoxContainer" parent="VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="SingleMaterial" parent="VBoxContainer/MaterialList" instance=ExtResource("2_yxp4w")]
+[node name="SingleMaterial" parent="MarginContainer/VBoxContainer/MaterialList" instance=ExtResource("2_yxp4w")]
 layout_mode = 2

@@ -15,6 +15,10 @@ var _reservations: Array[ItemAmountReservation]
 		amount_changed.emit(new_amount)
 		if Events:
 			Events.component.item_amount_changed.emit(self)
+		
+		if amount <= 0:
+			if component_owner:
+				component_owner.delete()
 
 func add_reservation(item_amount_reservation: ItemAmountReservation) -> void:
 	_reservations.append(item_amount_reservation)

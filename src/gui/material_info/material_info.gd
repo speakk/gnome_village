@@ -8,7 +8,7 @@ var _update_buffer_timer: float = _update_buffer_time
 var _latest_items: Array[Entity]
 
 enum CategoryId {
-	Unrefined
+	Unrefined, Refined
 }
 
 class Category:
@@ -22,8 +22,13 @@ class Category:
 		tags = _tags
 
 var categories := {
-	CategoryId.Unrefined: Category.new(CategoryId.Unrefined, "Unrefined resources",
-	[TagComponent.Tag.Wood, TagComponent.Tag.CopperOre]
+	CategoryId.Unrefined: Category.new(
+		CategoryId.Unrefined, "Unrefined",
+	[TagComponent.Tag.Wood, TagComponent.Tag.Ore]
+	),
+	CategoryId.Refined: Category.new(
+		CategoryId.Refined, "Processed",
+	[TagComponent.Tag.Ingot]
 	)
 }
 
@@ -42,6 +47,7 @@ func _queue_update(all_materials: Array[Entity]) -> void:
 	_update_buffer_timer = 0
 
 func _update_materials(all_materials: Array[Entity]) -> void:
+	
 	var by_category := {}
 	for material: Entity in all_materials:
 		if not material.component_container:

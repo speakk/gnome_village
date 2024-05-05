@@ -3,7 +3,7 @@ class_name TagComponent extends Component
 @export var tags: Array[Tag]
 
 enum Tag {
-	Tree, PlayerMade, Rock, Wood, CopperOre
+	Tree, PlayerMade, Rock, Wood, Ore, Ingot
 }
 
 func _init() -> void:

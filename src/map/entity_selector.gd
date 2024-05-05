@@ -9,7 +9,7 @@ func reset() -> void:
 
 func clear_selections() -> void:
 	for entity in _selected_entites:
-		if entity.component_container.has_component(Components.Id.Selectable):
+		if entity.component_container and entity.component_container.has_component(Components.Id.Selectable):
 			entity.component_container.get_by_id(Components.Id.Selectable).selected = false
 	
 	_selected_entites.clear()
