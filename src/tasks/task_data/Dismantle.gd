@@ -21,22 +21,6 @@ func _ready() -> void:
 			is_cancelled = true
 	)
 
-
-# TODO: Think about how to do this:
-# When we save and dismantle has destroyed something
-# How do we cancel those tasks?
-
-# Current thought: The tasks themselves maybe connect
-# to signals of their targets to check if on_exit has been
-# called to the targets, the tasks either fail or get
-# automatically cancelled
-
-#func cancels_tasks(tasks: Array[Task]) -> Array[Task]:
-	#var cancelled = tasks.filter(func(task: Task) -> bool:
-		##if task.task_id == Tasks.TaskId.BringResource
-		#if task.has()
-		#)
-
 func create_action(actor: Settler) -> ActorAction:
 	var action: DismantleActorAction = DismantleActorAction.new(actor, self)
 	action.finished.connect(func() -> void:

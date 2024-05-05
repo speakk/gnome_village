@@ -15,6 +15,7 @@ func on_exit() -> void:
 			(func() -> void:
 				Events.request_entity_add.emit(new_entity)
 				WorldPositionComponent.set_world_position.call_deferred(new_entity, global_pos)
+				new_entity.component_container.get_by_id(Components.Id.ItemAmount).amount = amount
 				).call_deferred()
 
 #region Serialization

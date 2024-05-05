@@ -86,8 +86,6 @@ class NodeResult:
 
 # Returns Vector3 or null
 func get_approximate_task_location(task: Task) -> Variant:
-	var target: Vector3
-	
 	if "target_tile" in task:
 		var target_tile := task.target_tile as Vector2i
 		return Globals.map.coordinate_to_global_position(target_tile)

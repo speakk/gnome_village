@@ -17,7 +17,7 @@ func _init(plant: PlantComponent = null) -> void:
 	
 	register_subtask(task)
 
-func _handle_task_failure(task: Task) -> void:
+func _handle_task_failure(_task: Task) -> void:
 	print("Harvest failed")
 
 #region Serialization
