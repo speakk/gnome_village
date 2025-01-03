@@ -1,14 +1,18 @@
 mod features;
 
+use crate::features::camera::CameraPlugin;
+use crate::features::movement::MovementPlugin;
 use bevy::prelude::*;
 use rand::prelude::*;
-use crate::features::camera::CameraPlugin;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(MapPlugin)
+        .add_plugins(features::input::InputPlugin)
         .add_plugins(CameraPlugin)
+        .add_plugins(MovementPlugin)
+        .insert_resource(Time::<Fixed>::from_hz(60.0))
         .run();
 }
 
@@ -19,17 +23,17 @@ pub struct MapPlugin;
 
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(MapSize(IVec2::new(300, 300)))
+        app.insert_resource(MapSize(IVec2::new(150, 150)))
             .add_systems(Startup, generate_map);
     }
 }
 
-fn generate_map(map_size: Res<MapSize>,
-                mut commands: Commands,
-                mut meshes: ResMut<Assets<Mesh>>,
-                mut materials: ResMut<Assets<StandardMaterial>>,
+fn generate_map(
+    map_size: Res<MapSize>,
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-
     // plane
     commands.spawn((
         Mesh3d(meshes.add(Plane3d::default().mesh().size(5.0, 5.0))),
