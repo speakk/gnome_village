@@ -12,3 +12,6 @@ moonshine-object = "0.2.1"
 moonshine-view = "0.1.6"
 noisy_bevy = "0.8.0"
 rand = "0.8.5"
+
+[profile.dev.package."*"]
+opt-level = 3
