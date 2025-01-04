@@ -1,6 +1,6 @@
 use crate::features::input::CameraPanAction;
 use crate::features::movement::{
-    Acceleration, Friction, PhysicalTranslation, PreviousPhysicalTranslation, Velocity,
+    Acceleration, Friction, PreviousWorldPosition, Velocity, WorldPosition,
 };
 use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
 use bevy::app::{App, Plugin, RunFixedMainLoop, Startup};
@@ -49,8 +49,8 @@ fn setup(mut commands: Commands) {
         InputManagerBundle::with_map(input_map),
         Velocity::default(),
         Acceleration::default(),
-        PhysicalTranslation::default(),
-        PreviousPhysicalTranslation::default(),
+        WorldPosition::default(),
+        PreviousWorldPosition::default(),
         AccumulatedInput::default(),
         Friction(0.5),
     ));
