@@ -1,5 +1,7 @@
+mod bundles;
 mod features;
 
+use crate::bundles::BundlePlugin;
 use crate::features::camera::CameraPlugin;
 use crate::features::map::MapPlugin;
 use crate::features::movement::MovementPlugin;
@@ -11,6 +13,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugins(MapPlugin)
         .add_plugins(SunLightPlugin)
+        .add_plugins(BundlePlugin)
         .add_plugins(features::input::InputPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(MovementPlugin)

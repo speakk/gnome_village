@@ -1,3 +1,4 @@
+mod assets;
 pub mod camera;
 pub mod input;
 pub mod map;
