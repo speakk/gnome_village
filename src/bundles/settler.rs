@@ -1,4 +1,4 @@
-use crate::features::movement::{PreviousWorldPosition, WorldPosition};
+use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use bevy::prelude::*;
 use moonshine_core::prelude::*;
 use moonshine_view::prelude::*;

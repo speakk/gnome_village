@@ -6,6 +6,9 @@ edition = "2021"
 [dependencies]
 #bevy = { version = "0.15.0", features = ["dynamic_linking"] }
 bevy = { version = "0.15.0" }
+bevy_atmosphere = "0.12.2"
+grid_pathfinding = "0.2.1"
+grid_util = "0.1.1"
 leafwing-input-manager = "0.16.0"
 moonshine-core = "0.2.1"
 moonshine-object = "0.2.1"

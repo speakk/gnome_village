@@ -1,5 +1,6 @@
+use crate::bundles::rock::RockBundle;
 use crate::bundles::settler::SettlerBundle;
-use crate::features::movement::PhysicalTranslation;
+use crate::features::position::WorldPosition;
 use bevy::math::{IVec2, UVec2, Vec2};
 use bevy::prelude::*;
 use noisy_bevy::simplex_noise_2d_seeded;
@@ -14,6 +15,9 @@ pub enum TileType {
     Dirt,
     Water,
 }
+
+#[derive(Event)]
+pub struct MapInitialized(pub UVec2);
 
 #[derive(Component, Default)]
 pub struct MapData {
@@ -35,6 +39,12 @@ impl MapData {
         let x = ((coordinate.x as i32) - (self.size.x as i32) / 2);
         let y = ((coordinate.y as i32) - (self.size.y as i32) / 2);
         IVec2::new(x, y)
+    }
+
+    pub fn world_position_to_top_left_coordinate(&self, coordinate: Vec2) -> UVec2 {
+        let x = coordinate.x + (self.size.x as f32) / 2.0;
+        let y = coordinate.y + (self.size.y as f32) / 2.0;
+        UVec2::new(x as u32, y as u32)
     }
 
     pub fn get_tile_type_non_centered(&self, coordinate: UVec2) -> Option<TileType> {
@@ -88,13 +98,31 @@ pub fn generate_map_entity(mut commands: Commands) {
 pub fn generate_test_entities(mut commands: Commands, map_query: Query<&MapData>) {
     let map_data = map_query.single();
     let mut rng = rand::thread_rng();
+
+    for x in 0..map_data.size.x {
+        for y in 0..map_data.size.y {
+            let noise_value =
+                simplex_noise_2d_seeded(Vec2::new(x as f32, y as f32) * 0.1, 555.0f32);
+            if noise_value > 0.5 {
+                commands.spawn(RockBundle {
+                    world_position: WorldPosition(
+                        map_data
+                            .convert_to_centered_coordinate(UVec2::new(x, y))
+                            .as_vec2(),
+                    ),
+                    ..default()
+                });
+            }
+        }
+    }
+
     for i in 0..4 {
         let x = rng.gen_range(0..map_data.size.x);
         let y = rng.gen_range(0..map_data.size.y);
         let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
         commands.spawn(SettlerBundle {
-            physical_translation: PhysicalTranslation(centered_coordinate.as_vec2()),
+            world_position: WorldPosition(centered_coordinate.as_vec2()),
             ..default()
         });
     }

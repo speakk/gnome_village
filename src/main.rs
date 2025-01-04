@@ -1,10 +1,12 @@
 mod bundles;
 mod features;
 
+use crate::bundles::rock::RockPlugin;
 use crate::bundles::BundlePlugin;
 use crate::features::camera::CameraPlugin;
 use crate::features::map::MapPlugin;
 use crate::features::movement::MovementPlugin;
+use crate::features::path_finding::PathFindingPlugin;
 use crate::features::sun_light::SunLightPlugin;
 use bevy::prelude::*;
 
@@ -14,6 +16,8 @@ fn main() {
         .add_plugins(MapPlugin)
         .add_plugins(SunLightPlugin)
         .add_plugins(BundlePlugin)
+        .add_plugins(PathFindingPlugin)
+        .add_plugins(RockPlugin)
         .add_plugins(features::input::InputPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(MovementPlugin)
