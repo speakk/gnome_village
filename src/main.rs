@@ -21,6 +21,7 @@ fn main() {
         .add_plugins(PathFindingPlugin)
         .add_plugins(RockPlugin)
         .add_plugins(features::input::InputPlugin)
+        .add_plugins(features::world_interaction::WorldInteractionPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(MovementPlugin)
         .insert_resource(Time::<Fixed>::from_hz(60.0))
