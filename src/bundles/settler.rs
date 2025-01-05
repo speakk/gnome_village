@@ -23,7 +23,7 @@ impl BuildView for Settler {
                 asset_server
                     .load(GltfAssetLabel::Scene(0).from_asset("blender_models/settler.glb")),
             ),
-            Transform::from_xyz(transform.x, 1.0, transform.y),
+            Transform::from_xyz(transform.x, 0.0, transform.y),
         ));
     }
 }

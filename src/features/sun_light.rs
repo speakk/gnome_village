@@ -84,7 +84,8 @@ pub fn setup_lights(mut commands: Commands) {
         // bounds for better visual quality.
         CascadeShadowConfigBuilder {
             first_cascade_far_bound: 4.0,
-            maximum_distance: 100.0,
+            minimum_distance: 0.0,
+            maximum_distance: 1500.0,
             ..default()
         }
         .build(),
