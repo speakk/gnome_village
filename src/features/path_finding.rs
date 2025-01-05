@@ -8,7 +8,8 @@ use grid_util::Point;
 
 pub struct PathFindingPlugin;
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Reflect)]
+#[reflect(Component)]
 pub struct Solid;
 
 #[derive(Resource, Deref, DerefMut)]

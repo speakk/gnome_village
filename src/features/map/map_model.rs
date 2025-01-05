@@ -3,13 +3,14 @@ use crate::bundles::settler::SettlerBundle;
 use crate::features::position::WorldPosition;
 use bevy::math::{IVec2, UVec2, Vec2};
 use bevy::prelude::*;
+use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Reflect)]
 pub enum TileType {
     Empty,
     Dirt,
@@ -19,9 +20,10 @@ pub enum TileType {
 #[derive(Event)]
 pub struct MapInitialized(pub UVec2);
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Reflect)]
+#[reflect(Component)]
 pub struct MapData {
-    pub data: Box<[TileType]>,
+    pub data: Vec<TileType>,
     pub size: UVec2,
 }
 
@@ -73,7 +75,7 @@ impl MapData {
 pub fn generate_map_entity(mut commands: Commands) {
     let map_size = UVec2::new(80, 80);
     let mut map_data = MapData {
-        data: vec![TileType::Empty; (map_size.x * map_size.y) as usize].into_boxed_slice(),
+        data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
         size: map_size,
     };
 
@@ -92,7 +94,7 @@ pub fn generate_map_entity(mut commands: Commands) {
         }
     }
 
-    commands.spawn((map_data,));
+    commands.spawn((map_data, Save));
 }
 
 pub fn generate_test_entities(mut commands: Commands, map_query: Query<&MapData>) {

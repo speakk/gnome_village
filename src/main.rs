@@ -7,6 +7,7 @@ use crate::features::camera::CameraPlugin;
 use crate::features::map::MapPlugin;
 use crate::features::movement::MovementPlugin;
 use crate::features::path_finding::PathFindingPlugin;
+use crate::features::save::SavePlugin;
 use crate::features::sun_light::SunLightPlugin;
 use bevy::prelude::*;
 
@@ -14,6 +15,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(MapPlugin)
+        .add_plugins(SavePlugin)
         .add_plugins(SunLightPlugin)
         .add_plugins(BundlePlugin)
         .add_plugins(PathFindingPlugin)

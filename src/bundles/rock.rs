@@ -28,7 +28,8 @@ pub fn setup_rock_materials(
     rock_material_handles.0 = vec![material_handle1, material_handle2];
 }
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Reflect)]
+#[reflect(Component)]
 pub struct Rock;
 
 #[derive(Bundle, Default)]
@@ -36,6 +37,7 @@ pub struct RockBundle {
     pub(crate) world_position: WorldPosition,
     pub solid: Solid,
     pub rock: Rock,
+    pub save: Save,
 }
 
 impl BuildView for Rock {
