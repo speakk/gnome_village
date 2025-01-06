@@ -68,9 +68,6 @@ pub fn setup_lights(mut commands: Commands) {
             ..default()
         },
         Transform::from_xyz(-15.0, 10.0, 4.0).looking_at(Vec3::ZERO, Vec3::Y),
-        // The default cascade config is designed to handle large scenes.
-        // As this example has a much smaller world, we can tighten the shadow
-        // bounds for better visual quality.
         CascadeShadowConfigBuilder {
             num_cascades: cascade_count,
             first_cascade_far_bound: 4.0,

@@ -64,6 +64,7 @@ fn scale_ground_mesh_based_on_map(
 fn handle_ground_plane_interaction(click: Trigger<Pointer<Click>>, mut map_clicked_event_writer: EventWriter<MapClickedEvent>) {
     let location = click.hit.position;
     if let Some(location) = location {
+        println!("Clicked on location: {:?}", location);
         map_clicked_event_writer.send(MapClickedEvent(IVec2::new(location.x as i32, location.z as i32)));        
     }
 }

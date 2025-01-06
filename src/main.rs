@@ -1,5 +1,6 @@
 mod bundles;
 mod features;
+mod ui;
 
 use crate::bundles::rock::RockPlugin;
 use crate::bundles::BundlePlugin;
@@ -24,6 +25,7 @@ fn main() {
         .add_plugins(features::world_interaction::WorldInteractionPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(MovementPlugin)
+        .add_plugins(ui::UiPlugin)
         .insert_resource(Time::<Fixed>::from_hz(60.0))
         .run();
 }
