@@ -56,6 +56,9 @@ pub fn setup_lights(mut commands: Commands) {
         Transform::from_xyz(0.0, 10.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
     ));
 
+    let maximum_shadow_distance = 100.0;
+    let cascade_count = 1;
+    
     commands.spawn((
         Sun,
         DirectionalLight {
@@ -69,8 +72,9 @@ pub fn setup_lights(mut commands: Commands) {
         // As this example has a much smaller world, we can tighten the shadow
         // bounds for better visual quality.
         CascadeShadowConfigBuilder {
+            num_cascades: cascade_count,
             first_cascade_far_bound: 4.0,
-            maximum_distance: 100.0,
+            maximum_distance: maximum_shadow_distance,
             ..default()
         }
         .build(),
@@ -90,9 +94,10 @@ pub fn setup_lights(mut commands: Commands) {
         // As this example has a much smaller world, we can tighten the shadow
         // bounds for better visual quality.
         CascadeShadowConfigBuilder {
+            num_cascades: cascade_count,
             first_cascade_far_bound: 4.0,
             minimum_distance: 0.0,
-            maximum_distance: 1500.0,
+            maximum_distance: maximum_shadow_distance,
             ..default()
         }
         .build(),
