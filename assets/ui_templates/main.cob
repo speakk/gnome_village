@@ -7,6 +7,6 @@
 
     "buttons_container"
         FlexNode{ width:100vw height:Auto justify_main:FlexStart justify_cross:FlexEnd  }
-        Splat<Margin>(5px)
+        Margin{ left: 35px }
         FocusPolicy::Pass
         Picking::Ignore
