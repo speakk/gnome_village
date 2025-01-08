@@ -1,7 +1,5 @@
-use bevy::color::palettes::basic::RED;
 use bevy::prelude::*;
 use bevy_cobweb_ui::prelude::*;
-use crate::ui::main_action_buttons::spawn_main_action_buttons;
 
 pub mod main_action_buttons;
 
