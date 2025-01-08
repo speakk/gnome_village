@@ -68,6 +68,7 @@ pub fn setup_lights(mut commands: Commands) {
             shadows_enabled: true,
             ..default()
         },
+        Visibility::Hidden,
         Transform::from_xyz(-15.0, 10.0, 4.0).looking_at(Vec3::ZERO, Vec3::Y),
         CascadeShadowConfigBuilder {
             num_cascades: cascade_count,
@@ -86,7 +87,7 @@ pub fn setup_lights(mut commands: Commands) {
             shadows_enabled: true,
             ..default()
         },
-        //Visibility::Hidden,
+        Visibility::Hidden,
         Transform::from_xyz(15.0, -10.0, 4.0).looking_at(Vec3::ZERO, Vec3::Y),
         // The default cascade config is designed to handle large scenes.
         // As this example has a much smaller world, we can tighten the shadow
@@ -142,7 +143,7 @@ fn daylight_cycle(
                 if let Ok(visibility) = visibility_query.get_mut(entity) {
                     commands.entity(entity).remove::<Visibility>();
                 }
-            } else {
+            } else if let Err(_visibility) = visibility_query.get_mut(entity) {
                 commands.entity(entity).insert(Visibility::Visible);
             }
             directional.illuminance = illuminance;
@@ -158,7 +159,7 @@ fn daylight_cycle(
                 if let Ok(visibility) = visibility_query.get_mut(entity) {
                     commands.entity(entity).remove::<Visibility>();
                 }
-            } else {
+            } else if let Err(_visibility) = visibility_query.get_mut(entity) {
                 commands.entity(entity).insert(Visibility::Visible);
             }
 
