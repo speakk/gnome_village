@@ -7,6 +7,7 @@ use bevy::prelude::*;
 use bevy_atmosphere::model::AtmosphereModel;
 use bevy_atmosphere::prelude::{AtmosphereMut, Nishita};
 use std::f32::consts::PI;
+use crate::features::states::AppState;
 
 pub struct SunLightPlugin;
 
@@ -26,7 +27,7 @@ struct AtmosphereTimer(Timer);
 
 impl Plugin for SunLightPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_lights)
+        app.add_systems(OnEnter(AppState::InGame), setup_lights)
             .insert_resource(CycleTimer(Timer::new(
                 bevy::utils::Duration::from_millis(50),
                 TimerMode::Repeating,
@@ -36,7 +37,7 @@ impl Plugin for SunLightPlugin {
                 TimerMode::Repeating,
             )))
             .insert_resource(AtmosphereModel::default())
-            .add_systems(Update, daylight_cycle);
+            .add_systems(Update, daylight_cycle.run_if(in_state(AppState::InGame)));
     }
 }
 

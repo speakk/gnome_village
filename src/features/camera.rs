@@ -11,6 +11,7 @@ use bevy::render::camera::ScalingMode;
 use bevy_atmosphere::plugin::{AtmosphereCamera, AtmospherePlugin};
 use leafwing_input_manager::prelude::*;
 use std::ops::{Add, Sub};
+use crate::features::states::AppState;
 
 pub struct CameraPlugin;
 
@@ -22,12 +23,12 @@ pub struct AccumulatedInput(pub Vec2);
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(AtmospherePlugin)
-            .add_systems(Startup, setup)
+            .add_systems(OnEnter(AppState::InGame), setup)
             .add_systems(
                 RunFixedMainLoop,
-                handle_pan_input.in_set(BeforeFixedMainLoop),
+                handle_pan_input.in_set(BeforeFixedMainLoop).run_if(in_state(AppState::InGame)),
             )
-            .add_systems(Update, handle_zoom_input);
+            .add_systems(Update, handle_zoom_input.run_if(in_state(AppState::InGame)));
     }
 }
 

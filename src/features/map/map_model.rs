@@ -73,7 +73,7 @@ impl MapData {
 }
 
 pub fn generate_map_entity(mut commands: Commands) {
-    let map_size = UVec2::new(80, 80);
+    let map_size = UVec2::new(160, 160);
     let mut map_data = MapData {
         data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
         size: map_size,
