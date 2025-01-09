@@ -12,6 +12,9 @@ LoadImages[ "ui_templates/pngs/button.png" ]
     "image"
         GridNode{ width: 100px grid_row:{ start: 1 } grid_column:{ start: 1}}
         LoadedImageNode{image:"ui_templates/pngs/button.png" }
+        FocusPolicy::Pass
+        Picking::Ignore
+
         Animated<ImageNodeColor>{
             idle:Hsla{hue:45 saturation:0.0 lightness:0.8 alpha:1.0}
             hover:Hsla{hue:45 saturation:0.0 lightness:1.0 alpha:1.0}
@@ -23,6 +26,8 @@ LoadImages[ "ui_templates/pngs/button.png" ]
     "text"
         GridNode{ justify_self_cross: Center grid_row:{ start: 1 } grid_column:{ start: 1} margin: { left: Auto right: Auto}}
         TextLine{ text:"" size:24 font:{family: "ThaleahFat" } justify: Center}
+        FocusPolicy::Pass
+        Picking::Ignore
         Animated<TextLineColor>{
             idle:Hsla{hue:45 saturation:1.0 lightness:1.0 alpha:1.0}
             hover:Hsla{hue:45 saturation:1.0 lightness:0.8 alpha:1.0}
@@ -35,3 +40,4 @@ LoadImages[ "ui_templates/pngs/button.png" ]
 #scenes
 "button"
     +main_bottom_button{}
+    Interactive{}
