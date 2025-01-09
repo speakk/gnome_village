@@ -1,0 +1,31 @@
+use bevy::app::{App, Plugin};
+use bevy::prelude::{Entity, Event};
+use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;
+use bevy_cobweb_ui::loading::SceneHandle;
+use bevy_cobweb_ui::prelude::*;
+
+pub mod main_action_buttons;
+pub mod build_menu;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum MainActionType {
+    None,
+    Build,
+    Orders
+}
+
+#[derive(Event, Debug)]
+pub struct MainActionSelected(pub MainActionType);
+
+pub struct MainActionsPlugin;
+
+impl Plugin for MainActionsPlugin {
+    fn build(&self, app: &mut App) {
+        app
+            .add_event::<MainActionSelected>();
+    }
+}
+
+pub fn initialize_action_menu_container<'a>(action_menu_container: &mut SceneHandle<'a, <UiBuilder<'_, Entity> as SceneNodeBuilder>::Builder<'a>>) {
+    action_menu_container.on_event::<MainActionSelected>().r(move || {});
+}

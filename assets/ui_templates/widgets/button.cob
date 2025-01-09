@@ -10,7 +10,7 @@ LoadImages[ "ui_templates/pngs/button.png" ]
     GridNode{ justify_lines: Center margin: { right: 10px }}
 
     "image"
-        GridNode{ width: 120px grid_row:{ start: 1 } grid_column:{ start: 1}}
+        GridNode{ width: 100px grid_row:{ start: 1 } grid_column:{ start: 1}}
         LoadedImageNode{image:"ui_templates/pngs/button.png" }
         Animated<ImageNodeColor>{
             idle:Hsla{hue:45 saturation:0.0 lightness:0.8 alpha:1.0}
@@ -22,7 +22,7 @@ LoadImages[ "ui_templates/pngs/button.png" ]
 
     "text"
         GridNode{ justify_self_cross: Center grid_row:{ start: 1 } grid_column:{ start: 1} margin: { left: Auto right: Auto}}
-        TextLine{ text:"" size:38 font:{family: "ThaleahFat" } justify: Center}
+        TextLine{ text:"" size:24 font:{family: "ThaleahFat" } justify: Center}
         Animated<TextLineColor>{
             idle:Hsla{hue:45 saturation:1.0 lightness:1.0 alpha:1.0}
             hover:Hsla{hue:45 saturation:1.0 lightness:0.8 alpha:1.0}

@@ -11,9 +11,20 @@ RegisterFontFamilies[
                weight: Normal
             }
         ]
-    }
+    },
+    {
+            family: "m5x7"
+            fonts: [
+                {
+                   path: "fonts/m5x7.ttf"
+                   width: Normal
+                   style: Normal
+                   weight: Normal
+                }
+            ]
+        }
 ]
 
-LoadFonts[ "ThaleahFat" ]
+LoadFonts[ "ThaleahFat", "m5x7" ]
 
 //LoadFonts[ "ThaleahFat" ]
