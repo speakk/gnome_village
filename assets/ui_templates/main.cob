@@ -11,6 +11,6 @@
         Picking::Ignore
 
     "action_menu_container"
-        AbsoluteGridNode{ width: 200px height: 300px bottom: 90px left: 90px }
+        AbsoluteGridNode{ width: 200px height: 300px bottom: 60px left: 35px top: Auto }
         FocusPolicy::Pass
         Picking::Ignore

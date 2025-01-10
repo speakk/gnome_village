@@ -1,5 +1,6 @@
 #import
 action_menu_base as action_menu_base
+colours as colours
 
 #scenes
 "build_menu"
@@ -16,4 +17,5 @@ action_menu_base as action_menu_base
 
     "label"
         GridNode{}
-        TextLine{ text:"build_item_label" size:15 font:{family: "m5x7" } justify: Center}
+        TextLine{ text:"build_item_label" size:25 font:{family: "m5x7" } justify: Center}
+        TextLineColor($colours::primary)
