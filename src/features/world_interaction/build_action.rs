@@ -1,13 +1,16 @@
-use crate::bundles::{make_concrete_from_prototype, ItemId, ItemSpawners};
+use crate::bundles::{make_concrete_from_prototype, ItemId, ItemSpawners, Prototypes};
 use crate::features::map::map_model::MapData;
-use crate::features::misc_components::Prototype;
+use crate::features::misc_components::{GltfAsset, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::user_actions::{UserActionIntent, UserActionState, UserActionType};
 use crate::features::world_interaction::mouse_selection::{CurrentMouseWorldCoordinate, MapClickedEvent, MapDragEndEvent, MapDragStartEvent};
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::ecs::system::SystemState;
 use bevy::prelude::*;
-use crate::bundles::buildables::BluePrint;
+use moonshine_object::{Object, ObjectInstance};
+use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
+use crate::bundles::buildables::{BluePrint, BluePrintMaterial};
+use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::states::AppState;
 use crate::utils::entity_clone::CloneEntityCommandsExt;
 
@@ -18,8 +21,8 @@ impl Plugin for BuildActionPlugin {
         app.insert_resource(CurrentBuilding::default())
             .insert_resource(CurrentBuildingPreview::default())
             .insert_resource(SelectedCoordinates::default())
-            .insert_resource(PreviewEntityHierarchy::default())
             .insert_resource(DragInfo::default())
+            .add_viewable::<PreviewEntityData>()
             .add_systems(
                 Update,
                 (
@@ -28,7 +31,7 @@ impl Plugin for BuildActionPlugin {
                     follow_mouse_cursor,
                     //react_to_mouse_clicked,
                     react_to_build_intent,
-                    regenerate_preview_entities,
+                    regenerate_preview_entity,
                     react_to_mouse_drag_started,
                     react_to_mouse_drag_ended,
                     handle_mouse_dragged,
@@ -131,12 +134,60 @@ struct DragInfo {
 #[derive(Resource, Default, Deref, DerefMut, Clone)]
 struct SelectedCoordinates(Vec<IVec2>);
 
-#[derive(Resource, Default, Deref, DerefMut, Clone)]
-struct PreviewEntityHierarchy(Option<Entity>);
+// #[derive(Resource, Default, Deref, DerefMut, Clone)]
+// struct PreviewEntity(Option<Entity>);
 
-fn regenerate_preview_entities(
+#[derive(Component, Clone)]
+struct PreviewEntityData {
+    // gltf_asset_path: Option<String>,
+    // mesh_handle: Option<Handle<Mesh>>,
+    current_building: ItemId,
+    coordinates: Vec<IVec2>,
+}
+
+impl BuildView for PreviewEntityData {
+    fn build(world: &World, object: Object<Self>, mut view: ViewCommands<Self>) {
+        generate_preview_entity_view_children(world, object, &mut view);
+    }
+}
+
+fn generate_preview_entity_view_children(world: &World, object: Object<PreviewEntityData>, view: &mut ViewCommands<PreviewEntityData>) {
+    let asset_server = world.get_resource::<AssetServer>().unwrap();
+    let preview_entity_data = world.get::<PreviewEntityData>(object.entity()).unwrap().clone();
+    let blueprint_material = world.get_resource::<BluePrintMaterial>().unwrap().clone();
+    let prototypes = world.get_resource::<Prototypes>().unwrap();
+    let prototype = prototypes.0.get(&preview_entity_data.current_building).unwrap();
+    let gltf_asset = world.get::<GltfAsset>(*prototype);
+    let simple_mesh = world.get::<SimpleMesh>(*prototype);
+    //let map_data = world.query::<&MapData>().single(&world).size.clone();
+
+    println!("Building preview entity, gltf: {:?}, simple_mesh: {:?}, coordinates: {:?}, current_building: {:?}", gltf_asset, simple_mesh, preview_entity_data.coordinates, preview_entity_data.current_building);
+
+    view.insert((Transform::default(), Visibility::Visible));
+    
+    for coordinate in preview_entity_data.coordinates.clone() {
+        view.with_children(|child_builder| {
+            let mut child = child_builder.spawn_empty();
+            if let Some(gltf_asset) = gltf_asset.clone() {
+                let scene_root = SceneRoot(asset_server.load(GltfAssetLabel::Scene(0).from_asset(gltf_asset.0.clone())));
+                child.insert(scene_root);
+            }
+
+            if let Some(simple_mesh) = simple_mesh.clone() {
+                let simple_meshes = world.get_resource::<SimpleMeshHandles>().unwrap();
+                let mesh_handle = simple_meshes.0.get(&simple_mesh.0).unwrap();
+                child.insert((Mesh3d(mesh_handle.clone()), MeshMaterial3d(blueprint_material.0.clone().unwrap())));
+            }
+
+            // TODO: Figure out how to get map_data here for correct positioning
+            child.insert((WorldPosition(Vec2::new(coordinate.x as f32, coordinate.y as f32)), Transform::default()));
+        });
+    }
+}
+
+fn regenerate_preview_entity(
     coordinates: Res<SelectedCoordinates>,
-    mut preview_entity_hierarchy: ResMut<PreviewEntityHierarchy>,
+    mut preview_entity_query: Query<(&mut PreviewEntityData, Entity)>,
     current_building: Res<CurrentBuilding>,
     map_data_query: Query<&MapData>,
     mut commands: Commands,
@@ -146,30 +197,46 @@ fn regenerate_preview_entities(
         //println!("No changes to coordinates or current building, not regenerating preview entities");
         return;
     }
-    
+
+    if current_building.0.is_none() {
+        return;
+    }
+
     //println!("Got through checks, regenerating preview entities indeed");
-    
-    if let Some(preview_entity_hierarchy) = preview_entity_hierarchy.0 {
-        commands.entity(preview_entity_hierarchy).despawn_recursive();
-    }
-    
-    let parent_entity = commands.spawn(Transform::from_xyz(0.0, 0.0, 0.0)).id();
-    preview_entity_hierarchy.0 = Some(parent_entity);
-    
+    //
+    // if let Some(preview_entity_hierarchy) = preview_entity.0 {
+    //     commands.entity(preview_entity_hierarchy).despawn_recursive();
+    // }
+    //
+    // let parent_entity = commands.spawn(Transform::from_xyz(0.0, 0.0, 0.0)).id();
+    // preview_entity.0 = Some(parent_entity);
+    //
     let map_data = map_data_query.single();
-    
-    for coordinate in coordinates.0.iter() {
-        println!("Clonin', coordinate: {:?}", coordinate);
-        //let cloned = commands.clone_entity(current_building.0.unwrap());
-        let cloned = item_spawners.0.get(&current_building.0.unwrap()).unwrap()(&mut commands);
-        commands
-            .entity(cloned)
-            .insert(Transform::default())
-            .insert(BluePrint)
-            .remove::<Prototype>()
-            .insert(WorldPosition(map_data.centered_coordinate_to_world_position(*coordinate)))
-            .set_parent(parent_entity);
+
+    if let Ok((_preview_entity, entity)) = preview_entity_query.get_single() {
+        //preview_entity.coordinates = coordinates.0.clone();
+        commands.entity(entity).despawn();
+        println!("Regenerating preview entity, coordinates: {:?}", coordinates.0);
     }
+    
+    commands.spawn(
+        PreviewEntityData {
+            coordinates: coordinates.0.clone(),
+            current_building: current_building.0.unwrap()
+        });
+
+    // for coordinate in coordinates.0.iter() {
+    //     println!("Clonin', coordinate: {:?}", coordinate);
+    //     //let cloned = commands.clone_entity(current_building.0.unwrap());
+    //     let cloned = item_spawners.0.get(&current_building.0.unwrap()).unwrap()(&mut commands);
+    //     commands
+    //         .entity(cloned)
+    //         .insert(Transform::default())
+    //         .insert(BluePrint)
+    //         .remove::<Prototype>()
+    //         .insert(WorldPosition(map_data.centered_coordinate_to_world_position(*coordinate)))
+    //         .set_parent(parent_entity);
+    // }
 }
 
 fn react_to_mouse_drag_started(
@@ -201,7 +268,7 @@ fn handle_mouse_dragged(drag_info: Res<DragInfo>,
                         mut current_coordinate: ResMut<CurrentMouseWorldCoordinate>,
                         mut commands: Commands) {
     if !current_coordinate.is_changed() { return; }
-    
+
     if (drag_info.is_dragging) && (drag_info.map_drag_start_event.is_some()) {
         let event = drag_info.map_drag_start_event.unwrap();
         let min_x = current_coordinate.0.x.min(event.coordinate.x);

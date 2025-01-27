@@ -1,3 +1,6 @@
+pub mod simple_mesh;
+mod simple_mesh_view;
+
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 use moonshine_object::{Object, ObjectInstance};
@@ -42,6 +45,7 @@ impl BuildView for LightSource {
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
+#[derive(Debug)]
 pub struct GltfAsset(pub String);
 
 impl From<&str> for GltfAsset {

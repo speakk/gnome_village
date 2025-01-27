@@ -10,6 +10,7 @@ use moonshine_core::save::Save;
 use moonshine_view::RegisterView;
 use crate::bundles::buildables::torch::WoodenTorch;
 use crate::bundles::rock::Rock;
+use crate::features::misc_components::simple_mesh::MiscComponentsPlugin;
 
 pub mod buildables;
 pub mod rock;
@@ -22,7 +23,9 @@ impl Plugin for BundlePlugin {
         app
             .insert_resource(Prototypes(HashMap::new()))
             .insert_resource(ItemSpawners(HashMap::new()))
-            .add_plugins(BuildablesPlugin).add_viewable::<Settler>();
+            .add_plugins(MiscComponentsPlugin)
+            .add_plugins(BuildablesPlugin)
+            .add_viewable::<Settler>();
     }
 }
 

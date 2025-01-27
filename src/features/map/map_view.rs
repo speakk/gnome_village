@@ -12,30 +12,15 @@ use bevy::utils::HashMap;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
 use noisy_bevy::simplex_noise_2d;
-
-#[derive(Resource, Default, Deref, DerefMut)]
-pub struct MapMeshHandles(pub HashMap<MeshType, Handle<Mesh>>);
+use crate::features::misc_components::simple_mesh::{SimpleMeshHandles, SimpleMeshType};
 
 #[derive(Resource, Default, Deref, DerefMut)]
 pub struct MapMaterialHandles(pub HashMap<TileType, Vec<Handle<StandardMaterial>>>);
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
-pub enum MeshType {
-    Plane,
-    Cuboid,
-}
-
-pub fn create_map_meshes_and_materials(
-    mut meshes: ResMut<Assets<Mesh>>,
+pub fn create_map_materials(
     mut materials: ResMut<Assets<StandardMaterial>>,
-    mut map_mesh_handles: ResMut<MapMeshHandles>,
     mut map_material_handles: ResMut<MapMaterialHandles>,
 ) {
-    let cuboid_handle = meshes.add(Cuboid::default());
-    let plane_handle = meshes.add(Plane3d::default().mesh().size(1.0, 1.0));
-    map_mesh_handles.insert(MeshType::Plane, plane_handle);
-    map_mesh_handles.insert(MeshType::Cuboid, cuboid_handle);
-
     let material_handle1 = materials.add(Color::srgb(0.8, 0.7, 0.6));
     let material_handle2 = materials.add(Color::srgb(0.8, 0.6, 0.5));
     let dirt_material_handles = vec![material_handle1, material_handle2];
@@ -65,12 +50,12 @@ impl BuildView for MapData {
                             tile_below.is_some() && tile_below.unwrap() != TileType::Empty;
 
                         let mesh_type = if has_tile_below {
-                            MeshType::Plane
+                            SimpleMeshType::Plane
                         } else {
-                            MeshType::Cuboid
+                            SimpleMeshType::Cuboid
                         };
 
-                        let mesh_handles = world.get_resource::<MapMeshHandles>().unwrap();
+                        let mesh_handles = world.get_resource::<SimpleMeshHandles>().unwrap();
                         let mesh_handle = mesh_handles.get(&mesh_type).unwrap();
                         let all_material_handles =
                             world.get_resource::<MapMaterialHandles>().unwrap();
