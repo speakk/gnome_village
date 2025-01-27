@@ -2,7 +2,7 @@ pub mod torch;
 pub mod wooden_wall;
 
 use crate::bundles::buildables::torch::WoodenTorch;
-use crate::bundles::buildables::wooden_wall::{view_wall_moved, WoodenWall};
+use crate::bundles::buildables::wooden_wall::{on_add_blueprint, on_remove_blueprint, view_wall_moved, WallPlugin, WoodenWall};
 use crate::features::map::map_view::{MapMeshHandles, MeshType};
 use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
@@ -15,12 +15,23 @@ impl Plugin for BuildablesPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(BuildableMaterialHandles::default())
             .insert_resource(BuildableMeshHandles::default())
-            .add_systems(Startup, (setup_buildable_materials, setup_buildable_meshes))
-            .add_systems(OnEnter(AppState::InGame), add_buildable_prototypes)
-            .add_systems(PostUpdate, view_wall_moved)
-            .add_viewable::<WoodenWall>();
+            .insert_resource(BluePrintMaterial::default())
+            .add_plugins(WallPlugin)
+            .add_systems(Startup, (setup_buildable_materials, setup_buildable_meshes, setup_blueprint_material))
+            .add_systems(OnEnter(AppState::InGame), add_buildable_prototypes);
     }
 }
+
+#[derive(Resource, Default, Deref)]
+pub struct BluePrintMaterial(Option<Handle<StandardMaterial>>);
+
+pub fn setup_blueprint_material(mut materials: ResMut<Assets<StandardMaterial>>, mut blueprint_material: ResMut<BluePrintMaterial>) {
+    let blueprint_handle = materials.add(Color::srgba(0.3, 0.3, 1.0, 0.4));
+    blueprint_material.0 = Some(blueprint_handle);
+}
+
+#[derive(Component, Default)]
+pub struct BluePrint;
 
 #[derive(Resource, Default)]
 pub struct BuildableMaterialHandles {

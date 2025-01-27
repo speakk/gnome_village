@@ -9,6 +9,7 @@ use crate::features::world_interaction::mouse_selection::{
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::ecs::system::SystemState;
 use bevy::prelude::*;
+use crate::bundles::buildables::BluePrint;
 
 pub struct BuildActionPlugin;
 
@@ -139,7 +140,8 @@ fn react_to_build_intent(world: &mut World) {
             let mut commands = world.commands();
             commands
                 .entity(concrete_entity)
-                .insert(WorldPosition(world_position));
+                .insert(WorldPosition(world_position))
+                .insert(BluePrint);
 
             break;
         }
