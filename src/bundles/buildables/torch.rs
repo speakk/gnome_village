@@ -1,3 +1,4 @@
+use crate::features::tasks::task::ItemRequirement;
 use crate::bundles::buildables::Buildable;
 use crate::bundles::{Id, ItemId};
 use crate::features::misc_components::gltf_asset::GltfAsset;
@@ -11,7 +12,14 @@ use bevy::prelude::*;
     Id(|| Id(ItemId::WoodenTorch)),
     Solid,
     Name(|| "Wooden Torch"),
-    Buildable,
+    Buildable(|| Buildable {
+        item_requirements: vec![
+            ItemRequirement {
+                item_id: ItemId::Wood,
+                amount: 1,
+            }
+        ]
+    }),
     LightSource(|| LightSource { intensity: 50000.0, color: Color::srgb(1.0, 0.9, 0.6) }),
     GltfAsset(|| "blender_models/wooden_torch.glb"))]
 pub struct WoodenTorch;
