@@ -42,8 +42,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let zoom_input_map = InputMap::default()
         .with(CameraZoomAction::In, MouseScrollDirection::UP)
         .with(CameraZoomAction::In, KeyCode::ArrowUp)
-        .with(CameraZoomAction::Out, MouseScrollDirection::DOWN)
-        .with_axis(CameraZoomAction::Generic, MouseScrollAxis::Y);
+        .with(CameraZoomAction::Out, MouseScrollDirection::DOWN);
 
     // camera
     commands.spawn((
@@ -115,7 +114,6 @@ fn handle_zoom_input(
 ) {
     let zoom_amount = 0.3;
     for (action_state, mut camera_projection) in &mut query {
-        println!("Had action zoooom");
         if let Projection::Orthographic(ref mut ortho_projection) = *camera_projection.into_inner()
         {
             if action_state.pressed(&CameraZoomAction::In) {

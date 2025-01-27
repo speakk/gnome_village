@@ -1,8 +1,9 @@
 use bevy::math::Vec2;
-use bevy::prelude::{Component, Deref, DerefMut};
 use grid_util::Point;
+use bevy::prelude::*;
 
-#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
+#[reflect(Component)]
 pub struct WorldPosition(pub Vec2);
 
 impl WorldPosition {

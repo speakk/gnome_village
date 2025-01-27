@@ -3,7 +3,8 @@ use bevy::prelude::*;
 use moonshine_core::prelude::*;
 use moonshine_view::prelude::*;
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Reflect)]
+#[reflect(Component)]
 pub struct Settler;
 
 #[derive(Bundle, Default)]
@@ -11,6 +12,7 @@ pub struct SettlerBundle {
     pub(crate) world_position: WorldPosition,
     pub(crate) previous_world_position: PreviousWorldPosition,
     pub settler: Settler,
+    pub save: Save,
 }
 
 impl BuildView for Settler {

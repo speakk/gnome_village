@@ -6,7 +6,8 @@ pub struct InputPlugin;
 impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(InputManagerPlugin::<CameraPanAction>::default())
-            .add_plugins(InputManagerPlugin::<CameraZoomAction>::default());
+            .add_plugins(InputManagerPlugin::<CameraZoomAction>::default())
+            .add_plugins(InputManagerPlugin::<SaveLoadAction>::default());
     }
 }
 
@@ -22,5 +23,10 @@ pub enum CameraPanAction {
 pub enum CameraZoomAction {
     In,
     Out,
-    Generic,
+}
+
+#[derive(Actionlike, PartialEq, Eq, Hash, Clone, Copy, Debug, Reflect)]
+pub enum SaveLoadAction {
+    QuickSave,
+    QuickLoad,
 }

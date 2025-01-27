@@ -5,4 +5,5 @@ pub mod map;
 pub mod movement;
 pub mod path_finding;
 pub mod position;
+pub mod save;
 pub mod sun_light;
