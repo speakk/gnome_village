@@ -1,6 +1,6 @@
 use crate::bundles::buildables::{BluePrint, Buildable};
 use crate::features::misc_components::InWorld;
-use crate::features::tasks::task::{BringResourceData, DepositTarget, RunType, Task, TaskType};
+use crate::features::tasks::task::{BringResourceData, DepositTarget, ItemRequirement, RunType, Task, TaskType};
 use bevy::prelude::*;
 use crate::features::position::WorldPosition;
 
@@ -24,14 +24,22 @@ pub fn react_to_blueprints(
                     .with_children(|bring_resource_task| {
                         
                         for item_requirement in buildable.item_requirements.as_slice() {
-                            bring_resource_task.spawn((Task {
-                                run_type: RunType::Leaf,
-                                task_type: Some(TaskType::BringResource(BringResourceData {
-                                    item_requirement: item_requirement.clone(),
-                                    target: DepositTarget::Coordinate(world_position.0.as_ivec2())
-                                })),
-                                ..default()
-                            },));
+                            // TODO: For now just split into 1 task each. In the future do splitting as needed
+                            // (depending on carry capacity of worker, etc)
+                            for _ in 0..item_requirement.amount {
+                                bring_resource_task.spawn((Task {
+                                    run_type: RunType::Leaf,
+                                    task_type: Some(TaskType::BringResource(BringResourceData {
+                                        item_requirement: ItemRequirement {
+                                            item_id: item_requirement.item_id,
+                                            amount: 1,
+                                        },
+                                        target: DepositTarget::Coordinate(world_position.0.as_ivec2()),
+                                        run_time_data: None,
+                                    })),
+                                    ..default()
+                                },));
+                            }
                         }
                     });
             });

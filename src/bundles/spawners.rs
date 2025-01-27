@@ -15,7 +15,7 @@ pub fn setup_spawners(mut spawners: ResMut<ItemSpawners>) {
     });
 
     spawners.insert(ItemId::Settler, |commands| {
-        commands.spawn((Settler,)).id()
+        commands.spawn((Settler::default(),)).id()
     });
 
     spawners.insert(ItemId::Lumber, |commands| {

@@ -55,8 +55,11 @@ pub enum ItemId {
     Lumber = 4,
 }
 
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Id(ItemId);
+#[derive(Component, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct ResourceItem;
+
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash, Deref, DerefMut)]
+pub struct Id(pub(crate) ItemId);
 
 #[derive(Resource, Deref, DerefMut)]
 pub struct ItemSpawners(pub(crate) HashMap<ItemId, fn(&mut Commands) -> Entity>);

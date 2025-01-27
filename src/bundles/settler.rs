@@ -6,7 +6,7 @@ use crate::bundles::{Id, ItemId};
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use bevy::prelude::*;
 
-#[derive(Component, Default, Reflect)]
+#[derive(Component, Reflect)]
 #[require(
     Id(|| Id(ItemId::Settler)),
     WorldPosition,
@@ -16,7 +16,18 @@ use bevy::prelude::*;
     GltfAsset(|| "blender_models/settler.glb"),
     Name(|| "Settler"))]
 #[reflect(Component)]
-pub struct Settler;
+pub struct Settler {
+    carry_capacity: u32,
+}
+
+impl Default for Settler {
+    fn default() -> Self {
+        Self {
+            carry_capacity: 1,
+        }
+    }
+}
+
 // 
 // impl BuildView for Settler {
 //     fn build(world: &World, object: Object<Settler>, mut view: ViewCommands<Settler>) {

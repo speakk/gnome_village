@@ -7,6 +7,9 @@ use crate::features::ai::WorkingOnTask;
 use crate::features::tasks::build_task::react_to_blueprints;
 use crate::features::tasks::task::{RunType, Status, Task};
 use bevy::prelude::*;
+use crate::bundles::{Id, ResourceItem};
+use crate::features::misc_components::InWorld;
+use crate::features::position::WorldPosition;
 
 pub struct TasksPlugin;
 
@@ -30,32 +33,44 @@ pub fn give_tasks(
         Query<(Entity, &Task, Option<&Children>)>,
         Query<(Entity, &mut Task, Option<&Children>)>,
     )>,
-    available_settlers: Query<Entity, (With<Settler>, Without<WorkingOnTask>)>,
+    available_settlers: Query<(Entity, &WorldPosition), (With<Settler>, Without<WorkingOnTask>, With<InWorld>)>,
+    resources_query: Query<(Entity, &WorldPosition, &Id), (With<ResourceItem>, With<InWorld>)>,
+    others_query: Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
 ) {
     let mut ready_tasks: Vec<Entity> = vec![];
-    let set0 = set.p0();
-    for (task_entity, task, children) in set0.iter() {
-        let ready_task = get_available_task(task_entity, &*task, children, &set0);
-        if let Some(ready_task) = ready_task {
-            println!("Task {} is ready to go", task_entity);
-            ready_tasks.push(ready_task);
+    {
+        let set0 = set.p0();
+        for (task_entity, task, children) in set0.iter() {
+            let ready_task = get_available_task(task_entity, task, children, &set0);
+            if let Some(ready_task) = ready_task {
+                println!("Task {} is ready to go", task_entity);
+                ready_tasks.push(ready_task);
+            }
         }
     }
 
     let mut available_settlers = available_settlers.iter().collect::<Vec<_>>();
 
-    // TODO: Scoring, for one
+    let mut mut_set = set.p1();
+
     for task_entity in ready_tasks {
-        let next_settler = available_settlers.pop();
-        println!("Possible next settler: {:?}", next_settler);
-        if let Some(next_settler) = next_settler {
-            let mut mut_set = set.p1();
-            let mut task_data = mut_set.get_mut(task_entity).unwrap().1;
-            task_data.status = Status::BeingWorkedOn;
-            println!("Task {} is being worked on (Inserting WorkingOnTask)", task_entity);
-            commands.entity(next_settler).insert(WorkingOnTask(task_entity));
-        } else {
+        println!("Right going through ready_tasks");
+        if available_settlers.is_empty() {
+            println!("No settlers available, returning");
             return;
+        }
+
+        //let set0 = set.p0();
+        let mut task = mut_set.get_mut(task_entity).unwrap().1;
+        let best_agent = task.find_best_agent(&resources_query, &others_query, &available_settlers);
+        if let Some(best_agent) = best_agent {
+            println!("Found best agent: {}", best_agent);
+            // Delete best_agent from available_settlers
+            available_settlers.retain(|&(entity, _)| entity != best_agent);
+
+            task.status = Status::BeingWorkedOn;
+            println!("Task {} is being worked on (Inserting WorkingOnTask)", task_entity);
+            commands.entity(best_agent).insert(WorkingOnTask(task_entity));
         }
     }
 }

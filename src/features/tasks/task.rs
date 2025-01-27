@@ -1,7 +1,11 @@
 use moonshine_core::prelude::Save;
 use bevy::prelude::Component;
 use bevy::prelude::*;
-use crate::bundles::ItemId;
+use crate::bundles::{Id, ItemId, ResourceItem};
+use crate::bundles::settler::Settler;
+use crate::features::ai::trees::bring_resource::score_bring_resource;
+use crate::features::misc_components::InWorld;
+use crate::features::position::WorldPosition;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum RunType {
@@ -32,19 +36,25 @@ pub enum DepositTarget {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
-pub struct BringResourceData {
-    pub item_requirement: ItemRequirement,
-    pub target: DepositTarget
+pub struct BringResourceRuntimeData {
+    pub(crate) concrete_resource_entity: Entity,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
+pub struct BringResourceData {
+    pub item_requirement: ItemRequirement,
+    pub target: DepositTarget,
+    pub run_time_data: Option<BringResourceRuntimeData>
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
 pub enum TaskType {
     Build,
     BringResource(BringResourceData),
     GoTo,
 }
 
-#[derive(Component, Debug, Clone, Copy, Reflect)]
+#[derive(Component, Debug, Clone, Reflect)]
 #[require(Save, Name(|| "Task"))]
 #[reflect(Component)]
 pub struct Task {
@@ -59,6 +69,18 @@ impl Default for Task {
             run_type: RunType::Sequence,
             status: Status::Ready,
             task_type: None,
+        }
+    }
+}
+
+impl Task {
+    pub fn find_best_agent(&mut self,
+                       resources_query: &Query<(Entity, &WorldPosition, &Id), (With<ResourceItem>, With<InWorld>)>,
+                           others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
+                       agents: &Vec<(Entity, &WorldPosition)>) -> Option<Entity> {
+        match &mut self.task_type {
+            Some(TaskType::BringResource(bring_resource_data)) => score_bring_resource(resources_query, agents, bring_resource_data, others_query),
+            _ => None,
         }
     }
 }

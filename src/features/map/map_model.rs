@@ -8,6 +8,7 @@ use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
 use crate::bundles::{ItemId, ItemSpawners};
+use crate::features::misc_components::InWorld;
 use crate::features::path_finding::spawn_pathfinding_task;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
@@ -220,7 +221,7 @@ pub fn generate_test_entities(
 
             if !reserved_coordinates.0.contains(&centered_coordinate) {
                 let item = item_spawners.get(&test_entity.entity_type).unwrap()(&mut commands);
-                commands.entity(item).insert((WorldPosition(centered_coordinate.as_vec2()), Save,));
+                commands.entity(item).insert((WorldPosition(centered_coordinate.as_vec2()), Save, InWorld));
                 reserved_coordinates.0.push(centered_coordinate);
                 entity_amount -= 1;
             }
