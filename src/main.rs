@@ -11,6 +11,7 @@ use crate::features::path_finding::PathFindingPlugin;
 use crate::features::save::SavePlugin;
 use crate::features::sun_light::SunLightPlugin;
 use bevy::prelude::*;
+use crate::features::states::AppState;
 
 fn main() {
     App::new()
@@ -27,5 +28,6 @@ fn main() {
         .add_plugins(MovementPlugin)
         .add_plugins(ui::UiPlugin)
         .insert_resource(Time::<Fixed>::from_hz(60.0))
+        .init_state::<AppState>()
         .run();
 }

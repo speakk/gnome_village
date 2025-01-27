@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use crate::features::map::map_model::MapData;
+use crate::features::states::AppState;
 
 #[derive(Event)]
 pub struct MapClickedEvent(pub IVec2);
@@ -14,8 +15,8 @@ impl Plugin for MouseSelectionPlugin {
         app
             .add_plugins(MeshPickingPlugin)
             .add_event::<MapClickedEvent>()
-            .add_systems(Startup, setup)
-            .add_systems(Update, scale_ground_mesh_based_on_map);
+            .add_systems(OnEnter(AppState::InGame), setup)
+            .add_systems(Update, scale_ground_mesh_based_on_map.run_if(in_state(AppState::InGame)));
     }
 }
 

@@ -2,6 +2,7 @@ use crate::features::camera::AccumulatedInput;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use bevy::app::RunFixedMainLoopSystem::AfterFixedMainLoop;
 use bevy::prelude::*;
+use crate::features::states::AppState;
 
 pub struct MovementPlugin;
 
@@ -24,12 +25,12 @@ impl Plugin for MovementPlugin {
                 reset_input,
                 apply_friction,
             )
-                .chain(),
+                .chain().run_if(in_state(AppState::InGame)),
         )
         // .add_systems(Update, interpolate_rendered_transform);
         .add_systems(
             RunFixedMainLoop,
-            interpolate_rendered_transform.in_set(AfterFixedMainLoop),
+            interpolate_rendered_transform.in_set(AfterFixedMainLoop).run_if(in_state(AppState::InGame)),
         );
     }
 }
