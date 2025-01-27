@@ -164,13 +164,14 @@ pub fn spawn_pathfinding_task(
     
     let task = thread_pool.spawn(async move {
         let is_occupied = !grid.has_vertex((end.x as usize, end.y as usize));
-        let mut end = end;
+        let mut final_end = end;
         if is_occupied {
             let neighbours = grid.neighbours((end.x as usize, end.y as usize));
             // TODO: Sort by distance to start
             for neighbour in neighbours {
                 if grid.has_vertex((neighbour.0 as usize, neighbour.1 as usize)) {
-                    end = UVec2::new(neighbour.0 as u32, neighbour.1 as u32);
+                    // TODO: Compiler says this is unused? Investigate
+                    final_end = UVec2::new(neighbour.0 as u32, neighbour.1 as u32);
                     break;
                 }
             }
@@ -180,7 +181,7 @@ pub fn spawn_pathfinding_task(
         }
         let points = bfs(&start,
                          |p| grid.neighbours((p.x as usize, p.y as usize)).iter().map(|p| UVec2::new(p.0 as u32, p.1 as u32)).collect::<Vec<_>>(),
-                         |p| *p == end);
+                         |p| *p == final_end);
         println!("from: {:?} to: {:?} - {:?}", start, end, points);
         println!("grid: {:?}", grid);
         if let Some(points) = points {
@@ -231,7 +232,7 @@ pub fn follow_path(mut query: Query<(&mut PathFollow, &WorldPosition, &mut Veloc
         let world_position = map_data.get_single().unwrap().world_position_to_top_left_coordinate(world_position.0);
         
         let direction = (next_point.as_vec2() - world_position.as_vec2()).normalize_or_zero();
-        let speed = 2.0;
+        let speed = 3.0;
         let final_vector = Vec2::new(direction.x as f32, direction.y as f32) * speed;
         velocity.0 = final_vector;
 

@@ -13,7 +13,7 @@ use bevy::prelude::*;
     Buildable(|| Buildable {
         item_requirements: vec![
             ItemRequirement {
-                item_id: ItemId::Wood,
+                item_id: ItemId::Lumber,
                 amount: 2,
             }
         ]

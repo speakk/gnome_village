@@ -7,6 +7,7 @@ use bevy::render::render_resource::ShaderType;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
+use crate::bundles::{ItemId, ItemSpawners};
 use crate::features::path_finding::spawn_pathfinding_task;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
@@ -184,25 +185,48 @@ pub fn generate_rocks(
     }
 }
 
+struct EntityGeneration {
+    entity_type: ItemId,
+    amount: u32,
+}
+
 pub fn generate_test_entities(
     mut commands: Commands,
     map_data_query: Query<&MapData>,
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
+    item_spawners: Res<ItemSpawners>
 ) {
     let map_data = map_data_query.single();
     let mut rng = rand::thread_rng();
-    let mut settlers_amount = 4;
-    let mut max_attempts = 3000;
-    while settlers_amount > 0 && max_attempts > 0 {
-        let x = rng.gen_range(0..map_data.size.x);
-        let y = rng.gen_range(0..map_data.size.y);
-        let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
+    
+    let test_entities = vec![
+        EntityGeneration {
+            entity_type: ItemId::Settler,
+            amount: 4,
+        },
+        EntityGeneration {
+            entity_type: ItemId::Lumber,
+            amount: 90,
+        },
+    ];
+    
+    for test_entity in test_entities {
+        let mut entity_amount = test_entity.amount;
+        let mut max_attempts = 3000;
+        while entity_amount > 0 && max_attempts > 0 {
+            let x = rng.gen_range(0..map_data.size.x);
+            let y = rng.gen_range(0..map_data.size.y);
+            let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
-        if !reserved_coordinates.0.contains(&centered_coordinate) {
-            commands.spawn((Settler, WorldPosition(centered_coordinate.as_vec2()), Save,));
-            reserved_coordinates.0.push(centered_coordinate);
-            settlers_amount -= 1;
+            if !reserved_coordinates.0.contains(&centered_coordinate) {
+                let item = item_spawners.get(&test_entity.entity_type).unwrap()(&mut commands);
+                commands.entity(item).insert((WorldPosition(centered_coordinate.as_vec2()), Save,));
+                reserved_coordinates.0.push(centered_coordinate);
+                entity_amount -= 1;
+            }
+            max_attempts -= 1;
         }
-        max_attempts -= 1;
     }
+    
+    
 }

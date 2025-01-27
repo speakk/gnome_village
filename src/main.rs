@@ -22,16 +22,18 @@ use bevy::pbr::DefaultOpaqueRendererMethod;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use crate::features::ai::AiPlugin;
+use crate::features::states::preload::PreloadPlugin;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(BehaviorTreePlugin::default())
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
+        .add_plugins(PreloadPlugin)
+        .add_plugins(BundlePlugin)
         .add_plugins(MapPlugin)
         .add_plugins(SavePlugin)
         .add_plugins(SunLightPlugin)
-        .add_plugins(BundlePlugin)
         .add_plugins(PathFindingPlugin)
         .add_plugins(RockPlugin)
         .add_plugins(features::input::InputPlugin)

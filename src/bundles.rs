@@ -7,11 +7,13 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_core::save::Save;
 use moonshine_view::RegisterView;
+use crate::bundles::spawners::setup_spawners;
 
 pub mod buildables;
-mod resources;
+pub mod resources;
 pub mod rock;
 pub mod settler;
+pub mod spawners;
 
 pub struct BundlePlugin;
 
@@ -50,7 +52,7 @@ pub enum ItemId {
     Rock = 1,
     Settler = 2,
     WoodenTorch = 3,
-    Wood = 4,
+    Lumber = 4,
 }
 
 #[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash)]

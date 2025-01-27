@@ -35,7 +35,7 @@ pub fn create_bring_resource_tree(
                     .entity(worker_entity)
                     .insert(BehaviorTreeBundle::from_root(
                         Sequence::new(vec![
-                            Box::new(EnsurePath::new(target_coordinate))
+                            Box::new(GoTo::new(target_coordinate))
                         ]),
                     ));
             }
@@ -44,17 +44,26 @@ pub fn create_bring_resource_tree(
 }
 
 #[delegate_node(delegate)]
-struct EnsurePath {
+struct GoTo {
     delegate: TaskBridge,
 }
 
-impl EnsurePath {
+const TARGET_DISTANCE_THRESHOLD: f32 = 1.5;
+
+impl GoTo {
     pub fn new(target_coordinate: IVec2) -> Self {
-        let checker = move |entity: In<Entity>, query: Query<(Option<&PathfindingTask>, Option<&PathFollow>), With<Settler>>| {
-            let (path_finding_task, path_follow) = query.get(entity.0).unwrap();
+        let checker = move |entity: In<Entity>, query: Query<(&WorldPosition, Option<&PathfindingTask>, Option<&PathFollow>), With<Settler>>| {
+            let (world_position, path_finding_task, path_follow) = query.get(entity.0).unwrap();
+            
             if path_finding_task.is_some() || path_follow.is_some() {
-                println!("Already have path or path task, skipping");
-                return TaskStatus::Complete(NodeResult::Success);
+                let distance_to_target = world_position.0.distance(target_coordinate.as_vec2());
+
+                return if distance_to_target > TARGET_DISTANCE_THRESHOLD {
+                    TaskStatus::Running
+                } else {
+                    println!("Reached target, returning success");
+                    TaskStatus::Complete(NodeResult::Success)
+                }
             }
 
             println!("Didn't have path, returning failure");
