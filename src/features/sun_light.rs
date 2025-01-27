@@ -1,14 +1,35 @@
 use bevy::app::{App, Startup};
 use bevy::color::palettes::css::ORANGE_RED;
 use bevy::color::palettes::tailwind::SKY_200;
+use bevy::pbr::light_consts::lux::AMBIENT_DAYLIGHT;
 use bevy::pbr::{AmbientLight, CascadeShadowConfigBuilder, DirectionalLight};
 use bevy::prelude::*;
+use bevy_atmosphere::model::AtmosphereModel;
+use bevy_atmosphere::prelude::{AtmosphereMut, Nishita};
+use std::f32::consts::PI;
 
 pub struct SunLightPlugin;
 
+// Marker for updating the position of the light, not needed unless we have multiple lights
+#[derive(Component)]
+struct Sun;
+
+#[derive(Component)]
+struct Moon;
+
+// Timer for updating the daylight cycle (updating the atmosphere every frame is slow, so it's better to do incremental changes)
+#[derive(Resource)]
+struct CycleTimer(Timer);
+
 impl Plugin for SunLightPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_lights);
+        app.add_systems(Startup, setup_lights)
+            .insert_resource(CycleTimer(Timer::new(
+                bevy::utils::Duration::from_millis(50), // Update our atmosphere every 50ms (in a real game, this would be much slower, but for the sake of an example we use a faster update)
+                TimerMode::Repeating,
+            )))
+            .insert_resource(AtmosphereModel::default())
+            .add_systems(Update, daylight_cycle);
     }
 }
 
@@ -29,6 +50,7 @@ pub fn setup_lights(mut commands: Commands) {
     ));
 
     commands.spawn((
+        Sun,
         DirectionalLight {
             color: Color::srgb(0.9, 0.9, 0.8),
             illuminance: 6000.0,
@@ -46,4 +68,70 @@ pub fn setup_lights(mut commands: Commands) {
         }
         .build(),
     ));
+
+    commands.spawn((
+        Moon,
+        DirectionalLight {
+            color: Color::srgb(0.4, 0.4, 1.0),
+            illuminance: 4000.0,
+            shadows_enabled: true,
+            ..default()
+        },
+        //Visibility::Hidden,
+        Transform::from_xyz(15.0, -10.0, 4.0).looking_at(Vec3::ZERO, Vec3::Y),
+        // The default cascade config is designed to handle large scenes.
+        // As this example has a much smaller world, we can tighten the shadow
+        // bounds for better visual quality.
+        CascadeShadowConfigBuilder {
+            first_cascade_far_bound: 4.0,
+            maximum_distance: 100.0,
+            ..default()
+        }
+        .build(),
+    ));
+}
+
+// We can edit the Atmosphere resource and it will be updated automatically
+fn daylight_cycle(
+    mut commands: Commands,
+    mut atmosphere: AtmosphereMut<Nishita>,
+    mut sun_query: Query<(&mut Transform, &mut DirectionalLight), (With<Sun>, Without<Moon>)>,
+    mut moon_query: Query<
+        (&mut Transform, &mut DirectionalLight, Entity),
+        (With<Moon>, Without<Sun>),
+    >,
+    mut visibility_query: Query<&mut Visibility>,
+    mut timer: ResMut<CycleTimer>,
+    time: Res<Time>,
+) {
+    timer.0.tick(time.delta());
+
+    // TODO: Figure out the math in this, this was partially straight from bevy_atmosphere example
+
+    if timer.0.finished() {
+        let t = time.elapsed_secs_wrapped() / 6.0;
+        atmosphere.sun_position = Vec3::new(0., t.sin(), t.cos());
+
+        if let Some((mut light_trans, mut directional)) = sun_query.single_mut().into() {
+            light_trans.rotation = Quat::from_rotation_x(-t);
+            directional.illuminance = t.sin().max(0.0).powf(2.0) * AMBIENT_DAYLIGHT;
+        }
+
+        if let Some((mut light_trans, mut directional, entity)) = moon_query.single_mut().into() {
+            let moon_t = -t - PI;
+            light_trans.rotation = Quat::from_rotation_x(moon_t);
+            let illuminance = (-moon_t).sin().max(0.2).powf(2.0) * AMBIENT_DAYLIGHT * 0.5;
+
+            // TODO: Base this on rotation
+            if illuminance < 201.0 {
+                if let Ok(visibility) = visibility_query.get_mut(entity) {
+                    commands.entity(entity).remove::<Visibility>();
+                }
+            } else {
+                commands.entity(entity).insert(Visibility::Visible);
+            }
+
+            directional.illuminance = illuminance;
+        }
+    }
 }
