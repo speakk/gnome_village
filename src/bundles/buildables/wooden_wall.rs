@@ -7,8 +7,9 @@ use moonshine_core::prelude::*;
 use moonshine_object::Object;
 use moonshine_view::{BuildView, ViewCommands};
 
-#[derive(Component, Default, Clone)]
+#[derive(Component, Default, Reflect)]
 #[require(WorldPosition, Solid, Name(|| "Wooden Wall"), Buildable, Save)]
+#[reflect(Component)]
 pub struct WoodenWall;
 
 impl BuildView for WoodenWall {

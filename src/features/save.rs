@@ -14,6 +14,8 @@ use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
+use crate::bundles::buildables::torch::WoodenTorch;
+use crate::bundles::buildables::wooden_wall::WoodenWall;
 
 pub struct SavePlugin;
 
@@ -73,6 +75,8 @@ impl Plugin for SavePlugin {
         .register_type::<WorldPosition>()
         .register_type::<MapData>()
         .register_type::<Rock>()
+        .register_type::<WoodenTorch>()
+        .register_type::<WoodenWall>()
         .add_systems(Startup, setup)
         .add_systems(
             PreUpdate,
