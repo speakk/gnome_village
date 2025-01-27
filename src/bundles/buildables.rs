@@ -3,6 +3,7 @@ mod torch;
 
 use crate::features::map::map_view::{MapMeshHandles, MeshType};
 use bevy::prelude::*;
+use moonshine_core::prelude::Save;
 use moonshine_view::prelude::*;
 use crate::bundles::buildables::torch::WoodenTorch;
 use crate::bundles::buildables::wooden_wall::{Wall};
@@ -50,8 +51,8 @@ pub fn setup_buildable_meshes(
 
 pub fn add_buildable_prototypes(mut commands: Commands) {
     println!("Adding buildable prototypes");
-    commands.spawn((Wall, Prototype));
-    commands.spawn((WoodenTorch, Prototype));
+    commands.spawn((Wall, Prototype)).remove::<Save>();
+    commands.spawn((WoodenTorch, Prototype)).remove::<Save>();
 }
 
 #[derive(Component, Default, Reflect)]
