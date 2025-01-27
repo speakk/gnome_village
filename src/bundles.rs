@@ -48,11 +48,20 @@ pub enum ItemId {
 }
 
 #[derive(Component, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[require(ItemStack)]
+#[require(ItemStack, Reservations)]
 pub struct ResourceItem;
 
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub struct ItemStack(pub u32);
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
+pub struct Reservation {
+    pub reserved_by: Entity,
+    pub amount: u32,
+}
+
+#[derive(Component, Default, Debug, Clone, PartialEq, Eq, Hash, Reflect)]
+pub struct Reservations(pub Vec<Reservation>);
 
 impl Default for ItemStack {
     fn default() -> Self {

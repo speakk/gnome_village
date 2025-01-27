@@ -182,15 +182,12 @@ pub fn spawn_pathfinding_task(
         let points = bfs(&start,
                          |p| grid.neighbours((p.x as usize, p.y as usize)).iter().map(|p| UVec2::new(p.0 as u32, p.1 as u32)).collect::<Vec<_>>(),
                          |p| *p == final_end);
-        println!("from: {:?} to: {:?} - {:?}", start, end, points);
-        println!("grid: {:?}", grid);
-        if let Some(points) = points {
-            Some(Path { steps: points })
-        } else {
-            None
-        }
+        println!("from: {:?} to: {:?}, found path: {:?}", start, end, points.is_some());
+        //println!("grid: {:?}", grid);
+        points.map(|points| Path { steps: points })
     });
     
+    println!("Pathfinding task spawned for agent: {:?}", target_entity);
     commands.entity(target_entity).insert(PathfindingTask(task));
 }
 
@@ -199,13 +196,11 @@ pub fn apply_pathfinding_result(
     mut tasks: Query<(Entity, &mut PathfindingTask)>,
 ) {
     for (task_entity, mut task) in &mut tasks {
-        println!("Has task...");
         if let Some(result) = future::block_on(future::poll_once(&mut task.0)) {
             commands.entity(task_entity).remove::<PathfindingTask>();
-            println!("Has path result!");
 
             if let Some(path) = result {
-                println!("Has path! {:?}", path);
+                //println!("Has path! {:?}", path);
                 commands.entity(task_entity).insert(PathFollow {
                     path,
                     ..Default::default()

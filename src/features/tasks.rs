@@ -7,7 +7,7 @@ use crate::features::ai::WorkingOnTask;
 use crate::features::tasks::build_task::react_to_blueprints;
 use crate::features::tasks::task::{RunType, Status, Task};
 use bevy::prelude::*;
-use crate::bundles::{Id, ResourceItem};
+use crate::bundles::{Id, Reservations, ResourceItem};
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 
@@ -34,7 +34,7 @@ pub fn give_tasks(
         Query<(Entity, &mut Task, Option<&Children>)>,
     )>,
     available_settlers: Query<(Entity, &WorldPosition), (With<Settler>, Without<WorkingOnTask>, With<InWorld>)>,
-    resources_query: Query<(Entity, &WorldPosition, &Id), (With<ResourceItem>, With<InWorld>)>,
+    mut resources_query: Query<(Entity, &WorldPosition, &Id, &mut Reservations), (With<ResourceItem>, With<InWorld>)>,
     others_query: Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
 ) {
     let mut ready_tasks: Vec<Entity> = vec![];
@@ -54,7 +54,7 @@ pub fn give_tasks(
     let mut mut_set = set.p1();
 
     for task_entity in ready_tasks {
-        println!("Right going through ready_tasks");
+        println!("Right going through ready_tasks, task: {:?}", task_entity);;
         if available_settlers.is_empty() {
             println!("No settlers available, returning");
             return;
@@ -62,7 +62,7 @@ pub fn give_tasks(
 
         //let set0 = set.p0();
         let mut task = mut_set.get_mut(task_entity).unwrap().1;
-        let best_agent = task.find_best_agent(&resources_query, &others_query, &available_settlers);
+        let best_agent = task.find_best_agent(&mut resources_query, &others_query, &available_settlers);
         if let Some(best_agent) = best_agent {
             println!("Found best agent: {}", best_agent);
             // Delete best_agent from available_settlers

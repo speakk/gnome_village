@@ -32,7 +32,7 @@ impl GoTo {
             }
 
             println!("Didn't have path, returning failure");
-            return TaskStatus::Complete(NodeResult::Failure);
+            TaskStatus::Complete(NodeResult::Failure)
         };
 
         let task = TaskBridge::new(checker)

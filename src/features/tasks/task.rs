@@ -1,7 +1,7 @@
 use moonshine_core::prelude::Save;
 use bevy::prelude::Component;
 use bevy::prelude::*;
-use crate::bundles::{Id, ItemId, ResourceItem};
+use crate::bundles::{Id, ItemId, Reservations, ResourceItem};
 use crate::bundles::settler::Settler;
 use crate::features::ai::trees::bring_resource::score_bring_resource;
 use crate::features::misc_components::InWorld;
@@ -75,7 +75,7 @@ impl Default for Task {
 
 impl Task {
     pub fn find_best_agent(&mut self,
-                       resources_query: &Query<(Entity, &WorldPosition, &Id), (With<ResourceItem>, With<InWorld>)>,
+                       mut resources_query: &mut Query<(Entity, &WorldPosition, &Id, &mut Reservations), (With<ResourceItem>, With<InWorld>)>,
                            others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
                        agents: &Vec<(Entity, &WorldPosition)>) -> Option<Entity> {
         match &mut self.task_type {
