@@ -8,9 +8,10 @@ use bevy::prelude::*;
 use moonshine_core::prelude::*;
 use moonshine_object::Object;
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
+use crate::bundles::{Id, ItemId};
 
 #[derive(Component, Default, Reflect, Clone)]
-#[require(WorldPosition, Solid, Name(|| "Wooden Wall"), Buildable)]
+#[require(Id(|| Id(ItemId::WoodenWall)), WorldPosition, Solid, Name(|| "Wooden Wall"), Buildable)]
 #[reflect(Component)]
 pub struct WoodenWall;
 

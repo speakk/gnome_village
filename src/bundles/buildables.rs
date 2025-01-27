@@ -8,6 +8,7 @@ use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
 use bevy::prelude::*;
 use moonshine_view::prelude::*;
+use crate::bundles::{ItemId, ItemSpawners, Prototypes};
 
 pub struct BuildablesPlugin;
 
@@ -16,6 +17,7 @@ impl Plugin for BuildablesPlugin {
         app.insert_resource(BuildableMaterialHandles::default())
             .insert_resource(BuildableMeshHandles::default())
             .insert_resource(BluePrintMaterial::default())
+            .insert_resource(BuildableBundleTypes::default())
             .add_plugins(WallPlugin)
             .add_systems(Startup, (setup_buildable_materials, setup_buildable_meshes, setup_blueprint_material))
             .add_systems(OnEnter(AppState::InGame), add_buildable_prototypes);
@@ -59,20 +61,50 @@ pub fn setup_buildable_meshes(
     buildable_mesh_handles.wall = map_mesh_handles.get(&MeshType::Cuboid).cloned();
 }
 
-macro_rules! apply_prototype_commands {
-    ( $y:expr,$( $x:expr ),* ) => {
-        {
-            $(
-                $y.spawn(($x, Prototype, Visibility::Hidden));
-            )*
-        }
-    };
+// macro_rules! apply_prototype_commands {
+//     ( $y:expr,$( $x:expr ),* ) => {
+//         {
+//             $(
+//                 $y.spawn(($x, Prototype, Visibility::Hidden));
+//             )*
+//         }
+//     };
+// }
+
+pub fn add_buildable_prototypes(mut commands: Commands,
+                                mut item_spawners: ResMut<ItemSpawners>,
+                                mut prototypes: ResMut<Prototypes>,
+) {
+    //apply_prototype_commands!(commands, WoodenWall, WoodenTorch);
+    
+    prototypes.0.insert(ItemId::WoodenTorch, commands.spawn((WoodenTorch,Prototype)).id());
+    prototypes.0.insert(ItemId::WoodenWall, commands.spawn((WoodenWall,Prototype)).id());
+    
+    item_spawners.0.insert(ItemId::WoodenTorch, |commands| {
+        commands.spawn((WoodenTorch,)).id()
+    });
+    
+    item_spawners.0.insert(ItemId::WoodenWall, |commands| {
+        commands.spawn((WoodenWall,)).id()
+    });
 }
 
-pub fn add_buildable_prototypes(mut commands: Commands) {
-    apply_prototype_commands!(commands, WoodenWall, WoodenTorch);
+pub fn uhh(mut commands: Commands, item_spawners: Res<ItemSpawners>) {
+    item_spawners.0.get(&ItemId::Rock).unwrap()(&mut commands);
 }
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 pub struct Buildable;
+
+#[derive(Resource)]
+pub struct BuildableBundleTypes(pub Vec<ItemId>);
+
+impl Default for BuildableBundleTypes {
+    fn default() -> Self {
+        Self(vec![
+            ItemId::WoodenWall,
+            ItemId::WoodenTorch,
+        ])
+    }
+}

@@ -1,9 +1,10 @@
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
+use crate::bundles::ItemId;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum UserActionType {
-    Build { entity: Entity, coordinate: IVec2 },
+    Build { bundle_type: ItemId, coordinate: IVec2 },
     Orders,
 }
 

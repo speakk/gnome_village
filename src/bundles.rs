@@ -1,9 +1,11 @@
+use std::string::ToString;
 use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::buildables::BuildablesPlugin;
 use crate::bundles::settler::Settler;
 use crate::features::misc_components::Prototype;
 use crate::utils::entity_clone::CloneEntityCommandsExt;
 use bevy::prelude::*;
+use bevy::utils::HashMap;
 use moonshine_core::save::Save;
 use moonshine_view::RegisterView;
 use crate::bundles::buildables::torch::WoodenTorch;
@@ -17,7 +19,9 @@ pub struct BundlePlugin;
 
 impl Plugin for BundlePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(BuildablesPlugin).add_viewable::<Settler>();
+        app
+            .insert_resource(ItemSpawners(HashMap::new()))
+            .add_plugins(BuildablesPlugin).add_viewable::<Settler>();
     }
 }
 
@@ -30,13 +34,35 @@ pub fn make_concrete_from_prototype(prototype: Entity, mut commands: Commands) -
         .id()
 }
 
+struct ConstructionCost {
+    amount: u32,
+    requirement: Vec<ItemId>
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-enum BundleType {
+struct BuildableData {
+    construction_costs: i32,
+    name: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum ItemId {
     WoodenWall = 0,
     Rock = 1,
     Settler = 2,
     WoodenTorch = 3,
 }
+
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct Id(ItemId);
+
+#[derive(Resource, Deref, DerefMut)]
+pub struct ItemSpawners(pub(crate) HashMap<ItemId, fn(&mut Commands) -> Entity>);
+
+// Entities which have metadata that is required before an entity
+// is actually created in-game can be added here (for example anything that shows up in menus)
+#[derive(Resource)]
+pub struct Prototypes(pub(crate) HashMap<ItemId, Entity>);
 
 /*
 trait MyTraitExt {
@@ -50,25 +76,17 @@ impl MyTraitExt for Commands {
 }
  */
 
-trait BundleGenerator {
-    fn generate(&mut self, bundle_type: &BundleType) -> Entity;
-}
-
-impl<'w, 's> BundleGenerator for Commands<'w, 's> {
-    fn generate(&mut self, bundle_type: &BundleType) -> Entity {
-        match bundle_type {
-            BundleType::WoodenWall => self.spawn((WoodenWall,)).id(),
-            BundleType::Rock => self.spawn((Rock,)).id(),
-            BundleType::Settler => self.spawn((Settler,)).id(),
-            BundleType::WoodenTorch => self.spawn((WoodenTorch,)).id(),
-        }
-    }
-}
-//
-// impl BundleType {
-//     fn create(&self) -> Entity {
-//         match self { BundleType::WoodenWall => {
-//
-//         } }
+// pub trait ItemCreator {
+//     fn create_item(&mut self, bundle_type: &ItemId) -> Entity;
+// }
+// 
+// impl<'w, 's> ItemCreator for Commands<'w, 's> {
+//     fn create_item(&mut self, bundle_type: &ItemId) -> Entity {
+//         match bundle_type {
+//             ItemId::WoodenWall => self.spawn((WoodenWall,)).id(),
+//             ItemId::Rock => self.spawn((Rock,)).id(),
+//             ItemId::Settler => self.spawn((Settler,)).id(),
+//             ItemId::WoodenTorch => self.spawn((WoodenTorch,)).id(),
+//         }
 //     }
 // }

@@ -1,13 +1,14 @@
-use crate::bundles::buildables::Buildable;
+use crate::bundles::buildables::{Buildable, BuildableBundleTypes};
 use crate::ui::ui_main_actions::main_action_buttons::MainActionButtonType;
 use crate::ui::ui_main_actions::{MainMenuSelected, MainMenuSelectionCleared};
 use crate::ui::UiSceneHandles;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
+use crate::bundles::{ItemId, Prototypes};
 
 #[derive(Event)]
-pub struct BuildMenuBuildableSelected(pub Entity);
+pub struct BuildMenuBuildableSelected(pub ItemId);
 
 pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Commands) {
     commands
@@ -18,7 +19,9 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
              event: BroadcastEvent<MainMenuSelected>,
              mut commands: Commands,
              mut _scene_builder: ResMut<SceneBuilder>,
-             buildables_query: Query<(Entity, &Name), With<Buildable>>| {
+                buildables: Query<&Buildable>,
+                names: Query<&Name, With<Buildable>>,
+             prototypes: Res<Prototypes>| {
                 println!("In insert_build_menu thing!!");
                 if let Ok(event) = event.try_read() {
                     if event.0 != MainActionButtonType::Build {
@@ -29,7 +32,13 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
                         ("build_menu", "build_menu"),
                         &mut _scene_builder,
                         move |build_benu_handle| {
-                            for (entity, name) in buildables_query.iter() {
+                            for (item_id, prototype_entity) in prototypes.0.clone() {
+                                if buildables.get(prototype_entity).is_err() {
+                                    continue;
+                                }
+
+                                let name = names.get(prototype_entity).unwrap().to_owned();
+
                                 build_benu_handle.spawn_scene_and_edit(
                                     ("build_menu", "build_item"),
                                     move |build_item_handle| {
@@ -40,7 +49,7 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
                                             >| {
                                                 println!("Build item pressed, broadcasting");
                                                 buildable_selected_writer
-                                                    .send(BuildMenuBuildableSelected(entity));
+                                                    .send(BuildMenuBuildableSelected(item_id));
                                             },
                                         );
                                     },

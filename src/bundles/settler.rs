@@ -1,10 +1,11 @@
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use bevy::prelude::*;
+use crate::bundles::{ItemId, Id};
 use moonshine_core::prelude::*;
 use moonshine_view::prelude::*;
 
 #[derive(Component, Default, Reflect)]
-#[require(WorldPosition, PreviousWorldPosition, Name(|| "Settler"))]
+#[require(Id(|| Id(ItemId::Settler)), WorldPosition, PreviousWorldPosition, Name(|| "Settler"))]
 #[reflect(Component)]
 pub struct Settler;
 

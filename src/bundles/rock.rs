@@ -1,3 +1,4 @@
+use crate::bundles::{ItemId, Id};
 use crate::features::map::map_view::{MapMeshHandles, MeshType};
 use crate::features::path_finding::Solid;
 use crate::features::position::WorldPosition;
@@ -29,7 +30,7 @@ pub fn setup_rock_materials(
 }
 
 #[derive(Component, Default, Reflect)]
-#[require(WorldPosition, Solid, Save, Name(|| "Rock"))]
+#[require(Id(|| Id(ItemId::Rock)), WorldPosition, Solid, Save, Name(|| "Rock"))]
 #[reflect(Component)]
 pub struct Rock;
 

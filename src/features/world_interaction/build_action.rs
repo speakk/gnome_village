@@ -1,4 +1,4 @@
-use crate::bundles::{make_concrete_from_prototype};
+use crate::bundles::{make_concrete_from_prototype, ItemId, ItemSpawners};
 use crate::features::map::map_model::MapData;
 use crate::features::misc_components::Prototype;
 use crate::features::position::WorldPosition;
@@ -41,7 +41,7 @@ impl Plugin for BuildActionPlugin {
 pub struct FollowMouseCursor;
 
 #[derive(Resource, Default, Debug, Deref, DerefMut)]
-struct CurrentBuilding(Option<Entity>);
+struct CurrentBuilding(Option<ItemId>);
 
 #[derive(Resource, Default, Debug, Deref, DerefMut)]
 struct CurrentBuildingPreview(Option<Entity>);
@@ -60,42 +60,32 @@ fn react_to_buildable_menu_selected(
 
 
 //fn ensure_building_preview(mut commands: Commands, mut current_building: ResMut<CurrentBuilding>, world: &mut World) {
-fn ensure_building_preview(world: &mut World) {
-    if !world.is_resource_changed::<CurrentBuilding>() {
+fn ensure_building_preview(current_building: Res<CurrentBuilding>,
+                           mut current_building_preview: ResMut<CurrentBuildingPreview>,
+                           mut commands: Commands,
+                           item_spawners: Res<ItemSpawners>
+) {
+    if !current_building.is_changed() {
         return;
     }
     println!("Ensuring building preview");
-    world.resource_scope(
-        |world, current_building_preview: Mut<CurrentBuildingPreview>| {
-            if let Some(entity) = current_building_preview.0 {
-                let mut commands = world.commands();
-                if let Some(mut entity_commands) = commands.get_entity(entity) {
-                    println!("CurrentBuildingPreview Entity exists, despawn");
-                    entity_commands.despawn();
-                }
-            }
-        },
-    );
-
-    let current_building = world.resource_mut::<CurrentBuilding>();
-    if current_building.is_changed() {
-        println!("Current building was changed");
-        if let Some(entity) = current_building.0 {
-            println!("Current building wasn't empty, cloning entity and inserting follow mouse cursor component and removing prototype");
-            let new_entity = world.commands().clone_entity(entity);
-
-            let mut commands = world.commands();
-            commands
-                .entity(new_entity)
-                .insert((Visibility::Visible, FollowMouseCursor))
-                .remove::<Prototype>();
-            world.resource_scope(
-                |world, mut current_building_preview: Mut<CurrentBuildingPreview>| {
-                    println!("Setting current building preview");
-                    current_building_preview.0 = Some(new_entity);
-                },
-            );
+    if let Some(entity) = current_building_preview.0 {
+        if let Some(mut entity_commands) = commands.get_entity(entity) {
+            println!("CurrentBuildingPreview Entity exists, despawn");
+            entity_commands.despawn();
         }
+    }
+
+    println!("Current building was changed");
+    if let Some(item_id) = current_building.0 {
+        println!("Current building wasn't empty, cloning entity and inserting follow mouse cursor component and removing prototype");
+        let new_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
+        commands
+            .entity(new_entity)
+            .insert((Visibility::Visible, FollowMouseCursor))
+            .remove::<Prototype>();
+        println!("Setting current building preview");
+        current_building_preview.0 = Some(new_entity);
     }
 }
 
@@ -125,7 +115,7 @@ fn react_to_mouse_clicked(
         println!("Reacting to mouse clicked, sending build intent");
         if let Some(current_building) = current_building.0 {
             event_writer.send(UserActionIntent(UserActionType::Build {
-                entity: current_building,
+                bundle_type: current_building,
                 coordinate: coordinate.0,
             }));
         }
@@ -150,6 +140,7 @@ fn regenerate_preview_entities(
     current_building: Res<CurrentBuilding>,
     map_data_query: Query<&MapData>,
     mut commands: Commands,
+    item_spawners: Res<ItemSpawners>,
 ) {
     if (!coordinates.is_changed()) && (!current_building.is_changed()) {
         //println!("No changes to coordinates or current building, not regenerating preview entities");
@@ -169,7 +160,8 @@ fn regenerate_preview_entities(
     
     for coordinate in coordinates.0.iter() {
         println!("Clonin', coordinate: {:?}", coordinate);
-        let cloned = commands.clone_entity(current_building.0.unwrap());
+        //let cloned = commands.clone_entity(current_building.0.unwrap());
+        let cloned = item_spawners.0.get(&current_building.0.unwrap()).unwrap()(&mut commands);
         commands
             .entity(cloned)
             .insert(Transform::from_xyz(coordinate.x as f32, 0.5, coordinate.y as f32, ))
@@ -226,19 +218,17 @@ fn handle_mouse_dragged(drag_info: Res<DragInfo>,
 }
 
 // TODO: Just validate in this and then emit BuildAction
-fn react_to_build_intent(world: &mut World) {
-    let mut event_system_state = SystemState::<EventReader<UserActionIntent>>::new(world);
-    let mut events = event_system_state.get_mut(world);
+fn react_to_build_intent(item_spawners: Res<ItemSpawners>,
+                         mut commands: Commands,
+                        map_data: Query<&MapData>,
+                         mut user_action_intent: EventReader<UserActionIntent>,
+) {
+    for event in user_action_intent.read() {
+        if let UserActionType::Build { bundle_type: item_id, coordinate } = event.0 {
+            let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
+            let map_data = map_data.get_single().unwrap();
 
-    for event in events.read() {
-        if let UserActionType::Build { entity, coordinate } = event.0 {
-            let concrete_entity = make_concrete_from_prototype(entity, world.commands());
-            let map_data = {
-                let mut query = world.query::<&MapData>();
-                query.get_single(world).unwrap()
-            };
             let world_position = map_data.centered_coordinate_to_world_position(coordinate);
-            let mut commands = world.commands();
             commands
                 .entity(concrete_entity)
                 .insert(WorldPosition(world_position))
