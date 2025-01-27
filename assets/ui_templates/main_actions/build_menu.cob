@@ -1,6 +1,9 @@
+#import
+action_menu_base as action_menu_base
+
 #scenes
 "build_menu"
-    +action_menu_base
+    +action_menu_base::action_menu{}
 
     "categories"
         GridNode{}

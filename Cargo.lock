@@ -4331,6 +4331,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_atmosphere",
+ "bevy_cobweb",
  "bevy_cobweb_ui",
  "directories",
  "grid_pathfinding",
