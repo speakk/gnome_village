@@ -68,7 +68,6 @@ pub fn setup_lights(mut commands: Commands) {
             shadows_enabled: true,
             ..default()
         },
-        Visibility::Hidden,
         Transform::from_xyz(-15.0, 10.0, 4.0).looking_at(Vec3::ZERO, Vec3::Y),
         CascadeShadowConfigBuilder {
             num_cascades: cascade_count,

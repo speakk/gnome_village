@@ -21,10 +21,10 @@ impl Plugin for PathFindingPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::InGame), setup)
             // TODO: Add back in, gave weird overflow issue
-            // .add_systems(
-            //     Update,
-            //     update_grid_from_solid_component.run_if(in_state(AppState::InGame)),
-            // )
+            .add_systems(
+                Update,
+                update_grid_from_solid_component.run_if(in_state(AppState::InGame)),
+            )
             .insert_resource(PathingGridResource(PathingGrid::new(0, 0, false)));
     }
 }
@@ -47,6 +47,9 @@ fn do_full_grid_reset(
     mut pathing_grid: ResMut<PathingGridResource>,
     solid_query: Query<&WorldPosition, With<Solid>>,
 ) {
+    let rect = pathing_grid.0.rect();
+    pathing_grid.0.set_rectangle(&rect, false);
+    
     for x in 0..map_data.size.x {
         for y in 0..map_data.size.y {
             let tile_data = map_data.get_tile_type_non_centered(UVec2::new(x, y));

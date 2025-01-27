@@ -13,10 +13,9 @@ use crate::features::save::SavePlugin;
 use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
 use crate::features::user_actions::UserActionsPlugin;
-use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
-use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use crate::features::map::map_model::WorldSeed;
+use crate::features::position::PositionPlugin;
 use crate::features::tasks::TasksPlugin;
 
 fn main() {
@@ -31,6 +30,7 @@ fn main() {
         .add_plugins(features::input::InputPlugin)
         .add_plugins(features::world_interaction::WorldInteractionPlugin)
         .add_plugins(CameraPlugin)
+        .add_plugins(PositionPlugin)
         .add_plugins(MovementPlugin)
         .add_plugins(TasksPlugin)
         .add_plugins(ui::UiPlugin)

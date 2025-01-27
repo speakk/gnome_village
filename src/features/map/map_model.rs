@@ -90,7 +90,7 @@ impl MapData {
 }
 
 pub fn generate_map_entity(mut commands: Commands, world_seed: Res<WorldSeed>, mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>) {
-    let map_size = UVec2::new(200, 200);
+    let map_size = UVec2::new(300, 300);
     let mut map_data = MapData {
         data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
         size: map_size,
@@ -164,19 +164,17 @@ pub fn generate_rocks(mut commands: Commands, map_query: Query<&MapData>, world_
                 0.4,
                 0.45
             );
-            
+
             let reserved = reserved_coordinates.0.contains(&centered_coordinate);
-            
+
             if (noise_value / 2.0 + 1.0) + mapped_value < 0.65 && !reserved {
                 commands.spawn((
                     Rock,
                     WorldPosition(
-                        map_data
-                            .convert_to_centered_coordinate(UVec2::new(x, y))
-                            .as_vec2(),
+                        centered_coordinate.as_vec2(),
                     ),
                 ));
-                
+
                 reserved_coordinates.0.push(centered_coordinate);
             }
         }
