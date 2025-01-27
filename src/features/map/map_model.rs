@@ -1,5 +1,8 @@
 use crate::bundles::rock::Rock;
 use crate::bundles::settler::Settler;
+use crate::bundles::{ItemId, ItemSpawners};
+use crate::features::misc_components::InWorld;
+use crate::features::path_finding::spawn_pathfinding_task;
 use crate::features::position::WorldPosition;
 use bevy::math::{IVec2, UVec2, Vec2};
 use bevy::prelude::*;
@@ -7,9 +10,6 @@ use bevy::render::render_resource::ShaderType;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
-use crate::bundles::{ItemId, ItemSpawners};
-use crate::features::misc_components::InWorld;
-use crate::features::path_finding::spawn_pathfinding_task;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -195,11 +195,11 @@ pub fn generate_test_entities(
     mut commands: Commands,
     map_data_query: Query<&MapData>,
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
-    item_spawners: Res<ItemSpawners>
+    item_spawners: Res<ItemSpawners>,
 ) {
     let map_data = map_data_query.single();
     let mut rng = rand::thread_rng();
-    
+
     let test_entities = vec![
         EntityGeneration {
             entity_type: ItemId::Settler,
@@ -210,7 +210,7 @@ pub fn generate_test_entities(
             amount: 90,
         },
     ];
-    
+
     for test_entity in test_entities {
         let mut entity_amount = test_entity.amount;
         let mut max_attempts = 3000;
@@ -221,13 +221,15 @@ pub fn generate_test_entities(
 
             if !reserved_coordinates.0.contains(&centered_coordinate) {
                 let item = item_spawners.get(&test_entity.entity_type).unwrap()(&mut commands);
-                commands.entity(item).insert((WorldPosition(centered_coordinate.as_vec2()), Save, InWorld));
+                commands.entity(item).insert((
+                    WorldPosition(centered_coordinate.as_vec2()),
+                    Save,
+                    InWorld,
+                ));
                 reserved_coordinates.0.push(centered_coordinate);
                 entity_amount -= 1;
             }
             max_attempts -= 1;
         }
     }
-    
-    
 }

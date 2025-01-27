@@ -7,7 +7,9 @@ use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
-use crate::features::world_interaction::mouse_selection::{CurrentMouseWorldCoordinate, MapClickedEvent, MapDragEndEvent, MapDragStartEvent};
+use crate::features::world_interaction::mouse_selection::{
+    CurrentMouseWorldCoordinate, MapClickedEvent, MapDragEndEvent, MapDragStartEvent,
+};
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
 

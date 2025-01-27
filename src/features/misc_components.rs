@@ -2,7 +2,6 @@ pub(crate) mod gltf_asset;
 pub mod simple_mesh;
 mod simple_mesh_view;
 
-use moonshine_core::prelude::Save;
 use crate::features::misc_components::gltf_asset::GltfAssetPlugin;
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::simple_mesh_view::{
@@ -11,6 +10,7 @@ use crate::features::misc_components::simple_mesh_view::{
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
+use moonshine_core::prelude::Save;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands};
 

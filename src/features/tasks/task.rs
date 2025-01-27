@@ -1,11 +1,11 @@
-use moonshine_core::prelude::Save;
-use bevy::prelude::Component;
-use bevy::prelude::*;
-use crate::bundles::{Id, ItemId, Reservations, ResourceItem};
 use crate::bundles::settler::Settler;
+use crate::bundles::{Id, ItemId, Reservations, ResourceItem};
 use crate::features::ai::trees::bring_resource::score_bring_resource;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
+use bevy::prelude::Component;
+use bevy::prelude::*;
+use moonshine_core::prelude::Save;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum RunType {
@@ -44,7 +44,7 @@ pub struct BringResourceRuntimeData {
 pub struct BringResourceData {
     pub item_requirement: ItemAmount,
     pub target: DepositTarget,
-    pub run_time_data: Option<BringResourceRuntimeData>
+    pub run_time_data: Option<BringResourceRuntimeData>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
@@ -74,12 +74,19 @@ impl Default for Task {
 }
 
 impl Task {
-    pub fn find_best_agent(&mut self,
-                       mut resources_query: &mut Query<(Entity, &WorldPosition, &Id, &mut Reservations), (With<ResourceItem>, With<InWorld>)>,
-                           others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
-                       agents: &Vec<(Entity, &WorldPosition)>) -> Option<Entity> {
+    pub fn find_best_agent(
+        &mut self,
+        mut resources_query: &mut Query<
+            (Entity, &WorldPosition, &Id, &mut Reservations),
+            (With<ResourceItem>, With<InWorld>),
+        >,
+        others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
+        agents: &Vec<(Entity, &WorldPosition)>,
+    ) -> Option<Entity> {
         match &mut self.task_type {
-            Some(TaskType::BringResource(bring_resource_data)) => score_bring_resource(resources_query, agents, bring_resource_data, others_query),
+            Some(TaskType::BringResource(bring_resource_data)) => {
+                score_bring_resource(resources_query, agents, bring_resource_data, others_query)
+            }
             _ => None,
         }
     }

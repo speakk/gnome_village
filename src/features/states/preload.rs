@@ -1,7 +1,7 @@
-use bevy::app::App;
-use bevy::prelude::{NextState, OnEnter, Plugin, ResMut};
 use crate::bundles::spawners::setup_spawners;
 use crate::features::states::AppState;
+use bevy::app::App;
+use bevy::prelude::{NextState, OnEnter, Plugin, ResMut};
 
 pub struct PreloadPlugin;
 
@@ -11,7 +11,10 @@ impl Plugin for PreloadPlugin {
             OnEnter(AppState::Preload),
             (
                 setup_spawners,
-                |mut next_state: ResMut<NextState<AppState>>| { next_state.set(AppState::MapGeneration);})
+                |mut next_state: ResMut<NextState<AppState>>| {
+                    next_state.set(AppState::MapGeneration);
+                },
+            ),
         );
     }
 }

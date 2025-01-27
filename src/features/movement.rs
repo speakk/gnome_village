@@ -12,8 +12,7 @@ pub struct Velocity(pub Vec2);
 #[derive(Component, Default)]
 pub struct Acceleration(pub Vec2);
 
-#[derive(Component)]
-#[derive(Default)]
+#[derive(Component, Default)]
 pub struct Friction(pub f32);
 
 impl Plugin for MovementPlugin {

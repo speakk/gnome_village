@@ -6,8 +6,8 @@ use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::{ItemId, ItemSpawners, Prototypes};
 use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
-use bevy::prelude::*;
 use crate::features::tasks::task::ItemAmount;
+use bevy::prelude::*;
 
 pub struct BuildablesPlugin;
 
@@ -89,5 +89,5 @@ pub fn add_buildable_prototypes(
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 pub struct Buildable {
-    pub(crate) item_requirements: Vec<ItemAmount>
+    pub(crate) item_requirements: Vec<ItemAmount>,
 }

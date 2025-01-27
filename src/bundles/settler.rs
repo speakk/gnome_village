@@ -1,9 +1,9 @@
+use crate::bundles::{Id, ItemId};
 use crate::features::inventory::Inventory;
 use crate::features::misc_components::gltf_asset::GltfAsset;
-use crate::features::movement::Friction;
 use crate::features::movement::Acceleration;
+use crate::features::movement::Friction;
 use crate::features::movement::Velocity;
-use crate::bundles::{Id, ItemId};
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use bevy::prelude::*;
 
@@ -24,13 +24,11 @@ pub struct Settler {
 
 impl Default for Settler {
     fn default() -> Self {
-        Self {
-            carry_capacity: 1,
-        }
+        Self { carry_capacity: 1 }
     }
 }
 
-// 
+//
 // impl BuildView for Settler {
 //     fn build(world: &World, object: Object<Settler>, mut view: ViewCommands<Settler>) {
 //         println!("Building view for settler");

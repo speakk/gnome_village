@@ -1,5 +1,7 @@
+pub mod ai;
 pub mod camera;
 pub mod input;
+pub mod inventory;
 pub mod map;
 pub mod misc_components;
 pub mod movement;
@@ -11,5 +13,3 @@ pub mod sun_light;
 pub mod tasks;
 pub mod user_actions;
 pub mod world_interaction;
-pub mod ai;
-pub mod inventory;

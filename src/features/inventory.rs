@@ -29,7 +29,7 @@ impl Inventory {
             Ordering::Less => panic!("Not enough items in inventory"),
         }
     }
-    
+
     pub fn has_amount(&self, item_id: ItemId, amount: u32) -> bool {
         let current_amount = self.items.get(&item_id).unwrap_or(&0);
         current_amount >= &amount

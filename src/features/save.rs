@@ -1,10 +1,17 @@
 use crate::bundles::buildables::torch::WoodenTorch;
 use crate::bundles::buildables::wooden_wall::WoodenWall;
+use crate::bundles::buildables::BluePrint;
 use crate::bundles::rock::Rock;
 use crate::bundles::settler::Settler;
+use crate::bundles::ItemStack;
+use crate::features::ai::WorkingOnTask;
 use crate::features::input::SaveLoadAction;
+use crate::features::inventory::Inventory;
 use crate::features::map::map_model::MapData;
+use crate::features::misc_components::gltf_asset::GltfAsset;
+use crate::features::misc_components::simple_mesh::SimpleMesh;
 use crate::features::position::WorldPosition;
+use crate::features::tasks::task::Task;
 use bevy::prelude::KeyCode::F8;
 use bevy::prelude::*;
 use directories::ProjectDirs;
@@ -16,13 +23,6 @@ use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
-use crate::bundles::buildables::BluePrint;
-use crate::bundles::ItemStack;
-use crate::features::ai::WorkingOnTask;
-use crate::features::inventory::Inventory;
-use crate::features::misc_components::gltf_asset::GltfAsset;
-use crate::features::misc_components::simple_mesh::SimpleMesh;
-use crate::features::tasks::task::Task;
 
 pub struct SavePlugin;
 
@@ -85,8 +85,8 @@ impl Plugin for SavePlugin {
         .register_type::<Task>()
         .register_type::<BluePrint>()
         .register_type::<WorkingOnTask>()
-            .register_type::<ItemStack>()
-            .register_type::<Inventory>()
+        .register_type::<ItemStack>()
+        .register_type::<Inventory>()
         .register_type::<MapData>()
         .register_type::<Rock>()
         .register_type::<WoodenTorch>()

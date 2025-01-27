@@ -1,5 +1,6 @@
 use crate::bundles::buildables::BuildablesPlugin;
 use crate::bundles::settler::Settler;
+use crate::bundles::spawners::setup_spawners;
 use crate::features::misc_components::MiscComponentsPlugin;
 use crate::features::misc_components::Prototype;
 use crate::utils::entity_clone::CloneEntityCommandsExt;
@@ -7,7 +8,6 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_core::save::Save;
 use moonshine_view::RegisterView;
-use crate::bundles::spawners::setup_spawners;
 
 pub mod buildables;
 pub mod resources;
@@ -69,7 +69,10 @@ impl Default for ItemStack {
     }
 }
 
-pub fn react_to_emptied_stack(query: Query<(Entity, &ItemStack), Changed<ItemStack>>, mut commands: Commands) {
+pub fn react_to_emptied_stack(
+    query: Query<(Entity, &ItemStack), Changed<ItemStack>>,
+    mut commands: Commands,
+) {
     for (entity, item_stack) in query.iter() {
         if item_stack.0 == 0 {
             commands.entity(entity).despawn();

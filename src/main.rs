@@ -3,10 +3,9 @@ mod features;
 mod ui;
 mod utils;
 
-use beet::prelude::{BeetDebugPlugin, LifecyclePlugin};
-use bevior_tree::BehaviorTreePlugin;
 use crate::bundles::rock::RockPlugin;
 use crate::bundles::BundlePlugin;
+use crate::features::ai::AiPlugin;
 use crate::features::camera::CameraPlugin;
 use crate::features::map::map_model::WorldSeed;
 use crate::features::map::MapPlugin;
@@ -14,16 +13,16 @@ use crate::features::movement::MovementPlugin;
 use crate::features::path_finding::PathFindingPlugin;
 use crate::features::position::PositionPlugin;
 use crate::features::save::SavePlugin;
+use crate::features::states::preload::PreloadPlugin;
 use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
 use crate::features::tasks::TasksPlugin;
 use crate::features::user_actions::UserActionsPlugin;
+use beet::prelude::{BeetDebugPlugin, LifecyclePlugin};
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::pbr::DefaultOpaqueRendererMethod;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use crate::features::ai::AiPlugin;
-use crate::features::states::preload::PreloadPlugin;
 
 fn main() {
     App::new()

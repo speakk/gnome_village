@@ -1,6 +1,9 @@
+use crate::bundles::buildables::BluePrint;
+use crate::bundles::settler::Settler;
 use crate::features::ai::PathFollow;
 use crate::features::map::map_model::{MapData, TileType};
 use crate::features::misc_components::InWorld;
+use crate::features::movement::{Acceleration, Velocity};
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::features::states::AppState;
 use bevy::app::{App, Plugin};
@@ -9,9 +12,6 @@ use bevy::tasks::futures_lite::future;
 use bevy::tasks::{AsyncComputeTaskPool, Task};
 use pathfinding::grid::Grid;
 use pathfinding::prelude::bfs;
-use crate::bundles::buildables::BluePrint;
-use crate::bundles::settler::Settler;
-use crate::features::movement::{Acceleration, Velocity};
 
 pub struct PathFindingPlugin;
 
@@ -71,7 +71,10 @@ fn do_full_grid_reset(
                 for world_position in solid_query.iter() {
                     let top_left_coordinate =
                         map_data.world_position_to_top_left_coordinate(world_position.0);
-                    pathing_grid.remove_vertex((top_left_coordinate.x as usize, top_left_coordinate.y as usize));
+                    pathing_grid.remove_vertex((
+                        top_left_coordinate.x as usize,
+                        top_left_coordinate.y as usize,
+                    ));
                 }
             }
         }
@@ -84,7 +87,12 @@ fn update_grid_from_solid_component(
     solid_added_query: Query<&WorldPosition, (Added<Solid>, With<InWorld>, Without<BluePrint>)>,
     position_changed_query: Query<
         (&WorldPosition, &PreviousWorldPosition),
-        (Changed<WorldPosition>, With<Solid>, With<InWorld>, Without<BluePrint>),
+        (
+            Changed<WorldPosition>,
+            With<Solid>,
+            With<InWorld>,
+            Without<BluePrint>,
+        ),
     >,
     mut solid_removed_entities: RemovedComponents<Solid>,
     world_position_query: Query<&WorldPosition>,
@@ -99,9 +107,10 @@ fn update_grid_from_solid_component(
     for world_position in solid_added_query.iter() {
         let top_left_coordinate = map_data.world_position_to_top_left_coordinate(world_position.0);
 
-        pathing_grid.0.remove_vertex(
-            (top_left_coordinate.x as usize, top_left_coordinate.y as usize),
-        );
+        pathing_grid.0.remove_vertex((
+            top_left_coordinate.x as usize,
+            top_left_coordinate.y as usize,
+        ));
 
         updated_something = true;
     }
@@ -111,12 +120,12 @@ fn update_grid_from_solid_component(
             map_data.world_position_to_top_left_coordinate(previous_world_position.0);
         let top_left_current = map_data.world_position_to_top_left_coordinate(world_position.0);
 
-        pathing_grid.0.add_vertex(
-            (top_left_previous.x as usize, top_left_previous.y as usize),
-        );
-        pathing_grid.0.remove_vertex(
-            (top_left_current.x as usize, top_left_current.y as usize),
-        );
+        pathing_grid
+            .0
+            .add_vertex((top_left_previous.x as usize, top_left_previous.y as usize));
+        pathing_grid
+            .0
+            .remove_vertex((top_left_current.x as usize, top_left_current.y as usize));
         updated_something = true;
     }
 
@@ -124,9 +133,10 @@ fn update_grid_from_solid_component(
         if let Ok(world_position) = world_position_query.get(entity) {
             let top_left_coordinate =
                 map_data.world_position_to_top_left_coordinate(world_position.0);
-            pathing_grid.0.add_vertex(
-                (top_left_coordinate.x as usize, top_left_coordinate.y as usize),
-            );
+            pathing_grid.0.add_vertex((
+                top_left_coordinate.x as usize,
+                top_left_coordinate.y as usize,
+            ));
             updated_something = true;
         }
     }
@@ -140,7 +150,7 @@ fn update_grid_from_solid_component(
 #[derive(Debug)]
 pub struct Path {
     pub steps: Vec<UVec2>,
-    pub related_task: Option<Entity>
+    pub related_task: Option<Entity>,
 }
 
 #[derive(Debug)]
@@ -156,14 +166,14 @@ pub fn spawn_pathfinding_task(
     map_data: &MapData,
     start: WorldPosition,
     end: WorldPosition,
-    related_task: Option<Entity>
+    related_task: Option<Entity>,
 ) {
-    // 
+    //
     let thread_pool = AsyncComputeTaskPool::get();
     let grid = Box::new(grid.clone());
     let start = map_data.world_position_to_top_left_coordinate(start.0);
     let end = map_data.world_position_to_top_left_coordinate(end.0);
-    
+
     let task = thread_pool.spawn(async move {
         let is_occupied = !grid.has_vertex((end.x as usize, end.y as usize));
         let mut final_end = end;
@@ -177,16 +187,31 @@ pub fn spawn_pathfinding_task(
                     break;
                 }
             }
-            
+
             // End was occupied, all neighbours are occupied, return None
             return None;
         }
-        let points = bfs(&start,
-                         |p| grid.neighbours((p.x as usize, p.y as usize)).iter().map(|p| UVec2::new(p.0 as u32, p.1 as u32)).collect::<Vec<_>>(),
-                         |p| *p == final_end);
-        println!("from: {:?} to: {:?}, found path: {:?}", start, end, points.is_some());
+        let points = bfs(
+            &start,
+            |p| {
+                grid.neighbours((p.x as usize, p.y as usize))
+                    .iter()
+                    .map(|p| UVec2::new(p.0 as u32, p.1 as u32))
+                    .collect::<Vec<_>>()
+            },
+            |p| *p == final_end,
+        );
+        println!(
+            "from: {:?} to: {:?}, found path: {:?}",
+            start,
+            end,
+            points.is_some()
+        );
         //println!("grid: {:?}", grid);
-        points.map(|points| Path { steps: points, related_task })
+        points.map(|points| Path {
+            steps: points,
+            related_task,
+        })
     });
 
     println!("Pathfinding task spawned for agent: {:?}", target_entity);
@@ -214,16 +239,20 @@ pub fn apply_pathfinding_result(
 
 pub enum PathFollowResult {
     Success,
-    Failure
+    Failure,
 }
 
 #[derive(Event)]
 pub struct PathFollowFinished {
     pub result: PathFollowResult,
-    pub related_task: Option<Entity>
+    pub related_task: Option<Entity>,
 }
 
-pub fn follow_path(mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut Velocity)>, map_data: Query<&MapData>, mut commands: Commands) {
+pub fn follow_path(
+    mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut Velocity)>,
+    map_data: Query<&MapData>,
+    mut commands: Commands,
+) {
     const AT_POINT_THRESHOLD: f32 = 0.001;
 
     for (entity, mut path_follow, world_position, mut velocity) in query.iter_mut() {
@@ -236,9 +265,12 @@ pub fn follow_path(mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &m
         let current_index = path_follow.current_path_index;
         let current_point = path_follow.path.steps[current_index];
         let next_point = path_follow.path.steps[current_index + 1];
-        
-        let world_position = map_data.get_single().unwrap().world_position_to_top_left_coordinate(world_position.0);
-        
+
+        let world_position = map_data
+            .get_single()
+            .unwrap()
+            .world_position_to_top_left_coordinate(world_position.0);
+
         let direction = (next_point.as_vec2() - world_position.as_vec2()).normalize_or_zero();
         let speed = 3.0;
         let final_vector = Vec2::new(direction.x as f32, direction.y as f32) * speed;
@@ -251,21 +283,30 @@ pub fn follow_path(mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &m
                 path_follow.finished = true;
                 commands.entity(entity).trigger(PathFollowFinished {
                     result: PathFollowResult::Success,
-                    related_task: path_follow.path.related_task
+                    related_task: path_follow.path.related_task,
                 });
             }
         }
     }
 }
 
-pub fn test_add_pathfinding_task_to_settler(added_settler: Query<(Entity, &WorldPosition), Added<Settler>>,
-                                            mut commands: Commands,
-                                            map_data: Query<&MapData>,
-                                            pathing_grid: Res<PathingGridResource>,
+pub fn test_add_pathfinding_task_to_settler(
+    added_settler: Query<(Entity, &WorldPosition), Added<Settler>>,
+    mut commands: Commands,
+    map_data: Query<&MapData>,
+    pathing_grid: Res<PathingGridResource>,
 ) {
     for (entity, world_position) in added_settler.iter() {
         println!("Adding pathfinding to settler");
         let end = WorldPosition(Vec2::new(2.0, 2.0));
-        spawn_pathfinding_task(&mut commands, entity, &pathing_grid, map_data.single(), *world_position, end, None);
+        spawn_pathfinding_task(
+            &mut commands,
+            entity,
+            &pathing_grid,
+            map_data.single(),
+            *world_position,
+            end,
+            None,
+        );
     }
 }

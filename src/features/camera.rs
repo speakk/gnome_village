@@ -7,13 +7,13 @@ use bevy::app::{App, Plugin, RunFixedMainLoop};
 use bevy::core_pipeline::prepass::{DeferredPrepass, DepthPrepass, NormalPrepass};
 use bevy::ecs::prelude::*;
 use bevy::math::{Vec2, Vec3};
+use bevy::pbr::ClusterConfig;
 use bevy::prelude::KeyCode::{KeyA, KeyD, KeyS, KeyW};
 use bevy::prelude::*;
 use bevy::render::camera::ScalingMode;
 use bevy_atmosphere::plugin::{AtmosphereCamera, AtmospherePlugin};
 use leafwing_input_manager::prelude::*;
 use std::ops::{Add, Sub};
-use bevy::pbr::ClusterConfig;
 
 pub struct CameraPlugin;
 
