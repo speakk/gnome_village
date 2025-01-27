@@ -1,9 +1,13 @@
+use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::buildables::BuildablesPlugin;
 use crate::bundles::settler::Settler;
 use crate::features::misc_components::Prototype;
+use crate::utils::entity_clone::CloneEntityCommandsExt;
 use bevy::prelude::*;
 use moonshine_core::save::Save;
 use moonshine_view::RegisterView;
+use crate::bundles::buildables::torch::WoodenTorch;
+use crate::bundles::rock::Rock;
 
 pub mod buildables;
 pub mod rock;
@@ -17,29 +21,54 @@ impl Plugin for BundlePlugin {
     }
 }
 
-pub fn clone_entity(world: &mut World, entity: Entity) -> Entity {
-    let mut scene_spawner = SceneSpawner::default();
-    let scene = DynamicSceneBuilder::from_world(world)
-        .extract_entity(entity)
-        .build();
-
-    let scene_id = world.resource_mut::<Assets<DynamicScene>>().add(scene);
-    let instance_id = scene_spawner.spawn_dynamic_sync(world, &scene_id).unwrap();
-
-    let new_entity = scene_spawner
-        .iter_instance_entities(instance_id)
-        .next()
-        .unwrap();
-
-    new_entity
-}
-
-pub fn make_concrete_from_prototype(prototype: Entity, world: &mut World) -> Entity {
-    let cloned = clone_entity(world, prototype);
-    let mut commands = world.commands();
+pub fn make_concrete_from_prototype(prototype: Entity, mut commands: Commands) -> Entity {
+    let cloned = commands.clone_entity(prototype);
     commands
         .entity(cloned)
         .insert(Save)
         .remove::<Prototype>()
         .id()
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+enum BundleType {
+    WoodenWall = 0,
+    Rock = 1,
+    Settler = 2,
+    WoodenTorch = 3,
+}
+
+/*
+trait MyTraitExt {
+  fn spawn_my_thing(&mut self) -> &mut EntityCommands;
+}
+
+impl MyTraitExt for Commands {
+  fn spawn_my_thing(&mut self) -> &mut EntityCommands {
+    self.spawn(..)
+  }
+}
+ */
+
+trait BundleGenerator {
+    fn generate(&mut self, bundle_type: &BundleType) -> Entity;
+}
+
+impl<'w, 's> BundleGenerator for Commands<'w, 's> {
+    fn generate(&mut self, bundle_type: &BundleType) -> Entity {
+        match bundle_type {
+            BundleType::WoodenWall => self.spawn((WoodenWall,)).id(),
+            BundleType::Rock => self.spawn((Rock,)).id(),
+            BundleType::Settler => self.spawn((Settler,)).id(),
+            BundleType::WoodenTorch => self.spawn((WoodenTorch,)).id(),
+        }
+    }
+}
+//
+// impl BundleType {
+//     fn create(&self) -> Entity {
+//         match self { BundleType::WoodenWall => {
+//
+//         } }
+//     }
+// }

@@ -10,16 +10,16 @@ use leafwing_input_manager::InputManagerBundle;
 #[derive(Event)]
 pub struct MapClickedEvent(pub IVec2);
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum DragModifier {
     Primary,
     Secondary,
 }
 
-#[derive(Event)]
+#[derive(Event, Clone, Copy)]
 pub struct MapDragStartEvent {
-    coordinate: IVec2,
-    drag_modifier: Option<DragModifier>,
+    pub coordinate: IVec2,
+    pub drag_modifier: Option<DragModifier>,
 }
 
 #[derive(Event)]

@@ -6,6 +6,7 @@ use bevy::prelude::*;
 use grid_pathfinding::PathingGrid;
 use grid_util::grid::Grid;
 use grid_util::Point;
+use crate::features::misc_components::InWorld;
 
 pub struct PathFindingPlugin;
 
@@ -72,10 +73,10 @@ fn do_full_grid_reset(
 #[allow(clippy::type_complexity)]
 fn update_grid_from_solid_component(
     mut pathing_grid: ResMut<PathingGridResource>,
-    solid_added_query: Query<&WorldPosition, Added<Solid>>,
+    solid_added_query: Query<&WorldPosition, (Added<Solid>, With<InWorld>)>,
     position_changed_query: Query<
         (&WorldPosition, &PreviousWorldPosition),
-        (Changed<WorldPosition>, With<Solid>),
+        (Changed<WorldPosition>, With<Solid>, With<InWorld>),
     >,
     mut solid_removed_entities: RemovedComponents<Solid>,
     world_position_query: Query<&WorldPosition>,

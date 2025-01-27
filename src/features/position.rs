@@ -4,6 +4,7 @@ use grid_util::Point;
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
 #[reflect(Component)]
+#[require(PreviousWorldPosition)]
 pub struct WorldPosition(pub Vec2);
 
 impl WorldPosition {

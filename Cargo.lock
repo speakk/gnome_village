@@ -2944,6 +2944,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dfa686283ad6dd069f105e5ab091b04c62850d3e4cf5d67debad1933f55023df"
 
 [[package]]
+name = "i-cant-believe-its-not-bsn"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7474a31ec53e6e5220a8cf3b9cc4f538635eaa1d4d3675287d06fdf6a162c18b"
+dependencies = [
+ "bevy_ecs",
+ "bevy_hierarchy",
+]
+
+[[package]]
 name = "icu_locid"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4571,6 +4581,7 @@ dependencies = [
  "directories",
  "grid_pathfinding",
  "grid_util",
+ "i-cant-believe-its-not-bsn",
  "leafwing-input-manager",
  "log",
  "moonshine-core",

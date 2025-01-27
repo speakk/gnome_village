@@ -91,8 +91,9 @@ pub fn on_remove_blueprint(mut removed: RemovedComponents<BluePrint>,
                            mut commands: Commands
 ) {
     removed.read().for_each(|base_entity| {
-        println!("blueprint removed, restoring original material");
-        
+        if commands.get_entity(base_entity).is_none() {
+            return;
+        }
         let view = viewable_query.get(base_entity).unwrap();
         let mut material = materials_query.get_mut(view.view().entity()).unwrap();
         let original_material = original_materials_query.get(view.view().entity()).unwrap();

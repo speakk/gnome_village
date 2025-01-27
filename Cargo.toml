@@ -23,6 +23,7 @@ noisy_bevy = "0.8.0"
 rand = "0.8.5"
 bevy_cobweb = "0.14.3"
 bevy-inspector-egui = "0.28.1"
+i-cant-believe-its-not-bsn = "0.3.0"
 
 [profile.dev.package."*"]
 opt-level = 3
