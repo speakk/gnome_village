@@ -1,4 +1,4 @@
-use crate::features::tasks::task::ItemRequirement;
+use crate::features::tasks::task::ItemAmount;
 use crate::bundles::buildables::Buildable;
 use crate::bundles::{Id, ItemId};
 use crate::features::misc_components::gltf_asset::GltfAsset;
@@ -14,7 +14,7 @@ use bevy::prelude::*;
     Name(|| "Wooden Torch"),
     Buildable(|| Buildable {
         item_requirements: vec![
-            ItemRequirement {
+            ItemAmount {
                 item_id: ItemId::Lumber,
                 amount: 1,
             }

@@ -22,17 +22,9 @@ impl Plugin for BundlePlugin {
         app.insert_resource(Prototypes(HashMap::new()))
             .insert_resource(ItemSpawners(HashMap::new()))
             .add_plugins(MiscComponentsPlugin)
+            .add_systems(Update, react_to_emptied_stack)
             .add_plugins(BuildablesPlugin);
     }
-}
-
-pub fn make_concrete_from_prototype(prototype: Entity, mut commands: Commands) -> Entity {
-    let cloned = commands.clone_entity(prototype);
-    commands
-        .entity(cloned)
-        .insert(Save)
-        .remove::<Prototype>()
-        .id()
 }
 
 struct ConstructionCost {
@@ -56,7 +48,25 @@ pub enum ItemId {
 }
 
 #[derive(Component, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[require(ItemStack)]
 pub struct ResourceItem;
+
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct ItemStack(pub u32);
+
+impl Default for ItemStack {
+    fn default() -> Self {
+        ItemStack(1)
+    }
+}
+
+pub fn react_to_emptied_stack(query: Query<(Entity, &ItemStack), Changed<ItemStack>>, mut commands: Commands) {
+    for (entity, item_stack) in query.iter() {
+        if item_stack.0 == 0 {
+            commands.entity(entity).despawn();
+        }
+    }
+}
 
 #[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash, Deref, DerefMut)]
 pub struct Id(pub(crate) ItemId);

@@ -1,4 +1,4 @@
-use crate::features::tasks::task::ItemRequirement;
+use crate::features::tasks::task::ItemAmount;
 use crate::bundles::buildables::Buildable;
 use crate::bundles::{Id, ItemId};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshType};
@@ -12,7 +12,7 @@ use bevy::prelude::*;
     Solid,
     Buildable(|| Buildable {
         item_requirements: vec![
-            ItemRequirement {
+            ItemAmount {
                 item_id: ItemId::Lumber,
                 amount: 2,
             }

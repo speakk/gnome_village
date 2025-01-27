@@ -24,7 +24,7 @@ pub enum Status {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
-pub struct ItemRequirement {
+pub struct ItemAmount {
     pub item_id: ItemId,
     pub amount: u32,
 }
@@ -42,7 +42,7 @@ pub struct BringResourceRuntimeData {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
 pub struct BringResourceData {
-    pub item_requirement: ItemRequirement,
+    pub item_requirement: ItemAmount,
     pub target: DepositTarget,
     pub run_time_data: Option<BringResourceRuntimeData>
 }

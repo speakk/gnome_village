@@ -8,6 +8,7 @@ use crate::features::tasks::task::{BringResourceData, BringResourceRuntimeData, 
 use bevior_tree::prelude::Sequence;
 use bevior_tree::BehaviorTreeBundle;
 use bevy::prelude::*;
+use crate::features::ai::actions::pick_up::PickUp;
 
 pub fn create_bring_resource_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
@@ -38,6 +39,7 @@ pub fn create_bring_resource_tree(
                     .entity(worker_entity)
                     .insert(BehaviorTreeBundle::from_root(Sequence::new(vec![
                         Box::new(GoTo::new(resource_position.0.as_ivec2())),
+                        Box::new(PickUp::new(resource_target, bring_resource_data.item_requirement.amount)),
                     ])));
             }
         }

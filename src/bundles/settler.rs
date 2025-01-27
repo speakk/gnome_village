@@ -1,3 +1,4 @@
+use crate::features::inventory::Inventory;
 use crate::features::misc_components::gltf_asset::GltfAsset;
 use crate::features::movement::Friction;
 use crate::features::movement::Acceleration;
@@ -14,6 +15,7 @@ use bevy::prelude::*;
     Velocity,
     Friction(|| Friction(0.1)),
     GltfAsset(|| "blender_models/settler.glb"),
+    Inventory,
     Name(|| "Settler"))]
 #[reflect(Component)]
 pub struct Settler {

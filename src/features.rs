@@ -12,3 +12,4 @@ pub mod tasks;
 pub mod user_actions;
 pub mod world_interaction;
 pub mod ai;
+pub mod inventory;

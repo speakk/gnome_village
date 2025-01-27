@@ -1,6 +1,6 @@
 use crate::bundles::buildables::{BluePrint, Buildable};
 use crate::features::misc_components::InWorld;
-use crate::features::tasks::task::{BringResourceData, DepositTarget, ItemRequirement, RunType, Task, TaskType};
+use crate::features::tasks::task::{BringResourceData, DepositTarget, ItemAmount, RunType, Task, TaskType};
 use bevy::prelude::*;
 use crate::features::position::WorldPosition;
 
@@ -30,7 +30,7 @@ pub fn react_to_blueprints(
                                 bring_resource_task.spawn((Task {
                                     run_type: RunType::Leaf,
                                     task_type: Some(TaskType::BringResource(BringResourceData {
-                                        item_requirement: ItemRequirement {
+                                        item_requirement: ItemAmount {
                                             item_id: item_requirement.item_id,
                                             amount: 1,
                                         },
