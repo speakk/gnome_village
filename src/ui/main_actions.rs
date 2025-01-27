@@ -9,19 +9,18 @@ pub mod build_menu;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum MainActionType {
-    None,
     Build,
     Orders
 }
 
 #[derive(Event, Debug)]
-pub struct MainActionSelected(pub MainActionType);
+pub struct MainActionMenuButtonPressed(pub MainActionType);
 
 pub struct MainActionsPlugin;
 
 impl Plugin for MainActionsPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_event::<MainActionSelected>();
+            .add_event::<MainActionMenuButtonPressed>();
     }
 }

@@ -2,13 +2,12 @@ use bevy::prelude::*;
 use bevy_cobweb::prelude::ReactCommandsExt;
 use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;
 use bevy_cobweb_ui::prelude::*;
-use crate::ui::main_actions::{MainActionSelected, MainActionType};
+use crate::ui::main_actions::{MainActionMenuButtonPressed, MainActionType};
 
 struct MainActionButton {
     label: String,
     main_action_type: MainActionType
 }
-
 
 pub fn initialize_menu_buttons<'a>(main_scene: &mut SceneHandle<'a, <UiBuilder<'_, Entity> as SceneNodeBuilder>::Builder<'a>>) {
     let buttons = vec![
@@ -27,8 +26,7 @@ pub fn initialize_menu_buttons<'a>(main_scene: &mut SceneHandle<'a, <UiBuilder<'
             button_scene.get("text").update_text(&button.label);
             button_scene.on_pressed(move |mut commands: Commands| {
                 println!("Button pressed, broadcasting");
-                commands.react().broadcast(MainActionSelected(button.main_action_type));
-                OK
+                commands.react().broadcast(MainActionMenuButtonPressed(button.main_action_type));
             });
         });
     }
