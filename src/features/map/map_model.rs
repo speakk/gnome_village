@@ -38,8 +38,8 @@ impl MapData {
     }
 
     pub fn convert_to_centered_coordinate(&self, coordinate: UVec2) -> IVec2 {
-        let x = ((coordinate.x as i32) - (self.size.x as i32) / 2);
-        let y = ((coordinate.y as i32) - (self.size.y as i32) / 2);
+        let x = (coordinate.x as i32) - (self.size.x as i32) / 2;
+        let y = (coordinate.y as i32) - (self.size.y as i32) / 2;
         IVec2::new(x, y)
     }
 
@@ -61,7 +61,7 @@ impl MapData {
     pub fn set_tile_type(&mut self, coordinate: IVec2, tile_type: TileType) {
         let index = (self.size.x * (coordinate.x + (self.size.x as i32) / 2) as u32
             + (coordinate.y + (self.size.x as i32) / 2) as u32) as usize;
-        if (index > self.data.len() - 1) {
+        if index > self.data.len() - 1 {
             panic!(
                 "Index out of bounds for set_tile_type {:?}, length of array is: {:?}",
                 index,

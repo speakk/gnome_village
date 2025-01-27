@@ -10,7 +10,6 @@ use bevy::prelude::{
 };
 use bevy::utils::HashMap;
 use moonshine_object::{Object, ObjectInstance};
-use moonshine_view::prelude::*;
 use moonshine_view::{BuildView, ViewCommands};
 use noisy_bevy::simplex_noise_2d;
 

@@ -1,14 +1,13 @@
 use std::fs;
-use std::ops::Deref;
 use crate::bundles::settler::Settler;
-use crate::features::input::{CameraPanAction, SaveLoadAction};
+use crate::features::input::SaveLoadAction;
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 use leafwing_input_manager::action_state::ActionState;
 use moonshine_core::load::load;
 use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::path::{Path, PathBuf};
-use bevy::prelude::KeyCode::{KeyA, KeyD, KeyS, KeyW, F8};
+use bevy::prelude::KeyCode::F8;
 use directories::ProjectDirs;
 use KeyCode::F5;
 use leafwing_input_manager::input_map::InputMap;

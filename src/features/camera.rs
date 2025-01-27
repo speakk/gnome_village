@@ -118,7 +118,7 @@ fn handle_zoom_input(
     time: Res<Time>,
 ) {
     let zoom_amount = 0.3;
-    for (action_state, mut camera_projection) in &mut query {
+    for (action_state, camera_projection) in &mut query {
         if let Projection::Orthographic(ref mut ortho_projection) = *camera_projection.into_inner()
         {
             if action_state.pressed(&CameraZoomAction::In) {
