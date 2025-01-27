@@ -95,7 +95,7 @@ pub fn generate_map_entity(
     world_seed: Res<WorldSeed>,
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
 ) {
-    let map_size = UVec2::new(150, 150);
+    let map_size = UVec2::new(70, 70);
     let mut map_data = MapData {
         data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
         size: map_size,
@@ -203,7 +203,7 @@ pub fn generate_test_entities(
     let test_entities = vec![
         EntityGeneration {
             entity_type: ItemId::Settler,
-            amount: 2,
+            amount: 1,
         },
         EntityGeneration {
             entity_type: ItemId::Lumber,

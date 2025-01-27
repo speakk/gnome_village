@@ -38,7 +38,7 @@ pub struct PathFollow {
 impl Default for PathFollow {
     fn default() -> Self {
         PathFollow {
-            path: Path { steps: vec![] },
+            path: Path { steps: vec![], related_task: None },
             current_path_index: 0,
             finished: false,
         }

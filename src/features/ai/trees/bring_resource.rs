@@ -1,22 +1,19 @@
-use std::borrow::Cow;
 use crate::bundles::settler::Settler;
 use crate::bundles::{Id, Reservation, Reservations, ResourceItem};
-use crate::features::ai::actions::go_to::{GoToAction};
-use crate::features::ai::{PathFollow, WorkingOnTask};
-use crate::features::map::map_model::MapData;
+use crate::features::ai::actions::go_to::GoToAction;
+use crate::features::ai::actions::pick_up::PickUpAction;
+use crate::features::ai::WorkingOnTask;
 use crate::features::misc_components::InWorld;
-use crate::features::path_finding::{spawn_pathfinding_task, PathFollowFinished, PathFollowResult, PathingGridResource};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::{
     BringResourceData, BringResourceRuntimeData, DepositTarget, Task, TaskType,
 };
-use beet::prelude::{Action, EndOnRun, LogOnRun, OnRun, SequenceFlow, TargetEntity};
+use beet::prelude::{OnRun, SequenceFlow, TargetEntity};
 use bevior_tree::node::NodeResult;
-use bevior_tree::prelude::{delegate_node, Sequence, TaskBridge};
+use bevior_tree::prelude::{delegate_node, TaskBridge};
 use bevior_tree::task::{TaskEvent, TaskStatus};
-use bevior_tree::{BehaviorTree, BehaviorTreeBundle, TreeStatus};
+use bevior_tree::{BehaviorTree, TreeStatus};
 use bevy::prelude::*;
-use crate::features::ai::actions::pick_up::PickUpAction;
 
 pub fn create_bring_resource_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
@@ -55,8 +52,6 @@ pub fn create_bring_resource_tree(
                     .with_children(|root| {
                         println!("Creating tree, spawning goto");
                         root.spawn((
-                            Name::new("GoTo task"),
-                            LogOnRun(Cow::from("GoToAction run")),
                             GoToAction {
                                 target: resource_position.0.as_ivec2(),
                             },
@@ -64,8 +59,6 @@ pub fn create_bring_resource_tree(
                         ));
 
                         root.spawn((
-                            Name::new("PickUp task"),
-                            LogOnRun(Cow::from("PickUp task run")),
                             PickUpAction {
                                 target_entity: resource_target,
                                 amount: bring_resource_data.item_requirement.amount,
@@ -74,24 +67,13 @@ pub fn create_bring_resource_tree(
                         ));
 
                         root.spawn((
-                            Name::new("GoTo task 2"),
-                            LogOnRun(Cow::from("GoToAction run 2")),
                             GoToAction {
                                 target: target_coordinate,
                             },
                             TargetEntity(root.parent_entity()),
                         ));
-                    }).trigger(OnRun);
-
-
-                // .insert(BehaviorTreeBundle::from_root(Sequence::new(vec![
-                //     Box::new(GoTo::new(resource_position.0.as_ivec2())),
-                //     Box::new(PickUp::new(
-                //         resource_target,
-                //         bring_resource_data.item_requirement.amount,
-                //     )),
-                //     Box::new(GoTo::new(target_coordinate)),
-                // ])));
+                    })
+                    .trigger(OnRun);
             }
         }
     }
@@ -100,42 +82,6 @@ pub fn create_bring_resource_tree(
 #[delegate_node(delegate)]
 pub struct DebugPrintTask {
     delegate: TaskBridge,
-}
-
-impl DebugPrintTask {
-    pub fn new(message: String) -> Self {
-        let task = TaskBridge::new(|In(_)| TaskStatus::Complete(NodeResult::Success)).on_event(
-            TaskEvent::Enter,
-            move |In(_)| {
-                println!("Debug print task: {}", message);
-            },
-        );
-
-        Self { delegate: task }
-    }
-}
-
-#[delegate_node(delegate)]
-pub struct CleanUpTree {
-    delegate: TaskBridge,
-}
-
-impl CleanUpTree {
-    pub fn new() -> Self {
-        let task = TaskBridge::new(|In(_)| TaskStatus::Running).on_event(
-            TaskEvent::Enter,
-            |In(worker_entity), mut commands: Commands| {
-                println!("Cleaning up tree!");
-                commands
-                    .entity(worker_entity)
-                    .remove::<WorkingOnTask>()
-                    .remove::<BehaviorTree>()
-                    .remove::<TreeStatus>();
-            },
-        );
-
-        Self { delegate: task }
-    }
 }
 
 pub fn score_bring_resource(

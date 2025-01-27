@@ -6,7 +6,7 @@ use crate::features::path_finding::{spawn_pathfinding_task, PathFollowFinished, 
 use crate::features::position::WorldPosition;
 
 #[derive(Component, Action, Reflect)]
-#[require(ContinueRun)]
+#[require(ContinueRun, Name(|| "GoToAction"))]
 #[observers(go_to_action)]
 pub struct GoToAction {
     pub(crate) target: IVec2,
@@ -37,12 +37,17 @@ fn go_to_action(
         map_data.single(),
         *world_position,
         target_position,
+        Some(trigger.entity())
     );
 
     let trigger_entity = trigger.entity();
 
     commands.entity(target_agent).observe(move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {
-        match path_follow_trigger.0 {
+        if path_follow_trigger.related_task != Some(trigger_entity) {
+            return;
+        }
+        
+        match path_follow_trigger.result {
             PathFollowResult::Success => {
                 commands.entity(trigger_entity).trigger(OnRunResult::success());
                 println!("GoTo action finished, success!");

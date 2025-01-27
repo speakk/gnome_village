@@ -7,6 +7,7 @@ use bevy::math::IVec2;
 use bevy::prelude::{Component, Entity, In, Query, Reflect};
 
 #[derive(Component, Action, Reflect)]
+#[require(Name(|| "PickUpAction"))]
 #[observers(pick_up_action)]
 pub struct PickUpAction {
     pub target_entity: Entity,

@@ -140,6 +140,7 @@ fn update_grid_from_solid_component(
 #[derive(Debug)]
 pub struct Path {
     pub steps: Vec<UVec2>,
+    pub related_task: Option<Entity>
 }
 
 #[derive(Debug)]
@@ -155,6 +156,7 @@ pub fn spawn_pathfinding_task(
     map_data: &MapData,
     start: WorldPosition,
     end: WorldPosition,
+    related_task: Option<Entity>
 ) {
     // 
     let thread_pool = AsyncComputeTaskPool::get();
@@ -184,7 +186,7 @@ pub fn spawn_pathfinding_task(
                          |p| *p == final_end);
         println!("from: {:?} to: {:?}, found path: {:?}", start, end, points.is_some());
         //println!("grid: {:?}", grid);
-        points.map(|points| Path { steps: points })
+        points.map(|points| Path { steps: points, related_task })
     });
 
     println!("Pathfinding task spawned for agent: {:?}", target_entity);
@@ -216,7 +218,10 @@ pub enum PathFollowResult {
 }
 
 #[derive(Event)]
-pub struct PathFollowFinished(pub PathFollowResult);
+pub struct PathFollowFinished {
+    pub result: PathFollowResult,
+    pub related_task: Option<Entity>
+}
 
 pub fn follow_path(mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut Velocity)>, map_data: Query<&MapData>, mut commands: Commands) {
     const AT_POINT_THRESHOLD: f32 = 0.001;
@@ -244,7 +249,10 @@ pub fn follow_path(mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &m
                 path_follow.current_path_index += 1;
             } else {
                 path_follow.finished = true;
-                commands.entity(entity).trigger(PathFollowFinished(PathFollowResult::Success));
+                commands.entity(entity).trigger(PathFollowFinished {
+                    result: PathFollowResult::Success,
+                    related_task: path_follow.path.related_task
+                });
             }
         }
     }
@@ -258,6 +266,6 @@ pub fn test_add_pathfinding_task_to_settler(added_settler: Query<(Entity, &World
     for (entity, world_position) in added_settler.iter() {
         println!("Adding pathfinding to settler");
         let end = WorldPosition(Vec2::new(2.0, 2.0));
-        spawn_pathfinding_task(&mut commands, entity, &pathing_grid, map_data.single(), *world_position, end);
+        spawn_pathfinding_task(&mut commands, entity, &pathing_grid, map_data.single(), *world_position, end, None);
     }
 }
