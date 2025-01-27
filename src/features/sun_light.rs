@@ -95,7 +95,10 @@ pub fn setup_lights(mut commands: Commands) {
 fn daylight_cycle(
     mut commands: Commands,
     mut atmosphere: AtmosphereMut<Nishita>,
-    mut sun_query: Query<(&mut Transform, &mut DirectionalLight), (With<Sun>, Without<Moon>)>,
+    mut sun_query: Query<
+        (&mut Transform, &mut DirectionalLight, Entity),
+        (With<Sun>, Without<Moon>),
+    >,
     mut moon_query: Query<
         (&mut Transform, &mut DirectionalLight, Entity),
         (With<Moon>, Without<Sun>),
@@ -112,9 +115,18 @@ fn daylight_cycle(
         let t = time.elapsed_secs_wrapped() / 6.0;
         atmosphere.sun_position = Vec3::new(0., t.sin(), t.cos());
 
-        if let Some((mut light_trans, mut directional)) = sun_query.single_mut().into() {
+        if let Some((mut light_trans, mut directional, entity)) = sun_query.single_mut().into() {
             light_trans.rotation = Quat::from_rotation_x(-t);
-            directional.illuminance = t.sin().max(0.0).powf(2.0) * AMBIENT_DAYLIGHT;
+            let illuminance = t.sin().max(0.0).powf(2.0) * AMBIENT_DAYLIGHT;
+            // TODO: Base this on rotation
+            if illuminance < 10.0 {
+                if let Ok(visibility) = visibility_query.get_mut(entity) {
+                    commands.entity(entity).remove::<Visibility>();
+                }
+            } else {
+                commands.entity(entity).insert(Visibility::Visible);
+            }
+            directional.illuminance = illuminance;
         }
 
         if let Some((mut light_trans, mut directional, entity)) = moon_query.single_mut().into() {

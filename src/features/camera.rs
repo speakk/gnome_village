@@ -5,7 +5,6 @@ use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
 use bevy::app::{App, Plugin, RunFixedMainLoop, Startup};
 use bevy::ecs::prelude::*;
 use bevy::math::{Vec2, Vec3};
-use bevy::pbr::ScreenSpaceAmbientOcclusion;
 use bevy::prelude::KeyCode::{KeyA, KeyD, KeyS, KeyW};
 use bevy::prelude::*;
 use bevy::render::camera::ScalingMode;
@@ -47,7 +46,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             far: 1000.0,
             ..OrthographicProjection::default_3d()
         }),
-        ScreenSpaceAmbientOcclusion::default(),
+        //ScreenSpaceAmbientOcclusion::default(),
         Msaa::Off,
         AtmosphereCamera::default(),
         // Skybox {
