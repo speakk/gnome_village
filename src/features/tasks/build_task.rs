@@ -1,13 +1,14 @@
-use crate::bundles::buildables::BluePrint;
+use crate::bundles::buildables::{BluePrint, Buildable};
 use crate::features::misc_components::InWorld;
-use crate::features::tasks::task::{RunType, Task, TaskType};
+use crate::features::tasks::task::{DepositTarget, RunType, Task, TaskType};
 use bevy::prelude::*;
+use crate::features::position::WorldPosition;
 
 pub fn react_to_blueprints(
     mut commands: Commands,
-    new_blueprints_query: Query<&BluePrint, (Added<BluePrint>, With<InWorld>)>,
+    new_blueprints_query: Query<(&BluePrint, &Buildable, &WorldPosition), (Added<BluePrint>, With<InWorld>)>,
 ) {
-    for blueprint in new_blueprints_query.iter() {
+    for (blueprint, buildable, world_position) in new_blueprints_query.iter() {
         println!("Got blueprint: {:?}", blueprint);
         let new_task = commands
             .spawn((Task {
@@ -21,12 +22,17 @@ pub fn react_to_blueprints(
                         ..default()
                     },))
                     .with_children(|bring_resource_task| {
-                        // Here check building requirements for BluePrint / Constructable1
-                        bring_resource_task.spawn((Task {
-                            run_type: RunType::Leaf,
-                            task_type: Some(TaskType::BringResource),
-                            ..default()
-                        },));
+                        
+                        for item_requirement in buildable.item_requirements.as_slice() {
+                            bring_resource_task.spawn((Task {
+                                run_type: RunType::Leaf,
+                                task_type: Some(TaskType::BringResource {
+                                    item_requirement: item_requirement.clone(),
+                                    target: DepositTarget::Coordinate(world_position.0.as_ivec2())
+                                }),
+                                ..default()
+                            },));
+                        }
                     });
             });
     }

@@ -1,6 +1,7 @@
 use moonshine_core::prelude::Save;
 use bevy::prelude::Component;
 use bevy::prelude::*;
+use crate::bundles::ItemId;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum RunType {
@@ -19,9 +20,24 @@ pub enum Status {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
+pub struct ItemRequirement {
+    pub item_id: ItemId,
+    pub amount: u32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
+pub enum DepositTarget {
+    Coordinate(IVec2),
+    Inventory(Entity),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum TaskType {
     Build,
-    BringResource,
+    BringResource {
+        item_requirement: ItemRequirement,
+        target: DepositTarget
+    },
     GoTo,
 }
 

@@ -45,7 +45,7 @@ struct BuildableData {
     name: String,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum ItemId {
     WoodenWall = 0,
     Rock = 1,

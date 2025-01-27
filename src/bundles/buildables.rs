@@ -7,6 +7,7 @@ use crate::bundles::{ItemId, ItemSpawners, Prototypes};
 use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
 use bevy::prelude::*;
+use crate::features::tasks::task::ItemRequirement;
 
 pub struct BuildablesPlugin;
 
@@ -87,4 +88,6 @@ pub fn add_buildable_prototypes(
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
-pub struct Buildable;
+pub struct Buildable {
+    pub(crate) item_requirements: Vec<ItemRequirement>
+}
