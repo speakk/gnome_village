@@ -8,24 +8,12 @@ pub struct MovementPlugin;
 pub struct Velocity(pub Vec2);
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
-pub struct PhysicalTranslation(pub Vec2);
+pub struct WorldPosition(pub Vec2);
 
-impl From<PhysicalTranslation> for Vec3 {
-    fn from(physical_translation: PhysicalTranslation) -> Self {
-        Vec3::new(physical_translation.x, 0.0, physical_translation.y)
-    }
-}
-
-impl Into<Vec2> for PhysicalTranslation {
-    fn into(self) -> Vec2 {
-        self.0
-    }
-}
-
-/// The value [`PhysicalTranslation`] had in the last fixed timestep.
+/// The value [`WorldPosition`] had in the last fixed timestep.
 /// Used for interpolation in the `interpolate_rendered_transform` system.
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
-pub struct PreviousPhysicalTranslation(Vec2);
+pub struct PreviousWorldPosition(Vec2);
 
 #[derive(Component, Default)]
 pub struct Acceleration(pub Vec2);
@@ -66,18 +54,14 @@ fn reset_acceleration(mut query: Query<(&mut Acceleration)>) {
 }
 
 fn apply_velocity(
-    mut query: Query<(
-        &mut PhysicalTranslation,
-        &mut PreviousPhysicalTranslation,
-        &Velocity,
-    )>,
+    mut query: Query<(&mut WorldPosition, &mut PreviousWorldPosition, &Velocity)>,
     time: Res<Time<Fixed>>,
 ) {
-    for (mut physical_translation, mut previous_physical_translation, velocity) in &mut query {
-        previous_physical_translation.0 = physical_translation.0;
+    for (mut world_position, mut previous_world_position, velocity) in &mut query {
+        previous_world_position.0 = world_position.0;
 
-        physical_translation.x += velocity.0.x * time.delta_secs();
-        physical_translation.y += velocity.0.y * time.delta_secs();
+        world_position.x += velocity.0.x * time.delta_secs();
+        world_position.y += velocity.0.y * time.delta_secs();
     }
 }
 
@@ -100,17 +84,11 @@ fn apply_friction(mut query: Query<(&Friction, &mut Velocity)>, time: Res<Time<F
 
 fn interpolate_rendered_transform(
     fixed_time: Res<Time<Fixed>>,
-    mut query: Query<(
-        &mut Transform,
-        &PhysicalTranslation,
-        &PreviousPhysicalTranslation,
-    )>,
+    mut query: Query<(&mut Transform, &WorldPosition, &PreviousWorldPosition)>,
 ) {
-    for (mut transform, current_physical_translation, previous_physical_translation) in
-        query.iter_mut()
-    {
-        let previous = previous_physical_translation.0;
-        let current = current_physical_translation.0;
+    for (mut transform, current_world_position, previous_world_position) in query.iter_mut() {
+        let previous = previous_world_position.0;
+        let current = current_world_position.0;
         // The overstep fraction is a value between 0 and 1 that tells us how far we are between two fixed timesteps.
         let alpha = fixed_time.overstep_fraction();
 

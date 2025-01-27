@@ -1,4 +1,4 @@
-use crate::features::movement::{PhysicalTranslation, PreviousPhysicalTranslation};
+use crate::features::movement::{PreviousWorldPosition, WorldPosition};
 use bevy::prelude::*;
 use moonshine_core::prelude::*;
 use moonshine_view::prelude::*;
@@ -8,15 +8,15 @@ pub struct Settler;
 
 #[derive(Bundle, Default)]
 pub struct SettlerBundle {
-    pub(crate) physical_translation: PhysicalTranslation,
-    pub(crate) previous_physical_translation: PreviousPhysicalTranslation,
+    pub(crate) world_position: WorldPosition,
+    pub(crate) previous_world_position: PreviousWorldPosition,
     pub settler: Settler,
 }
 
 impl BuildView for Settler {
     fn build(world: &World, object: Object<Settler>, mut view: ViewCommands<Settler>) {
         println!("Building view for settler");
-        let transform = world.get::<PhysicalTranslation>(object.entity()).unwrap();
+        let transform = world.get::<WorldPosition>(object.entity()).unwrap();
         let asset_server = world.get_resource::<AssetServer>().unwrap();
         view.insert((
             SceneRoot(
