@@ -49,15 +49,17 @@ fn ensure_building_preview(mut world: &mut World) {
     }
 }
 
-pub fn follow_mouse_cursor(mut query: Query<&mut WorldPosition, With<FollowMouseCursor>>,
+pub fn follow_mouse_cursor(mut query: Query<&mut WorldPosition, (With<FollowMouseCursor>)>,
                            current_mouse_coordinate: Res<CurrentMouseWorldCoordinate>,
                            map_data: Query<&MapData>
 ) {
     for mut world_position in query.iter_mut() {
-        let map_data = map_data.single();
-        let location = map_data.centered_coordinate_to_world_position(current_mouse_coordinate.0);
-        println!("Following mouse cursor, location: {:?}", location);
-        *world_position = WorldPosition(location);
+        if current_mouse_coordinate.is_changed() {
+            let map_data = map_data.single();
+            let location = map_data.centered_coordinate_to_world_position(current_mouse_coordinate.0);
+            println!("Following mouse cursor, location: {:?}", location);
+            *world_position = WorldPosition(location);
+        }
     }
 }
 // 

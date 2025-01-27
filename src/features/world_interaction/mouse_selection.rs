@@ -105,15 +105,17 @@ fn handle_ground_plane_hover(
 ) {
     let location = hover.hit.position;
     if let Some(location) = location {
-        println!("Clicked on location: {:?}", location);
+        println!("Hovered on location: {:?}", location);
         current_mouse_world_position.0 = Vec2::new(
             location.x,
             location.z,
         );
 
         current_mouse_world_coordinate.0 = IVec2::new(
-            location.x as i32,
-            location.z as i32,
+            location.x.round() as i32,
+            location.z.round() as i32,
         );
+        
+        println!("Setting current mouse world coordinate to: {:?}", current_mouse_world_coordinate.0);
     }
 }
