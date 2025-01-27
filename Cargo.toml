@@ -7,4 +7,8 @@ edition = "2021"
 #bevy = { version = "0.15.0", features = ["dynamic_linking"] }
 bevy = { version = "0.15.0" }
 leafwing-input-manager = "0.16.0"
+moonshine-core = "0.2.1"
+moonshine-object = "0.2.1"
+moonshine-view = "0.1.6"
+noisy_bevy = "0.8.0"
 rand = "0.8.5"
