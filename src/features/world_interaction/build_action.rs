@@ -1,19 +1,17 @@
 use crate::bundles::buildables::{BluePrint, BluePrintMaterial, Buildable};
 use crate::bundles::{ItemId, ItemSpawners, Prototypes};
 use crate::features::map::map_model::MapData;
-use crate::features::misc_components::simple_mesh::{
-    SimpleMesh, SimpleMeshHandles,
-};
+use crate::features::misc_components::gltf_asset::GltfAsset;
+use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
 use crate::features::world_interaction::mouse_selection::{
-    CurrentMouseWorldCoordinate, MapClickedEvent, MapDragEndEvent, MapDragStartEvent,
+    CurrentMouseWorldCoordinate, MapDragEndEvent, MapDragStartEvent,
 };
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
-use crate::features::misc_components::gltf_asset::GltfAsset;
 
 pub struct BuildActionPlugin;
 
@@ -180,9 +178,9 @@ fn react_to_mouse_drag_ended(
             coordinates: selected_coordinates.0.clone(),
             bundle_type: current_building.0.unwrap(),
         }));
-        
+
         selected_coordinates.0 = Vec::new();
-        
+
         println!("Reacting to mouse drag ended");
     }
 }
@@ -229,7 +227,6 @@ fn react_to_build_intent(
         {
             let map_data = map_data.get_single().unwrap();
 
-            
             for coordinate in coordinates.iter() {
                 let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
                 let world_position = map_data.centered_coordinate_to_world_position(*coordinate);
@@ -239,9 +236,8 @@ fn react_to_build_intent(
                     .insert(WorldPosition(world_position))
                     .insert(BluePrint)
                     .insert(InWorld);
-
             }
-            
+
             break;
         }
     }

@@ -1,21 +1,21 @@
-use std::time::Duration;
+use crate::features::misc_components::InWorld;
 use bevy::math::Vec2;
 use bevy::prelude::*;
-use bevy_spatial::{AutomaticUpdate, SpatialStructure, TransformMode};
 use bevy_spatial::kdtree::KDTree3;
+use bevy_spatial::{AutomaticUpdate, SpatialStructure, TransformMode};
 use grid_util::Point;
-use crate::features::misc_components::InWorld;
+use std::time::Duration;
 
 pub struct PositionPlugin;
 
 impl Plugin for PositionPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(
-                AutomaticUpdate::<InWorld>::new()
-                    .with_spatial_ds(SpatialStructure::KDTree3)
-                    .with_frequency(Duration::from_secs(1))
-                    .with_transform(TransformMode::Transform),
-            );
+            AutomaticUpdate::<InWorld>::new()
+                .with_spatial_ds(SpatialStructure::KDTree3)
+                .with_frequency(Duration::from_secs(1))
+                .with_transform(TransformMode::Transform),
+        );
     }
 }
 

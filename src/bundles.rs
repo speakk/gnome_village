@@ -9,9 +9,9 @@ use moonshine_core::save::Save;
 use moonshine_view::RegisterView;
 
 pub mod buildables;
+mod resources;
 pub mod rock;
 pub mod settler;
-mod resources;
 
 pub struct BundlePlugin;
 
@@ -51,7 +51,7 @@ pub enum ItemId {
     Rock = 1,
     Settler = 2,
     WoodenTorch = 3,
-    Wood = 4
+    Wood = 4,
 }
 
 #[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash)]

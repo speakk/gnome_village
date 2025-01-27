@@ -1,20 +1,19 @@
-use bevy::app::{App, PostUpdate, Update};
-use crate::ReflectComponent;
-use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
-use bevy::prelude::{Changed, Component, Plugin, Query, Reflect, SceneRoot, Transform, World};
-use moonshine_object::{Object, ObjectInstance};
-use bevy::asset::AssetServer;
-use bevy::gltf::GltfAssetLabel;
-use bevy::core::Name;
 use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
+use crate::ReflectComponent;
+use bevy::app::{App, PostUpdate, Update};
+use bevy::asset::AssetServer;
+use bevy::core::Name;
+use bevy::gltf::GltfAssetLabel;
+use bevy::prelude::{Changed, Component, Plugin, Query, Reflect, SceneRoot, Transform, World};
+use moonshine_object::{Object, ObjectInstance};
+use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 
 pub struct GltfAssetPlugin;
 
 impl Plugin for GltfAssetPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .add_viewable::<GltfAsset>()
+        app.add_viewable::<GltfAsset>()
             .add_systems(PostUpdate, gltf_asset_moved);
     }
 }

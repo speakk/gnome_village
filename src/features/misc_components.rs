@@ -1,15 +1,17 @@
+pub(crate) mod gltf_asset;
 pub mod simple_mesh;
 mod simple_mesh_view;
-pub(crate) mod gltf_asset;
 
-use crate::features::position::WorldPosition;
-use bevy::prelude::*;
-use moonshine_object::{Object, ObjectInstance};
-use moonshine_view::{BuildView, RegisterView, ViewCommands};
-use bevy::utils::HashMap;
 use crate::features::misc_components::gltf_asset::GltfAssetPlugin;
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
-use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint, view_wall_moved};
+use crate::features::misc_components::simple_mesh_view::{
+    on_add_blueprint, on_remove_blueprint, view_wall_moved,
+};
+use crate::features::position::WorldPosition;
+use bevy::prelude::*;
+use bevy::utils::HashMap;
+use moonshine_object::{Object, ObjectInstance};
+use moonshine_view::{BuildView, RegisterView, ViewCommands};
 
 pub struct MiscComponentsPlugin;
 
@@ -67,8 +69,7 @@ impl BuildView for LightSource {
                 color: light_source.color,
                 intensity: light_source.intensity,
                 range: 2.0,
-                shadows_enabled: true
-                ,
+                shadows_enabled: true,
                 ..default()
             },
             Transform::from_xyz(transform.x, 1.5, transform.y),

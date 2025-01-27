@@ -89,7 +89,11 @@ impl MapData {
     }
 }
 
-pub fn generate_map_entity(mut commands: Commands, world_seed: Res<WorldSeed>, mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>) {
+pub fn generate_map_entity(
+    mut commands: Commands,
+    world_seed: Res<WorldSeed>,
+    mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
+) {
     let map_size = UVec2::new(150, 150);
     let mut map_data = MapData {
         data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
@@ -104,16 +108,15 @@ pub fn generate_map_entity(mut commands: Commands, world_seed: Res<WorldSeed>, m
 
             const SHORELINE_NOISE_SCALE: f32 = 0.2;
             const SHORELINE_NOISE_THRESHOLD: f32 = 0.5;
-            
+
             let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
-            let mapped_value = remap_to_distance_from_center(
-                min_bound,
-                centered_coordinate,
-                0.3,
-                0.5
+            let mapped_value =
+                remap_to_distance_from_center(min_bound, centered_coordinate, 0.3, 0.5);
+            let noise_value = simplex_noise_2d_seeded(
+                centered_coordinate.as_vec2() * SHORELINE_NOISE_SCALE,
+                world_seed.0 as f32,
             );
-            let noise_value = simplex_noise_2d_seeded(centered_coordinate.as_vec2() * SHORELINE_NOISE_SCALE, world_seed.0 as f32);
-            
+
             if (noise_value / 2.0 + 1.0) * mapped_value > SHORELINE_NOISE_THRESHOLD {
                 tile_type = TileType::Water;
                 reserved_coordinates.0.push(centered_coordinate);
@@ -132,7 +135,12 @@ pub fn generate_map_entity(mut commands: Commands, world_seed: Res<WorldSeed>, m
     commands.spawn((map_data, Save));
 }
 
-fn remap_to_distance_from_center(min_bound: f32, centered_coordinate: IVec2, start_point_multiplier: f32, end_point_multiplier: f32) -> f32 {
+fn remap_to_distance_from_center(
+    min_bound: f32,
+    centered_coordinate: IVec2,
+    start_point_multiplier: f32,
+    end_point_multiplier: f32,
+) -> f32 {
     let distance_to_center = centered_coordinate.as_vec2().length();
     let shoreline_start_point = min_bound * start_point_multiplier;
     let shoreline_end_point = min_bound * end_point_multiplier;
@@ -146,34 +154,30 @@ fn remap_to_distance_from_center(min_bound: f32, centered_coordinate: IVec2, sta
     }
 }
 
-pub fn generate_rocks(mut commands: Commands, map_query: Query<&MapData>, world_seed: Res<WorldSeed>, mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>) {
+pub fn generate_rocks(
+    mut commands: Commands,
+    map_query: Query<&MapData>,
+    world_seed: Res<WorldSeed>,
+    mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
+) {
     let map_data = map_query.single();
     let mut rng = rand::thread_rng();
 
     let min_bound = map_data.size.x.min(map_data.size.y) as f32;
-    
+
     for x in 0..map_data.size.x {
         for y in 0..map_data.size.y {
             let noise_value =
                 simplex_noise_2d_seeded(Vec2::new(x as f32, y as f32) * 0.04, world_seed.0 as f32);
 
             let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
-            let mapped_value = remap_to_distance_from_center(
-                min_bound,
-                centered_coordinate,
-                0.4,
-                0.45
-            );
+            let mapped_value =
+                remap_to_distance_from_center(min_bound, centered_coordinate, 0.4, 0.45);
 
             let reserved = reserved_coordinates.0.contains(&centered_coordinate);
 
             if (noise_value / 2.0 + 1.0) + mapped_value < 0.65 && !reserved {
-                commands.spawn((
-                    Rock,
-                    WorldPosition(
-                        centered_coordinate.as_vec2(),
-                    ),
-                ));
+                commands.spawn((Rock, WorldPosition(centered_coordinate.as_vec2())));
 
                 reserved_coordinates.0.push(centered_coordinate);
             }
@@ -181,7 +185,11 @@ pub fn generate_rocks(mut commands: Commands, map_query: Query<&MapData>, world_
     }
 }
 
-pub fn generate_test_entities(mut commands: Commands, map_data_query: Query<&MapData>, mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>) {
+pub fn generate_test_entities(
+    mut commands: Commands,
+    map_data_query: Query<&MapData>,
+    mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
+) {
     let map_data = map_data_query.single();
     let mut rng = rand::thread_rng();
     let mut settlers_amount = 4;

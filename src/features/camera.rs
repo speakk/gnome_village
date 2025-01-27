@@ -4,6 +4,7 @@ use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::features::states::AppState;
 use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
 use bevy::app::{App, Plugin, RunFixedMainLoop};
+use bevy::core_pipeline::prepass::{DeferredPrepass, DepthPrepass, NormalPrepass};
 use bevy::ecs::prelude::*;
 use bevy::math::{Vec2, Vec3};
 use bevy::prelude::KeyCode::{KeyA, KeyD, KeyS, KeyW};
@@ -12,7 +13,6 @@ use bevy::render::camera::ScalingMode;
 use bevy_atmosphere::plugin::{AtmosphereCamera, AtmospherePlugin};
 use leafwing_input_manager::prelude::*;
 use std::ops::{Add, Sub};
-use bevy::core_pipeline::prepass::{DeferredPrepass, DepthPrepass, NormalPrepass};
 
 pub struct CameraPlugin;
 
@@ -49,40 +49,44 @@ fn setup(mut commands: Commands) {
         .with(CameraZoomAction::Out, MouseScrollDirection::DOWN);
 
     // camera
-    commands.spawn((
-        Camera3d::default(),
-        Camera {
-            order: 0,
-            ..default()
-        },
-        Projection::from(OrthographicProjection {
-            // 6 world units per pixel of window height.
-            scaling_mode: ScalingMode::FixedVertical {
-                viewport_height: 48.0,
+    commands
+        .spawn((
+            Camera3d::default(),
+            Camera {
+                order: 0,
+                ..default()
             },
-            near: -100.0,
-            far: 200.0,
-            ..OrthographicProjection::default_3d()
-        }),
-        //ScreenSpaceAmbientOcclusion::default(),
-        Msaa::Off,
-        AtmosphereCamera::default(),
-        // Skybox {
-        //     image: sky_image_handle.clone(),
-        //     brightness: 6000.0,
-        //     rotation: Quat::from_rotation_x(std::f32::consts::FRAC_PI_2 / 1.5),
-        // },
-        Transform::from_xyz(0.0, 20.0, 20.0).looking_at(Vec3::ZERO, Vec3::Y),
-        InputManagerBundle::with_map(pan_input_map),
-        InputManagerBundle::with_map(zoom_input_map),
-        RayCastPickable,
-        Velocity::default(),
-        Acceleration::default(),
-        WorldPosition::default(),
-        PreviousWorldPosition::default(),
-        AccumulatedInput::default(),
-        Friction(0.5)
-    )).insert(DepthPrepass).insert(NormalPrepass).insert(DeferredPrepass);
+            Projection::from(OrthographicProjection {
+                // 6 world units per pixel of window height.
+                scaling_mode: ScalingMode::FixedVertical {
+                    viewport_height: 48.0,
+                },
+                near: -100.0,
+                far: 200.0,
+                ..OrthographicProjection::default_3d()
+            }),
+            //ScreenSpaceAmbientOcclusion::default(),
+            Msaa::Off,
+            AtmosphereCamera::default(),
+            // Skybox {
+            //     image: sky_image_handle.clone(),
+            //     brightness: 6000.0,
+            //     rotation: Quat::from_rotation_x(std::f32::consts::FRAC_PI_2 / 1.5),
+            // },
+            Transform::from_xyz(0.0, 20.0, 20.0).looking_at(Vec3::ZERO, Vec3::Y),
+            InputManagerBundle::with_map(pan_input_map),
+            InputManagerBundle::with_map(zoom_input_map),
+            RayCastPickable,
+            Velocity::default(),
+            Acceleration::default(),
+            WorldPosition::default(),
+            PreviousWorldPosition::default(),
+            AccumulatedInput::default(),
+            Friction(0.5),
+        ))
+        .insert(DepthPrepass)
+        .insert(NormalPrepass)
+        .insert(DeferredPrepass);
 }
 
 fn handle_pan_input(

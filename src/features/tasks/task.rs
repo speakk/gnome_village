@@ -4,7 +4,7 @@ use bevy::prelude::Component;
 pub enum RunType {
     Sequence,
     Parallel,
-    Leaf
+    Leaf,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -13,22 +13,21 @@ pub enum Status {
     BeingWorkedOn,
     Finished,
     Failed,
-    Cancelled
+    Cancelled,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum TaskType {
     Build,
     BringResource,
-    GoTo
+    GoTo,
 }
-
 
 #[derive(Component, Debug, Clone, Copy)]
 pub struct Task {
     pub run_type: RunType,
     pub status: Status,
-    pub task_type: Option<TaskType>
+    pub task_type: Option<TaskType>,
 }
 
 impl Default for Task {
