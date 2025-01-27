@@ -1,4 +1,3 @@
-use bevy::app::Plugin;
 use bevy::asset::Assets;
 use bevy::prelude::*;
 use bevy::utils::HashMap;

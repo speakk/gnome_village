@@ -112,7 +112,7 @@ pub fn score_bring_resource(
         })
         .collect::<Vec<_>>();
 
-    for (resource_entity, resource_position, _id, reservations) in valid_resources.iter() {
+    for (resource_entity, resource_position, _id, _reservations) in valid_resources.iter() {
         for (agent_entity, agent_position) in agents.iter() {
             let agent_to_resource_distance = resource_position.0.distance(agent_position.0);
             let resource_to_goal_distance = target.as_vec2().distance(resource_position.0);

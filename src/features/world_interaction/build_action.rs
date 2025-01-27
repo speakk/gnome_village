@@ -170,7 +170,7 @@ fn react_to_mouse_drag_ended(
     mut user_action_intent: EventWriter<UserActionIntent>,
     current_building: Res<CurrentBuilding>,
 ) {
-    if let Some(event) = event_reader.read().next() {
+    if let Some(_) = event_reader.read().next() {
         drag_info_resource.is_dragging = false;
         drag_info_resource.map_drag_start_event = None;
 

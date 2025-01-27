@@ -35,7 +35,7 @@ fn react_to_buildable_menu_selected(
     mut build_menu_buildable_selected: EventReader<BuildMenuBuildableSelected>,
     mut next_state: ResMut<NextState<UserActionState>>,
 ) {
-    for event in build_menu_buildable_selected.read() {
+    for _ in build_menu_buildable_selected.read() {
         println!("Entering PlacingBuilding state");
         next_state.set(UserActionState::PlacingBuilding);
     }

@@ -11,7 +11,7 @@ use leafwing_input_manager::InputManagerBundle;
 pub struct MapClickedEvent(pub IVec2);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-enum DragModifier {
+pub enum DragModifier {
     Primary,
     Secondary,
 }

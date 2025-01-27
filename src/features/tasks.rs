@@ -23,9 +23,6 @@ fn tasks_changed(tasks_query: Query<Entity, Or<(Added<Task>, Changed<Task>)>>) -
     !tasks_query.is_empty()
 }
 
-#[derive(Component)]
-struct TaskReadyToGo;
-
 pub fn give_tasks(
     mut commands: Commands,
     mut set: ParamSet<(
@@ -128,7 +125,7 @@ fn get_available_task(
         RunType::Parallel => {
             if let Some(children) = children {
                 for &child in children.iter() {
-                    let (_entity, child_task_data, sub_children) =
+                    let (_entity, _child_task_data, sub_children) =
                         all_tasks_query.get(child).unwrap();
                     let next_sub_task =
                         get_available_task(child, task_data, sub_children, all_tasks_query);
