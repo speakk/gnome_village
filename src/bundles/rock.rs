@@ -1,8 +1,8 @@
-use crate::bundles::{ItemId, Id};
+use crate::bundles::{Id, ItemId};
+use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshType};
 use crate::features::path_finding::Solid;
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
-use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshType};
 
 use moonshine_core::prelude::*;
 use moonshine_view::prelude::*;
@@ -48,11 +48,11 @@ pub struct Rock;
 //         // TODO: Possibly use own meshes one day, but so far the map cuboid is fine
 //         let mesh_handles = world.get_resource::<MapMeshHandles>().unwrap();
 //         let mesh_handle = mesh_handles[&MeshType::Cuboid].clone();
-// 
+//
 //         let value = simplex_noise_2d(Vec2::new(transform.x, transform.y) * 0.12);
 //         let material_index = (value * material_handles.len() as f32) as usize;
 //         let material_handle = material_handles[material_index].clone();
-// 
+//
 //         view.insert((
 //             Mesh3d(mesh_handle.clone()),
 //             MeshMaterial3d(material_handle),

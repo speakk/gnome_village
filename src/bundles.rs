@@ -1,16 +1,13 @@
-use std::string::ToString;
-use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::buildables::BuildablesPlugin;
 use crate::bundles::settler::Settler;
+use crate::features::misc_components::simple_mesh::MiscComponentsPlugin;
 use crate::features::misc_components::Prototype;
 use crate::utils::entity_clone::CloneEntityCommandsExt;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_core::save::Save;
 use moonshine_view::RegisterView;
-use crate::bundles::buildables::torch::WoodenTorch;
-use crate::bundles::rock::Rock;
-use crate::features::misc_components::simple_mesh::MiscComponentsPlugin;
+use std::string::ToString;
 
 pub mod buildables;
 pub mod rock;
@@ -20,8 +17,7 @@ pub struct BundlePlugin;
 
 impl Plugin for BundlePlugin {
     fn build(&self, app: &mut App) {
-        app
-            .insert_resource(Prototypes(HashMap::new()))
+        app.insert_resource(Prototypes(HashMap::new()))
             .insert_resource(ItemSpawners(HashMap::new()))
             .add_plugins(MiscComponentsPlugin)
             .add_plugins(BuildablesPlugin)
@@ -40,7 +36,7 @@ pub fn make_concrete_from_prototype(prototype: Entity, mut commands: Commands) -
 
 struct ConstructionCost {
     amount: u32,
-    requirement: Vec<ItemId>
+    requirement: Vec<ItemId>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -83,7 +79,7 @@ impl MyTraitExt for Commands {
 // pub trait ItemCreator {
 //     fn create_item(&mut self, bundle_type: &ItemId) -> Entity;
 // }
-// 
+//
 // impl<'w, 's> ItemCreator for Commands<'w, 's> {
 //     fn create_item(&mut self, bundle_type: &ItemId) -> Entity {
 //         match bundle_type {

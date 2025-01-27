@@ -1,11 +1,11 @@
-use crate::bundles::buildables::{Buildable, BuildableBundleTypes};
+use crate::bundles::buildables::Buildable;
+use crate::bundles::{ItemId, Prototypes};
 use crate::ui::ui_main_actions::main_action_buttons::MainActionButtonType;
 use crate::ui::ui_main_actions::{MainMenuSelected, MainMenuSelectionCleared};
 use crate::ui::UiSceneHandles;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
-use crate::bundles::{ItemId, Prototypes};
 
 #[derive(Event)]
 pub struct BuildMenuBuildableSelected(pub ItemId);
@@ -19,8 +19,8 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
              event: BroadcastEvent<MainMenuSelected>,
              mut commands: Commands,
              mut _scene_builder: ResMut<SceneBuilder>,
-                buildables: Query<&Buildable>,
-                names: Query<&Name, With<Buildable>>,
+             buildables: Query<&Buildable>,
+             names: Query<&Name, With<Buildable>>,
              prototypes: Res<Prototypes>| {
                 println!("In insert_build_menu thing!!");
                 if let Ok(event) = event.try_read() {

@@ -1,3 +1,9 @@
+use crate::bundles::buildables::wooden_wall::WoodenWall;
+use crate::features::map::map_model::TileType;
+use crate::features::map::map_view::MapMaterialHandles;
+use crate::features::misc_components::simple_mesh_view::{
+    on_add_blueprint, on_remove_blueprint, view_wall_moved,
+};
 use bevy::app::{App, Plugin, Startup};
 use bevy::asset::Assets;
 use bevy::color::Color;
@@ -5,19 +11,17 @@ use bevy::pbr::StandardMaterial;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_view::RegisterView;
-use crate::bundles::buildables::wooden_wall::WoodenWall;
-use crate::features::map::map_model::TileType;
-use crate::features::map::map_view::{MapMaterialHandles};
-use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint, view_wall_moved};
 
 pub struct MiscComponentsPlugin;
 
 impl Plugin for MiscComponentsPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .insert_resource(SimpleMeshHandles(HashMap::default()))
+        app.insert_resource(SimpleMeshHandles(HashMap::default()))
             .add_systems(Startup, create_simple_meshes)
-            .add_systems(PostUpdate, (on_add_blueprint, on_remove_blueprint, view_wall_moved))
+            .add_systems(
+                PostUpdate,
+                (on_add_blueprint, on_remove_blueprint, view_wall_moved),
+            )
             .add_viewable::<SimpleMesh>();
     }
 }

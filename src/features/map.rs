@@ -1,7 +1,5 @@
 use crate::features::map::map_model::{generate_map_entity, generate_test_entities};
-use crate::features::map::map_view::{
-    create_map_materials, MapMaterialHandles,
-};
+use crate::features::map::map_view::{create_map_materials, MapMaterialHandles};
 use crate::features::states::AppState;
 use bevy::app::{App, Plugin};
 use bevy::prelude::*;
@@ -14,8 +12,7 @@ pub struct MapPlugin;
 
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .insert_resource(MapMaterialHandles::default())
+        app.insert_resource(MapMaterialHandles::default())
             .add_viewable::<map_model::MapData>()
             .add_systems(
                 OnEnter(AppState::MapGeneration),

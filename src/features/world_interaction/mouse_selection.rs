@@ -128,13 +128,11 @@ fn handle_ground_plane_click(
 fn handle_ground_plane_drag_start(
     drag: Trigger<Pointer<DragStart>>,
     mut map_drag_start_event_writer: EventWriter<MapDragStartEvent>,
-    interaction_action_query: Query<
-        (
-            &ActionState<WorldInteractionAction>,
-        )
-    >,
+    interaction_action_query: Query<(&ActionState<WorldInteractionAction>,)>,
 ) {
-    fn get_modifier_type(action_states: Vec<&ActionState<WorldInteractionAction>>) -> Option<DragModifier> {
+    fn get_modifier_type(
+        action_states: Vec<&ActionState<WorldInteractionAction>>,
+    ) -> Option<DragModifier> {
         for action_state in action_states {
             if action_state.pressed(&WorldInteractionAction::PrimaryDragModifier) {
                 return Some(DragModifier::Primary);
@@ -148,15 +146,19 @@ fn handle_ground_plane_drag_start(
 
     let location = drag.hit.position;
     if let Some(location) = location {
-        let modifier_type: Option<DragModifier> = get_modifier_type(interaction_action_query.iter().map(|(state, )| state).collect());
-        println!("Drag started on location: {:?} with modifier: {:?}", location, modifier_type);
+        let modifier_type: Option<DragModifier> = get_modifier_type(
+            interaction_action_query
+                .iter()
+                .map(|(state,)| state)
+                .collect(),
+        );
+        println!(
+            "Drag started on location: {:?} with modifier: {:?}",
+            location, modifier_type
+        );
 
-        map_drag_start_event_writer.send(MapDragStartEvent
-        {
-            coordinate: IVec2::new(
-                location.x as i32,
-                location.z as i32,
-            ),
+        map_drag_start_event_writer.send(MapDragStartEvent {
+            coordinate: IVec2::new(location.x as i32, location.z as i32),
             drag_modifier: modifier_type,
         });
     }
@@ -190,12 +192,15 @@ fn handle_ground_plane_hover(
 
         let previous_mouse_coordinate = current_mouse_world_coordinate.0;
         let new_mouse_coordinate = IVec2::new(location.x as i32, location.z as i32);
-        
+
         if previous_mouse_coordinate != new_mouse_coordinate {
-            println!("Mouse coordinate changed from {:?} to {:?}", previous_mouse_coordinate, new_mouse_coordinate);
+            println!(
+                "Mouse coordinate changed from {:?} to {:?}",
+                previous_mouse_coordinate, new_mouse_coordinate
+            );
             current_mouse_world_coordinate.0 = new_mouse_coordinate;
         }
-        
+
         //println!("Setting current mouse world coordinate to: {:?}", current_mouse_world_coordinate.0);
     }
 }

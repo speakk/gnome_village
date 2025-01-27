@@ -1,4 +1,5 @@
 use crate::features::map::map_model::{MapData, TileType};
+use crate::features::misc_components::InWorld;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::features::states::AppState;
 use bevy::app::{App, Plugin};
@@ -6,7 +7,6 @@ use bevy::prelude::*;
 use grid_pathfinding::PathingGrid;
 use grid_util::grid::Grid;
 use grid_util::Point;
-use crate::features::misc_components::InWorld;
 
 pub struct PathFindingPlugin;
 

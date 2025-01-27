@@ -12,14 +12,14 @@ impl<'w, 's> CloneEntityCommandsExt for Commands<'w, 's> {
         self.queue(move |world: &mut World| {
             clone_entity(world, entity.clone(), &mut new_entity);
         });
-        
+
         println!("Returning id: {:?}", new_entity);
         new_entity
     }
 }
 
 // pub struct CloneEntityCommand {}
-// 
+//
 // impl Command for CloneEntityCommand {
 //     fn apply(self, world: &mut World) {
 //         let cloned = clone_entity(world, self.entity);

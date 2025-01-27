@@ -1,18 +1,18 @@
 use crate::features::map::map_model::{MapData, TileType};
+use crate::features::misc_components::simple_mesh::{SimpleMeshHandles, SimpleMeshType};
 use bevy::asset::{Assets, Handle};
 use bevy::color::Color;
 use bevy::hierarchy::{BuildChildren, ChildBuild};
 use bevy::math::{UVec2, Vec2};
 use bevy::pbr::{MeshMaterial3d, StandardMaterial};
 use bevy::prelude::{
-    Cuboid, Deref, DerefMut, InheritedVisibility, Mesh, Mesh3d, Meshable, Plane3d, ResMut,
+    Deref, DerefMut, InheritedVisibility, Mesh3d, ResMut,
     Resource, Transform, World,
 };
 use bevy::utils::HashMap;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
 use noisy_bevy::simplex_noise_2d;
-use crate::features::misc_components::simple_mesh::{SimpleMeshHandles, SimpleMeshType};
 
 #[derive(Resource, Default, Deref, DerefMut)]
 pub struct MapMaterialHandles(pub HashMap<TileType, Vec<Handle<StandardMaterial>>>);
