@@ -14,4 +14,6 @@ RegisterFontFamilies[
     }
 ]
 
+LoadFonts[ "ThaleahFat" ]
+
 //LoadFonts[ "ThaleahFat" ]
