@@ -66,9 +66,9 @@ impl BuildView for MapData {
                             tile_below.is_some() && tile_below.unwrap() != TileType::Empty;
 
                         let mesh_type = if has_tile_below {
-                            MeshType::Cuboid
-                        } else {
                             MeshType::Plane
+                        } else {
+                            MeshType::Cuboid
                         };
 
                         let mesh_handles = world.get_resource::<MapMeshHandles>().unwrap();
