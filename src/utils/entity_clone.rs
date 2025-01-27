@@ -5,12 +5,12 @@ pub trait CloneEntityCommandsExt {
     fn clone_entity(&mut self, entity: Entity) -> Entity;
 }
 
-impl<'w, 's> CloneEntityCommandsExt for Commands<'w, 's> {
+impl CloneEntityCommandsExt for Commands<'_, '_> {
     fn clone_entity(&mut self, entity: Entity) -> Entity {
         let mut new_entity: Entity = self.spawn_empty().id();
         println!("Cloning entity, id: {:?}", new_entity);
         self.queue(move |world: &mut World| {
-            clone_entity(world, entity.clone(), &mut new_entity);
+            clone_entity(world, entity, &mut new_entity);
         });
 
         println!("Returning id: {:?}", new_entity);

@@ -7,7 +7,6 @@ use crate::bundles::{ItemId, ItemSpawners, Prototypes};
 use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
 use bevy::prelude::*;
-use moonshine_view::prelude::*;
 
 pub struct BuildablesPlugin;
 

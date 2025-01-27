@@ -5,8 +5,6 @@ use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 
 use moonshine_core::prelude::*;
-use moonshine_view::prelude::*;
-use noisy_bevy::simplex_noise_2d;
 
 pub struct RockPlugin;
 

@@ -7,7 +7,6 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_core::save::Save;
 use moonshine_view::RegisterView;
-use std::string::ToString;
 
 pub mod buildables;
 pub mod rock;

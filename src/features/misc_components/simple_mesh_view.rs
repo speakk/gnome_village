@@ -61,9 +61,9 @@ impl BuildView for SimpleMesh {
 pub struct OriginalMaterial(Handle<StandardMaterial>);
 
 pub fn on_add_blueprint(
-    query: Query<(&Viewable<WoodenWall>), Added<WorldPosition>>,
+    query: Query<&Viewable<WoodenWall>, Added<WorldPosition>>,
     mut materials_query: Query<&mut MeshMaterial3d<StandardMaterial>>,
-    mut blueprint_material: Res<BluePrintMaterial>,
+    blueprint_material: Res<BluePrintMaterial>,
     mut commands: Commands,
 ) {
     for view in query.iter() {
@@ -79,7 +79,7 @@ pub fn on_add_blueprint(
 pub fn on_remove_blueprint(
     mut removed: RemovedComponents<BluePrint>,
     mut materials_query: Query<&mut MeshMaterial3d<StandardMaterial>>,
-    mut viewable_query: Query<&Viewable<WoodenWall>>,
+    viewable_query: Query<&Viewable<WoodenWall>>,
     original_materials_query: Query<&OriginalMaterial>,
     mut commands: Commands,
 ) {
