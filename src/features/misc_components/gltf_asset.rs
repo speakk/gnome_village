@@ -1,0 +1,63 @@
+use bevy::app::{App, PostUpdate, Update};
+use crate::ReflectComponent;
+use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
+use bevy::prelude::{Changed, Component, Plugin, Query, Reflect, SceneRoot, Transform, World};
+use moonshine_object::{Object, ObjectInstance};
+use bevy::asset::AssetServer;
+use bevy::gltf::GltfAssetLabel;
+use bevy::core::Name;
+use crate::features::misc_components::{InWorld, Prototype};
+use crate::features::position::WorldPosition;
+
+pub struct GltfAssetPlugin;
+
+impl Plugin for GltfAssetPlugin {
+    fn build(&self, app: &mut App) {
+        app
+            .add_viewable::<GltfAsset>()
+            .add_systems(PostUpdate, gltf_asset_moved);
+    }
+}
+
+#[derive(Component, Default, Reflect)]
+#[reflect(Component)]
+#[derive(Debug)]
+pub struct GltfAsset(pub String);
+
+impl From<&str> for GltfAsset {
+    fn from(s: &str) -> Self {
+        Self(s.to_string())
+    }
+}
+
+impl BuildView for GltfAsset {
+    fn build(world: &World, object: Object<GltfAsset>, mut view: ViewCommands<GltfAsset>) {
+        if world.get::<Prototype>(object.entity()).is_some() {
+            return;
+        }
+
+        let transform = world.get::<WorldPosition>(object.entity()).unwrap();
+        let asset_server = world.get_resource::<AssetServer>().unwrap();
+
+        let gltf_asset = world.get::<GltfAsset>(object.entity()).unwrap();
+
+        view.insert((
+            SceneRoot(asset_server.load(GltfAssetLabel::Scene(0).from_asset(gltf_asset.0.clone()))),
+            Transform::from_xyz(transform.x, 0.0, transform.y),
+            Name::new("Gltf asset view"),
+        ));
+
+        println!("Building gltf asset view finished");
+    }
+}
+
+pub fn gltf_asset_moved(
+    query: Query<(&WorldPosition, &Viewable<GltfAsset>), Changed<WorldPosition>>,
+    mut transform: Query<&mut Transform>,
+) {
+    for (position, model) in query.iter() {
+        let view = model.view();
+        let mut transform = transform.get_mut(view.entity()).unwrap();
+        *transform = Transform::from_xyz(position.x, 0.5, position.y);
+    }
+}

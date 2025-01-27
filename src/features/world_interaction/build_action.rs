@@ -4,7 +4,7 @@ use crate::features::map::map_model::MapData;
 use crate::features::misc_components::simple_mesh::{
     SimpleMesh, SimpleMeshHandles,
 };
-use crate::features::misc_components::{GltfAsset, InWorld, Prototype};
+use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
@@ -13,6 +13,7 @@ use crate::features::world_interaction::mouse_selection::{
 };
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
+use crate::features::misc_components::gltf_asset::GltfAsset;
 
 pub struct BuildActionPlugin;
 

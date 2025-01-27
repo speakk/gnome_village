@@ -9,12 +9,6 @@ use moonshine_core::prelude::*;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
-#[require(
-    Id(|| Id(ItemId::WoodenTorch)),
-    Solid,
-    Name(|| "Wooden Torch"),
-    Buildable,
-    Save,
-    LightSource(|| LightSource { intensity: 50000.0, color: Color::srgb(1.0, 0.9, 0.6) }),
-    GltfAsset(|| "blender_models/wooden_torch.glb"))]
+#[require(Id(|| Id(ItemId::Wood)), WorldPosition, Solid, Name(|| "Wood"),
+    Save, GltfAsset(|| "blender_models/wood.glb"))]
 pub struct WoodenTorch;

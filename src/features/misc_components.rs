@@ -1,10 +1,31 @@
 pub mod simple_mesh;
 mod simple_mesh_view;
+pub(crate) mod gltf_asset;
 
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 use moonshine_object::{Object, ObjectInstance};
-use moonshine_view::{BuildView, ViewCommands};
+use moonshine_view::{BuildView, RegisterView, ViewCommands};
+use bevy::utils::HashMap;
+use crate::features::misc_components::gltf_asset::GltfAssetPlugin;
+use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
+use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint, view_wall_moved};
+
+pub struct MiscComponentsPlugin;
+
+impl Plugin for MiscComponentsPlugin {
+    fn build(&self, app: &mut App) {
+        app.insert_resource(SimpleMeshHandles(HashMap::default()))
+            .add_systems(Startup, simple_mesh::create_simple_meshes)
+            .add_plugins(GltfAssetPlugin)
+            .add_systems(
+                PostUpdate,
+                (on_add_blueprint, on_remove_blueprint, view_wall_moved),
+            )
+            .add_viewable::<SimpleMesh>()
+            .add_viewable::<LightSource>();
+    }
+}
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
@@ -15,60 +36,42 @@ pub struct InWorld;
 #[reflect(Component)]
 pub struct Prototype;
 
-#[derive(Component, Default, Reflect)]
+#[derive(Component, Reflect)]
 #[reflect(Component)]
 pub struct LightSource {
     pub intensity: f32,
     pub color: Color,
 }
 
+impl Default for LightSource {
+    fn default() -> Self {
+        Self {
+            intensity: 100000.0,
+            color: Color::WHITE,
+        }
+    }
+}
+
 impl BuildView for LightSource {
     fn build(world: &World, object: Object<LightSource>, mut view: ViewCommands<LightSource>) {
-        if world.get::<InWorld>(object.entity()).is_none() {
+        if world.get::<Prototype>(object.entity()).is_some() {
             return;
         }
+        println!("Building light source");
 
         let transform = world.get::<WorldPosition>(object.entity()).unwrap();
-
         let light_source = world.get::<LightSource>(object.entity()).unwrap();
 
         view.insert((
-            SpotLight {
+            PointLight {
                 color: light_source.color,
                 intensity: light_source.intensity,
+                range: 2.0,
+                shadows_enabled: true
+                ,
                 ..default()
             },
-            Transform::from_xyz(transform.x, 0.0, transform.y),
-        ));
-    }
-}
-
-#[derive(Component, Default, Reflect)]
-#[reflect(Component)]
-#[derive(Debug)]
-pub struct GltfAsset(pub String);
-
-impl From<&str> for GltfAsset {
-    fn from(s: &str) -> Self {
-        Self(s.to_string())
-    }
-}
-
-impl BuildView for GltfAsset {
-    fn build(world: &World, object: Object<GltfAsset>, mut view: ViewCommands<GltfAsset>) {
-        if world.get::<InWorld>(object.entity()).is_none() {
-            return;
-        }
-
-        let transform = world.get::<WorldPosition>(object.entity()).unwrap();
-        let asset_server = world.get_resource::<AssetServer>().unwrap();
-
-        let gltf_asset = world.get::<GltfAsset>(object.entity()).unwrap();
-
-        view.insert((
-            SceneRoot(asset_server.load(GltfAssetLabel::Scene(0).from_asset(gltf_asset.0.clone()))),
-            Transform::from_xyz(transform.x, 0.0, transform.y),
-            Name::new("Gltf asset view"),
+            Transform::from_xyz(transform.x, 1.5, transform.y),
         ));
     }
 }

@@ -8,9 +8,8 @@ use bevy::prelude::*;
 #[derive(Component, Default, Reflect, Clone)]
 #[require(
     Id(|| Id(ItemId::WoodenWall)),
-    WorldPosition,
-    Solid,
     Name(|| "Wooden Wall"),
+    Solid,
     Buildable,
     SimpleMesh(|| SimpleMesh(SimpleMeshType::Cuboid))
 )]

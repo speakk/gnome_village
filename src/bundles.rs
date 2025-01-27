@@ -1,6 +1,6 @@
 use crate::bundles::buildables::BuildablesPlugin;
 use crate::bundles::settler::Settler;
-use crate::features::misc_components::simple_mesh::MiscComponentsPlugin;
+use crate::features::misc_components::MiscComponentsPlugin;
 use crate::features::misc_components::Prototype;
 use crate::utils::entity_clone::CloneEntityCommandsExt;
 use bevy::prelude::*;
@@ -11,6 +11,7 @@ use moonshine_view::RegisterView;
 pub mod buildables;
 pub mod rock;
 pub mod settler;
+mod resources;
 
 pub struct BundlePlugin;
 
@@ -50,6 +51,7 @@ pub enum ItemId {
     Rock = 1,
     Settler = 2,
     WoodenTorch = 3,
+    Wood = 4
 }
 
 #[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash)]

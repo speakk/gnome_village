@@ -7,20 +7,6 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_view::RegisterView;
 
-pub struct MiscComponentsPlugin;
-
-impl Plugin for MiscComponentsPlugin {
-    fn build(&self, app: &mut App) {
-        app.insert_resource(SimpleMeshHandles(HashMap::default()))
-            .add_systems(Startup, create_simple_meshes)
-            .add_systems(
-                PostUpdate,
-                (on_add_blueprint, on_remove_blueprint, view_wall_moved),
-            )
-            .add_viewable::<SimpleMesh>();
-    }
-}
-
 #[derive(Resource, Default, Deref, DerefMut)]
 pub struct SimpleMeshHandles(pub HashMap<SimpleMeshType, Handle<Mesh>>);
 

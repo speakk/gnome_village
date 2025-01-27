@@ -83,7 +83,7 @@ pub fn setup_lights(mut commands: Commands) {
         DirectionalLight {
             color: Color::srgb(0.4, 0.4, 1.0),
             illuminance: 4000.0,
-            shadows_enabled: true,
+            shadows_enabled: false,
             ..default()
         },
         Visibility::Hidden,

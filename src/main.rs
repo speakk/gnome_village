@@ -3,6 +3,8 @@ mod features;
 mod ui;
 mod utils;
 
+use bevy::input::common_conditions::input_toggle_active;
+use bevy::pbr::DefaultOpaqueRendererMethod;
 use crate::bundles::rock::RockPlugin;
 use crate::bundles::BundlePlugin;
 use crate::features::camera::CameraPlugin;
@@ -14,6 +16,7 @@ use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
 use crate::features::user_actions::UserActionsPlugin;
 use bevy::prelude::*;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use crate::features::map::map_model::WorldSeed;
 use crate::features::position::PositionPlugin;
 use crate::features::tasks::TasksPlugin;
@@ -21,6 +24,7 @@ use crate::features::tasks::TasksPlugin;
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .add_plugins(MapPlugin)
         .add_plugins(SavePlugin)
         .add_plugins(SunLightPlugin)
@@ -38,9 +42,9 @@ fn main() {
         .insert_resource(WorldSeed(555))
         .insert_resource(Time::<Fixed>::from_hz(60.0))
         .init_state::<AppState>()
-        // .add_plugins(
-        //     #[cfg(debug_assertions)]
-        //     WorldInspectorPlugin::default().run_if(input_toggle_active(false, KeyCode::F1)),
-        // )
+        .add_plugins(
+            //#[cfg(debug_assertions)]
+            WorldInspectorPlugin::default().run_if(input_toggle_active(false, KeyCode::F1)),
+        )
         .run();
 }

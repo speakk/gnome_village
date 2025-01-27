@@ -23,7 +23,7 @@ type SpatialTree = KDTree3<InWorld>;
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
 #[reflect(Component)]
-#[require(PreviousWorldPosition)]
+#[require(PreviousWorldPosition, Transform)]
 pub struct WorldPosition(pub Vec2);
 
 impl WorldPosition {
