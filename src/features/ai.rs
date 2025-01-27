@@ -9,12 +9,13 @@ use beet::prelude::ActionPlugin;
 use bevy::prelude::*;
 use moonshine_core::prelude::MapEntities;
 use std::fmt::Debug;
+use crate::features::ai::actions::finish_task::FinishTaskAction;
 
 pub struct AiPlugin;
 
 impl Plugin for AiPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(ActionPlugin::<(GoToAction, PickUpAction)>::default())
+        app.add_plugins(ActionPlugin::<(GoToAction, PickUpAction, FinishTaskAction)>::default())
             .add_systems(Update, create_bring_resource_tree);
     }
 }

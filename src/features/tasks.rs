@@ -7,7 +7,7 @@ use crate::features::ai::WorkingOnTask;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::build_task::react_to_blueprints;
-use crate::features::tasks::task::{RunType, Status, Task};
+use crate::features::tasks::task::{RunType, Status, Task, TaskFinished};
 use bevy::prelude::*;
 
 pub struct TasksPlugin;
@@ -79,6 +79,12 @@ pub fn give_tasks(
             commands
                 .entity(best_agent)
                 .insert(WorkingOnTask(task_entity));
+            
+            commands.entity(task_entity)
+                .observe(move |_trigger: Trigger<TaskFinished>, mut commands: Commands| {
+                    println!("Task {} finished, thus removing agent WorkingOnTask", task_entity);
+                    commands.entity(best_agent).remove::<WorkingOnTask>();
+                });
         }
     }
 }

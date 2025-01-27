@@ -11,6 +11,7 @@ use crate::features::tasks::task::{
 use beet::prelude::{OnRun, SequenceFlow, TargetEntity};
 use bevior_tree::prelude::{delegate_node, TaskBridge};
 use bevy::prelude::*;
+use crate::features::ai::actions::finish_task::FinishTaskAction;
 
 pub fn create_bring_resource_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
@@ -69,6 +70,14 @@ pub fn create_bring_resource_tree(
                             },
                             TargetEntity(root.parent_entity()),
                         ));
+
+                        root.spawn((
+                            FinishTaskAction {
+                                task: working_on_task.0
+                            },
+                            TargetEntity(root.parent_entity()),
+                        ));
+                        
                     })
                     .trigger(OnRun);
             }

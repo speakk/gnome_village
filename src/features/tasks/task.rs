@@ -23,6 +23,14 @@ pub enum Status {
     Cancelled,
 }
 
+#[derive(Event)]
+pub struct TaskFinished(pub TaskFinishedResult);
+
+pub enum TaskFinishedResult {
+    Success,
+    Failure,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub struct ItemAmount {
     pub item_id: ItemId,
