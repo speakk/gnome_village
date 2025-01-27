@@ -1,17 +1,16 @@
 use crate::bundles::settler::Settler;
 use crate::bundles::{Id, Reservation, Reservations, ResourceItem};
+use crate::features::ai::actions::finish_task::FinishTaskAction;
 use crate::features::ai::actions::go_to::GoToAction;
 use crate::features::ai::actions::pick_up::PickUpAction;
-use crate::features::ai::WorkingOnTask;
+use crate::features::ai::{BehaviourTree, WorkingOnTask};
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::{
     BringResourceData, BringResourceRuntimeData, DepositTarget, Task, TaskType,
 };
 use beet::prelude::{OnRun, SequenceFlow, TargetEntity};
-use bevior_tree::prelude::{delegate_node, TaskBridge};
 use bevy::prelude::*;
-use crate::features::ai::actions::finish_task::FinishTaskAction;
 
 pub fn create_bring_resource_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
@@ -42,56 +41,50 @@ pub fn create_bring_resource_tree(
                     .run_time_data
                     .unwrap()
                     .concrete_resource_entity;
-                let resource_position = item_resources.get(resource_target).unwrap();
+                let resource_position = item_resources.get(resource_target);
 
-                commands
-                    .entity(worker_entity)
-                    .with_children(|sequence| {
-                        sequence.spawn_empty().insert(SequenceFlow)
-                            .with_children(|root| {
-                                println!("Creating tree, spawning goto");
-                                root.spawn((
-                                    GoToAction {
-                                        target: resource_position.0.as_ivec2(),
-                                    },
-                                    TargetEntity(worker_entity),
-                                ));
-
-                                root.spawn((
-                                    PickUpAction {
-                                        target_entity: resource_target,
-                                        amount: bring_resource_data.item_requirement.amount,
-                                    },
-                                    TargetEntity(worker_entity),
-                                ));
-
-                                root.spawn((
-                                    GoToAction {
-                                        target: target_coordinate,
-                                    },
-                                    TargetEntity(worker_entity),
-                                ));
-
-                                root.spawn((
-                                    FinishTaskAction {
-                                        task: working_on_task.0,
-                                        tree_root: root.parent_entity()
-                                    },
-                                    TargetEntity(worker_entity),
-                                ));
-
-                            })
-                            .trigger(OnRun);
-                    });
+                // TODO: Make mechanism to clean up in case Settler gets despawned
+                commands.spawn((BehaviourTree, SequenceFlow)).with_children(|root| {
+                    println!("Creating tree, spawning goto");
                     
+                    // TODO: Right now using the existence of resource_position as an indicator
+                    // that we already picked this resource up. (In case creating tree from save game)
+                    // Rather check Inventory for the item
+                    if let Ok(resource_position) = resource_position {
+                        root.spawn((
+                            GoToAction {
+                                target: resource_position.0.as_ivec2(),
+                            },
+                            TargetEntity(worker_entity),
+                        ));
+
+                        root.spawn((
+                            PickUpAction {
+                                target_entity: resource_target,
+                                amount: bring_resource_data.item_requirement.amount,
+                            },
+                            TargetEntity(worker_entity),
+                        ));
+                    }
+
+                    root.spawn((
+                        GoToAction {
+                            target: target_coordinate,
+                        },
+                        TargetEntity(worker_entity),
+                    ));
+
+                    root.spawn((
+                        FinishTaskAction {
+                            task: working_on_task.0,
+                            tree_root: root.parent_entity(),
+                        },
+                        TargetEntity(worker_entity),
+                    ));
+                }).trigger(OnRun);
             }
         }
     }
-}
-
-#[delegate_node(delegate)]
-pub struct DebugPrintTask {
-    delegate: TaskBridge,
 }
 
 pub fn score_bring_resource(

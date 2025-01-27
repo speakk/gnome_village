@@ -41,11 +41,13 @@ pub enum ItemId {
     Lumber = 4,
 }
 
-#[derive(Component, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Component, Reflect, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[require(ItemStack, Reservations)]
+#[reflect(Component)]
 pub struct ResourceItem;
 
 #[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
+#[reflect(Component)]
 pub struct ItemStack(pub u32);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
@@ -55,6 +57,7 @@ pub struct Reservation {
 }
 
 #[derive(Component, Default, Debug, Clone, PartialEq, Eq, Hash, Reflect)]
+#[reflect(Component)]
 pub struct Reservations(pub Vec<Reservation>);
 
 impl Default for ItemStack {

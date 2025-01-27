@@ -1,3 +1,4 @@
+use moonshine_core::prelude::ReflectMapEntities;
 use crate::bundles::settler::Settler;
 use crate::bundles::{Id, ItemId, Reservations, ResourceItem};
 use crate::features::ai::trees::bring_resource::score_bring_resource;
@@ -5,7 +6,8 @@ use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use bevy::prelude::Component;
 use bevy::prelude::*;
-use moonshine_core::prelude::Save;
+use moonshine_core::prelude::{MapEntities, Save};
+use crate::features::ai::WorkingOnTask;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum RunType {
@@ -64,11 +66,23 @@ pub enum TaskType {
 
 #[derive(Component, Debug, Clone, Reflect)]
 #[require(Save, Name(|| "Task"))]
-#[reflect(Component)]
+#[reflect(Component, MapEntities)]
 pub struct Task {
     pub run_type: RunType,
     pub status: Status,
     pub task_type: Option<TaskType>,
+}
+
+// TODO: Wow this seems untenable, perhaps separate Concrete Runtime Data from Task
+impl MapEntities for Task {
+    fn map_entities<M: EntityMapper>(&mut self, entity_mapper: &mut M) {
+        if let Some(TaskType::BringResource(bring_resource_data)) = &mut self.task_type {
+            if let Some(run_time_data) = &mut bring_resource_data.run_time_data {
+                let entity = &mut run_time_data.concrete_resource_entity;
+                *entity = entity_mapper.map_entity(*entity);
+            }
+        }
+    }
 }
 
 impl Default for Task {

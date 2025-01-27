@@ -23,7 +23,6 @@ bevy_cobweb = "0.14.3"
 bevy-inspector-egui = "0.28.1"
 i-cant-believe-its-not-bsn = "0.3.0"
 bevy_spatial = "0.10.0"
-bevior_tree = "0.7.0"
 pathfinding = "4.13.1"
 beet = { git = "https://github.com/mrchantey/beet", branch = "main", features = ["bevyhub"] }
 

@@ -420,20 +420,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bevior_tree"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3da7c79fedd92179cfddbc66b4705b2f9234bbb2091cbebfc8327316197eb3ab"
-dependencies = [
- "bevy",
- "derive-nodestate",
- "macro-delegatenode",
- "macro-withstate",
- "ordered-float",
- "rand",
-]
-
-[[package]]
 name = "bevy"
 version = "0.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2235,17 +2221,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "derive-nodestate"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8fb20bef46548cfc2cb7b733163406cdcbdee2b46473788e2f7f237d1d384be1"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "derive_more"
 version = "0.99.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3612,28 +3587,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "macro-delegatenode"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5bb085e96b4bbb151aa6335216a0dd61809c230a2164b161113ee0e970da0975"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "macro-withstate"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "19939b0f5665b56abb5d0304522640433ee42234c7f8e6437234bdf4a6651253"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "malloc_buf"
 version = "0.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4905,7 +4858,6 @@ name = "rustvillage"
 version = "0.1.0"
 dependencies = [
  "beet",
- "bevior_tree",
  "bevy",
  "bevy-inspector-egui",
  "bevy_atmosphere",

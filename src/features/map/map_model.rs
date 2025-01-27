@@ -198,7 +198,7 @@ pub fn generate_test_entities(
     let test_entities = vec![
         EntityGeneration {
             entity_type: ItemId::Settler,
-            amount: 1,
+            amount: 4,
         },
         EntityGeneration {
             entity_type: ItemId::Lumber,

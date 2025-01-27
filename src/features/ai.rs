@@ -1,6 +1,8 @@
 mod actions;
 pub mod trees;
 
+use moonshine_core::prelude::ReflectMapEntities;
+use moonshine_core::prelude::Unload;
 use crate::features::ai::actions::go_to::GoToAction;
 use crate::features::ai::actions::pick_up::PickUpAction;
 use crate::features::ai::trees::bring_resource::create_bring_resource_tree;
@@ -21,7 +23,19 @@ impl Plugin for AiPlugin {
 }
 
 #[derive(Component, Reflect)]
+#[reflect(Component, MapEntities)]
 pub struct WorkingOnTask(pub Entity);
+
+impl MapEntities for WorkingOnTask {
+    fn map_entities<M: EntityMapper>(&mut self, entity_mapper: &mut M) {
+        let entity = &mut self.0;
+        *entity = entity_mapper.map_entity(*entity);
+    }
+}
+
+#[derive(Component)]
+#[require(Unload)]
+pub struct BehaviourTree;
 
 #[derive(Component)]
 pub struct PathFollow {
@@ -53,9 +67,3 @@ impl Debug for PathFollow {
     }
 }
 
-impl MapEntities for WorkingOnTask {
-    fn map_entities<M: EntityMapper>(&mut self, entity_mapper: &mut M) {
-        let entity = &mut self.0;
-        *entity = entity_mapper.map_entity(*entity);
-    }
-}

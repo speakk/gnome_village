@@ -3,7 +3,7 @@ use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::buildables::BluePrint;
 use crate::bundles::rock::Rock;
 use crate::bundles::settler::Settler;
-use crate::bundles::ItemStack;
+use crate::bundles::{ItemStack, ResourceItem};
 use crate::features::ai::WorkingOnTask;
 use crate::features::input::SaveLoadAction;
 use crate::features::inventory::Inventory;
@@ -86,6 +86,7 @@ impl Plugin for SavePlugin {
         .register_type::<BluePrint>()
         .register_type::<WorkingOnTask>()
         .register_type::<ItemStack>()
+        .register_type::<ResourceItem>()
         .register_type::<Inventory>()
         .register_type::<MapData>()
         .register_type::<Rock>()
