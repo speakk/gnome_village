@@ -82,17 +82,13 @@ impl BuildView for MapData {
 
                         let centered_coordinate =
                             map_data.convert_to_centered_coordinate(UVec2::new(x, y));
-                        //
-                        // println!(
-                        //     "Inserting! Centered coordinate: {:?}, handles: {:?}, {:?}",
-                        //     centered_coordinate, mesh_handle, material_handle
-                        // );
+
                         view.spawn((
                             Mesh3d(mesh_handle.clone()),
                             MeshMaterial3d(material_handle),
                             Transform::from_xyz(
                                 centered_coordinate.x as f32,
-                                0.5,
+                                0.0,
                                 centered_coordinate.y as f32,
                             ),
                         ));

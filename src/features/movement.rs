@@ -1,4 +1,5 @@
 use crate::features::camera::AccumulatedInput;
+use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use bevy::app::RunFixedMainLoopSystem::AfterFixedMainLoop;
 use bevy::prelude::*;
 
@@ -6,14 +7,6 @@ pub struct MovementPlugin;
 
 #[derive(Component, Default)]
 pub struct Velocity(pub Vec2);
-
-#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
-pub struct WorldPosition(pub Vec2);
-
-/// The value [`WorldPosition`] had in the last fixed timestep.
-/// Used for interpolation in the `interpolate_rendered_transform` system.
-#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
-pub struct PreviousWorldPosition(Vec2);
 
 #[derive(Component, Default)]
 pub struct Acceleration(pub Vec2);

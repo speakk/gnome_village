@@ -2,6 +2,7 @@ use crate::bundles::settler::Settler;
 use bevy::prelude::*;
 use moonshine_view::RegisterView;
 
+pub mod rock;
 pub mod settler;
 
 pub struct BundlePlugin;

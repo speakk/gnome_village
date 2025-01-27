@@ -3,4 +3,6 @@ pub mod camera;
 pub mod input;
 pub mod map;
 pub mod movement;
+pub mod path_finding;
+pub mod position;
 pub mod sun_light;
