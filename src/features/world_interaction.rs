@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::features::world_interaction::mouse_selection::MouseSelectionPlugin;
+use bevy::prelude::*;
 
 pub mod mouse_selection;
 

@@ -26,13 +26,11 @@ pub enum CameraZoomAction {
     Out,
 }
 
-
 #[derive(Actionlike, PartialEq, Eq, Hash, Clone, Copy, Debug, Reflect)]
 pub enum WorldInteractionAction {
     PrimarySelect,
     SecondarySelect,
 }
-
 
 #[derive(Actionlike, PartialEq, Eq, Hash, Clone, Copy, Debug, Reflect)]
 pub enum SaveLoadAction {

@@ -16,8 +16,7 @@ pub struct UiSceneHandles {
 
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .add_plugins(CobwebUiPlugin)
+        app.add_plugins(CobwebUiPlugin)
             .add_plugins(MainActionsPlugin)
             .insert_resource::<UiSceneHandles>(UiSceneHandles::default())
             .load("ui_templates/manifest.cob")
@@ -37,7 +36,7 @@ fn build_ui(
             ui_scene_handles.main = Some(main_scene.id());
             ui_scene_handles.action_menu_container =
                 Some(main_scene.get("action_menu_container").id());
-            
+
             initialize_main_actions_menu(main_scene);
             initialize_menu_buttons(main_scene);
         },

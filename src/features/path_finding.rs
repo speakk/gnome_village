@@ -1,11 +1,11 @@
 use crate::features::map::map_model::{MapData, TileType};
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
+use crate::features::states::AppState;
 use bevy::app::{App, Plugin};
 use bevy::prelude::*;
 use grid_pathfinding::PathingGrid;
 use grid_util::grid::Grid;
 use grid_util::Point;
-use crate::features::states::AppState;
 
 pub struct PathFindingPlugin;
 
@@ -19,7 +19,10 @@ struct PathingGridResource(pub PathingGrid);
 impl Plugin for PathFindingPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::InGame), setup)
-            .add_systems(Update, update_grid_from_solid_component.run_if(in_state(AppState::InGame)))
+            .add_systems(
+                Update,
+                update_grid_from_solid_component.run_if(in_state(AppState::InGame)),
+            )
             .insert_resource(PathingGridResource(PathingGrid::new(0, 0, false)));
     }
 }

@@ -1,6 +1,6 @@
 use crate::bundles::buildables::Buildable;
 use crate::ui::main_actions::{MainActionType, MainMenuSelected, MainMenuSelectionCleared};
-use crate::ui::{UiSceneHandles};
+use crate::ui::UiSceneHandles;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
@@ -33,12 +33,15 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
                                 println!("Adding buildable: {}", name);
                                 build_benu_handle.spawn_scene_and_edit(
                                     ("build_menu", "build_item"),
-                                    move |build_item_handle, | {
+                                    move |build_item_handle| {
                                         build_item_handle.get("label").update_text(name);
                                         build_item_handle.on_pressed(
-                                            move |mut buildable_selected_writer: EventWriter<BuildMenuBuildableSelected>| {
+                                            move |mut buildable_selected_writer: EventWriter<
+                                                BuildMenuBuildableSelected,
+                                            >| {
                                                 println!("Build item pressed, broadcasting");
-                                                buildable_selected_writer.send(BuildMenuBuildableSelected(entity));
+                                                buildable_selected_writer
+                                                    .send(BuildMenuBuildableSelected(entity));
                                                 //commands.react().broadcast(MainActionMenuButtonPressed(MainActionType::Build));)
                                                 //commands.react().broadcast(MainActionMenuButtonPressed(button.main_action_type));
                                             },

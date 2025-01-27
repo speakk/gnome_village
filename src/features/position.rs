@@ -1,6 +1,6 @@
 use bevy::math::Vec2;
-use grid_util::Point;
 use bevy::prelude::*;
+use grid_util::Point;
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
 #[reflect(Component)]

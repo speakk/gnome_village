@@ -1,11 +1,11 @@
 pub mod camera;
 pub mod input;
 pub mod map;
+pub mod misc_components;
 pub mod movement;
 pub mod path_finding;
 pub mod position;
 pub mod save;
+pub mod states;
 pub mod sun_light;
 pub mod world_interaction;
-pub mod states;
-pub mod misc_components;

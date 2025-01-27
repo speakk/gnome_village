@@ -9,9 +9,9 @@ use crate::features::map::MapPlugin;
 use crate::features::movement::MovementPlugin;
 use crate::features::path_finding::PathFindingPlugin;
 use crate::features::save::SavePlugin;
+use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
 use bevy::prelude::*;
-use crate::features::states::AppState;
 
 fn main() {
     App::new()

@@ -1,21 +1,20 @@
-pub mod wooden_wall;
 pub mod torch;
+pub mod wooden_wall;
 
+use crate::bundles::buildables::torch::WoodenTorch;
+use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::features::map::map_view::{MapMeshHandles, MeshType};
+use crate::features::misc_components::Prototype;
+use crate::features::states::AppState;
 use bevy::prelude::*;
 use moonshine_core::prelude::Save;
 use moonshine_view::prelude::*;
-use crate::bundles::buildables::torch::WoodenTorch;
-use crate::bundles::buildables::wooden_wall::{WoodenWall};
-use crate::features::misc_components::Prototype;
-use crate::features::states::AppState;
 
 pub struct BuildablesPlugin;
 
 impl Plugin for BuildablesPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .insert_resource(BuildableMaterialHandles::default())
+        app.insert_resource(BuildableMaterialHandles::default())
             .insert_resource(BuildableMeshHandles::default())
             .add_systems(Startup, (setup_buildable_materials, setup_buildable_meshes))
             .add_systems(OnEnter(AppState::InGame), add_buildable_prototypes)
@@ -25,12 +24,12 @@ impl Plugin for BuildablesPlugin {
 
 #[derive(Resource, Default)]
 pub struct BuildableMaterialHandles {
-    wood: Option<Handle<StandardMaterial>>
+    wood: Option<Handle<StandardMaterial>>,
 }
 
 #[derive(Resource, Default)]
 pub struct BuildableMeshHandles {
-    wall: Option<Handle<Mesh>>
+    wall: Option<Handle<Mesh>>,
 }
 
 pub fn setup_buildable_materials(
@@ -43,7 +42,7 @@ pub fn setup_buildable_materials(
 
 pub fn setup_buildable_meshes(
     mut buildable_mesh_handles: ResMut<BuildableMeshHandles>,
-    map_mesh_handles: Res<MapMeshHandles>
+    map_mesh_handles: Res<MapMeshHandles>,
 ) {
     // Reuse map mesh cuboid for efficiency
     buildable_mesh_handles.wall = map_mesh_handles.get(&MeshType::Cuboid).cloned();

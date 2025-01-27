@@ -1,3 +1,4 @@
+use crate::features::states::AppState;
 use bevy::app::App;
 use bevy::color::palettes::css::ORANGE_RED;
 use bevy::color::palettes::tailwind::SKY_200;
@@ -7,7 +8,6 @@ use bevy::prelude::*;
 use bevy_atmosphere::model::AtmosphereModel;
 use bevy_atmosphere::prelude::{AtmosphereMut, Nishita};
 use std::f32::consts::PI;
-use crate::features::states::AppState;
 
 pub struct SunLightPlugin;
 
@@ -59,7 +59,7 @@ pub fn setup_lights(mut commands: Commands) {
 
     let maximum_shadow_distance = 100.0;
     let cascade_count = 1;
-    
+
     commands.spawn((
         Sun,
         DirectionalLight {
@@ -129,11 +129,11 @@ fn daylight_cycle(
 
     let timer_scale_division = 6.0;
     let t = time.elapsed_secs_wrapped() / timer_scale_division;
-    
+
     if atmosphere_timer.0.finished() {
         atmosphere.sun_position = Vec3::new(0., t.sin(), t.cos());
     }
-    
+
     if timer.0.finished() {
         if let Some((mut light_trans, mut directional, entity)) = sun_query.single_mut().into() {
             light_trans.rotation = Quat::from_rotation_x(-t);

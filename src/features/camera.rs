@@ -1,6 +1,7 @@
 use crate::features::input::{CameraPanAction, CameraZoomAction};
 use crate::features::movement::{Acceleration, Friction, Velocity};
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
+use crate::features::states::AppState;
 use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
 use bevy::app::{App, Plugin, RunFixedMainLoop};
 use bevy::ecs::prelude::*;
@@ -11,7 +12,6 @@ use bevy::render::camera::ScalingMode;
 use bevy_atmosphere::plugin::{AtmosphereCamera, AtmospherePlugin};
 use leafwing_input_manager::prelude::*;
 use std::ops::{Add, Sub};
-use crate::features::states::AppState;
 
 pub struct CameraPlugin;
 
@@ -26,7 +26,9 @@ impl Plugin for CameraPlugin {
             .add_systems(OnEnter(AppState::InGame), setup)
             .add_systems(
                 RunFixedMainLoop,
-                handle_pan_input.in_set(BeforeFixedMainLoop).run_if(in_state(AppState::InGame)),
+                handle_pan_input
+                    .in_set(BeforeFixedMainLoop)
+                    .run_if(in_state(AppState::InGame)),
             )
             .add_systems(Update, handle_zoom_input.run_if(in_state(AppState::InGame)));
     }
@@ -114,9 +116,7 @@ fn handle_pan_input(
     }
 }
 
-fn handle_zoom_input(
-    mut query: Query<(&ActionState<CameraZoomAction>, &mut Projection)>,
-) {
+fn handle_zoom_input(mut query: Query<(&ActionState<CameraZoomAction>, &mut Projection)>) {
     let zoom_amount = 0.3;
     for (action_state, camera_projection) in &mut query {
         if let Projection::Orthographic(ref mut ortho_projection) = *camera_projection.into_inner()
