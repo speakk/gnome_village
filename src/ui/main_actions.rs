@@ -25,7 +25,3 @@ impl Plugin for MainActionsPlugin {
             .add_event::<MainActionSelected>();
     }
 }
-
-pub fn initialize_action_menu_container<'a>(action_menu_container: &mut SceneHandle<'a, <UiBuilder<'_, Entity> as SceneNodeBuilder>::Builder<'a>>) {
-    action_menu_container.on_event::<MainActionSelected>().r(move || {});
-}
