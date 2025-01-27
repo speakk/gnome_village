@@ -1,30 +1,34 @@
 use crate::features::map::map_model::{MapData, TileType};
 use crate::features::misc_components::simple_mesh::{SimpleMeshHandles, SimpleMeshType};
-use bevy::asset::{Assets, Handle};
+use bevy::asset::{Assets, Handle, UntypedHandle};
 use bevy::color::Color;
 use bevy::hierarchy::{BuildChildren, ChildBuild};
 use bevy::math::{UVec2, Vec2};
 use bevy::pbr::{MeshMaterial3d, StandardMaterial};
-use bevy::prelude::{
-    Deref, DerefMut, InheritedVisibility, Mesh3d, ResMut,
-    Resource, Transform, World,
-};
+use bevy::prelude::{default, Deref, DerefMut, InheritedVisibility, Mesh3d, Res, ResMut, Resource, Transform, World};
 use bevy::utils::HashMap;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
 use noisy_bevy::simplex_noise_2d;
 
 #[derive(Resource, Default, Deref, DerefMut)]
-pub struct MapMaterialHandles(pub HashMap<TileType, Vec<Handle<StandardMaterial>>>);
+pub struct MapMaterialHandles(pub HashMap<TileType, Vec<UntypedHandle>>);
 
 pub fn create_map_materials(
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut map_material_handles: ResMut<MapMaterialHandles>,
+    //mut water_materials: ResMut<Assets<StandardWaterMaterial>>,
+    //mut settings: ResMut<WaterSettings>,
 ) {
     let material_handle1 = materials.add(Color::srgb(0.8, 0.7, 0.6));
     let material_handle2 = materials.add(Color::srgb(0.8, 0.6, 0.5));
-    let dirt_material_handles = vec![material_handle1, material_handle2];
+    let dirt_material_handles = vec![material_handle1.untyped(), material_handle2.untyped()];
+
+    let water_material_handle = materials.add(Color::srgb(0.2, 0.3, 0.5));
+
     map_material_handles.insert(TileType::Dirt, dirt_material_handles);
+    
+    map_material_handles.insert(TileType::Water, vec![water_material_handle.untyped()]);
 }
 
 impl BuildView for MapData {
@@ -63,19 +67,35 @@ impl BuildView for MapData {
                         let value = simplex_noise_2d(Vec2::new(x as f32, y as f32) * 0.1);
                         let material_index = (value * material_handles.len() as f32) as usize;
                         let material_handle = material_handles[material_index].clone();
+                        // 
+                        // let final_handle = {
+                        //     match tile_type {
+                        //         TileType::Water => material_handle.typed::<ToonWaterMaterial>()
+                        //     }
+                        // }
 
                         let centered_coordinate =
                             map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
-                        view.spawn((
+                        let mut view_entity = view.spawn((
                             Mesh3d(mesh_handle.clone()),
-                            MeshMaterial3d(material_handle),
                             Transform::from_xyz(
                                 centered_coordinate.x as f32,
                                 0.0,
                                 centered_coordinate.y as f32,
                             ),
                         ));
+                        
+                        match tile_type {
+                            TileType::Dirt => {
+                                view_entity.insert(MeshMaterial3d(material_handle.typed::<StandardMaterial>()));
+                            }
+                            TileType::Water => {
+                                // TODO: Change this once using a custom material again
+                                view_entity.insert(MeshMaterial3d(material_handle.typed::<StandardMaterial>()));
+                            }
+                            _ => ()
+                        }
                     }
                 }
             }

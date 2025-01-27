@@ -16,6 +16,7 @@ use crate::features::user_actions::UserActionsPlugin;
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use crate::features::map::map_model::WorldSeed;
 
 fn main() {
     App::new()
@@ -32,6 +33,7 @@ fn main() {
         .add_plugins(MovementPlugin)
         .add_plugins(ui::UiPlugin)
         .add_plugins(UserActionsPlugin)
+        .insert_resource(WorldSeed(555))
         .insert_resource(Time::<Fixed>::from_hz(60.0))
         .init_state::<AppState>()
         .add_plugins(

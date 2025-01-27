@@ -1,4 +1,4 @@
-use crate::features::map::map_model::{generate_map_entity, generate_test_entities};
+use crate::features::map::map_model::{generate_map_entity, generate_rocks, generate_test_entities, ReservedCoordinatesHelper};
 use crate::features::map::map_view::{create_map_materials, MapMaterialHandles};
 use crate::features::states::AppState;
 use bevy::app::{App, Plugin};
@@ -14,11 +14,14 @@ impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(MapMaterialHandles::default())
             .add_viewable::<map_model::MapData>()
+            .insert_resource(ReservedCoordinatesHelper::default())
             .add_systems(
                 OnEnter(AppState::MapGeneration),
                 (
                     create_map_materials,
                     generate_map_entity,
+                    generate_rocks,
+                    //|world: &mut World| { world.flush() },
                     generate_test_entities,
                     transition_to_in_game,
                 )

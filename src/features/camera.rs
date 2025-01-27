@@ -12,6 +12,7 @@ use bevy::render::camera::ScalingMode;
 use bevy_atmosphere::plugin::{AtmosphereCamera, AtmospherePlugin};
 use leafwing_input_manager::prelude::*;
 use std::ops::{Add, Sub};
+use bevy::core_pipeline::prepass::{DepthPrepass, NormalPrepass};
 
 pub struct CameraPlugin;
 
@@ -80,8 +81,8 @@ fn setup(mut commands: Commands) {
         WorldPosition::default(),
         PreviousWorldPosition::default(),
         AccumulatedInput::default(),
-        Friction(0.5),
-    ));
+        Friction(0.5)
+    )).insert(DepthPrepass).insert(NormalPrepass);
 }
 
 fn handle_pan_input(
