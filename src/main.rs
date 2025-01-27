@@ -12,6 +12,7 @@ use crate::features::save::SavePlugin;
 use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
 use bevy::prelude::*;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 fn main() {
     App::new()
@@ -29,5 +30,8 @@ fn main() {
         .add_plugins(ui::UiPlugin)
         .insert_resource(Time::<Fixed>::from_hz(60.0))
         .init_state::<AppState>()
+        .add_plugins(
+            #[cfg(debug_assertions)]
+            WorldInspectorPlugin::new())
         .run();
 }

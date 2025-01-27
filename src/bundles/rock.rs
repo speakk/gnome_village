@@ -29,16 +29,9 @@ pub fn setup_rock_materials(
 }
 
 #[derive(Component, Default, Reflect)]
+#[require(WorldPosition, Solid, Save, Name(|| "Rock"))]
 #[reflect(Component)]
 pub struct Rock;
-
-#[derive(Bundle, Default)]
-pub struct RockBundle {
-    pub(crate) world_position: WorldPosition,
-    pub solid: Solid,
-    pub rock: Rock,
-    pub save: Save,
-}
 
 impl BuildView for Rock {
     fn build(world: &World, object: Object<Rock>, mut view: ViewCommands<Rock>) {
@@ -56,6 +49,7 @@ impl BuildView for Rock {
             Mesh3d(mesh_handle.clone()),
             MeshMaterial3d(material_handle),
             Transform::from_xyz(transform.x, 0.5, transform.y),
+            Name::new("Rock view"),
         ));
     }
 }

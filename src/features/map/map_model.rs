@@ -1,11 +1,11 @@
-use crate::bundles::rock::RockBundle;
-use crate::bundles::settler::SettlerBundle;
+use crate::bundles::rock::{Rock};
 use crate::features::position::WorldPosition;
 use bevy::math::{IVec2, UVec2, Vec2};
 use bevy::prelude::*;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
+use crate::bundles::settler::Settler;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -101,14 +101,14 @@ pub fn generate_test_entities(mut commands: Commands, map_query: Query<&MapData>
             let noise_value =
                 simplex_noise_2d_seeded(Vec2::new(x as f32, y as f32) * 0.1, 555.0f32);
             if noise_value > 0.5 {
-                commands.spawn(RockBundle {
-                    world_position: WorldPosition(
+                commands.spawn((
+                    Rock,
+                    WorldPosition(
                         map_data
                             .convert_to_centered_coordinate(UVec2::new(x, y))
                             .as_vec2(),
                     ),
-                    ..default()
-                });
+                ));
             }
         }
     }
@@ -118,9 +118,6 @@ pub fn generate_test_entities(mut commands: Commands, map_query: Query<&MapData>
         let y = rng.gen_range(0..map_data.size.y);
         let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
-        commands.spawn(SettlerBundle {
-            world_position: WorldPosition(centered_coordinate.as_vec2()),
-            ..default()
-        });
+        commands.spawn((Settler, WorldPosition(centered_coordinate.as_vec2())));
     }
 }

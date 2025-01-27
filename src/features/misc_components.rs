@@ -64,6 +64,7 @@ impl BuildView for GltfAsset {
         view.insert((
             SceneRoot(asset_server.load(GltfAssetLabel::Scene(0).from_asset(gltf_asset.0.clone()))),
             Transform::from_xyz(transform.x, 0.0, transform.y),
+            Name::new("Gltf asset view"),
         ));
     }
 }

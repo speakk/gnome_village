@@ -22,6 +22,7 @@ moonshine-view = "0.1.6"
 noisy_bevy = "0.8.0"
 rand = "0.8.5"
 bevy_cobweb = "0.14.3"
+bevy-inspector-egui = "0.28.1"
 
 [profile.dev.package."*"]
 opt-level = 3

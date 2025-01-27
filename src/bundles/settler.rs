@@ -4,16 +4,9 @@ use moonshine_core::prelude::*;
 use moonshine_view::prelude::*;
 
 #[derive(Component, Default, Reflect)]
+#[require(WorldPosition, PreviousWorldPosition, Save, Name(|| "Settler"))]
 #[reflect(Component)]
 pub struct Settler;
-
-#[derive(Bundle, Default)]
-pub struct SettlerBundle {
-    pub(crate) world_position: WorldPosition,
-    pub(crate) previous_world_position: PreviousWorldPosition,
-    pub settler: Settler,
-    pub save: Save,
-}
 
 impl BuildView for Settler {
     fn build(world: &World, object: Object<Settler>, mut view: ViewCommands<Settler>) {
@@ -26,6 +19,7 @@ impl BuildView for Settler {
                     .load(GltfAssetLabel::Scene(0).from_asset("blender_models/settler.glb")),
             ),
             Transform::from_xyz(transform.x, 0.0, transform.y),
+            Name::new("Settler view"),
         ));
     }
 }
