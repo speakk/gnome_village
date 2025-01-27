@@ -1,7 +1,11 @@
 use crate::bundles::settler::Settler;
 use bevy::prelude::*;
+use moonshine_core::save::Save;
 use moonshine_view::RegisterView;
 use crate::bundles::buildables::BuildablesPlugin;
+use crate::bundles::buildables::torch::WoodenTorch;
+use crate::bundles::buildables::wooden_wall::WoodenWall;
+use crate::features::misc_components::Prototype;
 
 pub mod rock;
 pub mod settler;
@@ -15,4 +19,9 @@ impl Plugin for BundlePlugin {
             .add_plugins(BuildablesPlugin)
             .add_viewable::<Settler>();
     }
+}
+
+pub fn make_concrete_from_prototype(prototype: Entity, mut commands: Commands) -> Entity {
+    let cloned = prototype.clone();
+    commands.entity(cloned).insert(Save).remove::<Prototype>().id()
 }

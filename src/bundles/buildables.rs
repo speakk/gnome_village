@@ -1,12 +1,12 @@
-mod wooden_wall;
-mod torch;
+pub mod wooden_wall;
+pub mod torch;
 
 use crate::features::map::map_view::{MapMeshHandles, MeshType};
 use bevy::prelude::*;
 use moonshine_core::prelude::Save;
 use moonshine_view::prelude::*;
 use crate::bundles::buildables::torch::WoodenTorch;
-use crate::bundles::buildables::wooden_wall::{Wall};
+use crate::bundles::buildables::wooden_wall::{WoodenWall};
 use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::states::AppState;
 
@@ -19,7 +19,7 @@ impl Plugin for BuildablesPlugin {
             .insert_resource(BuildableMeshHandles::default())
             .add_systems(Startup, (setup_buildable_materials, setup_buildable_meshes))
             .add_systems(OnEnter(AppState::InGame), add_buildable_prototypes)
-            .add_viewable::<Wall>();
+            .add_viewable::<WoodenWall>();
     }
 }
 
@@ -51,7 +51,7 @@ pub fn setup_buildable_meshes(
 
 pub fn add_buildable_prototypes(mut commands: Commands) {
     println!("Adding buildable prototypes");
-    commands.spawn((Wall, Prototype)).remove::<Save>();
+    commands.spawn((WoodenWall, Prototype)).remove::<Save>();
     commands.spawn((WoodenTorch, Prototype)).remove::<Save>();
 }
 

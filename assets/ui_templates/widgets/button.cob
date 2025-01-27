@@ -8,6 +8,7 @@ LoadImages[ "ui_templates/pngs/button.png" ]
 
 +main_bottom_button = \
     GridNode{ justify_lines: Center margin: { right: 10px }}
+    ControlRoot
 
     "image"
         GridNode{ width: 100px grid_row:{ start: 1 } grid_column:{ start: 1}}
@@ -26,6 +27,7 @@ LoadImages[ "ui_templates/pngs/button.png" ]
     "text"
         GridNode{ justify_self_cross: Center grid_row:{ start: 1 } grid_column:{ start: 1} margin: { left: Auto right: Auto}}
         TextLine{ text:"" size:24 font:{family: "ThaleahFat" } justify: Center}
+        ControlMember
         FocusPolicy::Pass
         Picking::Ignore
         Animated<TextLineColor>{

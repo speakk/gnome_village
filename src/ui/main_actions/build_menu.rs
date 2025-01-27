@@ -1,30 +1,57 @@
-use std::cmp::PartialEq;
+use crate::bundles::buildables::Buildable;
+use crate::bundles::make_concrete_from_prototype;
+use crate::ui::main_actions::{MainActionMenuButtonPressed, MainActionType, MainMenuSelected, MainMenuSelectionCleared};
+use crate::ui::{UiSceneHandles};
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
-use crate::bundles::buildables::Buildable;
-use crate::ui::main_actions::{MainActionType};
-use crate::ui::{MainMenuSelected, MainMenuSelectionCleared, UiSceneHandles};
+use std::cmp::PartialEq;
+
+#[derive(Event)]
+pub struct BuildMenuBuildableSelected(pub Entity);
 
 pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Commands) {
-    commands.
-        ui_builder(ui_scene_handles.action_menu_container.unwrap()).
-        update_on(broadcast::<MainMenuSelected>(),
-                  |id: UpdateId, event: BroadcastEvent<MainMenuSelected>, mut commands: Commands, mut _scene_builder: ResMut<SceneBuilder>, buildables_query: Query<&Name, With<Buildable>>| {
-        println!("In insert_build_menu thing!!");
-        if let Ok(event) = event.try_read() {
-            if event.0 != MainActionType::Build { return; }
+    commands
+        .ui_builder(ui_scene_handles.action_menu_container.unwrap())
+        .update_on(
+            broadcast::<MainMenuSelected>(),
+            |id: UpdateId,
+             event: BroadcastEvent<MainMenuSelected>,
+             mut commands: Commands,
+             mut _scene_builder: ResMut<SceneBuilder>,
+             buildables_query: Query<(Entity, &Name), With<Buildable>>| {
+                println!("In insert_build_menu thing!!");
+                if let Ok(event) = event.try_read() {
+                    if event.0 != MainActionType::Build {
+                        return;
+                    }
 
-            println!("Spawning build menu");
-            commands.ui_builder(*id).spawn_scene_and_edit(("build_menu", "build_menu"), &mut _scene_builder, move |build_benu_handle| {
-                for name in buildables_query.iter() {
-                    println!("Adding buildable: {}", name);
-                    build_benu_handle.spawn_scene_and_edit(("build_menu", "build_item"), move |build_item_handle| {
-                        build_item_handle.get("label").update_text(name);
-                    });
+                    println!("Spawning build menu");
+                    commands.ui_builder(*id).spawn_scene_and_edit(
+                        ("build_menu", "build_menu"),
+                        &mut _scene_builder,
+                        move |build_benu_handle| {
+                            for (entity, name) in buildables_query.iter() {
+                                println!("Adding buildable: {}", name);
+                                build_benu_handle.spawn_scene_and_edit(
+                                    ("build_menu", "build_item"),
+                                    move |build_item_handle, | {
+                                        build_item_handle.get("label").update_text(name);
+                                        build_item_handle.on_pressed(
+                                            move |mut buildable_selected_writer: EventWriter<BuildMenuBuildableSelected>| {
+                                                println!("Build item pressed, broadcasting");
+                                                buildable_selected_writer.send(BuildMenuBuildableSelected(entity));
+                                                //commands.react().broadcast(MainActionMenuButtonPressed(MainActionType::Build));)
+                                                //commands.react().broadcast(MainActionMenuButtonPressed(button.main_action_type));
+                                            },
+                                        );
+                                    },
+                                );
+                            }
+                            build_benu_handle.despawn_on_broadcast::<MainMenuSelectionCleared>();
+                        },
+                    );
                 }
-                build_benu_handle.despawn_on_broadcast::<MainMenuSelectionCleared>();
-            });
-        }
-    });
+            },
+        );
 }

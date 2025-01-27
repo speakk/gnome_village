@@ -7,12 +7,12 @@ use crate::features::path_finding::Solid;
 use crate::features::position::WorldPosition;
 use moonshine_core::prelude::*;
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Clone)]
 #[require(WorldPosition, Solid, Name(|| "Wooden Wall"), Buildable, Save)]
-pub struct Wall;
+pub struct WoodenWall;
 
-impl BuildView for Wall {
-    fn build(world: &World, object: Object<Wall>, mut view: ViewCommands<Wall>) {
+impl BuildView for WoodenWall {
+    fn build(world: &World, object: Object<WoodenWall>, mut view: ViewCommands<WoodenWall>) {
         if world.get::<InWorld>(object.entity()).is_none() { return; }
 
         let transform = world.get::<WorldPosition>(object.entity()).unwrap();
