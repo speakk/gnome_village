@@ -7,16 +7,16 @@ use moonshine_core::prelude::*;
 use moonshine_object::Object;
 use moonshine_view::{BuildView, ViewCommands};
 
-#[derive(Component, Default, Reflect)]
-#[require(WorldPosition, Solid, Name(|| "Wooden Wall"), Buildable, Save)]
+#[derive(Component, Default, Reflect, Clone)]
+#[require(WorldPosition, Solid, Name(|| "Wooden Wall"), Buildable)]
 #[reflect(Component)]
 pub struct WoodenWall;
 
 impl BuildView for WoodenWall {
     fn build(world: &World, object: Object<WoodenWall>, mut view: ViewCommands<WoodenWall>) {
-        if world.get::<InWorld>(object.entity()).is_none() {
-            return;
-        }
+        // if world.get::<InWorld>(object.entity()).is_none() {
+        //     return;
+        // }
 
         let transform = world.get::<WorldPosition>(object.entity()).unwrap();
         let material_handles = world.get_resource::<BuildableMaterialHandles>().unwrap();

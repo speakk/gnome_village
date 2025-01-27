@@ -118,6 +118,6 @@ pub fn generate_test_entities(mut commands: Commands, map_query: Query<&MapData>
         let y = rng.gen_range(0..map_data.size.y);
         let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
-        commands.spawn((Settler, WorldPosition(centered_coordinate.as_vec2())));
+        commands.spawn((Settler, WorldPosition(centered_coordinate.as_vec2()), Save));
     }
 }

@@ -1,10 +1,10 @@
-use crate::ui::main_actions::build_menu::insert_build_menu;
-use crate::ui::main_actions::main_action_buttons::initialize_menu_buttons;
-use crate::ui::main_actions::{initialize_main_actions_menu, MainActionsPlugin};
+use crate::ui::ui_main_actions::build_menu::insert_build_menu;
+use crate::ui::ui_main_actions::main_action_buttons::initialize_menu_buttons;
+use crate::ui::ui_main_actions::{initialize_main_actions_menu, MainActionsPlugin};
 use bevy::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 
-pub mod main_actions;
+pub mod ui_main_actions;
 
 pub struct UiPlugin;
 

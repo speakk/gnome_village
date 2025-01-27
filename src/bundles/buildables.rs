@@ -7,6 +7,8 @@ use crate::features::map::map_view::{MapMeshHandles, MeshType};
 use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
 use bevy::prelude::*;
+use bevy::reflect::TypeRegistry;
+use bevy_inspector_egui::__macro_exports::bevy_reflect;
 use moonshine_core::prelude::Save;
 use moonshine_view::prelude::*;
 
@@ -48,10 +50,18 @@ pub fn setup_buildable_meshes(
     buildable_mesh_handles.wall = map_mesh_handles.get(&MeshType::Cuboid).cloned();
 }
 
+macro_rules! apply_prototype_commands {
+    ( $y:expr,$( $x:expr ),* ) => {
+        {
+            $(
+                $y.spawn(($x, Prototype, Visibility::Hidden));
+            )*
+        }
+    };
+}
+
 pub fn add_buildable_prototypes(mut commands: Commands) {
-    println!("Adding buildable prototypes");
-    commands.spawn((WoodenWall, Prototype)).remove::<Save>();
-    commands.spawn((WoodenTorch, Prototype)).remove::<Save>();
+    apply_prototype_commands!(commands,WoodenWall,WoodenTorch);
 }
 
 #[derive(Component, Default, Reflect)]

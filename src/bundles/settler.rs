@@ -4,7 +4,7 @@ use moonshine_core::prelude::*;
 use moonshine_view::prelude::*;
 
 #[derive(Component, Default, Reflect)]
-#[require(WorldPosition, PreviousWorldPosition, Save, Name(|| "Settler"))]
+#[require(WorldPosition, PreviousWorldPosition, Name(|| "Settler"))]
 #[reflect(Component)]
 pub struct Settler;
 

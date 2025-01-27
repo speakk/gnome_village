@@ -1,31 +1,26 @@
-use crate::ui::main_actions::build_menu::BuildMenuBuildableSelected;
+use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::app::{App, Plugin};
 use bevy::prelude::{Commands, Entity, Event, ResMut, Resource};
 use bevy_cobweb::prelude::{broadcast, BroadcastEvent, ReactCommandsExt};
 use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;
 use bevy_cobweb_ui::loading::SceneHandle;
 use bevy_cobweb_ui::prelude::*;
+use crate::features::user_actions::UserActionType;
 
 pub mod build_menu;
 pub mod main_action_buttons;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum MainActionType {
-    Build,
-    Orders,
-}
-
 #[derive(Event, Debug)]
-pub struct MainActionMenuButtonPressed(pub MainActionType);
+pub struct MainActionMenuButtonPressed(pub UserActionType);
 
 #[derive(Event)]
 pub struct MainMenuSelectionCleared;
 
 #[derive(Event)]
-pub struct MainMenuSelected(pub MainActionType);
+pub struct MainMenuSelected(pub UserActionType);
 
 #[derive(Resource)]
-struct CurrentlySelectedMenu(Option<MainActionType>);
+struct CurrentlySelectedMenu(Option<UserActionType>);
 
 pub struct MainActionsPlugin;
 

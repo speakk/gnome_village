@@ -1,5 +1,5 @@
 use crate::bundles::buildables::Buildable;
-use crate::ui::main_actions::{MainActionType, MainMenuSelected, MainMenuSelectionCleared};
+use crate::ui::ui_main_actions::{UserActionType, MainMenuSelected, MainMenuSelectionCleared};
 use crate::ui::UiSceneHandles;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
@@ -20,17 +20,15 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
              buildables_query: Query<(Entity, &Name), With<Buildable>>| {
                 println!("In insert_build_menu thing!!");
                 if let Ok(event) = event.try_read() {
-                    if event.0 != MainActionType::Build {
+                    if event.0 != UserActionType::Build {
                         return;
                     }
 
-                    println!("Spawning build menu");
                     commands.ui_builder(*id).spawn_scene_and_edit(
                         ("build_menu", "build_menu"),
                         &mut _scene_builder,
                         move |build_benu_handle| {
                             for (entity, name) in buildables_query.iter() {
-                                println!("Adding buildable: {}", name);
                                 build_benu_handle.spawn_scene_and_edit(
                                     ("build_menu", "build_item"),
                                     move |build_item_handle| {
@@ -42,8 +40,6 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
                                                 println!("Build item pressed, broadcasting");
                                                 buildable_selected_writer
                                                     .send(BuildMenuBuildableSelected(entity));
-                                                //commands.react().broadcast(MainActionMenuButtonPressed(MainActionType::Build));)
-                                                //commands.react().broadcast(MainActionMenuButtonPressed(button.main_action_type));
                                             },
                                         );
                                     },

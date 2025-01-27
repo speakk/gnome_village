@@ -1,4 +1,4 @@
-use crate::ui::main_actions::{MainActionMenuButtonPressed, MainActionType};
+use crate::ui::ui_main_actions::{MainActionMenuButtonPressed, UserActionType};
 use bevy::prelude::*;
 use bevy_cobweb::prelude::ReactCommandsExt;
 use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;
@@ -6,7 +6,7 @@ use bevy_cobweb_ui::prelude::*;
 
 struct MainActionButton {
     label: String,
-    main_action_type: MainActionType,
+    main_action_type: UserActionType,
 }
 
 pub fn initialize_menu_buttons<'a>(
@@ -15,11 +15,11 @@ pub fn initialize_menu_buttons<'a>(
     let buttons = vec![
         MainActionButton {
             label: "Build".to_string(),
-            main_action_type: MainActionType::Build,
+            main_action_type: UserActionType::Build,
         },
         MainActionButton {
             label: "Orders".to_string(),
-            main_action_type: MainActionType::Orders,
+            main_action_type: UserActionType::Orders,
         },
     ];
 
