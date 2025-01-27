@@ -1,8 +1,6 @@
 use crate::bundles::rock::Rock;
-use crate::bundles::settler::Settler;
 use crate::bundles::{ItemId, ItemSpawners};
 use crate::features::misc_components::InWorld;
-use crate::features::path_finding::spawn_pathfinding_task;
 use crate::features::position::WorldPosition;
 use bevy::math::{IVec2, UVec2, Vec2};
 use bevy::prelude::*;

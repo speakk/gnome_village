@@ -18,13 +18,13 @@ fn go_to_action(
     trigger: Trigger<OnRun>,
     target_agents: Query<&TargetEntity>,
     world_positions: Query<&WorldPosition>,
-    goto_action: Query<(&GoToAction)>,
+    goto_action: Query<&GoToAction>,
     mut commands: Commands,
     map_data: Query<&MapData>,
     pathing_grid: Res<PathingGridResource>,
 ) {
     let target_agent = target_agents.get(trigger.entity()).unwrap().0;
-    let (world_position) = world_positions.get(target_agent).unwrap();
+    let world_position = world_positions.get(target_agent).unwrap();
     let goto_action = goto_action.get(trigger.entity()).unwrap();
     let target_coordinate = goto_action.target;
     println!("Ensure path entered NEW, to {}", target_coordinate);

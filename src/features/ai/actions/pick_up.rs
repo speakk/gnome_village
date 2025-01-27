@@ -1,10 +1,7 @@
 use crate::bundles::{Id, ItemStack};
 use crate::features::inventory::Inventory;
 use beet::prelude::Action;
-use bevior_tree::node::NodeResult;
-use bevior_tree::prelude::{delegate_node, TaskBridge, TaskEvent, TaskStatus};
-use bevy::math::IVec2;
-use bevy::prelude::{Component, Entity, In, Query, Reflect};
+use bevy::prelude::{Component, Entity, Query, Reflect};
 
 #[derive(Component, Action, Reflect)]
 #[require(Name(|| "PickUpAction"))]

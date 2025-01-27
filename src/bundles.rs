@@ -1,13 +1,7 @@
 use crate::bundles::buildables::BuildablesPlugin;
-use crate::bundles::settler::Settler;
-use crate::bundles::spawners::setup_spawners;
 use crate::features::misc_components::MiscComponentsPlugin;
-use crate::features::misc_components::Prototype;
-use crate::utils::entity_clone::CloneEntityCommandsExt;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
-use moonshine_core::save::Save;
-use moonshine_view::RegisterView;
 
 pub mod buildables;
 pub mod resources;

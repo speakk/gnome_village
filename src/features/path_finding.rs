@@ -3,7 +3,7 @@ use crate::bundles::settler::Settler;
 use crate::features::ai::PathFollow;
 use crate::features::map::map_model::{MapData, TileType};
 use crate::features::misc_components::InWorld;
-use crate::features::movement::{Acceleration, Velocity};
+use crate::features::movement::Velocity;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::features::states::AppState;
 use bevy::app::{App, Plugin};
@@ -181,7 +181,7 @@ pub fn spawn_pathfinding_task(
             let neighbours = grid.neighbours((end.x as usize, end.y as usize));
             // TODO: Sort by distance to start
             for neighbour in neighbours {
-                if grid.has_vertex((neighbour.0 as usize, neighbour.1 as usize)) {
+                if grid.has_vertex((neighbour.0, neighbour.1)) {
                     // TODO: Compiler says this is unused? Investigate
                     final_end = UVec2::new(neighbour.0 as u32, neighbour.1 as u32);
                     break;
@@ -258,7 +258,7 @@ pub fn follow_path(
     for (entity, mut path_follow, world_position, mut velocity) in query.iter_mut() {
         //println!("{:?}", path_follow);
 
-        if (path_follow.finished) {
+        if path_follow.finished {
             continue;
         }
 
@@ -273,11 +273,11 @@ pub fn follow_path(
 
         let direction = (next_point.as_vec2() - world_position.as_vec2()).normalize_or_zero();
         let speed = 3.0;
-        let final_vector = Vec2::new(direction.x as f32, direction.y as f32) * speed;
+        let final_vector = Vec2::new(direction.x, direction.y) * speed;
         velocity.0 = final_vector;
 
-        if (world_position.as_vec2().distance(next_point.as_vec2()) <= AT_POINT_THRESHOLD) {
-            if (current_index < path_follow.path.steps.len() - 2) {
+        if world_position.as_vec2().distance(next_point.as_vec2()) <= AT_POINT_THRESHOLD {
+            if current_index < path_follow.path.steps.len() - 2 {
                 path_follow.current_path_index += 1;
             } else {
                 path_follow.finished = true;

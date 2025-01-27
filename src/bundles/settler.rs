@@ -1,7 +1,6 @@
 use crate::bundles::{Id, ItemId};
 use crate::features::inventory::Inventory;
 use crate::features::misc_components::gltf_asset::GltfAsset;
-use crate::features::movement::Acceleration;
 use crate::features::movement::Friction;
 use crate::features::movement::Velocity;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};

@@ -76,7 +76,7 @@ impl Default for Task {
 impl Task {
     pub fn find_best_agent(
         &mut self,
-        mut resources_query: &mut Query<
+        resources_query: &mut Query<
             (Entity, &WorldPosition, &Id, &mut Reservations),
             (With<ResourceItem>, With<InWorld>),
         >,
