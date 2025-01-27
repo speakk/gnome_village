@@ -5,7 +5,8 @@ pub struct InputPlugin;
 
 impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(InputManagerPlugin::<CameraPanAction>::default());
+        app.add_plugins(InputManagerPlugin::<CameraPanAction>::default())
+            .add_plugins(InputManagerPlugin::<CameraZoomAction>::default());
     }
 }
 
@@ -15,4 +16,11 @@ pub enum CameraPanAction {
     Right,
     Up,
     Down,
+}
+
+#[derive(Actionlike, PartialEq, Eq, Hash, Clone, Copy, Debug, Reflect)]
+pub enum CameraZoomAction {
+    In,
+    Out,
+    Generic,
 }

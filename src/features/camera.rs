@@ -1,4 +1,4 @@
-use crate::features::input::CameraPanAction;
+use crate::features::input::{CameraPanAction, CameraZoomAction};
 use crate::features::movement::{Acceleration, Friction, Velocity};
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
@@ -10,6 +10,7 @@ use bevy::prelude::*;
 use bevy::render::camera::ScalingMode;
 use bevy_atmosphere::plugin::{AtmosphereCamera, AtmospherePlugin};
 use leafwing_input_manager::prelude::*;
+use std::ops::{Add, Sub};
 
 pub struct CameraPlugin;
 
@@ -22,17 +23,27 @@ impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(AtmospherePlugin)
             .add_systems(Startup, setup)
-            .add_systems(RunFixedMainLoop, handle_input.in_set(BeforeFixedMainLoop));
+            .add_systems(
+                RunFixedMainLoop,
+                handle_pan_input.in_set(BeforeFixedMainLoop),
+            )
+            .add_systems(Update, handle_zoom_input);
     }
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let input_map = InputMap::new([
+    let pan_input_map = InputMap::new([
         (CameraPanAction::Left, KeyA),
         (CameraPanAction::Right, KeyD),
         (CameraPanAction::Up, KeyW),
         (CameraPanAction::Down, KeyS),
     ]);
+
+    let zoom_input_map = InputMap::default()
+        .with(CameraZoomAction::In, MouseScrollDirection::UP)
+        .with(CameraZoomAction::In, KeyCode::ArrowUp)
+        .with(CameraZoomAction::Out, MouseScrollDirection::DOWN)
+        .with_axis(CameraZoomAction::Generic, MouseScrollAxis::Y);
 
     // camera
     commands.spawn((
@@ -42,8 +53,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             scaling_mode: ScalingMode::FixedVertical {
                 viewport_height: 48.0,
             },
-            near: 0.1,
-            far: 1000.0,
+            near: -100.0,
+            far: 200.0,
             ..OrthographicProjection::default_3d()
         }),
         //ScreenSpaceAmbientOcclusion::default(),
@@ -54,8 +65,9 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         //     brightness: 6000.0,
         //     rotation: Quat::from_rotation_x(std::f32::consts::FRAC_PI_2 / 1.5),
         // },
-        Transform::from_xyz(0.0, 30.0, 30.0).looking_at(Vec3::ZERO, Vec3::Y),
-        InputManagerBundle::with_map(input_map),
+        Transform::from_xyz(0.0, 20.0, 20.0).looking_at(Vec3::ZERO, Vec3::Y),
+        InputManagerBundle::with_map(pan_input_map),
+        InputManagerBundle::with_map(zoom_input_map),
         Velocity::default(),
         Acceleration::default(),
         WorldPosition::default(),
@@ -65,7 +77,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
 }
 
-fn handle_input(
+fn handle_pan_input(
     mut query: Query<
         (
             &ActionState<CameraPanAction>,
@@ -94,5 +106,25 @@ fn handle_input(
         }
 
         acceleration.0 = accumulated_input.normalize_or_zero() * accel_speed;
+    }
+}
+
+fn handle_zoom_input(
+    mut query: Query<(&ActionState<CameraZoomAction>, &mut Projection)>,
+    time: Res<Time>,
+) {
+    let zoom_amount = 0.3;
+    for (action_state, mut camera_projection) in &mut query {
+        println!("Had action zoooom");
+        if let Projection::Orthographic(ref mut ortho_projection) = *camera_projection.into_inner()
+        {
+            if action_state.pressed(&CameraZoomAction::In) {
+                ortho_projection.scale = ortho_projection.scale.add(zoom_amount).min(3.0);
+            }
+
+            if action_state.pressed(&CameraZoomAction::Out) {
+                ortho_projection.scale = ortho_projection.scale.sub(zoom_amount).max(0.4);
+            }
+        }
     }
 }
