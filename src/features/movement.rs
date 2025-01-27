@@ -8,7 +8,19 @@ pub struct MovementPlugin;
 pub struct Velocity(pub Vec2);
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
-pub struct PhysicalTranslation(Vec2);
+pub struct PhysicalTranslation(pub Vec2);
+
+impl From<PhysicalTranslation> for Vec3 {
+    fn from(physical_translation: PhysicalTranslation) -> Self {
+        Vec3::new(physical_translation.x, 0.0, physical_translation.y)
+    }
+}
+
+impl Into<Vec2> for PhysicalTranslation {
+    fn into(self) -> Vec2 {
+        self.0
+    }
+}
 
 /// The value [`PhysicalTranslation`] had in the last fixed timestep.
 /// Used for interpolation in the `interpolate_rendered_transform` system.

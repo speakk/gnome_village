@@ -1,6 +1,9 @@
+use crate::bundles::settler::SettlerBundle;
+use crate::features::movement::PhysicalTranslation;
 use bevy::math::{IVec2, UVec2, Vec2};
-use bevy::prelude::{Commands, Component, Deref, DerefMut, Resource};
+use bevy::prelude::*;
 use noisy_bevy::simplex_noise_2d_seeded;
+use rand::Rng;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -58,7 +61,7 @@ impl MapData {
 }
 
 pub fn generate_map_entity(mut commands: Commands) {
-    let map_size = UVec2::new(150, 150);
+    let map_size = UVec2::new(80, 80);
     let mut map_data = MapData {
         data: vec![TileType::Empty; (map_size.x * map_size.y) as usize].into_boxed_slice(),
         size: map_size,
@@ -80,4 +83,19 @@ pub fn generate_map_entity(mut commands: Commands) {
     }
 
     commands.spawn((map_data,));
+}
+
+pub fn generate_test_entities(mut commands: Commands, map_query: Query<&MapData>) {
+    let map_data = map_query.single();
+    let mut rng = rand::thread_rng();
+    for i in 0..4 {
+        let x = rng.gen_range(0..map_data.size.x);
+        let y = rng.gen_range(0..map_data.size.y);
+        let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
+
+        commands.spawn(SettlerBundle {
+            physical_translation: PhysicalTranslation(centered_coordinate.as_vec2()),
+            ..default()
+        });
+    }
 }
