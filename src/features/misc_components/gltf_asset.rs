@@ -1,7 +1,7 @@
-use crate::features::misc_components::{InWorld, Prototype};
+use crate::features::misc_components::Prototype;
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
-use bevy::app::{App, PostUpdate, Update};
+use bevy::app::{App, PostUpdate};
 use bevy::asset::AssetServer;
 use bevy::core::Name;
 use bevy::gltf::GltfAssetLabel;

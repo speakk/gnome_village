@@ -1,11 +1,7 @@
-use crate::features::misc_components::simple_mesh_view::{
-    on_add_blueprint, on_remove_blueprint, view_wall_moved,
-};
-use bevy::app::{App, Plugin, Startup};
+use bevy::app::Plugin;
 use bevy::asset::Assets;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
-use moonshine_view::RegisterView;
 
 #[derive(Resource, Default, Deref, DerefMut)]
 pub struct SimpleMeshHandles(pub HashMap<SimpleMeshType, Handle<Mesh>>);

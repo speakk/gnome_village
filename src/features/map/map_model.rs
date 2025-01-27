@@ -4,11 +4,9 @@ use crate::features::position::WorldPosition;
 use bevy::math::{IVec2, UVec2, Vec2};
 use bevy::prelude::*;
 use bevy::render::render_resource::ShaderType;
-use bevy_inspector_egui::egui::{remap, remap_clamp};
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
-use std::num::{NonZero, NonZeroU32};
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -161,7 +159,7 @@ pub fn generate_rocks(
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
 ) {
     let map_data = map_query.single();
-    let mut rng = rand::thread_rng();
+    let rng = rand::thread_rng();
 
     let min_bound = map_data.size.x.min(map_data.size.y) as f32;
 

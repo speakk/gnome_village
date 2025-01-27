@@ -61,7 +61,7 @@ fn get_available_task(
                         } else {
                             Some(next_sub_task)
                         };
-                    } else if (child_task_data.status == Status::Finished) {
+                    } else if child_task_data.status == Status::Finished {
                         continue;
                     }
 
