@@ -3,6 +3,7 @@ mod features;
 mod ui;
 mod utils;
 
+use bevior_tree::BehaviorTreePlugin;
 use crate::bundles::rock::RockPlugin;
 use crate::bundles::BundlePlugin;
 use crate::features::camera::CameraPlugin;
@@ -20,10 +21,12 @@ use bevy::input::common_conditions::input_toggle_active;
 use bevy::pbr::DefaultOpaqueRendererMethod;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use crate::features::ai::AiPlugin;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugins(BehaviorTreePlugin::default())
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .add_plugins(MapPlugin)
         .add_plugins(SavePlugin)
@@ -35,6 +38,7 @@ fn main() {
         .add_plugins(features::world_interaction::WorldInteractionPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(PositionPlugin)
+        .add_plugins(AiPlugin)
         .add_plugins(MovementPlugin)
         .add_plugins(TasksPlugin)
         .add_plugins(ui::UiPlugin)

@@ -54,8 +54,6 @@ fn apply_velocity(
 
         world_position.x += velocity.0.x * time.delta_secs();
         world_position.y += velocity.0.y * time.delta_secs();
-        
-        println!("New world position: {:?}", world_position);
     }
 }
 

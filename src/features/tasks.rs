@@ -1,6 +1,9 @@
 pub mod build_task;
 pub mod task;
 
+use bevior_tree::task::TaskStatus;
+use crate::bundles::settler::Settler;
+use crate::features::ai::WorkingOnTask;
 use crate::features::tasks::build_task::react_to_blueprints;
 use crate::features::tasks::task::{RunType, Status, Task};
 use bevy::prelude::*;
@@ -18,17 +21,42 @@ fn tasks_changed(tasks_query: Query<Entity, Or<(Added<Task>, Changed<Task>)>>) -
     !tasks_query.is_empty()
 }
 
-pub fn give_tasks(all_tasks_query: Query<(Entity, &Task, Option<&Children>)>) {
+#[derive(Component)]
+struct TaskReadyToGo;
+
+pub fn give_tasks(
+    mut commands: Commands,
+    mut set: ParamSet<(
+        Query<(Entity, &Task, Option<&Children>)>,
+        Query<(Entity, &mut Task, Option<&Children>)>,
+    )>,
+    available_settlers: Query<Entity, (With<Settler>, Without<WorkingOnTask>)>,
+) {
     let mut ready_tasks: Vec<Entity> = vec![];
-    for (task_entity, task, children) in all_tasks_query.iter() {
-        let ready_task = get_available_task(task_entity, task, children, &all_tasks_query);
+    let set0 = set.p0();
+    for (task_entity, task, children) in set0.iter() {
+        let ready_task = get_available_task(task_entity, &*task, children, &set0);
         if let Some(ready_task) = ready_task {
+            println!("Task {} is ready to go", task_entity);
             ready_tasks.push(ready_task);
         }
     }
 
-    for task in ready_tasks {
-        println!("Task ready: {:?}", task);
+    let mut available_settlers = available_settlers.iter().collect::<Vec<_>>();
+
+    // TODO: Scoring, for one
+    for task_entity in ready_tasks {
+        let next_settler = available_settlers.pop();
+        println!("Possible next settler: {:?}", next_settler);
+        if let Some(next_settler) = next_settler {
+            let mut mut_set = set.p1();
+            let mut task_data = mut_set.get_mut(task_entity).unwrap().1;
+            task_data.status = Status::BeingWorkedOn;
+            println!("Task {} is being worked on (Inserting WorkingOnTask)", task_entity);
+            commands.entity(next_settler).insert(WorkingOnTask(task_entity));
+        } else {
+            return;
+        }
     }
 }
 

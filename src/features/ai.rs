@@ -4,13 +4,16 @@ mod actions;
 use std::fmt::Debug;
 use bevy::prelude::*;
 use moonshine_core::prelude::MapEntities;
+use crate::features::ai::trees::bring_resource::create_bring_resource_tree;
 use crate::features::path_finding::Path;
 
 pub struct AiPlugin;
 
 impl Plugin for AiPlugin {
     fn build(&self, app: &mut App) {
-
+        app.add_systems(Update, 
+            create_bring_resource_tree
+        );
     }
 }
 

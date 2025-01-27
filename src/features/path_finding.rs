@@ -9,6 +9,7 @@ use bevy::tasks::futures_lite::future;
 use bevy::tasks::{AsyncComputeTaskPool, Task};
 use pathfinding::grid::Grid;
 use pathfinding::prelude::bfs;
+use crate::bundles::buildables::BluePrint;
 use crate::bundles::settler::Settler;
 use crate::features::movement::{Acceleration, Velocity};
 
@@ -31,7 +32,7 @@ impl Plugin for PathFindingPlugin {
                     update_grid_from_solid_component.run_if(in_state(AppState::InGame)),
                     apply_pathfinding_result.run_if(in_state(AppState::InGame)),
                     follow_path.run_if(in_state(AppState::InGame)),
-                    test_add_pathfinding_task_to_settler.run_if(in_state(AppState::InGame)),
+                    //test_add_pathfinding_task_to_settler.run_if(in_state(AppState::InGame)),
                 ),
             )
             .insert_resource(PathingGridResource(Grid::new(0, 0)));
@@ -80,10 +81,10 @@ fn do_full_grid_reset(
 #[allow(clippy::type_complexity)]
 fn update_grid_from_solid_component(
     mut pathing_grid: ResMut<PathingGridResource>,
-    solid_added_query: Query<&WorldPosition, (Added<Solid>, With<InWorld>)>,
+    solid_added_query: Query<&WorldPosition, (Added<Solid>, With<InWorld>, Without<BluePrint>)>,
     position_changed_query: Query<
         (&WorldPosition, &PreviousWorldPosition),
-        (Changed<WorldPosition>, With<Solid>, With<InWorld>),
+        (Changed<WorldPosition>, With<Solid>, With<InWorld>, Without<BluePrint>),
     >,
     mut solid_removed_entities: RemovedComponents<Solid>,
     world_position_query: Query<&WorldPosition>,
@@ -162,7 +163,21 @@ pub fn spawn_pathfinding_task(
     let end = map_data.world_position_to_top_left_coordinate(end.0);
     
     let task = thread_pool.spawn(async move {
-
+        let is_occupied = !grid.has_vertex((end.x as usize, end.y as usize));
+        let mut end = end;
+        if is_occupied {
+            let neighbours = grid.neighbours((end.x as usize, end.y as usize));
+            // TODO: Sort by distance to start
+            for neighbour in neighbours {
+                if grid.has_vertex((neighbour.0 as usize, neighbour.1 as usize)) {
+                    end = UVec2::new(neighbour.0 as u32, neighbour.1 as u32);
+                    break;
+                }
+            }
+            
+            // End was occupied, all neighbours are occupied, return None
+            return None;
+        }
         let points = bfs(&start,
                          |p| grid.neighbours((p.x as usize, p.y as usize)).iter().map(|p| UVec2::new(p.0 as u32, p.1 as u32)).collect::<Vec<_>>(),
                          |p| *p == end);
@@ -220,7 +235,6 @@ pub fn follow_path(mut query: Query<(&mut PathFollow, &WorldPosition, &mut Veloc
         let final_vector = Vec2::new(direction.x as f32, direction.y as f32) * speed;
         velocity.0 = final_vector;
 
-        println!("{:?} {:?}", current_point, velocity.0);
         if (world_position.as_vec2().distance(next_point.as_vec2()) <= AT_POINT_THRESHOLD) {
             if (current_index < path_follow.path.steps.len() - 2) {
                 path_follow.current_path_index += 1;
