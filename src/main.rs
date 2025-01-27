@@ -3,7 +3,7 @@ mod features;
 mod ui;
 mod utils;
 
-use beet::prelude::{LifecyclePlugin};
+use beet::prelude::{BeetDebugPlugin, LifecyclePlugin};
 use bevior_tree::BehaviorTreePlugin;
 use crate::bundles::rock::RockPlugin;
 use crate::bundles::BundlePlugin;
@@ -29,6 +29,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(LifecyclePlugin)
+        .add_plugins(BeetDebugPlugin)
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .add_plugins(PreloadPlugin)
         .add_plugins(BundlePlugin)

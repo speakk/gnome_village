@@ -1,52 +1,39 @@
+use beet::prelude::Action;
 use crate::bundles::{Id, ItemStack};
 use crate::features::inventory::Inventory;
 use bevior_tree::node::NodeResult;
 use bevior_tree::prelude::{delegate_node, TaskBridge, TaskEvent, TaskStatus};
-use bevy::prelude::{Component, Entity, In, Query};
+use bevy::math::IVec2;
+use bevy::prelude::{Component, Entity, In, Query, Reflect};
 
-#[delegate_node(delegate)]
-pub struct PickUp {
-    delegate: TaskBridge,
+#[derive(Component, Action, Reflect)]
+#[observers(pick_up_action)]
+pub struct PickUpAction {
+    pub target_entity: Entity,
+    pub amount: u32
 }
 
-const TARGET_DISTANCE_THRESHOLD: f32 = 1.5;
+fn pick_up_action(
+    trigger: Trigger<OnRun>,
+    agents: Query<&TargetEntity>,
+    pick_up_requests: Query<&PickUpAction>,
+    mut item_stack: Query<&mut ItemStack>,
+    mut inventory: Query<&mut Inventory>,
+    item_ids: Query<&Id>,
+    mut commands: Commands
+) {
+    println!("Picking up item, inside pick up action");
+    let agent = agents.get(trigger.entity()).unwrap().0;
+    let pick_up_request = pick_up_requests.get(trigger.entity()).unwrap();
+    
+    let mut inventory = inventory.get_mut(agent).unwrap();
+    let target_entity = pick_up_request.target_entity;
+    let mut item_stack = item_stack.get_mut(target_entity).unwrap();
+    let amount = pick_up_request.amount;
+    
+    item_stack.0 -= amount;
+    inventory.add_item(**item_ids.get(target_entity).unwrap(), amount);
 
-#[derive(Component, Debug, Clone)]
-struct PickUpRequest {
-    target_entity: Entity,
-    amount: u32
-}
-
-impl PickUp {
-    pub fn new(target_entity: Entity, amount: u32) -> Self {
-        let checker =
-            move |agent: In<Entity>, inventory: Query<&Inventory>, item_ids: Query<&Id>| {
-                let inventory = inventory.get(agent.0).unwrap();
-                if inventory.has_amount(item_ids.get(target_entity).unwrap().0, amount) {
-                    println!("Had amount, success!");
-                    return TaskStatus::Complete(NodeResult::Success);
-                }
-
-                println!("Did not have amount, failure");
-                TaskStatus::Complete(NodeResult::Failure)
-            };
-        
-        
-        let task = TaskBridge::new(checker).on_event(
-            TaskEvent::Enter,
-            move |entity: In<Entity>,
-                  mut inventory: Query<&mut Inventory>,
-                  mut item_stack: Query<&mut ItemStack>,
-                  item_ids: Query<&Id>| {
-                println!("Picking up item {:?} by agent: {:?}", target_entity, entity);
-                let mut inventory = inventory.get_mut(entity.0).unwrap();
-                let mut item_stack = item_stack.get_mut(target_entity).unwrap();
-        
-                item_stack.0 -= amount;
-                inventory.add_item(**item_ids.get(target_entity).unwrap(), amount);
-            },
-        );
-
-        Self { delegate: task }
-    }
+    //commands.entity(trigger.entity()).remove::<PickUpAction>();
+    commands.entity(trigger.entity()).trigger(OnRunResult::success());
 }

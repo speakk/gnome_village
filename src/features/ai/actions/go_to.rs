@@ -1,51 +1,56 @@
+use beet::prelude::{Action, OnRun, OnRunResult, TargetEntity};
 use bevy::math::{IVec2, Vec2};
-use bevy::prelude::{Commands, Entity, In, Query, Res, With};
-use bevior_tree::prelude::{delegate_node, TaskBridge, TaskEvent, TaskStatus};
-use bevior_tree::node::NodeResult;
-use crate::bundles::settler::Settler;
-use crate::features::ai::PathFollow;
+use bevy::prelude::{Commands, Component, Query, Reflect, Res, Trigger};
 use crate::features::map::map_model::MapData;
-use crate::features::path_finding::{spawn_pathfinding_task, PathfindingTask, PathingGridResource};
+use crate::features::path_finding::{spawn_pathfinding_task, PathFollowFinished, PathFollowResult, PathingGridResource};
 use crate::features::position::WorldPosition;
 
-#[delegate_node(delegate)]
-pub struct GoTo {
-    delegate: TaskBridge,
+#[derive(Component, Action, Reflect)]
+#[require(ContinueRun)]
+#[observers(go_to_action)]
+pub struct GoToAction {
+    pub(crate) target: IVec2,
 }
 
-const TARGET_DISTANCE_THRESHOLD: f32 = 1.5;
+fn go_to_action(
+    trigger: Trigger<OnRun>,
+    target_agents: Query<&TargetEntity>,
+    world_positions: Query<&WorldPosition>,
+    goto_action: Query<(&GoToAction)>,
+    mut commands: Commands,
+    map_data: Query<&MapData>,
+    pathing_grid: Res<PathingGridResource>,
+) {
+    let target_agent = target_agents.get(trigger.entity()).unwrap().0;
+    let (world_position) = world_positions.get(target_agent).unwrap();
+    let goto_action = goto_action.get(trigger.entity()).unwrap();
+    let target_coordinate = goto_action.target;
+    println!("Ensure path entered NEW, to {}", target_coordinate);
+    let target_position = WorldPosition(Vec2::new(
+        target_coordinate.x as f32,
+        target_coordinate.y as f32,
+    ));
+    spawn_pathfinding_task(
+        &mut commands,
+        target_agent,
+        &pathing_grid,
+        map_data.single(),
+        *world_position,
+        target_position,
+    );
 
-impl GoTo {
-    pub fn new(target_coordinate: IVec2) -> Self {
-        let checker = move |entity: In<Entity>, query: Query<(&WorldPosition, Option<&PathfindingTask>, Option<&PathFollow>), With<Settler>>| {
-            let (world_position, path_finding_task, path_follow) = query.get(entity.0).unwrap();
-            
-            if path_finding_task.is_some() || path_follow.is_some() {
-                let distance_to_target = world_position.0.distance(target_coordinate.as_vec2());
+    let trigger_entity = trigger.entity();
 
-                return if distance_to_target > TARGET_DISTANCE_THRESHOLD {
-                    TaskStatus::Running
-                } else {
-                    println!("Reached target, returning success");
-                    TaskStatus::Complete(NodeResult::Success)
-                }
+    commands.entity(target_agent).observe(move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {
+        match path_follow_trigger.0 {
+            PathFollowResult::Success => {
+                commands.entity(trigger_entity).trigger(OnRunResult::success());
+                println!("GoTo action finished, success!");
             }
-
-            println!("Didn't have path, returning failure");
-            TaskStatus::Complete(NodeResult::Failure)
-        };
-
-        let task = TaskBridge::new(checker)
-            .on_event(TaskEvent::Enter, move |entity: In<Entity>,
-                                              mut commands: Commands,
-                                              map_data: Query<&MapData>,
-                                              pathing_grid: Res<PathingGridResource>,
-                                              world_position: Query<&WorldPosition>| {
-                println!("Ensure path entered, to {}", target_coordinate);
-                let target_position = WorldPosition(Vec2::new(target_coordinate.x as f32, target_coordinate.y as f32));
-                spawn_pathfinding_task(&mut commands, *entity, &pathing_grid, map_data.single(), *world_position.get(*entity).unwrap(), target_position);
-            });
-
-        Self { delegate: task }
-    }
+            PathFollowResult::Failure => {
+                commands.entity(trigger_entity).trigger(OnRunResult::failure());
+                println!("GoTo action finished, failure!");
+            }
+        }
+    });
 }

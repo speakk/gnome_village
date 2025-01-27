@@ -5,7 +5,9 @@ use std::fmt::Debug;
 use beet::prelude::ActionPlugin;
 use bevy::prelude::*;
 use moonshine_core::prelude::MapEntities;
-use crate::features::ai::trees::bring_resource::{create_bring_resource_tree, GoToAction};
+use crate::features::ai::actions::go_to::GoToAction;
+use crate::features::ai::actions::pick_up::PickUpAction;
+use crate::features::ai::trees::bring_resource::{create_bring_resource_tree};
 use crate::features::path_finding::Path;
 
 pub struct AiPlugin;
@@ -14,7 +16,8 @@ impl Plugin for AiPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_plugins(ActionPlugin::<(
-                GoToAction
+                GoToAction,
+                PickUpAction
             )>::default())
             .add_systems(Update,
             create_bring_resource_tree
