@@ -186,7 +186,7 @@ pub fn spawn_pathfinding_task(
         //println!("grid: {:?}", grid);
         points.map(|points| Path { steps: points })
     });
-    
+
     println!("Pathfinding task spawned for agent: {:?}", target_entity);
     commands.entity(target_entity).insert(PathfindingTask(task));
 }
@@ -210,10 +210,18 @@ pub fn apply_pathfinding_result(
     }
 }
 
-pub fn follow_path(mut query: Query<(&mut PathFollow, &WorldPosition, &mut Velocity)>, map_data: Query<&MapData>) {
+pub enum PathFollowResult {
+    Success,
+    Failure
+}
+
+#[derive(Event)]
+pub struct PathFollowFinished(pub PathFollowResult);
+
+pub fn follow_path(mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut Velocity)>, map_data: Query<&MapData>, mut commands: Commands) {
     const AT_POINT_THRESHOLD: f32 = 0.001;
 
-    for (mut path_follow, world_position, mut velocity) in query.iter_mut() {
+    for (entity, mut path_follow, world_position, mut velocity) in query.iter_mut() {
         //println!("{:?}", path_follow);
 
         if (path_follow.finished) {
@@ -236,6 +244,7 @@ pub fn follow_path(mut query: Query<(&mut PathFollow, &WorldPosition, &mut Veloc
                 path_follow.current_path_index += 1;
             } else {
                 path_follow.finished = true;
+                commands.entity(entity).trigger(PathFollowFinished(PathFollowResult::Success));
             }
         }
     }

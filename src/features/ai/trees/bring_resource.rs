@@ -1,18 +1,72 @@
+use std::borrow::Cow;
 use crate::bundles::settler::Settler;
 use crate::bundles::{Id, Reservation, Reservations, ResourceItem};
 use crate::features::ai::actions::go_to::GoTo;
 use crate::features::ai::actions::pick_up::PickUp;
-use crate::features::ai::WorkingOnTask;
+use crate::features::ai::{PathFollow, WorkingOnTask};
+use crate::features::map::map_model::MapData;
 use crate::features::misc_components::InWorld;
+use crate::features::path_finding::{spawn_pathfinding_task, PathFollowFinished, PathFollowResult, PathingGridResource};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::{
     BringResourceData, BringResourceRuntimeData, DepositTarget, Task, TaskType,
 };
+use beet::prelude::{Action, SequenceFlow};
 use bevior_tree::node::NodeResult;
 use bevior_tree::prelude::{delegate_node, Sequence, TaskBridge};
 use bevior_tree::task::{TaskEvent, TaskStatus};
 use bevior_tree::{BehaviorTree, BehaviorTreeBundle, TreeStatus};
 use bevy::prelude::*;
+
+#[derive(Component, Action, Reflect)]
+#[require(ContinueRun)]
+#[observers(go_to_action)]
+pub struct GoToAction {
+    target: IVec2,
+}
+
+fn go_to_action(
+    trigger: Trigger<OnRun>,
+    target_agents: Query<&TargetEntity>,
+    world_positions: Query<&WorldPosition>,
+    goto_action: Query<(&GoToAction)>,
+    mut commands: Commands,
+    map_data: Query<&MapData>,
+    pathing_grid: Res<PathingGridResource>,
+) {
+    let target_agent = target_agents.get(trigger.entity()).unwrap().0;
+    let (world_position) = world_positions.get(target_agent).unwrap();
+    let goto_action = goto_action.get(trigger.entity()).unwrap();
+    let target_coordinate = goto_action.target;
+    println!("Ensure path entered NEW, to {}", target_coordinate);
+    let target_position = WorldPosition(Vec2::new(
+        target_coordinate.x as f32,
+        target_coordinate.y as f32,
+    ));
+    spawn_pathfinding_task(
+        &mut commands,
+        target_agent,
+        &pathing_grid,
+        map_data.single(),
+        *world_position,
+        target_position,
+    );
+
+    let trigger_entity = trigger.entity();
+
+    commands.entity(target_agent).observe(move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {
+        match path_follow_trigger.0 {
+            PathFollowResult::Success => {
+                commands.entity(trigger_entity).trigger(OnRunResult::success());
+                println!("GoTo action finished, success!");
+            }
+            PathFollowResult::Failure => {
+                commands.entity(trigger_entity).trigger(OnRunResult::failure());
+                println!("GoTo action finished, failure!");
+            }
+        }
+    });
+}
 
 pub fn create_bring_resource_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
@@ -47,20 +101,29 @@ pub fn create_bring_resource_tree(
 
                 commands
                     .entity(worker_entity)
-                    .insert(BehaviorTreeBundle::from_root(Sequence::new(vec![
-                        Box::new(DebugPrintTask::new("Starting bring resource tree".to_string())),
-                        Box::new(GoTo::new(resource_position.0.as_ivec2())),
-                        Box::new(DebugPrintTask::new("Succeed in getting to first location".to_string())),
-                        Box::new(PickUp::new(
-                            resource_target,
-                            bring_resource_data.item_requirement.amount,
-                        )),
-                        Box::new(DebugPrintTask::new("Succeed in picking up item".to_string())),
-                        Box::new(GoTo::new(target_coordinate)),
-                        Box::new(DebugPrintTask::new("Succeed in getting to second location".to_string())),
-                        Box::new(CleanUpTree::new()),
-                        Box::new(DebugPrintTask::new("Cleaned up tree, all done!".to_string())),
-                    ])));
+                    .insert(SequenceFlow)
+                    .with_children(|root| {
+                        println!("Creating tree, spawning goto");
+                        root.spawn((
+                            Name::new("GoTo task"),
+                            LogOnRun(Cow::from("GoToAction run")),
+                            GoToAction {
+                                target: resource_position.0.as_ivec2(),
+                            },
+                            TargetEntity(root.parent_entity()),
+                            EndOnRun::success(),
+                        ));
+                    }).trigger(OnRun);
+
+
+                // .insert(BehaviorTreeBundle::from_root(Sequence::new(vec![
+                //     Box::new(GoTo::new(resource_position.0.as_ivec2())),
+                //     Box::new(PickUp::new(
+                //         resource_target,
+                //         bring_resource_data.item_requirement.amount,
+                //     )),
+                //     Box::new(GoTo::new(target_coordinate)),
+                // ])));
             }
         }
     }
@@ -79,7 +142,7 @@ impl DebugPrintTask {
                 println!("Debug print task: {}", message);
             },
         );
-        
+
         Self { delegate: task }
     }
 }
