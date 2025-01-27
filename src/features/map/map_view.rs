@@ -4,7 +4,7 @@ use bevy::asset::{Assets, UntypedHandle};
 use bevy::color::Color;
 use bevy::hierarchy::{BuildChildren, ChildBuild};
 use bevy::math::{UVec2, Vec2};
-use bevy::pbr::{MeshMaterial3d, StandardMaterial};
+use bevy::pbr::{MeshMaterial3d, NotShadowCaster, StandardMaterial};
 use bevy::prelude::{
     Deref, DerefMut, InheritedVisibility, Mesh3d, ResMut, Resource, Transform, World,
 };
@@ -81,6 +81,7 @@ impl BuildView for MapData {
 
                         let mut view_entity = view.spawn((
                             Mesh3d(mesh_handle.clone()),
+                            NotShadowCaster,
                             Transform::from_xyz(
                                 centered_coordinate.x as f32,
                                 0.0,

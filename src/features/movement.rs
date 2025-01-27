@@ -13,6 +13,7 @@ pub struct Velocity(pub Vec2);
 pub struct Acceleration(pub Vec2);
 
 #[derive(Component)]
+#[derive(Default)]
 pub struct Friction(pub f32);
 
 impl Plugin for MovementPlugin {
@@ -53,6 +54,8 @@ fn apply_velocity(
 
         world_position.x += velocity.0.x * time.delta_secs();
         world_position.y += velocity.0.y * time.delta_secs();
+        
+        println!("New world position: {:?}", world_position);
     }
 }
 

@@ -13,6 +13,7 @@ use bevy::render::camera::ScalingMode;
 use bevy_atmosphere::plugin::{AtmosphereCamera, AtmospherePlugin};
 use leafwing_input_manager::prelude::*;
 use std::ops::{Add, Sub};
+use bevy::pbr::ClusterConfig;
 
 pub struct CameraPlugin;
 
@@ -86,7 +87,17 @@ fn setup(mut commands: Commands) {
         ))
         .insert(DepthPrepass)
         .insert(NormalPrepass)
-        .insert(DeferredPrepass);
+        .insert(DeferredPrepass)
+        .insert(ClusterConfig::FixedZ {
+            // 4096 clusters is the Bevy default
+            // if you don't have many lights, you can reduce this value
+            total: 4096,
+            // Bevy default is 24 Z-slices
+            // For a top-down-view game, 1 is probably optimal.
+            z_slices: 1,
+            dynamic_resizing: true,
+            z_config: Default::default(),
+        });
 }
 
 fn handle_pan_input(

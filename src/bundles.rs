@@ -20,8 +20,7 @@ impl Plugin for BundlePlugin {
         app.insert_resource(Prototypes(HashMap::new()))
             .insert_resource(ItemSpawners(HashMap::new()))
             .add_plugins(MiscComponentsPlugin)
-            .add_plugins(BuildablesPlugin)
-            .add_viewable::<Settler>();
+            .add_plugins(BuildablesPlugin);
     }
 }
 

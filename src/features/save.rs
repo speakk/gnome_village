@@ -17,6 +17,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
 use crate::bundles::buildables::BluePrint;
+use crate::features::ai::WorkingOnTask;
 use crate::features::misc_components::gltf_asset::GltfAsset;
 use crate::features::misc_components::simple_mesh::SimpleMesh;
 use crate::features::tasks::task::Task;
@@ -81,6 +82,7 @@ impl Plugin for SavePlugin {
         .register_type::<SimpleMesh>()
         .register_type::<Task>()
         .register_type::<BluePrint>()
+        .register_type::<WorkingOnTask>()
         .register_type::<MapData>()
         .register_type::<Rock>()
         .register_type::<WoodenTorch>()

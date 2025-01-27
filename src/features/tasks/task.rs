@@ -32,12 +32,15 @@ pub enum DepositTarget {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
+pub struct BringResourceData {
+    pub item_requirement: ItemRequirement,
+    pub target: DepositTarget
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum TaskType {
     Build,
-    BringResource {
-        item_requirement: ItemRequirement,
-        target: DepositTarget
-    },
+    BringResource(BringResourceData),
     GoTo,
 }
 

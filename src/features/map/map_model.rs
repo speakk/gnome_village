@@ -7,6 +7,7 @@ use bevy::render::render_resource::ShaderType;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
+use crate::features::path_finding::spawn_pathfinding_task;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -198,7 +199,7 @@ pub fn generate_test_entities(
         let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
         if !reserved_coordinates.0.contains(&centered_coordinate) {
-            commands.spawn((Settler, WorldPosition(centered_coordinate.as_vec2()), Save));
+            commands.spawn((Settler, WorldPosition(centered_coordinate.as_vec2()), Save,));
             reserved_coordinates.0.push(centered_coordinate);
             settlers_amount -= 1;
         }
