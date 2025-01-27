@@ -1,10 +1,10 @@
 pub mod torch;
 pub mod wooden_wall;
 
-use crate::features::inventory::Inventory;
 use crate::bundles::buildables::torch::WoodenTorch;
 use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::{ItemId, ItemSpawners, Prototypes};
+use crate::features::inventory::Inventory;
 use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
 use crate::features::tasks::task::ItemAmount;
@@ -20,6 +20,7 @@ impl Plugin for BuildablesPlugin {
                 Startup,
                 (setup_buildable_materials, setup_blueprint_material),
             )
+            .add_systems(Update, remove_blueprint_on_inventory_change)
             .add_systems(OnEnter(AppState::InGame), add_buildable_prototypes);
     }
 }
@@ -39,6 +40,18 @@ pub fn setup_blueprint_material(
 #[require(Inventory)]
 #[reflect(Component)]
 pub struct BluePrint;
+
+fn remove_blueprint_on_inventory_change(
+    query: Query<(Entity, &Inventory), (With<BluePrint>, Changed<Inventory>)>,
+    mut commands: Commands,
+) {
+    for (entity, inventory) in query.iter() {
+        let items_sum = inventory.items.values().sum::<u32>();
+        if items_sum > 0 {
+            commands.entity(entity).remove::<BluePrint>();
+        }
+    }
+}
 
 #[derive(Resource, Default)]
 pub struct BuildableMaterialHandles {
