@@ -38,8 +38,9 @@ pub fn clone_entity(mut world: &mut World, entity: Entity) -> Entity {
 }
 
 
-pub fn make_concrete_from_prototype(prototype: Entity, mut commands: Commands) -> Entity {
-    let cloned = prototype;
+pub fn make_concrete_from_prototype(prototype: Entity, world: &mut World) -> Entity {
+    let cloned = clone_entity(world, prototype);
+    let mut commands = world.commands();
     commands
         .entity(cloned)
         .insert(Save)

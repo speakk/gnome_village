@@ -1,9 +1,10 @@
 use crate::bundles::buildables::Buildable;
-use crate::ui::ui_main_actions::{UserActionType, MainMenuSelected, MainMenuSelectionCleared};
+use crate::ui::ui_main_actions::{MainMenuSelected, MainMenuSelectionCleared};
 use crate::ui::UiSceneHandles;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
+use crate::ui::ui_main_actions::main_action_buttons::MainActionButtonType;
 
 #[derive(Event)]
 pub struct BuildMenuBuildableSelected(pub Entity);
@@ -20,7 +21,7 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
              buildables_query: Query<(Entity, &Name), With<Buildable>>| {
                 println!("In insert_build_menu thing!!");
                 if let Ok(event) = event.try_read() {
-                    if event.0 != UserActionType::Build {
+                    if event.0 != MainActionButtonType::Build {
                         return;
                     }
 

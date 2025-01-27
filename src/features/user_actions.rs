@@ -3,7 +3,10 @@ use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum UserActionType {
-    Build,
+    Build {
+        entity: Entity,
+        coordinate: IVec2
+    },
     Orders,
 }
 
@@ -14,11 +17,16 @@ pub enum UserActionState {
     PlacingBuilding,
 }
 
+#[derive(Event)]
+pub struct UserActionIntent(pub UserActionType);
+
 pub struct UserActionsPlugin;
 
 impl Plugin for UserActionsPlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<UserActionState>().add_systems(Update, react_to_buildable_menu_selected);
+        app.init_state::<UserActionState>()
+            .add_event::<UserActionIntent>()
+            .add_systems(Update, react_to_buildable_menu_selected);
     }
 }
 
