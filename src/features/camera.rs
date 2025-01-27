@@ -47,6 +47,10 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     // camera
     commands.spawn((
         Camera3d::default(),
+        Camera {
+            order: 0,
+            ..default()
+        },
         Projection::from(OrthographicProjection {
             // 6 world units per pixel of window height.
             scaling_mode: ScalingMode::FixedVertical {
