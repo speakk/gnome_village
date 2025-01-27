@@ -67,6 +67,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         Transform::from_xyz(0.0, 20.0, 20.0).looking_at(Vec3::ZERO, Vec3::Y),
         InputManagerBundle::with_map(pan_input_map),
         InputManagerBundle::with_map(zoom_input_map),
+        RayCastPickable,
         Velocity::default(),
         Acceleration::default(),
         WorldPosition::default(),
