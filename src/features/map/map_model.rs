@@ -90,7 +90,7 @@ impl MapData {
 }
 
 pub fn generate_map_entity(mut commands: Commands, world_seed: Res<WorldSeed>, mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>) {
-    let map_size = UVec2::new(300, 300);
+    let map_size = UVec2::new(150, 150);
     let mut map_data = MapData {
         data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
         size: map_size,

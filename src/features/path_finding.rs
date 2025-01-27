@@ -104,14 +104,18 @@ fn update_grid_from_solid_component(
     }
 
     for (world_position, previous_world_position) in position_changed_query.iter() {
-        pathing_grid.set_point(previous_world_position.to_point(), false);
-        pathing_grid.set_point(world_position.to_point(), true);
+        let top_left_previous = map_data.world_position_to_top_left_coordinate(previous_world_position.0);
+        let top_left_current = map_data.world_position_to_top_left_coordinate(world_position.0);
+        
+        pathing_grid.set_point(Point::new(top_left_previous.x as i32, top_left_previous.y as i32), false);
+        pathing_grid.set_point(Point::new(top_left_current.x as i32, top_left_current.y as i32), true);
         updated_something = true;
     }
 
     for entity in solid_removed_entities.read() {
         if let Ok(world_position) = world_position_query.get(entity) {
-            pathing_grid.set_point(world_position.to_point(), false);
+            let top_left_coordinate = map_data.world_position_to_top_left_coordinate(world_position.0);
+            pathing_grid.set_point(Point::new(top_left_coordinate.x as i32, top_left_coordinate.y as i32), false);
             updated_something = true;
         }
     }
