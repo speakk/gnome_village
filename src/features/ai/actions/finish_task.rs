@@ -1,6 +1,4 @@
-use crate::bundles::{ItemStack};
 use beet::prelude::Action;
-use bevior_tree::task::TaskStatus;
 use bevy::prelude::{Component, Entity, Query, Reflect};
 use crate::features::tasks::task::{Status, Task, TaskFinished, TaskFinishedResult};
 
@@ -8,7 +6,8 @@ use crate::features::tasks::task::{Status, Task, TaskFinished, TaskFinishedResul
 #[require(Name(|| "FinishTaskAction"))]
 #[observers(finish_task_action)]
 pub struct FinishTaskAction {
-    pub task: Entity
+    pub task: Entity,
+    pub tree_root: Entity,
 }
 
 fn finish_task_action(
@@ -20,14 +19,17 @@ fn finish_task_action(
 ) {
     let agent = agents.get(trigger.entity()).unwrap().0;
     let task = action.get(trigger.entity()).unwrap().task;
+    let tree_root = action.get(trigger.entity()).unwrap().tree_root;
     let mut task_data = task_data.get_mut(task).unwrap();
-    
+
     // TODO: Two mechanisms here for signifying finished
     task_data.status = Status::Finished;
     println!("Task finished by agent: {:?}, triggering TaskFinished for task: {:?}", agent, task);
     commands.entity(task).trigger(TaskFinished(TaskFinishedResult::Success));
-    
+
     commands
         .entity(trigger.entity())
         .trigger(OnRunResult::success());
+
+    commands.entity(tree_root).despawn_recursive();
 }

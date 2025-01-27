@@ -46,40 +46,44 @@ pub fn create_bring_resource_tree(
 
                 commands
                     .entity(worker_entity)
-                    .insert(SequenceFlow)
-                    .with_children(|root| {
-                        println!("Creating tree, spawning goto");
-                        root.spawn((
-                            GoToAction {
-                                target: resource_position.0.as_ivec2(),
-                            },
-                            TargetEntity(root.parent_entity()),
-                        ));
+                    .with_children(|sequence| {
+                        sequence.spawn_empty().insert(SequenceFlow)
+                            .with_children(|root| {
+                                println!("Creating tree, spawning goto");
+                                root.spawn((
+                                    GoToAction {
+                                        target: resource_position.0.as_ivec2(),
+                                    },
+                                    TargetEntity(worker_entity),
+                                ));
 
-                        root.spawn((
-                            PickUpAction {
-                                target_entity: resource_target,
-                                amount: bring_resource_data.item_requirement.amount,
-                            },
-                            TargetEntity(root.parent_entity()),
-                        ));
+                                root.spawn((
+                                    PickUpAction {
+                                        target_entity: resource_target,
+                                        amount: bring_resource_data.item_requirement.amount,
+                                    },
+                                    TargetEntity(worker_entity),
+                                ));
 
-                        root.spawn((
-                            GoToAction {
-                                target: target_coordinate,
-                            },
-                            TargetEntity(root.parent_entity()),
-                        ));
+                                root.spawn((
+                                    GoToAction {
+                                        target: target_coordinate,
+                                    },
+                                    TargetEntity(worker_entity),
+                                ));
 
-                        root.spawn((
-                            FinishTaskAction {
-                                task: working_on_task.0
-                            },
-                            TargetEntity(root.parent_entity()),
-                        ));
-                        
-                    })
-                    .trigger(OnRun);
+                                root.spawn((
+                                    FinishTaskAction {
+                                        task: working_on_task.0,
+                                        tree_root: root.parent_entity()
+                                    },
+                                    TargetEntity(worker_entity),
+                                ));
+
+                            })
+                            .trigger(OnRun);
+                    });
+                    
             }
         }
     }
