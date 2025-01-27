@@ -179,17 +179,20 @@ pub fn spawn_pathfinding_task(
         let mut final_end = end;
         if is_occupied {
             let neighbours = grid.neighbours((end.x as usize, end.y as usize));
+            let mut found_neighbour = false;
             // TODO: Sort by distance to start
             for neighbour in neighbours {
                 if grid.has_vertex((neighbour.0, neighbour.1)) {
-                    // TODO: Compiler says this is unused? Investigate
                     final_end = UVec2::new(neighbour.0 as u32, neighbour.1 as u32);
+                    found_neighbour = true;
                     break;
                 }
             }
 
-            // End was occupied, all neighbours are occupied, return None
-            return None;
+            if !found_neighbour {
+                // End was occupied, all neighbours are occupied, return None
+                return None;
+            }
         }
         let points = bfs(
             &start,
