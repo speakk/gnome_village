@@ -10,3 +10,4 @@ pub mod states;
 pub mod sun_light;
 pub mod user_actions;
 pub mod world_interaction;
+pub mod tasks;

@@ -35,6 +35,7 @@ pub fn setup_blueprint_material(
 }
 
 #[derive(Component, Default)]
+#[derive(Debug)]
 pub struct BluePrint;
 
 #[derive(Resource, Default)]

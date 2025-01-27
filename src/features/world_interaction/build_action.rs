@@ -4,7 +4,7 @@ use crate::features::map::map_model::MapData;
 use crate::features::misc_components::simple_mesh::{
     SimpleMesh, SimpleMeshHandles,
 };
-use crate::features::misc_components::{GltfAsset, Prototype};
+use crate::features::misc_components::{GltfAsset, InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
@@ -50,22 +50,22 @@ fn react_to_buildable_menu_selected(
     }
 }
 
-fn react_to_mouse_clicked(
-    mut event_reader: EventReader<MapClickedEvent>,
-    mut event_writer: EventWriter<UserActionIntent>,
-    coordinate: Res<CurrentMouseWorldCoordinate>,
-    current_building: Res<CurrentBuilding>,
-) {
-    for event in event_reader.read() {
-        println!("Reacting to mouse clicked, sending build intent");
-        if let Some(current_building) = current_building.0 {
-            event_writer.send(UserActionIntent(UserActionType::Build {
-                bundle_type: current_building,
-                coordinate: coordinate.0,
-            }));
-        }
-    }
-}
+// fn react_to_mouse_clicked(
+//     mut event_reader: EventReader<MapClickedEvent>,
+//     mut event_writer: EventWriter<UserActionIntent>,
+//     coordinate: Res<CurrentMouseWorldCoordinate>,
+//     current_building: Res<CurrentBuilding>,
+// ) {
+//     for event in event_reader.read() {
+//         println!("Reacting to mouse clicked, sending build intent");
+//         if let Some(current_building) = current_building.0 {
+//             event_writer.send(UserActionIntent(UserActionType::Build {
+//                 bundle_type: current_building,
+//                 coordinates: coordinate.0,
+//             }));
+//         }
+//     }
+// }
 
 #[derive(Resource, Default, Copy, Clone)]
 struct DragInfo {
@@ -101,7 +101,7 @@ fn regenerate_preview_entity(
         return;
     }
 
-    println!("Got through checks, regenerating preview entities indeed");
+    //println!("Got through checks, regenerating preview entities indeed");
 
     if let Some(preview_entity_hierarchy) = preview_entity_hierarchy.0 {
         commands
@@ -168,11 +168,20 @@ fn react_to_mouse_drag_ended(
     mut event_reader: EventReader<MapDragEndEvent>,
     mut drag_info_resource: ResMut<DragInfo>,
     mut selected_coordinates: ResMut<SelectedCoordinates>,
+    mut user_action_intent: EventWriter<UserActionIntent>,
+    current_building: Res<CurrentBuilding>,
 ) {
     if let Some(event) = event_reader.read().next() {
         drag_info_resource.is_dragging = false;
         drag_info_resource.map_drag_start_event = None;
+
+        user_action_intent.send(UserActionIntent(UserActionType::Build {
+            coordinates: selected_coordinates.0.clone(),
+            bundle_type: current_building.0.unwrap(),
+        }));
+        
         selected_coordinates.0 = Vec::new();
+        
         println!("Reacting to mouse drag ended");
     }
 }
@@ -214,18 +223,24 @@ fn react_to_build_intent(
     for event in user_action_intent.read() {
         if let UserActionType::Build {
             bundle_type: item_id,
-            coordinate,
-        } = event.0
+            coordinates,
+        } = event.0.clone()
         {
-            let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
             let map_data = map_data.get_single().unwrap();
 
-            let world_position = map_data.centered_coordinate_to_world_position(coordinate);
-            commands
-                .entity(concrete_entity)
-                .insert(WorldPosition(world_position))
-                .insert(BluePrint);
+            
+            for coordinate in coordinates.iter() {
+                let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
+                let world_position = map_data.centered_coordinate_to_world_position(*coordinate);
+                println!("Creating buildable at: {:?}", world_position);
+                commands
+                    .entity(concrete_entity)
+                    .insert(WorldPosition(world_position))
+                    .insert(BluePrint)
+                    .insert(InWorld);
 
+            }
+            
             break;
         }
     }

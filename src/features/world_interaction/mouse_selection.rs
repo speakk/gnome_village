@@ -194,10 +194,10 @@ fn handle_ground_plane_hover(
         let new_mouse_coordinate = IVec2::new(location.x as i32, location.z as i32);
 
         if previous_mouse_coordinate != new_mouse_coordinate {
-            println!(
-                "Mouse coordinate changed from {:?} to {:?}",
-                previous_mouse_coordinate, new_mouse_coordinate
-            );
+            // println!(
+            //     "Mouse coordinate changed from {:?} to {:?}",
+            //     previous_mouse_coordinate, new_mouse_coordinate
+            // );
             current_mouse_world_coordinate.0 = new_mouse_coordinate;
         }
 

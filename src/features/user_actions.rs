@@ -2,11 +2,11 @@ use crate::bundles::ItemId;
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum UserActionType {
     Build {
         bundle_type: ItemId,
-        coordinate: IVec2,
+        coordinates: Vec<IVec2>,
     },
     Orders,
 }
