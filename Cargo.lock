@@ -4336,6 +4336,7 @@ dependencies = [
  "grid_pathfinding",
  "grid_util",
  "leafwing-input-manager",
+ "log",
  "moonshine-core",
  "moonshine-object",
  "moonshine-view",

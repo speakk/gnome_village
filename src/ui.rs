@@ -15,7 +15,7 @@ impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_plugins(CobwebUiPlugin)
-            .load("ui_templates/main.cob")
+            .load("ui_templates/manifest.cob")
             .add_systems(OnEnter(LoadState::Done), build_ui);
         // app
         //     .add_systems(Update, button_system)
@@ -32,10 +32,10 @@ fn build_ui(
     let buttons = vec![
         "Build", "Order"
     ];
-    
-    commands.ui_root().load_scene_and_edit(("ui_templates/main.cob", "main_scene"), &mut scene_loader, |scene| {
+
+    commands.ui_root().load_scene_and_edit(("main", "main_scene"), &mut scene_loader, |scene| {
         for button in buttons {
-            scene.get( "buttons_container").load_scene_and_edit(("ui_templates/main.cob", "button"), |button_scene| {
+            scene.get( "buttons_container").load_scene_and_edit(("button", "button"), |button_scene| {
                 button_scene.get("text").update_text(button);
             });
         }
