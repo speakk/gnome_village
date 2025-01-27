@@ -20,6 +20,7 @@ pub struct BundlePlugin;
 impl Plugin for BundlePlugin {
     fn build(&self, app: &mut App) {
         app
+            .insert_resource(Prototypes(HashMap::new()))
             .insert_resource(ItemSpawners(HashMap::new()))
             .add_plugins(BuildablesPlugin).add_viewable::<Settler>();
     }

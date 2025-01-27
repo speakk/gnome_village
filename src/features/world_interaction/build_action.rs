@@ -164,8 +164,7 @@ fn regenerate_preview_entities(
         let cloned = item_spawners.0.get(&current_building.0.unwrap()).unwrap()(&mut commands);
         commands
             .entity(cloned)
-            .insert(Transform::from_xyz(coordinate.x as f32, 0.5, coordinate.y as f32, ))
-            //.insert(Transform::default())
+            .insert(Transform::default())
             .insert(BluePrint)
             .remove::<Prototype>()
             .insert(WorldPosition(map_data.centered_coordinate_to_world_position(*coordinate)))
@@ -201,6 +200,8 @@ fn handle_mouse_dragged(drag_info: Res<DragInfo>,
                         mut selected_coordinates: ResMut<SelectedCoordinates>,
                         mut current_coordinate: ResMut<CurrentMouseWorldCoordinate>,
                         mut commands: Commands) {
+    if !current_coordinate.is_changed() { return; }
+    
     if (drag_info.is_dragging) && (drag_info.map_drag_start_event.is_some()) {
         let event = drag_info.map_drag_start_event.unwrap();
         let min_x = current_coordinate.0.x.min(event.coordinate.x);

@@ -128,7 +128,7 @@ fn handle_ground_plane_click(
 fn handle_ground_plane_drag_start(
     drag: Trigger<Pointer<DragStart>>,
     mut map_drag_start_event_writer: EventWriter<MapDragStartEvent>,
-    mut interaction_action_query: Query<
+    interaction_action_query: Query<
         (
             &ActionState<WorldInteractionAction>,
         )
@@ -188,9 +188,14 @@ fn handle_ground_plane_hover(
         //println!("Hovered on location: {:?}", location);
         current_mouse_world_position.0 = Vec2::new(location.x, location.z);
 
-        current_mouse_world_coordinate.0 =
-            IVec2::new(location.x.round() as i32, location.z.round() as i32);
-
+        let previous_mouse_coordinate = current_mouse_world_coordinate.0;
+        let new_mouse_coordinate = IVec2::new(location.x as i32, location.z as i32);
+        
+        if previous_mouse_coordinate != new_mouse_coordinate {
+            println!("Mouse coordinate changed from {:?} to {:?}", previous_mouse_coordinate, new_mouse_coordinate);
+            current_mouse_world_coordinate.0 = new_mouse_coordinate;
+        }
+        
         //println!("Setting current mouse world coordinate to: {:?}", current_mouse_world_coordinate.0);
     }
 }
