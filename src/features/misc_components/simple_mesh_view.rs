@@ -11,7 +11,7 @@ use crate::features::position::WorldPosition;
 
 impl BuildView for SimpleMesh {
     fn build(world: &World, object: Object<SimpleMesh>, mut view: ViewCommands<SimpleMesh>) {
-        println!("Building simple mesh VIEW");
+       // println!("Building simple mesh VIEW");
 
         if world.get::<Prototype>(object.entity()).is_some() {
             return;
@@ -31,7 +31,7 @@ impl BuildView for SimpleMesh {
         let has_blueprint = world.get::<BluePrint>(object.entity()).is_some();
 
         let final_material_handle = if has_blueprint {
-            println!("Had blueprint, immediately making blueprint material");
+            //println!("Had blueprint, immediately making blueprint material");
             world.get_resource::<BluePrintMaterial>().unwrap().0.clone().unwrap()
         } else {
             material_handle.clone()

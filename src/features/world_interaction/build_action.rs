@@ -9,8 +9,8 @@ use bevy::ecs::system::SystemState;
 use bevy::prelude::*;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
-use crate::bundles::buildables::{BluePrint, BluePrintMaterial};
-use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
+use crate::bundles::buildables::{BluePrint, BluePrintMaterial, Buildable};
+use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles, SimpleMeshType};
 use crate::features::states::AppState;
 use crate::utils::entity_clone::CloneEntityCommandsExt;
 
@@ -22,13 +22,12 @@ impl Plugin for BuildActionPlugin {
             .insert_resource(CurrentBuildingPreview::default())
             .insert_resource(SelectedCoordinates::default())
             .insert_resource(DragInfo::default())
-            .add_viewable::<PreviewEntityData>()
+            .insert_resource(PreviewEntityHierarchy::default())
+            //.add_viewable::<PreviewEntityData>()
             .add_systems(
                 Update,
                 (
                     react_to_buildable_menu_selected,
-                    ensure_building_preview,
-                    follow_mouse_cursor,
                     //react_to_mouse_clicked,
                     react_to_build_intent,
                     regenerate_preview_entity,
@@ -39,9 +38,6 @@ impl Plugin for BuildActionPlugin {
             );
     }
 }
-
-#[derive(Component, Default)]
-pub struct FollowMouseCursor;
 
 #[derive(Resource, Default, Debug, Deref, DerefMut)]
 struct CurrentBuilding(Option<ItemId>);
@@ -55,56 +51,7 @@ fn react_to_buildable_menu_selected(
 ) {
     for event in build_menu_buildable_selected.read() {
         println!("Reacting to buildable menu selected, setting current_building");
-
         current_building.0 = Some(event.0);
-    }
-}
-
-
-
-//fn ensure_building_preview(mut commands: Commands, mut current_building: ResMut<CurrentBuilding>, world: &mut World) {
-fn ensure_building_preview(current_building: Res<CurrentBuilding>,
-                           mut current_building_preview: ResMut<CurrentBuildingPreview>,
-                           mut commands: Commands,
-                           item_spawners: Res<ItemSpawners>
-) {
-    if !current_building.is_changed() {
-        return;
-    }
-    println!("Ensuring building preview");
-    if let Some(entity) = current_building_preview.0 {
-        if let Some(mut entity_commands) = commands.get_entity(entity) {
-            println!("CurrentBuildingPreview Entity exists, despawn");
-            entity_commands.despawn();
-        }
-    }
-
-    println!("Current building was changed");
-    if let Some(item_id) = current_building.0 {
-        println!("Current building wasn't empty, cloning entity and inserting follow mouse cursor component and removing prototype");
-        let new_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
-        commands
-            .entity(new_entity)
-            .insert((Visibility::Visible, FollowMouseCursor))
-            .remove::<Prototype>();
-        println!("Setting current building preview");
-        current_building_preview.0 = Some(new_entity);
-    }
-}
-
-pub fn follow_mouse_cursor(
-    mut query: Query<(&mut WorldPosition, Entity), With<FollowMouseCursor>>,
-    current_mouse_coordinate: Res<CurrentMouseWorldCoordinate>,
-    map_data: Query<&MapData>,
-    added_query: Query<Entity, Added<FollowMouseCursor>>,
-) {
-    for (mut world_position, entity) in query.iter_mut() {
-        if current_mouse_coordinate.is_changed() || added_query.contains(entity) {
-            let map_data = map_data.single();
-            let location =
-                map_data.centered_coordinate_to_world_position(current_mouse_coordinate.0);
-            *world_position = WorldPosition(location);
-        }
     }
 }
 
@@ -134,64 +81,21 @@ struct DragInfo {
 #[derive(Resource, Default, Deref, DerefMut, Clone)]
 struct SelectedCoordinates(Vec<IVec2>);
 
-// #[derive(Resource, Default, Deref, DerefMut, Clone)]
-// struct PreviewEntity(Option<Entity>);
+#[derive(Resource, Default, Deref, DerefMut, Clone)]
+struct PreviewEntityHierarchy(Option<Entity>);
 
-#[derive(Component, Clone)]
-struct PreviewEntityData {
-    // gltf_asset_path: Option<String>,
-    // mesh_handle: Option<Handle<Mesh>>,
-    current_building: ItemId,
-    coordinates: Vec<IVec2>,
-}
-
-impl BuildView for PreviewEntityData {
-    fn build(world: &World, object: Object<Self>, mut view: ViewCommands<Self>) {
-        generate_preview_entity_view_children(world, object, &mut view);
-    }
-}
-
-fn generate_preview_entity_view_children(world: &World, object: Object<PreviewEntityData>, view: &mut ViewCommands<PreviewEntityData>) {
-    let asset_server = world.get_resource::<AssetServer>().unwrap();
-    let preview_entity_data = world.get::<PreviewEntityData>(object.entity()).unwrap().clone();
-    let blueprint_material = world.get_resource::<BluePrintMaterial>().unwrap().clone();
-    let prototypes = world.get_resource::<Prototypes>().unwrap();
-    let prototype = prototypes.0.get(&preview_entity_data.current_building).unwrap();
-    let gltf_asset = world.get::<GltfAsset>(*prototype);
-    let simple_mesh = world.get::<SimpleMesh>(*prototype);
-    //let map_data = world.query::<&MapData>().single(&world).size.clone();
-
-    println!("Building preview entity, gltf: {:?}, simple_mesh: {:?}, coordinates: {:?}, current_building: {:?}", gltf_asset, simple_mesh, preview_entity_data.coordinates, preview_entity_data.current_building);
-
-    view.insert((Transform::default(), Visibility::Visible));
-    
-    for coordinate in preview_entity_data.coordinates.clone() {
-        view.with_children(|child_builder| {
-            let mut child = child_builder.spawn_empty();
-            if let Some(gltf_asset) = gltf_asset.clone() {
-                let scene_root = SceneRoot(asset_server.load(GltfAssetLabel::Scene(0).from_asset(gltf_asset.0.clone())));
-                child.insert(scene_root);
-            }
-
-            if let Some(simple_mesh) = simple_mesh.clone() {
-                let simple_meshes = world.get_resource::<SimpleMeshHandles>().unwrap();
-                let mesh_handle = simple_meshes.0.get(&simple_mesh.0).unwrap();
-                child.insert((Mesh3d(mesh_handle.clone()), MeshMaterial3d(blueprint_material.0.clone().unwrap())));
-            }
-
-            // TODO: Figure out how to get map_data here for correct positioning
-            child.insert((WorldPosition(Vec2::new(coordinate.x as f32, coordinate.y as f32)), Transform::default()));
-        });
-    }
-}
-
+#[allow(clippy::too_many_arguments)]
 fn regenerate_preview_entity(
     coordinates: Res<SelectedCoordinates>,
-    mut preview_entity_query: Query<(&mut PreviewEntityData, Entity)>,
+    mut preview_entity_hierarchy: ResMut<PreviewEntityHierarchy>,
     current_building: Res<CurrentBuilding>,
     map_data_query: Query<&MapData>,
+    simple_mesh_handles: Res<SimpleMeshHandles>,
     mut commands: Commands,
-    item_spawners: Res<ItemSpawners>,
+    blueprint_material: Res<BluePrintMaterial>,
+    prototypes: Res<Prototypes>,
+    render_info_query: Query<(Option<&SimpleMesh>, Option<&GltfAsset>), With<Buildable>>,
+    asset_server: Res<AssetServer>,
 ) {
     if (!coordinates.is_changed()) && (!current_building.is_changed()) {
         //println!("No changes to coordinates or current building, not regenerating preview entities");
@@ -202,41 +106,45 @@ fn regenerate_preview_entity(
         return;
     }
 
-    //println!("Got through checks, regenerating preview entities indeed");
-    //
-    // if let Some(preview_entity_hierarchy) = preview_entity.0 {
-    //     commands.entity(preview_entity_hierarchy).despawn_recursive();
-    // }
-    //
-    // let parent_entity = commands.spawn(Transform::from_xyz(0.0, 0.0, 0.0)).id();
-    // preview_entity.0 = Some(parent_entity);
-    //
-    let map_data = map_data_query.single();
+    println!("Got through checks, regenerating preview entities indeed");
 
-    if let Ok((_preview_entity, entity)) = preview_entity_query.get_single() {
-        //preview_entity.coordinates = coordinates.0.clone();
-        commands.entity(entity).despawn();
-        println!("Regenerating preview entity, coordinates: {:?}", coordinates.0);
+    if let Some(preview_entity_hierarchy) = preview_entity_hierarchy.0 {
+        commands.entity(preview_entity_hierarchy).despawn_recursive();
     }
     
-    commands.spawn(
-        PreviewEntityData {
-            coordinates: coordinates.0.clone(),
-            current_building: current_building.0.unwrap()
-        });
-
-    // for coordinate in coordinates.0.iter() {
-    //     println!("Clonin', coordinate: {:?}", coordinate);
-    //     //let cloned = commands.clone_entity(current_building.0.unwrap());
-    //     let cloned = item_spawners.0.get(&current_building.0.unwrap()).unwrap()(&mut commands);
-    //     commands
-    //         .entity(cloned)
-    //         .insert(Transform::default())
-    //         .insert(BluePrint)
-    //         .remove::<Prototype>()
-    //         .insert(WorldPosition(map_data.centered_coordinate_to_world_position(*coordinate)))
-    //         .set_parent(parent_entity);
-    // }
+    let parent_entity = commands.spawn((Transform::default(), Visibility::Visible)).id();
+    preview_entity_hierarchy.0 = Some(parent_entity);
+    
+    let prototype = prototypes.0.get(&current_building.0.unwrap()).unwrap();
+    let mut simple_mesh_data: Option<&SimpleMesh> = None;
+    let mut gltf_asset_data: Option<&GltfAsset> = None;
+    
+    if let Ok((simple_mesh, gltf_asset)) = render_info_query.get(*prototype) {
+        simple_mesh_data = simple_mesh;
+        gltf_asset_data = gltf_asset;
+    }
+    
+    let map_data = map_data_query.single();
+    
+    for coordinate in coordinates.0.iter() {
+        let position = map_data.centered_coordinate_to_world_position(*coordinate);
+        let mut spawned = commands.spawn_empty();
+        spawned.insert(Transform::from_xyz(position.x, 0.5, position.y))
+            .insert(BluePrint)
+            .remove::<Prototype>()
+            .set_parent(parent_entity);
+        
+        if let Some(simple_mesh_data) = simple_mesh_data {
+            let mesh_handle = simple_mesh_handles.0.get(&simple_mesh_data.0.clone()).unwrap();
+            spawned.insert(Mesh3d(mesh_handle.clone()))
+                .insert(MeshMaterial3d(blueprint_material.0.clone().unwrap()));
+        }
+        
+        if let Some(gltf_asset_data) = gltf_asset_data {
+            let scene_root = SceneRoot(asset_server.load(GltfAssetLabel::Scene(0).from_asset(gltf_asset_data.0.clone())));
+            spawned.insert(scene_root);
+        }
+    }
 }
 
 fn react_to_mouse_drag_started(
@@ -265,8 +173,7 @@ fn react_to_mouse_drag_ended(
 
 fn handle_mouse_dragged(drag_info: Res<DragInfo>,
                         mut selected_coordinates: ResMut<SelectedCoordinates>,
-                        mut current_coordinate: ResMut<CurrentMouseWorldCoordinate>,
-                        mut commands: Commands) {
+                        current_coordinate: Res<CurrentMouseWorldCoordinate>) {
     if !current_coordinate.is_changed() { return; }
 
     if (drag_info.is_dragging) && (drag_info.map_drag_start_event.is_some()) {
@@ -282,6 +189,8 @@ fn handle_mouse_dragged(drag_info: Res<DragInfo>,
             }
         }
         selected_coordinates.0 = new_coordinates;
+    } else {
+        selected_coordinates.0 = vec![current_coordinate.0];
     }
 }
 
