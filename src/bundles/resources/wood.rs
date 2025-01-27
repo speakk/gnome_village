@@ -8,5 +8,5 @@ use moonshine_core::prelude::*;
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 #[require(Id(|| Id(ItemId::Wood)), WorldPosition, Solid, Name(|| "Wood"),
-    Save, GltfAsset(|| "blender_models/wood.glb"))]
+    GltfAsset(|| "blender_models/wood.glb"))]
 pub struct WoodenTorch;

@@ -16,6 +16,10 @@ use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
+use crate::bundles::buildables::BluePrint;
+use crate::features::misc_components::gltf_asset::GltfAsset;
+use crate::features::misc_components::simple_mesh::SimpleMesh;
+use crate::features::tasks::task::Task;
 
 pub struct SavePlugin;
 
@@ -73,6 +77,10 @@ impl Plugin for SavePlugin {
         ))
         .register_type::<Settler>()
         .register_type::<WorldPosition>()
+        .register_type::<GltfAsset>()
+        .register_type::<SimpleMesh>()
+        .register_type::<Task>()
+        .register_type::<BluePrint>()
         .register_type::<MapData>()
         .register_type::<Rock>()
         .register_type::<WoodenTorch>()

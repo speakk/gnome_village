@@ -1,13 +1,15 @@
+use moonshine_core::prelude::Save;
 use bevy::prelude::Component;
+use bevy::prelude::*;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum RunType {
     Sequence,
     Parallel,
     Leaf,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum Status {
     Ready,
     BeingWorkedOn,
@@ -16,14 +18,16 @@ pub enum Status {
     Cancelled,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum TaskType {
     Build,
     BringResource,
     GoTo,
 }
 
-#[derive(Component, Debug, Clone, Copy)]
+#[derive(Component, Debug, Clone, Copy, Reflect)]
+#[require(Save, Name(|| "Task"))]
+#[reflect(Component)]
 pub struct Task {
     pub run_type: RunType,
     pub status: Status,

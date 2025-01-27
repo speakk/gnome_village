@@ -33,7 +33,8 @@ pub fn setup_blueprint_material(
     blueprint_material.0 = Some(blueprint_handle);
 }
 
-#[derive(Component, Default, Debug)]
+#[derive(Component, Default, Debug, Reflect)]
+#[reflect(Component)]
 pub struct BluePrint;
 
 #[derive(Resource, Default)]

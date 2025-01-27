@@ -7,9 +7,7 @@ use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
-use crate::features::world_interaction::mouse_selection::{
-    CurrentMouseWorldCoordinate, MapDragEndEvent, MapDragStartEvent,
-};
+use crate::features::world_interaction::mouse_selection::{CurrentMouseWorldCoordinate, MapClickedEvent, MapDragEndEvent, MapDragStartEvent};
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
 
@@ -27,6 +25,7 @@ impl Plugin for BuildActionPlugin {
                     react_to_buildable_menu_selected,
                     react_to_build_intent,
                     regenerate_preview_entity,
+                    react_to_mouse_clicked,
                     react_to_mouse_drag_started,
                     react_to_mouse_drag_ended,
                     handle_mouse_dragged,
@@ -49,22 +48,21 @@ fn react_to_buildable_menu_selected(
     }
 }
 
-// fn react_to_mouse_clicked(
-//     mut event_reader: EventReader<MapClickedEvent>,
-//     mut event_writer: EventWriter<UserActionIntent>,
-//     coordinate: Res<CurrentMouseWorldCoordinate>,
-//     current_building: Res<CurrentBuilding>,
-// ) {
-//     for event in event_reader.read() {
-//         println!("Reacting to mouse clicked, sending build intent");
-//         if let Some(current_building) = current_building.0 {
-//             event_writer.send(UserActionIntent(UserActionType::Build {
-//                 bundle_type: current_building,
-//                 coordinates: coordinate.0,
-//             }));
-//         }
-//     }
-// }
+fn react_to_mouse_clicked(
+    mut event_reader: EventReader<MapClickedEvent>,
+    mut event_writer: EventWriter<UserActionIntent>,
+    coordinate: Res<CurrentMouseWorldCoordinate>,
+    current_building: Res<CurrentBuilding>,
+) {
+    for _event in event_reader.read() {
+        if let Some(current_building) = current_building.0 {
+            event_writer.send(UserActionIntent(UserActionType::Build {
+                bundle_type: current_building,
+                coordinates: vec![coordinate.0],
+            }));
+        }
+    }
+}
 
 #[derive(Resource, Default, Copy, Clone)]
 struct DragInfo {

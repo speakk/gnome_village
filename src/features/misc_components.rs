@@ -2,6 +2,7 @@ pub(crate) mod gltf_asset;
 pub mod simple_mesh;
 mod simple_mesh_view;
 
+use moonshine_core::prelude::Save;
 use crate::features::misc_components::gltf_asset::GltfAssetPlugin;
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::simple_mesh_view::{
@@ -30,6 +31,7 @@ impl Plugin for MiscComponentsPlugin {
 }
 
 #[derive(Component, Default, Reflect)]
+#[require(Save)]
 #[reflect(Component)]
 pub struct InWorld;
 
