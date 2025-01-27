@@ -31,6 +31,14 @@ $BORDER_DISPLAY = $tw::SKY_950
 
 +main_bottom_button = \
     FlexNode{ width: Auto justify_main:Center justify_cross: Center }
+    BackgroundColor{$NORMAL_BUTTON}
+    Responsive<BackgroundColor>{ idle:$NORMAL_BUTTON hover:$HOVERED_BUTTON press:$PRESSED_BUTTON }
+    Animated<TextLineColor>{
+        idle:Hsla{hue:45 saturation:1.0 lightness:1.0 alpha:1.0}
+        hover:Hsla{hue:45 saturation:1.0 lightness:0.2 alpha:1.0}
+        hover_with:{ duration:0.75 ease:OutExpo delay:0.05 }
+        press_with:{ duration:0.75 ease:OutExpo delay:0.01 }
+    }
 
     "image"
         FlexNode{ width: 200px }
@@ -40,6 +48,7 @@ $BORDER_DISPLAY = $tw::SKY_950
         AbsoluteGridNode{ justify_main:Center justify_cross: Center }
         TextLine{ text:"" size:30 font:{family: "ThaleahFat" } }
 
+
 \
 
 */
@@ -48,12 +57,25 @@ $BORDER_DISPLAY = $tw::SKY_950
     GridNode{ justify_lines: Center margin: { right: 10px }}
 
     "image"
-        GridNode{ width: 130px grid_row:{ start: 1 } grid_column:{ start: 1}}
+        GridNode{ width: 120px grid_row:{ start: 1 } grid_column:{ start: 1}}
         LoadedImageNode{image:"ui_templates/pngs/button.png" }
+        Animated<ImageNodeColor>{
+            idle:Hsla{hue:45 saturation:0.0 lightness:0.8 alpha:1.0}
+            hover:Hsla{hue:45 saturation:0.0 lightness:1.0 alpha:1.0}
+            press:Hsla{hue:45 saturation:1.0 lightness:0.9 alpha:1.0}
+            hover_with:{ duration:0.75 ease:OutExpo delay:0.00 }
+            press_with:{ duration:0.75 ease:OutExpo delay:0.01 }
+        }
 
     "text"
         GridNode{ justify_self_cross: Center grid_row:{ start: 1 } grid_column:{ start: 1} margin: { left: Auto right: Auto}}
-        TextLine{ text:"" size:30 font:{family: "ThaleahFat" } justify: Center}
+        TextLine{ text:"" size:38 font:{family: "ThaleahFat" } justify: Center}
+        Animated<TextLineColor>{
+            idle:Hsla{hue:45 saturation:1.0 lightness:1.0 alpha:1.0}
+            hover:Hsla{hue:45 saturation:1.0 lightness:0.8 alpha:1.0}
+            hover_with:{ duration:0.75 ease:OutExpo delay:0.00 }
+            press_with:{ duration:0.75 ease:OutExpo delay:0.01 }
+        }
 
 \
 

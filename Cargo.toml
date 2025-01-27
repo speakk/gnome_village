@@ -3,6 +3,9 @@ name = "rustvillage"
 version = "0.1.0"
 edition = "2021"
 
+[lints.clippy]
+type_complexity = "allow"
+
 [dependencies]
 #bevy = { version = "0.15.0", features = ["dynamic_linking"] }
 bevy = { version = "0.15.1" }
