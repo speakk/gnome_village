@@ -1,5 +1,6 @@
 use crate::features::world_interaction::mouse_selection::MouseSelectionPlugin;
 use bevy::prelude::*;
+use crate::features::world_interaction::build_action::BuildActionPlugin;
 
 pub mod mouse_selection;
 pub mod build_action;
@@ -8,6 +9,6 @@ pub struct WorldInteractionPlugin;
 
 impl Plugin for WorldInteractionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(MouseSelectionPlugin);
+        app.add_plugins((BuildActionPlugin, MouseSelectionPlugin));
     }
 }

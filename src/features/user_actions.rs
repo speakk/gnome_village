@@ -18,7 +18,7 @@ pub struct UserActionsPlugin;
 
 impl Plugin for UserActionsPlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<UserActionState>();
+        app.init_state::<UserActionState>().add_systems(Update, react_to_buildable_menu_selected);
     }
 }
 
@@ -27,6 +27,7 @@ fn react_to_buildable_menu_selected(mut build_menu_buildable_selected: EventRead
 ) {
     for event in build_menu_buildable_selected.read() {
         
+        println!("Entering PlacingBuilding state");
         next_state.set(UserActionState::PlacingBuilding);
     }
 }

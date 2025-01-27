@@ -14,6 +14,7 @@ use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use crate::features::user_actions::UserActionsPlugin;
 
 fn main() {
     App::new()
@@ -29,6 +30,7 @@ fn main() {
         .add_plugins(CameraPlugin)
         .add_plugins(MovementPlugin)
         .add_plugins(ui::UiPlugin)
+        .add_plugins(UserActionsPlugin)
         .insert_resource(Time::<Fixed>::from_hz(60.0))
         .init_state::<AppState>()
         .add_plugins(

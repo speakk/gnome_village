@@ -46,6 +46,14 @@ impl MapData {
         UVec2::new(x as u32, y as u32)
     }
 
+    // Don't be fooled by the fact that this does nothing, currently coordinates just HAPPEN
+    // to match global positions, as tile size is exactly 1,1
+    pub fn centered_coordinate_to_world_position(&self, coordinate: IVec2) -> Vec2 {
+        let x = coordinate.x as f32;
+        let y = coordinate.y as f32;
+        Vec2::new(x, y)
+    }
+
     pub fn get_tile_type_non_centered(&self, coordinate: UVec2) -> Option<TileType> {
         let x = coordinate.x as usize;
         let y = coordinate.y as usize;

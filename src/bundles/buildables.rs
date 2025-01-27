@@ -2,7 +2,7 @@ pub mod torch;
 pub mod wooden_wall;
 
 use crate::bundles::buildables::torch::WoodenTorch;
-use crate::bundles::buildables::wooden_wall::WoodenWall;
+use crate::bundles::buildables::wooden_wall::{view_wall_moved, WoodenWall};
 use crate::features::map::map_view::{MapMeshHandles, MeshType};
 use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
@@ -20,6 +20,7 @@ impl Plugin for BuildablesPlugin {
             .insert_resource(BuildableMeshHandles::default())
             .add_systems(Startup, (setup_buildable_materials, setup_buildable_meshes))
             .add_systems(OnEnter(AppState::InGame), add_buildable_prototypes)
+            .add_systems(PostUpdate, view_wall_moved)
             .add_viewable::<WoodenWall>();
     }
 }

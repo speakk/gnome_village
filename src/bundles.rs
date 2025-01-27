@@ -17,6 +17,27 @@ impl Plugin for BundlePlugin {
     }
 }
 
+
+pub fn clone_entity(mut world: &mut World, entity: Entity) -> Entity {
+    let mut scene_spawner = SceneSpawner::default();
+    let scene = DynamicSceneBuilder::from_world(world)
+        .extract_entity(entity)
+        .build();
+
+    let scene_id = world.resource_mut::<Assets<DynamicScene>>().add(scene);
+    let instance_id = scene_spawner
+        .spawn_dynamic_sync(world, &scene_id)
+        .unwrap();
+
+    let new_entity = scene_spawner
+        .iter_instance_entities(instance_id)
+        .next()
+        .unwrap();
+
+    new_entity
+}
+
+
 pub fn make_concrete_from_prototype(prototype: Entity, mut commands: Commands) -> Entity {
     let cloned = prototype;
     commands
