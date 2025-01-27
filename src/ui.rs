@@ -1,41 +1,39 @@
 use bevy::prelude::*;
+use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;
 use bevy_cobweb_ui::prelude::*;
+use crate::ui::main_actions::main_action_buttons::initialize_menu_buttons;
+use crate::ui::main_actions::{initialize_action_menu_container, MainActionSelected, MainActionsPlugin};
 
-pub mod main_action_buttons;
+mod main_actions;
 
 pub struct UiPlugin;
 
-const NORMAL_BUTTON: Color = Color::srgb(0.15, 0.15, 0.15);
-const HOVERED_BUTTON: Color = Color::srgb(0.25, 0.25, 0.25);
-const PRESSED_BUTTON: Color = Color::srgb(0.35, 0.75, 0.35);
+//pub struct UiSceneHandle(pub SceneHandle<'static, <UiBuilder<'_, Entity> as SceneNodeBuilder>::Builder<'static>>);
+#[derive(Resource)]
+pub struct UiSceneHandles {
+    pub main: Entity,
+    pub action_menu_container: Entity
+}
 
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_plugins(CobwebUiPlugin)
+            .add_plugins(MainActionsPlugin)
             .load("ui_templates/manifest.cob")
             .add_systems(OnEnter(LoadState::Done), build_ui);
-        // app
-        //     .add_systems(Update, button_system)
-        //     .add_systems(PostStartup, build_ui);
     }
 }
 
 fn build_ui(
     mut commands: Commands,
-    mut scene_loader: ResMut<SceneLoader>,
+    mut scene_loader: ResMut<SceneBuilder>,
+    mut ui_scene_handles: ResMut<UiSceneHandles>
 ) {
-    //commands.spawn((Camera2d, IsDefaultUiCamera, Camera { order: 1, clear_color: ClearColorConfig::None, ..default()}));
-
-    let buttons = vec![
-        "Build", "Order"
-    ];
-
-    commands.ui_root().load_scene_and_edit(("main", "main_scene"), &mut scene_loader, |scene| {
-        for button in buttons {
-            scene.get( "buttons_container").load_scene_and_edit(("button", "button"), |button_scene| {
-                button_scene.get("text").update_text(button);
-            });
-        }
+    commands.ui_root().spawn_scene_and_edit(("main", "main_scene"), &mut scene_loader, |main_scene| {
+        ui_scene_handles.main = main_scene.id();
+        ui_scene_handles.action_menu_container = main_scene.get("action_menu_container").id();
+        initialize_menu_buttons(main_scene);
+        initialize_action_menu_container(&mut main_scene.get("action_menu_container"));
     });
 }
