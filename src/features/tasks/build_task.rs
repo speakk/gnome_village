@@ -9,11 +9,11 @@ use bevy::prelude::*;
 pub fn react_to_blueprints(
     mut commands: Commands,
     new_blueprints_query: Query<
-        (&BluePrint, &Buildable, &WorldPosition),
+        (Entity, &BluePrint, &Buildable, &WorldPosition),
         (Added<BluePrint>, With<InWorld>),
     >,
 ) {
-    for (blueprint, buildable, world_position) in new_blueprints_query.iter() {
+    for (entity, blueprint, buildable, world_position) in new_blueprints_query.iter() {
         println!("Got blueprint: {:?}", blueprint);
         let new_task = commands
             .spawn((Task {
@@ -38,9 +38,7 @@ pub fn react_to_blueprints(
                                             item_id: item_requirement.item_id,
                                             amount: 1,
                                         },
-                                        target: DepositTarget::Coordinate(
-                                            world_position.0.as_ivec2(),
-                                        ),
+                                        target: DepositTarget::Inventory(entity),
                                         run_time_data: None,
                                     })),
                                     ..default()

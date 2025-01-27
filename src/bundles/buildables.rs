@@ -1,6 +1,7 @@
 pub mod torch;
 pub mod wooden_wall;
 
+use crate::features::inventory::Inventory;
 use crate::bundles::buildables::torch::WoodenTorch;
 use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::{ItemId, ItemSpawners, Prototypes};
@@ -35,6 +36,7 @@ pub fn setup_blueprint_material(
 }
 
 #[derive(Component, Default, Debug, Reflect)]
+#[require(Inventory)]
 #[reflect(Component)]
 pub struct BluePrint;
 

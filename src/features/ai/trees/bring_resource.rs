@@ -11,10 +11,13 @@ use crate::features::tasks::task::{
 };
 use beet::prelude::{OnRun, SequenceFlow, TargetEntity};
 use bevy::prelude::*;
+use crate::features::ai::actions::deposit::DepositAction;
+use crate::features::inventory::Inventory;
 
 pub fn create_bring_resource_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
     item_resources: Query<&WorldPosition, (With<ResourceItem>, With<InWorld>)>,
+    inventories: Query<&WorldPosition, (With<Inventory>, With<InWorld>)>,
     tasks: Query<&Task>,
     mut commands: Commands,
 ) {
@@ -31,12 +34,11 @@ pub fn create_bring_resource_tree(
                 println!("Had BringResource task, creating tree");
                 let target_coordinate = match bring_resource_data.target {
                     DepositTarget::Coordinate(coordinate) => coordinate,
-                    DepositTarget::Inventory(inventory_entity) => panic!(
-                        "Inventory target is not supported yet. Inventory entity: {}",
-                        inventory_entity
-                    ),
+                    DepositTarget::Inventory(inventory_entity) => {
+                        inventories.get(inventory_entity).unwrap().0.as_ivec2()
+                    }
                 };
-
+                
                 let resource_target = bring_resource_data
                     .run_time_data
                     .unwrap()
@@ -73,6 +75,15 @@ pub fn create_bring_resource_tree(
                         },
                         TargetEntity(worker_entity),
                     ));
+                    
+                    root.spawn((
+                        DepositAction {
+                            deposit_target: bring_resource_data.target,
+                            amount: bring_resource_data.item_requirement.amount,
+                            item_id: bring_resource_data.item_requirement.item_id,
+                        },
+                        TargetEntity(worker_entity),
+                        ));
 
                     root.spawn((
                         FinishTaskAction {
@@ -94,7 +105,7 @@ pub fn score_bring_resource(
     >,
     agents: &Vec<(Entity, &WorldPosition)>,
     bring_resource_data: &mut BringResourceData,
-    _others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
+    others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
 ) -> Option<Entity> {
     println!("Scoring bring resource");
     let mut best_resource_entity: Option<Entity> = None;
@@ -103,10 +114,9 @@ pub fn score_bring_resource(
 
     let target = match bring_resource_data.target {
         DepositTarget::Coordinate(coordinate) => coordinate,
-        DepositTarget::Inventory(inventory_entity) => panic!(
-            "Inventory target is not supported yet. Inventory entity: {}",
-            inventory_entity
-        ),
+        DepositTarget::Inventory(inventory_entity) => {
+            others_query.get(inventory_entity).unwrap().1.as_ivec2()
+        }
     };
 
     let valid_resources = resources_query
