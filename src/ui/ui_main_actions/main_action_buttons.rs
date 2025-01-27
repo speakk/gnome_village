@@ -1,4 +1,4 @@
-use crate::ui::ui_main_actions::{MainActionMenuButtonPressed};
+use crate::ui::ui_main_actions::MainActionMenuButtonPressed;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::ReactCommandsExt;
 use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;

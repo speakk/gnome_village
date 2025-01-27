@@ -2,7 +2,6 @@ mod bundles;
 mod features;
 mod ui;
 
-use bevy::input::common_conditions::input_toggle_active;
 use crate::bundles::rock::RockPlugin;
 use crate::bundles::BundlePlugin;
 use crate::features::camera::CameraPlugin;
@@ -12,9 +11,10 @@ use crate::features::path_finding::PathFindingPlugin;
 use crate::features::save::SavePlugin;
 use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
+use crate::features::user_actions::UserActionsPlugin;
+use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use crate::features::user_actions::UserActionsPlugin;
 
 fn main() {
     App::new()
@@ -35,6 +35,7 @@ fn main() {
         .init_state::<AppState>()
         .add_plugins(
             #[cfg(debug_assertions)]
-            WorldInspectorPlugin::default().run_if(input_toggle_active(false, KeyCode::F1)))
+            WorldInspectorPlugin::default().run_if(input_toggle_active(false, KeyCode::F1)),
+        )
         .run();
 }

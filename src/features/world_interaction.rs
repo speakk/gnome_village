@@ -1,9 +1,9 @@
+use crate::features::world_interaction::build_action::BuildActionPlugin;
 use crate::features::world_interaction::mouse_selection::MouseSelectionPlugin;
 use bevy::prelude::*;
-use crate::features::world_interaction::build_action::BuildActionPlugin;
 
-pub mod mouse_selection;
 pub mod build_action;
+pub mod mouse_selection;
 
 pub struct WorldInteractionPlugin;
 

@@ -7,9 +7,6 @@ use crate::features::map::map_view::{MapMeshHandles, MeshType};
 use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
 use bevy::prelude::*;
-use bevy::reflect::TypeRegistry;
-use bevy_inspector_egui::__macro_exports::bevy_reflect;
-use moonshine_core::prelude::Save;
 use moonshine_view::prelude::*;
 
 pub struct BuildablesPlugin;
@@ -62,7 +59,7 @@ macro_rules! apply_prototype_commands {
 }
 
 pub fn add_buildable_prototypes(mut commands: Commands) {
-    apply_prototype_commands!(commands,WoodenWall,WoodenTorch);
+    apply_prototype_commands!(commands, WoodenWall, WoodenTorch);
 }
 
 #[derive(Component, Default, Reflect)]

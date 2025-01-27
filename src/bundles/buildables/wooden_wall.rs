@@ -1,12 +1,12 @@
 use crate::bundles::buildables::{Buildable, BuildableMaterialHandles, BuildableMeshHandles};
-use crate::features::misc_components::{InWorld, Prototype};
+use crate::features::map::map_model::MapData;
+use crate::features::misc_components::Prototype;
 use crate::features::path_finding::Solid;
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 use moonshine_core::prelude::*;
 use moonshine_object::Object;
 use moonshine_view::{BuildView, ViewCommands, Viewable};
-use crate::features::map::map_model::MapData;
 
 #[derive(Component, Default, Reflect, Clone)]
 #[require(WorldPosition, Solid, Name(|| "Wooden Wall"), Buildable)]
@@ -41,7 +41,11 @@ impl BuildView for WoodenWall {
     }
 }
 
-pub fn view_wall_moved(query: Query<(&WorldPosition, &Viewable<WoodenWall>), Changed<WorldPosition>>, mut transform: Query<&mut Transform>, map_data: Query<&MapData>) {
+pub fn view_wall_moved(
+    query: Query<(&WorldPosition, &Viewable<WoodenWall>), Changed<WorldPosition>>,
+    mut transform: Query<&mut Transform>,
+    map_data: Query<&MapData>,
+) {
     for (position, model) in query.iter() {
         let view = model.view();
         let mut transform = transform.get_mut(view.entity()).unwrap();

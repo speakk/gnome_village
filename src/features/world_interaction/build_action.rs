@@ -1,4 +1,3 @@
-use bevy::ecs::system::SystemState;
 use crate::bundles::{clone_entity, make_concrete_from_prototype};
 use crate::features::map::map_model::MapData;
 use crate::features::misc_components::Prototype;
@@ -8,6 +7,7 @@ use crate::features::world_interaction::mouse_selection::{
     CurrentMouseWorldCoordinate, MapClickedEvent,
 };
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
+use bevy::ecs::system::SystemState;
 use bevy::prelude::*;
 
 pub struct BuildActionPlugin;
@@ -26,7 +26,7 @@ impl Plugin for BuildActionPlugin {
                     react_to_buildable_menu_selected,
                     ensure_building_preview,
                     react_to_mouse_clicked,
-                    react_to_build_intent
+                    react_to_build_intent,
                 ),
             );
     }
@@ -93,7 +93,7 @@ fn ensure_building_preview(world: &mut World) {
 }
 
 pub fn follow_mouse_cursor(
-    mut query: Query<(&mut WorldPosition, Entity), (With<FollowMouseCursor>)>,
+    mut query: Query<(&mut WorldPosition, Entity), With<FollowMouseCursor>>,
     current_mouse_coordinate: Res<CurrentMouseWorldCoordinate>,
     map_data: Query<&MapData>,
     added_query: Query<Entity, Added<FollowMouseCursor>>,
@@ -124,14 +124,8 @@ fn react_to_mouse_clicked(
     }
 }
 
-fn react_to_build_intent(
-    mut world: &mut World
-    //mut event_reader: EventReader<UserActionIntent>,
-    //mut commands: Commands,
-) {
-    let mut event_system_state = SystemState::<(
-    EventReader<UserActionIntent>
-    )>::new(world);
+fn react_to_build_intent(world: &mut World) {
+    let mut event_system_state = SystemState::<EventReader<UserActionIntent>>::new(world);
     let mut events = event_system_state.get_mut(world);
 
     for event in events.read() {
@@ -139,12 +133,14 @@ fn react_to_build_intent(
             let concrete_entity = make_concrete_from_prototype(entity, world);
             let map_data = {
                 let mut query = world.query::<&MapData>();
-                query.get_single(world).unwrap().clone()
+                query.get_single(world).unwrap()
             };
             let world_position = map_data.centered_coordinate_to_world_position(coordinate);
             let mut commands = world.commands();
-            commands.entity(concrete_entity).insert(WorldPosition(world_position));
-                
+            commands
+                .entity(concrete_entity)
+                .insert(WorldPosition(world_position));
+
             break;
         }
     }

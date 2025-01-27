@@ -1,11 +1,11 @@
-use crate::bundles::rock::{Rock};
+use crate::bundles::rock::Rock;
+use crate::bundles::settler::Settler;
 use crate::features::position::WorldPosition;
 use bevy::math::{IVec2, UVec2, Vec2};
 use bevy::prelude::*;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
-use crate::bundles::settler::Settler;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);

@@ -1,3 +1,5 @@
+use crate::bundles::buildables::torch::WoodenTorch;
+use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::rock::Rock;
 use crate::bundles::settler::Settler;
 use crate::features::input::SaveLoadAction;
@@ -14,8 +16,6 @@ use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
-use crate::bundles::buildables::torch::WoodenTorch;
-use crate::bundles::buildables::wooden_wall::WoodenWall;
 
 pub struct SavePlugin;
 
