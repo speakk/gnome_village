@@ -17,9 +17,6 @@ pub enum TileType {
     Water,
 }
 
-#[derive(Event)]
-pub struct MapInitialized(pub UVec2);
-
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 pub struct MapData {
@@ -82,8 +79,6 @@ pub fn generate_map_entity(mut commands: Commands) {
     for x in 0..map_size.x {
         for y in 0..map_size.y {
             let tile_type = TileType::Dirt;
-            let seed = 555.0f32;
-            let value = simplex_noise_2d_seeded(Vec2::new(x as f32, y as f32), seed);
             map_data.set_tile_type(
                 IVec2::new(
                     (x as i32) - (map_size.x as i32) / 2,
@@ -118,7 +113,7 @@ pub fn generate_test_entities(mut commands: Commands, map_query: Query<&MapData>
         }
     }
 
-    for i in 0..4 {
+    for _ in 0..4 {
         let x = rng.gen_range(0..map_data.size.x);
         let y = rng.gen_range(0..map_data.size.y);
         let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));

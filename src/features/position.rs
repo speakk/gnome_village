@@ -7,7 +7,7 @@ use bevy::prelude::*;
 pub struct WorldPosition(pub Vec2);
 
 impl WorldPosition {
-    pub(crate) fn to_point(&self) -> Point {
+    pub(crate) fn to_point(self) -> Point {
         Point {
             x: self.x as i32,
             y: self.y as i32,
@@ -22,7 +22,7 @@ pub struct PreviousWorldPosition(pub Vec2);
 
 // TODO: Code duplication
 impl PreviousWorldPosition {
-    pub(crate) fn to_point(&self) -> Point {
+    pub(crate) fn to_point(self) -> Point {
         Point {
             x: self.x as i32,
             y: self.y as i32,

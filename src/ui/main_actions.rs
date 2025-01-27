@@ -44,7 +44,7 @@ impl Plugin for MainActionsPlugin {
 pub fn initialize_main_actions_menu<'a>(main_scene: &mut SceneHandle<'a, <UiBuilder<'_, Entity> as SceneNodeBuilder>::Builder<'a>>) {
     main_scene.get("action_menu_container").update_on(
         broadcast::<MainActionMenuButtonPressed>(),
-        move |id: UpdateId,
+        move |_id: UpdateId,
               event: BroadcastEvent<MainActionMenuButtonPressed>,
               mut currently_selected_menu: ResMut<CurrentlySelectedMenu>,
               mut commands: Commands| {

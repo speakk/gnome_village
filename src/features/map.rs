@@ -2,7 +2,7 @@ use crate::features::map::map_model::{generate_map_entity, generate_test_entitie
 use crate::features::map::map_view::{
     create_map_meshes_and_materials, MapMaterialHandles, MapMeshHandles,
 };
-use bevy::app::{App, Plugin, PostStartup, Startup};
+use bevy::app::{App, Plugin};
 use bevy::prelude::*;
 use moonshine_view::RegisterView;
 use crate::features::states::AppState;

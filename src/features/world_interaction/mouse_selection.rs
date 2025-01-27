@@ -34,7 +34,7 @@ fn setup(mut commands: Commands, mut mesh_picking_settings: ResMut<MeshPickingSe
         PickingGroundPlane,
         ground_plane_mesh,
         Visibility::Hidden,
-        MeshMaterial3d(materials.add(Color::rgb(0.5, 0.0, 0.0))),
+        MeshMaterial3d(materials.add(Color::srgb(0.5, 0.0, 0.0))),
         Transform::from_xyz(-0.5, 0.0, -0.5),
         RayCastPickable,
                        )).observe(handle_ground_plane_interaction);

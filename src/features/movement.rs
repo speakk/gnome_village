@@ -41,12 +41,6 @@ fn apply_acceleration(mut query: Query<(&mut Velocity, &Acceleration)>, time: Re
     }
 }
 
-fn reset_acceleration(mut query: Query<&mut Acceleration>) {
-    for mut acceleration in &mut query {
-        acceleration.0 = Vec2::ZERO;
-    }
-}
-
 fn apply_velocity(
     mut query: Query<(&mut WorldPosition, &mut PreviousWorldPosition, &Velocity)>,
     time: Res<Time<Fixed>>,

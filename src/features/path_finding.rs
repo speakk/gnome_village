@@ -47,7 +47,7 @@ fn do_full_grid_reset(
             let tile_data = map_data.get_tile_type_non_centered(UVec2::new(x, y));
             let solid = tile_data.is_none_or(|val| val != TileType::Empty);
 
-            if (solid) {
+            if solid {
                 pathing_grid.set_point(Point::new(x as i32, y as i32), true);
             } else {
                 for world_position in solid_query.iter() {
@@ -71,7 +71,7 @@ fn update_grid_from_solid_component(
     mut pathing_grid: ResMut<PathingGridResource>,
     solid_added_query: Query<&WorldPosition, Added<Solid>>,
     position_changed_query: Query<
-        (&WorldPosition, &PreviousWorldPosition, Entity),
+        (&WorldPosition, &PreviousWorldPosition),
         (Changed<WorldPosition>, With<Solid>),
     >,
     mut solid_removed_entities: RemovedComponents<Solid>,
@@ -95,7 +95,7 @@ fn update_grid_from_solid_component(
         updated_something = true;
     }
 
-    for (world_position, previous_world_position, entity) in position_changed_query.iter() {
+    for (world_position, previous_world_position) in position_changed_query.iter() {
         pathing_grid.set_point(previous_world_position.to_point(), false);
         pathing_grid.set_point(world_position.to_point(), true);
         updated_something = true;

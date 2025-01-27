@@ -2,7 +2,7 @@ use crate::features::input::{CameraPanAction, CameraZoomAction};
 use crate::features::movement::{Acceleration, Friction, Velocity};
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
-use bevy::app::{App, Plugin, RunFixedMainLoop, Startup};
+use bevy::app::{App, Plugin, RunFixedMainLoop};
 use bevy::ecs::prelude::*;
 use bevy::math::{Vec2, Vec3};
 use bevy::prelude::KeyCode::{KeyA, KeyD, KeyS, KeyW};
@@ -32,7 +32,7 @@ impl Plugin for CameraPlugin {
     }
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands) {
     let pan_input_map = InputMap::new([
         (CameraPanAction::Left, KeyA),
         (CameraPanAction::Right, KeyD),
@@ -116,7 +116,6 @@ fn handle_pan_input(
 
 fn handle_zoom_input(
     mut query: Query<(&ActionState<CameraZoomAction>, &mut Projection)>,
-    time: Res<Time>,
 ) {
     let zoom_amount = 0.3;
     for (action_state, camera_projection) in &mut query {

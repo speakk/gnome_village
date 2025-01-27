@@ -7,7 +7,7 @@ use moonshine_core::prelude::Save;
 use moonshine_view::prelude::*;
 use crate::bundles::buildables::torch::WoodenTorch;
 use crate::bundles::buildables::wooden_wall::{WoodenWall};
-use crate::features::misc_components::{InWorld, Prototype};
+use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
 
 pub struct BuildablesPlugin;

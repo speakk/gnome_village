@@ -1,4 +1,4 @@
-use bevy::app::{App, Startup};
+use bevy::app::App;
 use bevy::color::palettes::css::ORANGE_RED;
 use bevy::color::palettes::tailwind::SKY_200;
 use bevy::pbr::light_consts::lux::AMBIENT_DAYLIGHT;
@@ -140,7 +140,7 @@ fn daylight_cycle(
             let illuminance = t.sin().max(0.0).powf(2.0) * AMBIENT_DAYLIGHT;
             // TODO: Base this on rotation
             if illuminance < 10.0 {
-                if let Ok(visibility) = visibility_query.get_mut(entity) {
+                if visibility_query.get_mut(entity).is_ok() {
                     commands.entity(entity).remove::<Visibility>();
                 }
             } else if let Err(_visibility) = visibility_query.get_mut(entity) {
@@ -156,7 +156,7 @@ fn daylight_cycle(
 
             // TODO: Base this on rotation
             if illuminance < 201.0 {
-                if let Ok(visibility) = visibility_query.get_mut(entity) {
+                if visibility_query.get_mut(entity).is_ok() {
                     commands.entity(entity).remove::<Visibility>();
                 }
             } else if let Err(_visibility) = visibility_query.get_mut(entity) {
