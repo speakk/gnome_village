@@ -1,9 +1,29 @@
+use crate::features::input::WorldInteractionAction;
 use crate::features::map::map_model::MapData;
 use crate::features::states::AppState;
+use bevy::prelude::KeyCode::{ControlLeft, KeyA, KeyD, ShiftLeft};
 use bevy::prelude::*;
+use leafwing_input_manager::action_state::ActionState;
+use leafwing_input_manager::input_map::InputMap;
+use leafwing_input_manager::InputManagerBundle;
 
 #[derive(Event)]
 pub struct MapClickedEvent(pub IVec2);
+
+#[derive(Debug)]
+enum DragModifier {
+    Primary,
+    Secondary,
+}
+
+#[derive(Event)]
+pub struct MapDragStartEvent {
+    coordinate: IVec2,
+    drag_modifier: Option<DragModifier>,
+}
+
+#[derive(Event)]
+pub struct MapDragEndEvent(pub IVec2);
 
 pub struct MouseSelectionPlugin;
 
@@ -16,6 +36,8 @@ impl Plugin for MouseSelectionPlugin {
             .insert_resource(CurrentMouseWorldPosition(Vec2::ZERO))
             .insert_resource(CurrentMouseWorldCoordinate(IVec2::ZERO))
             .add_event::<MapClickedEvent>()
+            .add_event::<MapDragStartEvent>()
+            .add_event::<MapDragEndEvent>()
             .add_systems(OnEnter(AppState::InGame), setup)
             .add_systems(
                 Update,
@@ -33,6 +55,15 @@ fn setup(
     println!("Setting up mouse selection plugin");
     mesh_picking_settings.require_markers = true;
     mesh_picking_settings.ray_cast_visibility = RayCastVisibility::Any;
+
+    let drag_input_map = InputMap::new([
+        (WorldInteractionAction::PrimarySelect, KeyA),
+        (WorldInteractionAction::SecondarySelect, KeyD),
+        (WorldInteractionAction::PrimaryDragModifier, ControlLeft),
+        (WorldInteractionAction::SecondaryDragModifier, ShiftLeft),
+    ]);
+
+    commands.spawn(InputManagerBundle::with_map(drag_input_map));
 
     let ground_plane_mesh = Mesh3d(
         meshes.add(
@@ -52,8 +83,10 @@ fn setup(
             Transform::from_xyz(-0.5, 0.0, -0.5),
             RayCastPickable,
         ))
-        .observe(handle_ground_plane_interaction)
-        .observe(handle_ground_plane_hover);
+        .observe(handle_ground_plane_click)
+        .observe(handle_ground_plane_hover)
+        .observe(handle_ground_plane_drag_start)
+        .observe(handle_ground_plane_drag_end);
 }
 
 fn scale_ground_mesh_based_on_map(
@@ -78,7 +111,7 @@ fn scale_ground_mesh_based_on_map(
     }
 }
 
-fn handle_ground_plane_interaction(
+fn handle_ground_plane_click(
     click: Trigger<Pointer<Click>>,
     mut map_clicked_event_writer: EventWriter<MapClickedEvent>,
 ) {
@@ -90,6 +123,53 @@ fn handle_ground_plane_interaction(
             location.z as i32,
         )));
     }
+}
+
+fn handle_ground_plane_drag_start(
+    drag: Trigger<Pointer<DragStart>>,
+    mut map_drag_start_event_writer: EventWriter<MapDragStartEvent>,
+    mut interaction_action_query: Query<
+        (
+            &ActionState<WorldInteractionAction>,
+        )
+    >,
+) {
+    fn get_modifier_type(action_states: Vec<&ActionState<WorldInteractionAction>>) -> Option<DragModifier> {
+        for action_state in action_states {
+            if action_state.pressed(&WorldInteractionAction::PrimaryDragModifier) {
+                return Some(DragModifier::Primary);
+            } else if action_state.pressed(&WorldInteractionAction::SecondaryDragModifier) {
+                return Some(DragModifier::Secondary);
+            }
+        }
+
+        None
+    }
+
+    let location = drag.hit.position;
+    if let Some(location) = location {
+        let modifier_type: Option<DragModifier> = get_modifier_type(interaction_action_query.iter().map(|(state, )| state).collect());
+        println!("Drag started on location: {:?} with modifier: {:?}", location, modifier_type);
+
+        map_drag_start_event_writer.send(MapDragStartEvent
+        {
+            coordinate: IVec2::new(
+                location.x as i32,
+                location.z as i32,
+            ),
+            drag_modifier: modifier_type,
+        });
+    }
+}
+
+fn handle_ground_plane_drag_end(
+    _drag: Trigger<Pointer<DragEnd>>,
+    mut map_drag_end_event_writer: EventWriter<MapDragEndEvent>,
+    current_mouse_world_coordinate: Res<CurrentMouseWorldCoordinate>,
+) {
+    let location = current_mouse_world_coordinate.0;
+    println!("Drag ended on location: {:?}", location);
+    map_drag_end_event_writer.send(MapDragEndEvent(location));
 }
 
 #[derive(Resource)]

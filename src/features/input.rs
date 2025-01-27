@@ -30,6 +30,8 @@ pub enum CameraZoomAction {
 pub enum WorldInteractionAction {
     PrimarySelect,
     SecondarySelect,
+    PrimaryDragModifier,
+    SecondaryDragModifier,
 }
 
 #[derive(Actionlike, PartialEq, Eq, Hash, Clone, Copy, Debug, Reflect)]
