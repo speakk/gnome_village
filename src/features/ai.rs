@@ -6,7 +6,7 @@ use moonshine_core::prelude::Unload;
 use crate::features::ai::actions::go_to::GoToAction;
 use crate::features::ai::actions::pick_up::PickUpAction;
 use crate::features::ai::trees::bring_resource::create_bring_resource_tree;
-use crate::features::path_finding::Path;
+use crate::features::path_finding::path_finding::Path;
 use beet::prelude::ActionPlugin;
 use bevy::prelude::*;
 use moonshine_core::prelude::MapEntities;

@@ -1,11 +1,12 @@
 use crate::features::map::map_model::MapData;
-use crate::features::path_finding::{
-    spawn_pathfinding_task, PathFollowFinished, PathFollowResult, PathingGridResource,
+use crate::features::path_finding::path_finding::{
+    spawn_pathfinding_task, PathFollowFinished, PathFollowResult,
 };
 use crate::features::position::WorldPosition;
 use beet::prelude::{Action, OnRun, OnRunResult, TargetEntity};
 use bevy::math::{IVec2, Vec2};
 use bevy::prelude::{Commands, Component, Query, Reflect, Res, Trigger};
+use crate::features::path_finding::grid::PathingGridResource;
 
 #[derive(Component, Action, Reflect)]
 #[require(ContinueRun, Name(|| "GoToAction"))]
