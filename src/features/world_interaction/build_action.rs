@@ -67,9 +67,9 @@ fn react_to_mouse_clicked(
 }
 
 #[derive(Resource, Default, Copy, Clone)]
-struct DragInfo {
-    map_drag_start_event: Option<MapDragStartEvent>,
-    is_dragging: bool,
+pub struct DragInfo {
+    pub map_drag_start_event: Option<MapDragStartEvent>,
+    pub is_dragging: bool,
 }
 
 #[derive(Resource, Default, Deref, DerefMut, Clone)]
@@ -174,14 +174,13 @@ fn react_to_mouse_drag_ended(
         drag_info_resource.is_dragging = false;
         drag_info_resource.map_drag_start_event = None;
 
+        println!("Got mouse drag end event, sending build intent with coordinates: {:?}", selected_coordinates.0);
         user_action_intent.send(UserActionIntent(UserActionType::Build {
             coordinates: selected_coordinates.0.clone(),
             bundle_type: current_building.0.unwrap(),
         }));
 
         selected_coordinates.0 = Vec::new();
-
-        println!("Reacting to mouse drag ended");
     }
 }
 
@@ -227,6 +226,8 @@ fn react_to_build_intent(
         {
             let map_data = map_data.get_single().unwrap();
 
+            
+            println!("Got build intent, creating buildables at coordinates: {:?}", coordinates);
             for coordinate in coordinates.iter() {
                 let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
                 let world_position = map_data.centered_coordinate_to_world_position(*coordinate);

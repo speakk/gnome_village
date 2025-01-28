@@ -6,6 +6,7 @@ use bevy::prelude::*;
 use leafwing_input_manager::action_state::ActionState;
 use leafwing_input_manager::input_map::InputMap;
 use leafwing_input_manager::InputManagerBundle;
+use crate::features::world_interaction::build_action::DragInfo;
 
 #[derive(Event)]
 pub struct MapClickedEvent(pub IVec2);
@@ -115,6 +116,12 @@ fn handle_ground_plane_click(
     click: Trigger<Pointer<Click>>,
     mut map_clicked_event_writer: EventWriter<MapClickedEvent>,
 ) {
+    // This is a workaround for a Bevy(?) bug which causes Click to trigger
+    // on drag end as well
+    if click.duration.as_secs_f32() > 0.2 {
+        return;
+    }
+    
     let location = click.hit.position;
     if let Some(location) = location {
         println!("Clicked on location: {:?}", location);
