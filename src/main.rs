@@ -22,6 +22,8 @@ use bevy::pbr::DefaultOpaqueRendererMethod;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
+use crate::features::assets::AssetsPlugin;
+use crate::features::misc_components::MiscComponentsPlugin;
 
 fn main() {
     App::new()
@@ -30,12 +32,14 @@ fn main() {
         .add_plugins(BeetDebugPlugin)
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .add_plugins(PreloadPlugin)
+        .add_plugins(AssetsPlugin)
         .add_plugins(BundlePlugin)
         .add_plugins(MapPlugin)
         .add_plugins(SavePlugin)
         .add_plugins(SunLightPlugin)
         .add_plugins(PathFindingPlugin)
         .add_plugins(RockPlugin)
+        .add_plugins(MiscComponentsPlugin)
         .add_plugins(features::input::InputPlugin)
         .add_plugins(features::world_interaction::WorldInteractionPlugin)
         .add_plugins(CameraPlugin)

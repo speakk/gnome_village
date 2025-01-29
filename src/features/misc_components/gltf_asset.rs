@@ -13,8 +13,7 @@ pub struct GltfAssetPlugin;
 
 impl Plugin for GltfAssetPlugin {
     fn build(&self, app: &mut App) {
-        // app.add_viewable::<GltfAsset>()
-        //     .add_systems(PostUpdate, );
+        app.add_viewable::<GltfAsset>();
     }
 }
 

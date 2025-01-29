@@ -1,5 +1,4 @@
 use crate::bundles::buildables::BuildablesPlugin;
-use crate::features::misc_components::MiscComponentsPlugin;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 
@@ -15,7 +14,6 @@ impl Plugin for BundlePlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(Prototypes(HashMap::new()))
             .insert_resource(ItemSpawners(HashMap::new()))
-            .add_plugins(MiscComponentsPlugin)
             .add_systems(Update, react_to_emptied_stack)
             .add_plugins(BuildablesPlugin);
     }
