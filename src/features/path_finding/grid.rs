@@ -1,11 +1,11 @@
-use crate::ReflectComponent;
-use bevy::prelude::{Added, Changed, Component, Deref, DerefMut, Query, Reflect, RemovedComponents, ResMut, Resource, With, Without};
-use pathfinding::grid::Grid;
-use bevy::math::UVec2;
 use crate::bundles::buildables::BluePrint;
 use crate::features::map::map_model::{MapData, TileType};
 use crate::features::misc_components::InWorld;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
+use crate::ReflectComponent;
+use bevy::math::UVec2;
+use bevy::prelude::{Added, Changed, Component, Deref, DerefMut, Query, Reflect, RemovedComponents, ResMut, Resource, Single, With, Without};
+use pathfinding::grid::Grid;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
@@ -52,6 +52,24 @@ fn do_full_grid_reset(
                     ));
                 }
             }
+        }
+    }
+}
+
+pub fn react_to_blueprint_removed(
+    mut blueprint_removed: RemovedComponents<BluePrint>,
+    solid_query: Query<&WorldPosition, (With<Solid>, With<InWorld>)>,
+    mut pathing_grid: ResMut<PathingGridResource>,
+    map_data: Single<&MapData>,
+) {
+    for entity in blueprint_removed.read() {
+        if let Ok(world_position) = solid_query.get(entity) {
+            let top_left_coordinate = map_data.world_position_to_top_left_coordinate(world_position.0);
+
+            pathing_grid.0.remove_vertex((
+                top_left_coordinate.x as usize,
+                top_left_coordinate.y as usize,
+            ));
         }
     }
 }
@@ -120,4 +138,43 @@ pub fn update_grid_from_solid_component(
         println!("Something updated in map");
         //pathing_grid.generate_components();
     }
+}
+
+// Copied from Grid, except modified NOT to return an empty list if the provided
+// vertex is empty in the grid
+pub fn neighbours(grid: &Grid, vertex: (usize, usize)) -> Vec<(usize, usize)> {
+    // For now hard code, grid.diagonal_mode is private
+    let diagonal_mode = true;
+    let (x, y) = vertex;
+    let mut candidates = Vec::with_capacity(8);
+    if x > 0 {
+        candidates.push((x - 1, y));
+        if diagonal_mode {
+            if y > 0 {
+                candidates.push((x - 1, y - 1));
+            }
+            if y + 1 < grid.height {
+                candidates.push((x - 1, y + 1));
+            }
+        }
+    }
+    if x + 1 < grid.width {
+        candidates.push((x + 1, y));
+        if diagonal_mode {
+            if y > 0 {
+                candidates.push((x + 1, y - 1));
+            }
+            if y + 1 < grid.height {
+                candidates.push((x + 1, y + 1));
+            }
+        }
+    }
+    if y > 0 {
+        candidates.push((x, y - 1));
+    }
+    if y + 1 < grid.height {
+        candidates.push((x, y + 1));
+    }
+    candidates.retain(|&v| grid.has_vertex(v));
+    candidates
 }

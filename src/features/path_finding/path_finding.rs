@@ -8,7 +8,7 @@ use bevy::tasks::futures_lite::future;
 use bevy::tasks::{AsyncComputeTaskPool, Task};
 use pathfinding::grid::Grid;
 use pathfinding::prelude::bfs;
-use crate::features::path_finding::grid::PathingGridResource;
+use crate::features::path_finding::grid::{neighbours, PathingGridResource};
 
 #[derive(Debug)]
 pub struct Path {
@@ -18,6 +18,31 @@ pub struct Path {
 
 #[derive(Component)]
 pub struct PathfindingTask(Task<Option<Path>>);
+
+// TODO: Sort by distance to point (provide a "target" UVec2 to compare with)
+fn get_nearest_available_vertex(grid: &Grid, point: UVec2) -> Option<UVec2> {
+    let is_end_occupied = !grid.has_vertex((point.x as usize, point.y as usize));
+    let mut final_end = point;
+
+    if is_end_occupied {
+        let neighbours = neighbours(grid, (point.x as usize, point.y as usize));
+        let mut found_neighbour = false;
+        for neighbour in neighbours {
+            if grid.has_vertex((neighbour.0, neighbour.1)) {
+                final_end = UVec2::new(neighbour.0 as u32, neighbour.1 as u32);
+                found_neighbour = true;
+                break;
+            }
+        }
+
+        if !found_neighbour {
+            // End was occupied, all neighbours are occupied, return None
+            return None;
+        }
+    }
+    
+    Some(final_end)
+}
 
 pub fn spawn_pathfinding_task(
     commands: &mut Commands,
@@ -35,35 +60,24 @@ pub fn spawn_pathfinding_task(
     let end = map_data.world_position_to_top_left_coordinate(end.0);
 
     let task = thread_pool.spawn(async move {
-        let is_occupied = !grid.has_vertex((end.x as usize, end.y as usize));
-        let mut final_end = end;
-        if is_occupied {
-            let neighbours = grid.neighbours((end.x as usize, end.y as usize));
-            let mut found_neighbour = false;
-            // TODO: Sort by distance to start
-            for neighbour in neighbours {
-                if grid.has_vertex((neighbour.0, neighbour.1)) {
-                    final_end = UVec2::new(neighbour.0 as u32, neighbour.1 as u32);
-                    found_neighbour = true;
-                    break;
-                }
-            }
-
-            if !found_neighbour {
-                // End was occupied, all neighbours are occupied, return None
-                return None;
-            }
+        let start = get_nearest_available_vertex(&grid, start);
+        let end = get_nearest_available_vertex(&grid, end);
+        
+        if start.is_none() || end.is_none() {
+            return None;
         }
+        
         let points = bfs(
-            &start,
+            &start.unwrap(),
             |p| {
                 grid.neighbours((p.x as usize, p.y as usize))
                     .iter()
                     .map(|p| UVec2::new(p.0 as u32, p.1 as u32))
                     .collect::<Vec<_>>()
             },
-            |p| *p == final_end,
+            |p| *p == end.unwrap(),
         );
+        
         println!(
             "from: {:?} to: {:?}, found path: {:?}",
             start,
