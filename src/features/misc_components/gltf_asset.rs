@@ -13,8 +13,8 @@ pub struct GltfAssetPlugin;
 
 impl Plugin for GltfAssetPlugin {
     fn build(&self, app: &mut App) {
-        app.add_viewable::<GltfAsset>()
-            .add_systems(PostUpdate, gltf_asset_moved);
+        // app.add_viewable::<GltfAsset>()
+        //     .add_systems(PostUpdate, );
     }
 }
 
@@ -47,16 +47,5 @@ impl BuildView for GltfAsset {
         ));
 
         println!("Building gltf asset view finished");
-    }
-}
-
-pub fn gltf_asset_moved(
-    query: Query<(&WorldPosition, &Viewable<GltfAsset>), Changed<WorldPosition>>,
-    mut transform: Query<&mut Transform>,
-) {
-    for (position, model) in query.iter() {
-        let view = model.view();
-        let mut transform = transform.get_mut(view.entity()).unwrap();
-        *transform = Transform::from_xyz(position.x, 0.5, position.y);
     }
 }

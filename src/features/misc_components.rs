@@ -2,17 +2,15 @@ pub(crate) mod gltf_asset;
 pub mod simple_mesh;
 mod simple_mesh_view;
 
-use crate::features::misc_components::gltf_asset::GltfAssetPlugin;
+use crate::features::misc_components::gltf_asset::{GltfAsset, GltfAssetPlugin};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
-use crate::features::misc_components::simple_mesh_view::{
-    on_add_blueprint, on_remove_blueprint, view_wall_moved,
-};
+use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint};
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_core::prelude::Save;
 use moonshine_object::{Object, ObjectInstance};
-use moonshine_view::{BuildView, RegisterView, ViewCommands};
+use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 
 pub struct MiscComponentsPlugin;
 
@@ -21,9 +19,14 @@ impl Plugin for MiscComponentsPlugin {
         app.insert_resource(SimpleMeshHandles(HashMap::default()))
             .add_systems(Startup, simple_mesh::create_simple_meshes)
             .add_plugins(GltfAssetPlugin)
+            .add_systems(PostUpdate, (on_add_blueprint, on_remove_blueprint))
             .add_systems(
                 PostUpdate,
-                (on_add_blueprint, on_remove_blueprint, view_wall_moved),
+                (
+                    viewable_moved::<SimpleMesh>,
+                    viewable_moved::<GltfAsset>,
+                    viewable_moved::<LightSource>,
+                ),
             )
             .add_viewable::<SimpleMesh>()
             .add_viewable::<LightSource>();
@@ -76,5 +79,18 @@ impl BuildView for LightSource {
             },
             Transform::from_xyz(transform.x, 1.5, transform.y),
         ));
+    }
+}
+
+pub fn viewable_moved<T>(
+    query: Query<(&WorldPosition, &Viewable<T>), Changed<WorldPosition>>,
+    mut transform: Query<&mut Transform>,
+) where
+    T: Component,
+{
+    for (position, model) in query.iter() {
+        let view = model.view();
+        let mut transform = transform.get_mut(view.entity()).unwrap();
+        *transform = Transform::from_xyz(position.x, 0.5, position.y);
     }
 }

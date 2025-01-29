@@ -96,14 +96,3 @@ pub fn on_remove_blueprint(
             .remove::<NotShadowCaster>();
     });
 }
-
-pub fn view_wall_moved(
-    query: Query<(&WorldPosition, &Viewable<SimpleMesh>), Changed<WorldPosition>>,
-    mut transform: Query<&mut Transform>,
-) {
-    for (position, model) in query.iter() {
-        let view = model.view();
-        let mut transform = transform.get_mut(view.entity()).unwrap();
-        *transform = Transform::from_xyz(position.x, 0.5, position.y);
-    }
-}
