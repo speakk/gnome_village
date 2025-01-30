@@ -1,3 +1,5 @@
+use crate::features::assets::AnimationId;
+use crate::features::misc_components::gltf_asset::GltfAnimation;
 use crate::bundles::{Id, ItemId};
 use crate::features::inventory::Inventory;
 use crate::features::misc_components::gltf_asset::GltfAsset;
@@ -14,6 +16,12 @@ use bevy::prelude::*;
     Velocity,
     Friction(|| Friction(0.1)),
     GltfAsset(|| "blender_models/settler.glb"),
+    GltfAnimation(|| GltfAnimation {
+        animation_id: AnimationId::Settler,
+        animation_indices: vec![0, 1, 2],
+        current_animation_index: 0,
+        should_play: true
+    }),
     Inventory,
     Name(|| "Settler"))]
 #[reflect(Component)]

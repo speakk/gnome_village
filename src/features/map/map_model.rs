@@ -202,7 +202,7 @@ pub fn generate_test_entities(
         },
         EntityGeneration {
             entity_type: ItemId::Lumber,
-            amount: 90,
+            amount: 100,
         },
     ];
 

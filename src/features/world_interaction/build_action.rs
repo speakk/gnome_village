@@ -175,10 +175,15 @@ fn react_to_mouse_drag_ended(
         drag_info_resource.map_drag_start_event = None;
 
         println!("Got mouse drag end event, sending build intent with coordinates: {:?}", selected_coordinates.0);
-        user_action_intent.send(UserActionIntent(UserActionType::Build {
-            coordinates: selected_coordinates.0.clone(),
-            bundle_type: current_building.0.unwrap(),
-        }));
+        
+        if current_building.0.is_none() {
+            return;
+        } else {
+            user_action_intent.send(UserActionIntent(UserActionType::Build {
+                coordinates: selected_coordinates.0.clone(),
+                bundle_type: current_building.0.unwrap(),
+            }));
+        }
 
         selected_coordinates.0 = Vec::new();
     }

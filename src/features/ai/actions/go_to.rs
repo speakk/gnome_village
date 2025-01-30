@@ -6,6 +6,7 @@ use crate::features::position::WorldPosition;
 use beet::prelude::{Action, OnRun, OnRunResult, TargetEntity};
 use bevy::math::{IVec2, Vec2};
 use bevy::prelude::{Commands, Component, Query, Reflect, Res, Trigger};
+use crate::features::misc_components::gltf_asset::GltfAnimation;
 use crate::features::path_finding::grid::PathingGridResource;
 
 #[derive(Component, Action, Reflect)]
@@ -15,6 +16,7 @@ pub struct GoToAction {
     pub(crate) target: IVec2,
 }
 
+#[allow(clippy::too_many_arguments)]
 fn go_to_action(
     trigger: Trigger<OnRun>,
     target_agents: Query<&TargetEntity>,
