@@ -18,7 +18,7 @@ use crate::features::tasks::TasksPlugin;
 use crate::features::user_actions::UserActionsPlugin;
 use beet::prelude::{BeetDebugPlugin, LifecyclePlugin};
 use bevy::input::common_conditions::input_toggle_active;
-use bevy::pbr::DefaultOpaqueRendererMethod;
+use bevy::pbr::{DefaultOpaqueRendererMethod, PointLightShadowMap};
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
@@ -31,6 +31,9 @@ fn main() {
         .add_plugins(LifecyclePlugin)
         .add_plugins(BeetDebugPlugin)
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
+        .insert_resource(PointLightShadowMap {
+            size: 256,
+        })
         .add_plugins(PreloadPlugin)
         .add_plugins(AssetsPlugin)
         .add_plugins(BundlePlugin)

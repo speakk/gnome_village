@@ -3,7 +3,7 @@ use bevy::color::Color;
 use bevy::prelude::{default, Component, Reflect, Transform, World};
 use moonshine_view::{BuildView, ViewCommands};
 use moonshine_object::{Object, ObjectInstance};
-use bevy::pbr::PointLight;
+use bevy::pbr::{PointLight, PointLightShadowMap};
 use crate::features::misc_components::Prototype;
 use crate::features::position::WorldPosition;
 
@@ -37,7 +37,7 @@ impl BuildView for LightSource {
             PointLight {
                 color: light_source.color,
                 intensity: light_source.intensity,
-                range: 2.0,
+                range: 8.0,
                 shadows_enabled: true,
                 ..default()
             },
