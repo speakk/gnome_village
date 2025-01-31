@@ -1,6 +1,7 @@
 pub(crate) mod gltf_asset;
 pub mod simple_mesh;
 mod simple_mesh_view;
+pub(crate) mod light_source;
 
 use std::f32::consts::PI;
 use crate::features::misc_components::gltf_asset::{GltfAsset, GltfAssetPlugin};
@@ -12,6 +13,7 @@ use bevy::utils::HashMap;
 use moonshine_core::prelude::Save;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
+use light_source::LightSource;
 use crate::features::movement::Velocity;
 
 pub struct MiscComponentsPlugin;
@@ -48,45 +50,6 @@ pub struct InWorld;
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 pub struct Prototype;
-
-#[derive(Component, Reflect)]
-#[reflect(Component)]
-pub struct LightSource {
-    pub intensity: f32,
-    pub color: Color,
-}
-
-impl Default for LightSource {
-    fn default() -> Self {
-        Self {
-            intensity: 100000.0,
-            color: Color::WHITE,
-        }
-    }
-}
-
-impl BuildView for LightSource {
-    fn build(world: &World, object: Object<LightSource>, mut view: ViewCommands<LightSource>) {
-        if world.get::<Prototype>(object.entity()).is_some() {
-            return;
-        }
-        println!("Building light source");
-
-        let transform = world.get::<WorldPosition>(object.entity()).unwrap();
-        let light_source = world.get::<LightSource>(object.entity()).unwrap();
-
-        view.insert((
-            PointLight {
-                color: light_source.color,
-                intensity: light_source.intensity,
-                range: 2.0,
-                shadows_enabled: true,
-                ..default()
-            },
-            Transform::from_xyz(transform.x, 1.5, transform.y),
-        ));
-    }
-}
 
 pub fn viewable_moved<T>(
     query: Query<(&WorldPosition, &Viewable<T>), Changed<WorldPosition>>,

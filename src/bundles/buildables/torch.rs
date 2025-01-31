@@ -1,7 +1,7 @@
 use crate::bundles::buildables::Buildable;
 use crate::bundles::{Id, ItemId};
 use crate::features::misc_components::gltf_asset::GltfAsset;
-use crate::features::misc_components::LightSource;
+use crate::features::misc_components::light_source::LightSource;
 use crate::features::path_finding::grid::Solid;
 use crate::features::tasks::task::ItemAmount;
 use bevy::prelude::*;

@@ -87,12 +87,13 @@ pub fn on_remove_blueprint(
         if commands.get_entity(base_entity).is_none() {
             return;
         }
-        let view = viewable_query.get(base_entity).unwrap();
-        let mut material = materials_query.get_mut(view.view().entity()).unwrap();
-        let original_material = original_materials_query.get(view.view().entity()).unwrap();
-        material.0 = original_material.0.clone();
-        commands
-            .entity(view.view().entity())
-            .remove::<NotShadowCaster>();
+        if let Ok(view) = viewable_query.get(base_entity) {
+            let mut material = materials_query.get_mut(view.view().entity()).unwrap();
+            let original_material = original_materials_query.get(view.view().entity()).unwrap();
+            material.0 = original_material.0.clone();
+            commands
+                .entity(view.view().entity())
+                .remove::<NotShadowCaster>();
+        }
     });
 }
