@@ -3,16 +3,114 @@ use crate::features::map::map_model::{MapData, TileType};
 use crate::features::misc_components::InWorld;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::ReflectComponent;
-use bevy::math::UVec2;
-use bevy::prelude::{Added, Changed, Component, Deref, DerefMut, Query, Reflect, RemovedComponents, ResMut, Resource, Single, With, Without};
+use bevy::math::{UVec2, Vec2};
+use bevy::prelude::{Added, Changed, Component, Deref, DerefMut, IVec2, Query, Reflect, RemovedComponents, ResMut, Resource, Single, With, Without};
 use pathfinding::grid::Grid;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 pub struct Solid;
 
-#[derive(Resource, Deref, DerefMut)]
+#[derive(Resource, Clone)]
 pub struct PathingGridResource(pub Grid);
+
+impl PathingGridResource {
+    pub fn convert_to_centered_coordinate(&self, coordinate: UVec2) -> IVec2 {
+        let x = (coordinate.x as i32) - (self.0.width as i32) / 2;
+        let y = (coordinate.y as i32) - (self.0.height as i32) / 2;
+        IVec2::new(x, y)
+    }
+
+    pub fn world_position_to_top_left_coordinate(&self, coordinate: Vec2) -> UVec2 {
+        let x = coordinate.x + (self.0.width as f32) / 2.0;
+        let y = coordinate.y + (self.0.height as f32) / 2.0;
+        UVec2::new(x as u32, y as u32)
+    }
+
+    // Don't be fooled by the fact that this does nothing, currently coordinates just HAPPEN
+    // to match global positions, as tile size is exactly 1,1
+    pub fn centered_coordinate_to_world_position(&self, coordinate: IVec2) -> Vec2 {
+        let x = coordinate.x as f32;
+        let y = coordinate.y as f32;
+        Vec2::new(x, y)
+    }
+    
+    pub fn is_occupied(&self, world_position: &WorldPosition) -> bool {
+        let top_left_coordinate = self.world_position_to_top_left_coordinate(world_position.0);
+        self.0.has_vertex((top_left_coordinate.x as usize, top_left_coordinate.y as usize))
+    }
+
+
+    // Copied from Grid, except modified NOT to return an empty list if the provided
+    // vertex is empty in the grid
+    pub fn neighbours(&self, vertex: (usize, usize)) -> Vec<(usize, usize)> {
+        // For now hard code, grid.diagonal_mode is private
+        let diagonal_mode = true;
+        let (x, y) = vertex;
+        let mut candidates = Vec::with_capacity(8);
+        if x > 0 {
+            candidates.push((x - 1, y));
+            if diagonal_mode {
+                if y > 0 {
+                    candidates.push((x - 1, y - 1));
+                }
+                if y + 1 < self.0.height {
+                    candidates.push((x - 1, y + 1));
+                }
+            }
+        }
+        if x + 1 < self.0.width {
+            candidates.push((x + 1, y));
+            if diagonal_mode {
+                if y > 0 {
+                    candidates.push((x + 1, y - 1));
+                }
+                if y + 1 < self.0.height {
+                    candidates.push((x + 1, y + 1));
+                }
+            }
+        }
+        if y > 0 {
+            candidates.push((x, y - 1));
+        }
+        if y + 1 < self.0.height {
+            candidates.push((x, y + 1));
+        }
+        candidates.retain(|&v| self.0.has_vertex(v));
+        candidates
+    }
+
+    // TODO: Sort by distance to point (provide a "target" UVec2 to compare with)
+    pub(crate) fn get_nearest_available_vertex(&self, coordinate: IVec2) -> Option<UVec2> {
+        let point = self.world_position_to_top_left_coordinate(coordinate.as_vec2());
+        let is_end_occupied = !self.0.has_vertex((point.x as usize, point.y as usize));
+        let mut final_end = point;
+
+        if is_end_occupied {
+            let neighbours = self.0.neighbours((point.x as usize, point.y as usize));
+            let mut found_neighbour = false;
+            for neighbour in neighbours {
+                if self.0.has_vertex((neighbour.0, neighbour.1)) {
+                    final_end = UVec2::new(neighbour.0 as u32, neighbour.1 as u32);
+                    found_neighbour = true;
+                    break;
+                }
+            }
+
+            if !found_neighbour {
+                // End was occupied, all neighbours are occupied, return None
+                return None;
+            }
+        }
+
+        Some(final_end)
+    }
+    
+    pub fn get_nearest_available_coordinate(&self, coordinate: IVec2) -> Option<IVec2> {
+        let vertex = self.get_nearest_available_vertex(coordinate);
+        vertex.map(|vertex| self.convert_to_centered_coordinate(vertex))
+    }
+}
 
 pub fn setup(
     map_data: Query<&MapData, Added<MapData>>,
@@ -41,12 +139,12 @@ fn do_full_grid_reset(
             let solid = tile_data.is_none_or(|val| val != TileType::Dirt);
 
             if solid {
-                pathing_grid.remove_vertex((x as usize, y as usize));
+                pathing_grid.0.remove_vertex((x as usize, y as usize));
             } else {
                 for world_position in solid_query.iter() {
                     let top_left_coordinate =
                         map_data.world_position_to_top_left_coordinate(world_position.0);
-                    pathing_grid.remove_vertex((
+                    pathing_grid.0.remove_vertex((
                         top_left_coordinate.x as usize,
                         top_left_coordinate.y as usize,
                     ));
@@ -138,43 +236,4 @@ pub fn update_grid_from_solid_component(
         println!("Something updated in map");
         //pathing_grid.generate_components();
     }
-}
-
-// Copied from Grid, except modified NOT to return an empty list if the provided
-// vertex is empty in the grid
-pub fn neighbours(grid: &Grid, vertex: (usize, usize)) -> Vec<(usize, usize)> {
-    // For now hard code, grid.diagonal_mode is private
-    let diagonal_mode = true;
-    let (x, y) = vertex;
-    let mut candidates = Vec::with_capacity(8);
-    if x > 0 {
-        candidates.push((x - 1, y));
-        if diagonal_mode {
-            if y > 0 {
-                candidates.push((x - 1, y - 1));
-            }
-            if y + 1 < grid.height {
-                candidates.push((x - 1, y + 1));
-            }
-        }
-    }
-    if x + 1 < grid.width {
-        candidates.push((x + 1, y));
-        if diagonal_mode {
-            if y > 0 {
-                candidates.push((x + 1, y - 1));
-            }
-            if y + 1 < grid.height {
-                candidates.push((x + 1, y + 1));
-            }
-        }
-    }
-    if y > 0 {
-        candidates.push((x, y - 1));
-    }
-    if y + 1 < grid.height {
-        candidates.push((x, y + 1));
-    }
-    candidates.retain(|&v| grid.has_vertex(v));
-    candidates
 }

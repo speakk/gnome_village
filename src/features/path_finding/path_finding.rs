@@ -8,46 +8,23 @@ use bevy::tasks::futures_lite::future;
 use bevy::tasks::{AsyncComputeTaskPool, Task};
 use pathfinding::grid::Grid;
 use pathfinding::prelude::bfs;
-use crate::features::path_finding::grid::{neighbours, PathingGridResource};
+use crate::features::path_finding::grid::{PathingGridResource};
 
 #[derive(Debug)]
 pub struct Path {
-    pub steps: Vec<UVec2>,
+    pub steps: Vec<IVec2>,
     pub related_task: Option<Entity>,
 }
 
 #[derive(Component)]
 pub struct PathfindingTask(Task<Option<Path>>);
 
-// TODO: Sort by distance to point (provide a "target" UVec2 to compare with)
-fn get_nearest_available_vertex(grid: &Grid, point: UVec2) -> Option<UVec2> {
-    let is_end_occupied = !grid.has_vertex((point.x as usize, point.y as usize));
-    let mut final_end = point;
 
-    if is_end_occupied {
-        let neighbours = neighbours(grid, (point.x as usize, point.y as usize));
-        let mut found_neighbour = false;
-        for neighbour in neighbours {
-            if grid.has_vertex((neighbour.0, neighbour.1)) {
-                final_end = UVec2::new(neighbour.0 as u32, neighbour.1 as u32);
-                found_neighbour = true;
-                break;
-            }
-        }
-
-        if !found_neighbour {
-            // End was occupied, all neighbours are occupied, return None
-            return None;
-        }
-    }
-    
-    Some(final_end)
-}
 
 pub fn spawn_pathfinding_task(
     commands: &mut Commands,
     target_entity: Entity,
-    grid: &Grid,
+    grid: &PathingGridResource,
     map_data: &MapData,
     start: WorldPosition,
     end: WorldPosition,
@@ -56,12 +33,10 @@ pub fn spawn_pathfinding_task(
     //
     let thread_pool = AsyncComputeTaskPool::get();
     let grid = Box::new(grid.clone());
-    let start = map_data.world_position_to_top_left_coordinate(start.0);
-    let end = map_data.world_position_to_top_left_coordinate(end.0);
 
     let task = thread_pool.spawn(async move {
-        let start = get_nearest_available_vertex(&grid, start);
-        let end = get_nearest_available_vertex(&grid, end);
+        let start = grid.get_nearest_available_vertex(start.0.as_ivec2());
+        let end = grid.get_nearest_available_vertex(end.0.as_ivec2());
         
         if start.is_none() || end.is_none() {
             return None;
@@ -86,7 +61,7 @@ pub fn spawn_pathfinding_task(
         );
         //println!("grid: {:?}", grid);
         points.map(|points| Path {
-            steps: points,
+            steps: points.iter().map(|p| grid.convert_to_centered_coordinate(*p)).collect::<Vec<_>>(),
             related_task,
         })
     });
@@ -143,17 +118,12 @@ pub fn follow_path(
         let current_point = path_follow.path.steps[current_index];
         let next_point = path_follow.path.steps[current_index + 1];
 
-        let world_position = map_data
-            .get_single()
-            .unwrap()
-            .world_position_to_top_left_coordinate(world_position.0);
-
-        let direction = (next_point.as_vec2() - world_position.as_vec2()).normalize_or_zero();
+        let direction = (next_point.as_vec2() - world_position.0).normalize_or_zero();
         let speed = 3.0;
         let final_vector = Vec2::new(direction.x, direction.y) * speed;
         velocity.0 = final_vector;
 
-        if world_position.as_vec2().distance(next_point.as_vec2()) <= AT_POINT_THRESHOLD {
+        if world_position.0.distance(next_point.as_vec2()) <= AT_POINT_THRESHOLD {
             if current_index < path_follow.path.steps.len() - 2 {
                 path_follow.current_path_index += 1;
             } else {
