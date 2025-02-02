@@ -105,14 +105,10 @@ pub fn follow_path(
     map_data: Query<&MapData>,
     mut commands: Commands,
 ) {
-    const AT_POINT_THRESHOLD: f32 = 0.001;
+    const AT_POINT_THRESHOLD: f32 = 0.2;
 
     for (entity, mut path_follow, world_position, mut velocity) in query.iter_mut() {
         //println!("{:?}", path_follow);
-
-        if path_follow.finished {
-            continue;
-        }
 
         let current_index = path_follow.current_path_index;
         let current_point = path_follow.path.steps[current_index];
@@ -123,15 +119,17 @@ pub fn follow_path(
         let final_vector = Vec2::new(direction.x, direction.y) * speed;
         velocity.0 = final_vector;
 
+        println!("Current position: {:?}, next point: {:?}", world_position, next_point);
+        
         if world_position.0.distance(next_point.as_vec2()) <= AT_POINT_THRESHOLD {
             if current_index < path_follow.path.steps.len() - 2 {
                 path_follow.current_path_index += 1;
             } else {
-                path_follow.finished = true;
+                velocity.0 = Vec2::ZERO;
                 commands.entity(entity).trigger(PathFollowFinished {
                     result: PathFollowResult::Success,
                     related_task: path_follow.path.related_task,
-                });
+                }).remove::<PathFollow>();
             }
         }
     }

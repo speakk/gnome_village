@@ -47,7 +47,6 @@ pub struct BehaviourTree;
 pub struct PathFollow {
     pub path: Path,
     pub current_path_index: usize,
-    pub finished: bool,
 }
 
 impl Default for PathFollow {
@@ -58,7 +57,6 @@ impl Default for PathFollow {
                 related_task: None,
             },
             current_path_index: 0,
-            finished: false,
         }
     }
 }

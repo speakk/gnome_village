@@ -14,7 +14,6 @@ use crate::features::save::SavePlugin;
 use crate::features::states::preload::PreloadPlugin;
 use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
-use crate::features::tasks::TasksPlugin;
 use crate::features::user_actions::UserActionsPlugin;
 use beet::prelude::{BeetDebugPlugin, BeetFlowPlugin, LifecyclePlugin};
 use bevy::input::common_conditions::input_toggle_active;
@@ -24,6 +23,7 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
 use crate::features::assets::AssetsPlugin;
 use crate::features::misc_components::MiscComponentsPlugin;
+use features::tasks::tasks_plugin::TasksPlugin;
 
 fn main() {
     App::new()

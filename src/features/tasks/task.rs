@@ -6,6 +6,7 @@ use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use bevy::prelude::Component;
 use bevy::prelude::*;
+use bevy::utils::HashMap;
 use moonshine_core::prelude::{MapEntities, Save};
 use crate::features::ai::WorkingOnTask;
 
@@ -65,7 +66,7 @@ pub enum TaskType {
 }
 
 #[derive(Component, Debug, Clone, Reflect)]
-#[require(Save, Name(|| "Task"))]
+#[require(Save)]
 #[reflect(Component, MapEntities)]
 pub struct Task {
     pub run_type: RunType,
@@ -110,6 +111,67 @@ impl Task {
                 score_bring_resource(resources_query, agents, bring_resource_data, others_query)
             }
             _ => None,
+        }
+    }
+}
+
+pub fn get_available_task(
+    task_entity: Entity,
+    task_data: &Task,
+    children: Option<&Children>,
+    all_tasks: &HashMap<Entity, (Entity, &Task, Option<&Children>)>,
+) -> Option<Entity> {
+    match task_data.run_type {
+        RunType::Leaf => {
+            if task_data.status == Status::Ready {
+                Some(task_entity)
+            } else {
+                None
+            }
+        }
+        RunType::Sequence => {
+            if let Some(children) = children {
+                for &child in children.iter() {
+                    let (_entity, child_task_data, sub_children) =
+                        all_tasks.get(&child).unwrap();
+                    let next_sub_task =
+                        get_available_task(child, task_data, *sub_children, all_tasks);
+                    if let Some(next_sub_task) = next_sub_task {
+                        let (_, next_sub_task_data, _) =
+                            all_tasks.get(&next_sub_task).unwrap();
+                        return if next_sub_task_data.status == Status::BeingWorkedOn {
+                            None
+                        } else {
+                            Some(next_sub_task)
+                        };
+                    } else if child_task_data.status == Status::Finished {
+                        continue;
+                    }
+
+                    return None;
+                }
+            }
+
+            None
+        }
+        RunType::Parallel => {
+            if let Some(children) = children {
+                for &child in children.iter() {
+                    let (_entity, _child_task_data, sub_children) =
+                        all_tasks.get(&child).unwrap();
+                    let next_sub_task =
+                        get_available_task(child, task_data, *sub_children, all_tasks);
+                    if let Some(next_sub_task) = next_sub_task {
+                        let (_, next_sub_task_data, _) =
+                            all_tasks.get(&next_sub_task).unwrap();
+                        if next_sub_task_data.status == Status::Ready {
+                            return Some(next_sub_task);
+                        }
+                    }
+                }
+            }
+
+            None
         }
     }
 }
