@@ -1,4 +1,4 @@
-pub mod build_task;
+pub mod jobs;
 pub mod task;
 
 use crate::bundles::settler::Settler;
@@ -6,7 +6,7 @@ use crate::bundles::{Id, Reservations, ResourceItem};
 use crate::features::ai::WorkingOnTask;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
-use crate::features::tasks::build_task::react_to_blueprints;
+use crate::features::tasks::jobs::build_task::react_to_blueprints;
 use crate::features::tasks::task::{RunType, Status, Task, TaskFinished};
 use bevy::prelude::*;
 
