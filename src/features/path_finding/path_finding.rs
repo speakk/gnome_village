@@ -39,6 +39,7 @@ pub fn spawn_pathfinding_task(
         let end = grid.get_nearest_available_vertex(end.0.as_ivec2());
         
         if start.is_none() || end.is_none() {
+            println!("start or end not found, returning None from Pathfinding task");
             return None;
         }
         
@@ -105,7 +106,7 @@ pub fn follow_path(
     map_data: Query<&MapData>,
     mut commands: Commands,
 ) {
-    const AT_POINT_THRESHOLD: f32 = 0.2;
+    const AT_POINT_THRESHOLD: f32 = 1.0;
 
     for (entity, mut path_follow, world_position, mut velocity) in query.iter_mut() {
         //println!("{:?}", path_follow);
@@ -119,8 +120,6 @@ pub fn follow_path(
         let final_vector = Vec2::new(direction.x, direction.y) * speed;
         velocity.0 = final_vector;
 
-        println!("Current position: {:?}, next point: {:?}", world_position, next_point);
-        
         if world_position.0.distance(next_point.as_vec2()) <= AT_POINT_THRESHOLD {
             if current_index < path_follow.path.steps.len() - 2 {
                 path_follow.current_path_index += 1;

@@ -87,7 +87,7 @@ impl PathingGridResource {
         let mut final_end = point;
 
         if is_end_occupied {
-            let neighbours = self.0.neighbours((point.x as usize, point.y as usize));
+            let neighbours = self.neighbours((point.x as usize, point.y as usize));
             let mut found_neighbour = false;
             for neighbour in neighbours {
                 if self.0.has_vertex((neighbour.0, neighbour.1)) {
