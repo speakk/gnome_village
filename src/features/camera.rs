@@ -83,7 +83,7 @@ fn setup(mut commands: Commands) {
             WorldPosition::default(),
             PreviousWorldPosition::default(),
             AccumulatedInput::default(),
-            Friction(0.5),
+            Friction(2.0),
         ))
         .insert(DepthPrepass)
         .insert(NormalPrepass)

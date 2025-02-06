@@ -69,7 +69,13 @@ fn apply_friction(mut query: Query<(&Friction, &mut Velocity)>, time: Res<Time<F
         let friction_vector = friction_direction * friction_magnitude;
         let friction_coefficient = friction.0;
 
+        // TODO: This is to stop camera from gliding for too long - this is SILLY
+        const min_velocity: f32 = 2.0;
+
         velocity.0 += friction_coefficient * friction_vector * time.delta_secs();
+        if velocity.0.length() < min_velocity {
+            velocity.0 = Vec2::ZERO;
+        }
     }
 }
 

@@ -1,5 +1,8 @@
+use std::any::Any;
 use crate::bundles::rock::Rock;
 use crate::bundles::{ItemId, ItemSpawners};
+use crate::features::map::map_view::MapMaterialHandles;
+use crate::features::misc_components::simple_mesh::{SimpleMeshHandles, SimpleMeshType};
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use bevy::math::{IVec2, UVec2, Vec2};
@@ -14,7 +17,8 @@ pub struct MapSize(pub UVec2);
 // A helper resource to store reserved coordinates in map generation
 // Used so that we can initialize path finding system only after map
 // generation is completely done, for efficiency
-#[derive(Resource, Debug, Default, Deref, DerefMut)]
+#[derive(Resource, Debug, Default, Reflect)]
+#[reflect(Resource)]
 pub struct ReservedCoordinatesHelper(Vec<IVec2>);
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Reflect)]
@@ -24,7 +28,7 @@ pub enum TileType {
     Water,
 }
 
-#[derive(Component, Default, Reflect)]
+#[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct MapData {
     pub data: Vec<TileType>,
@@ -45,14 +49,20 @@ impl MapData {
     }
 
     pub fn convert_to_centered_coordinate(&self, coordinate: UVec2) -> IVec2 {
-        let x = (coordinate.x as i32) - (self.size.x as i32) / 2;
-        let y = (coordinate.y as i32) - (self.size.y as i32) / 2;
+        let x = (coordinate.x as i32) - ((self.size.x as i32) / 2);
+        let y = (coordinate.y as i32) - ((self.size.y as i32) / 2);
         IVec2::new(x, y)
     }
 
     pub fn world_position_to_top_left_coordinate(&self, coordinate: Vec2) -> UVec2 {
         let x = coordinate.x + (self.size.x as f32) / 2.0;
         let y = coordinate.y + (self.size.y as f32) / 2.0;
+        UVec2::new(x as u32, y as u32)
+    }
+
+    pub fn center_to_top_left_coordinate(&self, coordinate: IVec2) -> UVec2 {
+        let x = coordinate.x + (self.size.x as i32) / 2;
+        let y = coordinate.y + (self.size.y as i32) / 2;
         UVec2::new(x as u32, y as u32)
     }
 
@@ -74,8 +84,9 @@ impl MapData {
     }
 
     pub fn set_tile_type(&mut self, coordinate: IVec2, tile_type: TileType) {
-        let index = (self.size.x * (coordinate.x + (self.size.x as i32) / 2) as u32
-            + (coordinate.y + (self.size.x as i32) / 2) as u32) as usize;
+        let top_left = self.center_to_top_left_coordinate(coordinate);
+        let index = (top_left.y * self.size.x + top_left.x) as usize;
+
         if index > self.data.len() - 1 {
             panic!(
                 "Index out of bounds for set_tile_type {:?}, length of array is: {:?}",
@@ -121,10 +132,7 @@ pub fn generate_map_entity(
             }
 
             map_data.set_tile_type(
-                IVec2::new(
-                    (x as i32) - (map_size.x as i32) / 2,
-                    (y as i32) - (map_size.y as i32) / 2,
-                ),
+                centered_coordinate,
                 tile_type,
             );
         }
@@ -221,10 +229,42 @@ pub fn generate_test_entities(
                     Save,
                     InWorld,
                 ));
+
                 reserved_coordinates.0.push(centered_coordinate);
                 entity_amount -= 1;
             }
             max_attempts -= 1;
+        }
+    }
+}
+
+pub fn generate_reserved_debug(
+    mut commands: Commands,
+    reserved_coordinates: Res<ReservedCoordinatesHelper>,
+    simple_mesh_handles: Res<SimpleMeshHandles>,
+    map_data_query: Single<&MapData>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    mut meshes: ResMut<Assets<Mesh>>,
+) {
+    let map_size = map_data_query.size;
+
+    let mat_handle = materials.add(Color::srgb(1.0, 0.0, 0.0));
+    let mesh_handle = meshes.add(Sphere::default());
+
+    for x in 0..map_size.x {
+        for y in 0..map_size.y {
+            let coordinate = map_data_query.convert_to_centered_coordinate(UVec2::new(x, y));
+            if reserved_coordinates.0.contains(&coordinate) {
+                commands.spawn((
+                    Transform::from_xyz(
+                        coordinate.x as f32,
+                        -0.4,
+                        coordinate.y as f32,
+                    ),
+                    Mesh3d(mesh_handle.clone()),
+                    MeshMaterial3d(mat_handle.clone()),
+                ));
+            }
         }
     }
 }

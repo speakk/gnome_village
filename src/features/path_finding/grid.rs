@@ -185,6 +185,8 @@ fn do_full_grid_reset(
             }
         }
     }
+
+    println!("{:?}", pathing_grid.0);
 }
 
 pub fn react_to_blueprint_removed(

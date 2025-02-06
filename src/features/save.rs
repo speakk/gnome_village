@@ -7,7 +7,7 @@ use crate::bundles::{ItemStack, ResourceItem};
 use crate::features::ai::WorkingOnTask;
 use crate::features::input::SaveLoadAction;
 use crate::features::inventory::Inventory;
-use crate::features::map::map_model::MapData;
+use crate::features::map::map_model::{MapData, ReservedCoordinatesHelper};
 use crate::features::misc_components::gltf_asset::GltfAsset;
 use crate::features::misc_components::simple_mesh::SimpleMesh;
 use crate::features::position::WorldPosition;
@@ -85,6 +85,7 @@ impl Plugin for SavePlugin {
         .register_type::<SimpleMesh>()
         .register_type::<Task>()
         .register_type::<Job>()
+        .register_type::<ReservedCoordinatesHelper>()
         .register_type::<BluePrint>()
         .register_type::<WorkingOnTask>()
         .register_type::<ItemStack>()

@@ -30,7 +30,6 @@ pub fn setup_rock_materials(
 #[derive(Component, Default, Reflect)]
 #[require(
     Id(|| Id(ItemId::Rock)),
-    WorldPosition,
     Solid,
     Save,
     Name(|| "Rock"),

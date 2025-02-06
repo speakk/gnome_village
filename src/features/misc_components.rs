@@ -3,11 +3,10 @@ pub mod simple_mesh;
 mod simple_mesh_view;
 pub(crate) mod light_source;
 
-use std::f32::consts::PI;
 use crate::features::misc_components::gltf_asset::{GltfAsset, GltfAssetPlugin};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint};
-use crate::features::position::{PreviousWorldPosition, WorldPosition};
+use crate::features::position::{WorldPosition};
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_core::prelude::Save;
@@ -60,7 +59,7 @@ pub fn viewable_moved<T>(
     for (position, model) in query.iter() {
         let view = model.view();
         let mut transform = transform.get_mut(view.entity()).unwrap();
-        transform.translation = Vec3::new(position.x, 0.5, position.y);
+        transform.translation = Vec3::new(position.x, 0.0, position.y);
     }
 }
 

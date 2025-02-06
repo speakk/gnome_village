@@ -1,5 +1,5 @@
 use crate::features::input::WorldInteractionAction;
-use crate::features::map::map_model::MapData;
+use crate::features::map::map_model::{MapData, ReservedCoordinatesHelper};
 use crate::features::states::AppState;
 use bevy::prelude::KeyCode::{ControlLeft, KeyA, KeyD, ShiftLeft};
 use bevy::prelude::*;
@@ -115,6 +115,7 @@ fn scale_ground_mesh_based_on_map(
 fn handle_ground_plane_click(
     click: Trigger<Pointer<Click>>,
     mut map_clicked_event_writer: EventWriter<MapClickedEvent>,
+    reserved_coordinates: Res<ReservedCoordinatesHelper>,
 ) {
     // This is a workaround for a Bevy(?) bug which causes Click to trigger
     // on drag end as well

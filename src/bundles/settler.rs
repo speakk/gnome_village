@@ -11,8 +11,6 @@ use bevy::prelude::*;
 #[derive(Component, Reflect)]
 #[require(
     Id(|| Id(ItemId::Settler)),
-    WorldPosition,
-    PreviousWorldPosition,
     Velocity,
     Friction(|| Friction(0.1)),
     GltfAsset(|| "blender_models/settler.glb"),

@@ -5,6 +5,6 @@ use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
-#[require(Id(|| Id(ItemId::Lumber)), WorldPosition, Name(|| "Lumber"), ResourceItem,
+#[require(Id(|| Id(ItemId::Lumber)), Name(|| "Lumber"), ResourceItem,
     GltfAsset(|| "blender_models/wood.glb"))]
 pub struct Lumber;
