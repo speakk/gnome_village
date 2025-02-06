@@ -2,13 +2,12 @@ use crate::bundles::settler::Settler;
 use crate::features::ai::PathFollow;
 use crate::features::map::map_model::MapData;
 use crate::features::movement::Velocity;
+use crate::features::path_finding::grid::PathingGridResource;
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 use bevy::tasks::futures_lite::future;
 use bevy::tasks::{AsyncComputeTaskPool, Task};
-use pathfinding::grid::Grid;
 use pathfinding::prelude::bfs;
-use crate::features::path_finding::grid::{PathingGridResource};
 
 #[derive(Debug)]
 pub struct Path {
@@ -18,8 +17,6 @@ pub struct Path {
 
 #[derive(Component)]
 pub struct PathfindingTask(Task<Option<Path>>);
-
-
 
 pub fn spawn_pathfinding_task(
     commands: &mut Commands,
@@ -37,23 +34,23 @@ pub fn spawn_pathfinding_task(
     let task = thread_pool.spawn(async move {
         let start = grid.get_nearest_available_vertex(start.0.as_ivec2());
         let end = grid.get_nearest_available_vertex(end.0.as_ivec2());
-        
+
         if start.is_none() || end.is_none() {
             println!("start or end not found, returning None from Pathfinding task");
             return None;
         }
-        
+
         let points = bfs(
             &start.unwrap(),
-            |p| {
-                grid.neighbours((p.x as usize, p.y as usize))
+            |original_point| {
+                grid.neighbours(true, (original_point.x as usize, original_point.y as usize))
                     .iter()
                     .map(|p| UVec2::new(p.0 as u32, p.1 as u32))
                     .collect::<Vec<_>>()
             },
             |p| *p == end.unwrap(),
         );
-        
+
         println!(
             "from: {:?} to: {:?}, found path: {:?}",
             start,
@@ -62,7 +59,10 @@ pub fn spawn_pathfinding_task(
         );
         //println!("grid: {:?}", grid);
         points.map(|points| Path {
-            steps: points.iter().map(|p| grid.convert_to_centered_coordinate(*p)).collect::<Vec<_>>(),
+            steps: points
+                .iter()
+                .map(|p| grid.convert_to_centered_coordinate(*p))
+                .collect::<Vec<_>>(),
             related_task,
         })
     });
@@ -125,16 +125,19 @@ pub fn follow_path(
                 path_follow.current_path_index += 1;
             } else {
                 velocity.0 = Vec2::ZERO;
-                commands.entity(entity).trigger(PathFollowFinished {
-                    result: PathFollowResult::Success,
-                    related_task: path_follow.path.related_task,
-                }).remove::<PathFollow>();
+                commands
+                    .entity(entity)
+                    .trigger(PathFollowFinished {
+                        result: PathFollowResult::Success,
+                        related_task: path_follow.path.related_task,
+                    })
+                    .remove::<PathFollow>();
             }
         }
     }
 }
 
-#[allow(unused, reason="For testing")]
+#[allow(unused, reason = "For testing")]
 pub fn test_add_pathfinding_task_to_settler(
     added_settler: Query<(Entity, &WorldPosition), Added<Settler>>,
     mut commands: Commands,

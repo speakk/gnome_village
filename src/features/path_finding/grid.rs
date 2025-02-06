@@ -4,8 +4,12 @@ use crate::features::misc_components::InWorld;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::ReflectComponent;
 use bevy::math::{UVec2, Vec2};
-use bevy::prelude::{Added, Changed, Component, Deref, DerefMut, IVec2, Query, Reflect, RemovedComponents, ResMut, Resource, Single, With, Without};
+use bevy::prelude::{
+    Added, Changed, Component, Deref, DerefMut, IVec2, Query, Reflect, RemovedComponents, ResMut,
+    Resource, Single, With, Without,
+};
 use pathfinding::grid::Grid;
+use std::ops::Add;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
@@ -34,16 +38,22 @@ impl PathingGridResource {
         let y = coordinate.y as f32;
         Vec2::new(x, y)
     }
-    
+
     pub fn is_occupied(&self, world_position: &WorldPosition) -> bool {
         let top_left_coordinate = self.world_position_to_top_left_coordinate(world_position.0);
-        self.0.has_vertex((top_left_coordinate.x as usize, top_left_coordinate.y as usize))
+        self.0.has_vertex((
+            top_left_coordinate.x as usize,
+            top_left_coordinate.y as usize,
+        ))
     }
-
 
     // Copied from Grid, except modified NOT to return an empty list if the provided
     // vertex is empty in the grid
-    pub fn neighbours(&self, vertex: (usize, usize)) -> Vec<(usize, usize)> {
+    pub fn neighbours(
+        &self,
+        disallow_corner_cutting: bool,
+        vertex: (usize, usize),
+    ) -> Vec<(usize, usize)> {
         // For now hard code, grid.diagonal_mode is private
         let diagonal_mode = true;
         let (x, y) = vertex;
@@ -77,6 +87,29 @@ impl PathingGridResource {
             candidates.push((x, y + 1));
         }
         candidates.retain(|&v| self.0.has_vertex(v));
+
+        if disallow_corner_cutting {
+            const CARDINAL_DIRECTIONS: [(isize, isize, [(isize, isize); 2]); 4] = [
+                (-1, 0, [(-1, -1), (-1, 1)]), // Left
+                (1, 0, [(1, -1), (1, 1)]),    // Right
+                (0, -1, [(-1, -1), (1, -1)]), // Up
+                (0, 1, [(-1, 1), (1, 1)]),    // Down
+            ];
+
+            for &(dx, dy, diagonals) in &CARDINAL_DIRECTIONS {
+                if !candidates.contains(&(x.wrapping_add(dx as usize), y.wrapping_add(dy as usize))) {
+                    for &(ddx, ddy) in &diagonals {
+                        if let Some(index) = candidates
+                            .iter()
+                            .position(|&c| c == (x.wrapping_add(ddx as usize), y.wrapping_add(ddy as usize)))
+                        {
+                            candidates.swap_remove(index);
+                        }
+                    }
+                }
+            }
+        }
+
         candidates
     }
 
@@ -87,7 +120,7 @@ impl PathingGridResource {
         let mut final_end = point;
 
         if is_end_occupied {
-            let neighbours = self.neighbours((point.x as usize, point.y as usize));
+            let neighbours = self.neighbours(false,(point.x as usize, point.y as usize));
             let mut found_neighbour = false;
             for neighbour in neighbours {
                 if self.0.has_vertex((neighbour.0, neighbour.1)) {
@@ -105,7 +138,7 @@ impl PathingGridResource {
 
         Some(final_end)
     }
-    
+
     pub fn get_nearest_available_coordinate(&self, coordinate: IVec2) -> Option<IVec2> {
         let vertex = self.get_nearest_available_vertex(coordinate);
         vertex.map(|vertex| self.convert_to_centered_coordinate(vertex))
@@ -162,7 +195,8 @@ pub fn react_to_blueprint_removed(
 ) {
     for entity in blueprint_removed.read() {
         if let Ok(world_position) = solid_query.get(entity) {
-            let top_left_coordinate = map_data.world_position_to_top_left_coordinate(world_position.0);
+            let top_left_coordinate =
+                map_data.world_position_to_top_left_coordinate(world_position.0);
 
             pathing_grid.0.remove_vertex((
                 top_left_coordinate.x as usize,
