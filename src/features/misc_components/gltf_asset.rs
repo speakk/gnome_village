@@ -12,6 +12,7 @@ use bevy::prelude::*;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use std::time::Duration;
+use crate::features::ai::actions::build::IsBuilding;
 
 pub struct GltfAssetPlugin;
 
@@ -19,7 +20,7 @@ impl Plugin for GltfAssetPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (update_animation, react_to_path_follow, react_to_path_idle),
+            (update_animation, react_to_path_follow, react_to_path_idle, react_to_build, react_to_work_finished),
         )
         .add_viewable::<GltfAsset>();
     }
@@ -102,6 +103,21 @@ fn react_to_path_follow(mut query: Query<&mut GltfAnimation, Added<PathFollow>>)
     for mut gltf_animation in query.iter_mut() {
         gltf_animation.should_play = true;
         gltf_animation.current_animation_index = SettlerAnimationIndices::Walk as usize;
+    }
+}
+
+fn react_to_build(mut query: Query<&mut GltfAnimation, Added<IsBuilding>>) {
+    for mut gltf_animation in query.iter_mut() {
+        gltf_animation.should_play = true;
+        gltf_animation.current_animation_index = SettlerAnimationIndices::Build as usize;
+    }
+}
+
+fn react_to_work_finished(mut removed: RemovedComponents<WorkingOnTask>, mut gltf_animations: Query<&mut GltfAnimation>) {
+    for entity in removed.read() {
+        if let Ok(mut gltf_animation) = gltf_animations.get_mut(entity) {
+            gltf_animation.current_animation_index = SettlerAnimationIndices::Idle as usize;
+        }
     }
 }
 

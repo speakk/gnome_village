@@ -17,6 +17,9 @@ pub struct BuildAction {
     pub(crate) target: Entity,
 }
 
+#[derive(Component, Reflect, Debug)]
+pub struct IsBuilding;
+
 #[allow(clippy::too_many_arguments)]
 pub fn build_action(
     actions: Query<(Entity, &BuildAction, &TargetEntity), With<Running>>,
@@ -25,12 +28,14 @@ pub fn build_action(
     mut commands: Commands,
 ) {
     for (tree_node_entity, action, target_agent) in actions.iter() {
+        commands.entity(target_agent.0).insert_if_new(IsBuilding);
         println!("Building!");
         let mut buildable = buildables.get_mut(action.target).unwrap();
         let build_stat = 1.0;
         buildable.increase_construction_progress(build_stat * time.delta_secs());
         if buildable.finished {
             commands.entity(tree_node_entity).trigger(OnRunResult::success());
+            commands.entity(target_agent.0).remove::<IsBuilding>();
         }
     }
     // 

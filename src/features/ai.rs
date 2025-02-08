@@ -1,4 +1,4 @@
-mod actions;
+pub mod actions;
 pub mod trees;
 pub mod utility_ai;
 

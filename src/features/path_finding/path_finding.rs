@@ -109,8 +109,11 @@ pub fn follow_path(
     const AT_POINT_THRESHOLD: f32 = 1.0;
 
     for (entity, mut path_follow, world_position, mut velocity) in query.iter_mut() {
-        //println!("{:?}", path_follow);
-
+        if path_follow.path.steps.len() == 1 {
+            follow_path_succeed(&mut commands, entity, path_follow, &mut velocity);
+            continue;
+        }
+        
         let current_index = path_follow.current_path_index;
         let current_point = path_follow.path.steps[current_index];
         let next_point = path_follow.path.steps[current_index + 1];
@@ -124,17 +127,21 @@ pub fn follow_path(
             if current_index < path_follow.path.steps.len() - 2 {
                 path_follow.current_path_index += 1;
             } else {
-                velocity.0 = Vec2::ZERO;
-                commands
-                    .entity(entity)
-                    .trigger(PathFollowFinished {
-                        result: PathFollowResult::Success,
-                        related_task: path_follow.path.related_task,
-                    })
-                    .remove::<PathFollow>();
+                follow_path_succeed(&mut commands, entity, path_follow, &mut velocity);
             }
         }
     }
+}
+
+fn follow_path_succeed(commands: &mut Commands, entity: Entity, mut path_follow: Mut<PathFollow>, velocity: &mut Mut<Velocity>) {
+    velocity.0 = Vec2::ZERO;
+    commands
+        .entity(entity)
+        .trigger(PathFollowFinished {
+            result: PathFollowResult::Success,
+            related_task: path_follow.path.related_task,
+        })
+        .remove::<PathFollow>();
 }
 
 #[allow(unused, reason = "For testing")]
