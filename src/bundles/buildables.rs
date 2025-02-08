@@ -105,4 +105,17 @@ pub fn add_buildable_prototypes(
 #[reflect(Component)]
 pub struct Buildable {
     pub(crate) item_requirements: Vec<ItemAmount>,
+    pub construction_progress: f32,
+    pub finished: bool,
+}
+
+impl Buildable {
+    pub fn increase_construction_progress(&mut self, amount: f32) {
+        self.construction_progress += amount;
+        
+        if self.construction_progress >= 1.0 {
+            self.finished = true;
+            println!("Buildable finished");
+        }
+    }
 }

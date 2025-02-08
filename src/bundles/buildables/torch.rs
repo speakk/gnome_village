@@ -18,7 +18,8 @@ use bevy::prelude::*;
                 item_id: ItemId::Lumber,
                 amount: 1,
             }
-        ]
+        ],
+        ..Default::default()
     }),
     LightSource(|| LightSource { intensity: 50000.0, color: Color::srgb(1.0, 0.9, 0.6) }),
     GltfAsset(|| "blender_models/wooden_torch.glb"))]

@@ -15,6 +15,8 @@ use moonshine_core::prelude::MapEntities;
 use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::Unload;
 use std::fmt::Debug;
+use crate::features::ai::actions::build::build_action;
+use crate::features::ai::trees::build::create_build_tree;
 
 pub struct AiPlugin;
 
@@ -24,7 +26,7 @@ impl Plugin for AiPlugin {
             UtilityAiPlugin,
             ActionPlugin::<(GoToAction, PickUpAction, FinishTaskAction, DepositAction)>::default(),
         ))
-        .add_systems(Update, create_bring_resource_tree);
+        .add_systems(Update, (create_bring_resource_tree, create_build_tree, build_action));
     }
 }
 

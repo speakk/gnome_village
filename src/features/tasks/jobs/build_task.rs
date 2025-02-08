@@ -1,11 +1,12 @@
+use std::ops::Mul;
 use crate::bundles::buildables::{BluePrint, Buildable};
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
-use crate::features::tasks::task::{
-    BringResourceData, DepositTarget, ItemAmount, RunType, Task, TaskType,
-};
+use crate::features::tasks::task::{BringResourceData, BuildData, DepositTarget, ItemAmount, RunType, Task, TaskType};
 use bevy::prelude::*;
+use crate::bundles::ResourceItem;
+use crate::bundles::settler::Settler;
 
 pub fn react_to_blueprints(
     mut commands: Commands,
@@ -16,17 +17,17 @@ pub fn react_to_blueprints(
 ) {
     for (entity, blueprint, buildable, world_position) in new_blueprints_query.iter() {
         println!("Got blueprint: {:?}", blueprint);
-        let new_task = commands
+        commands
             .spawn((
                 Task {
                     run_type: RunType::Sequence,
                     ..default()
                 },
                 Job,
-                Name::new("BuildTask".to_string()),
+                Name::new("BuildTaskTree".to_string()),
             ))
             .with_children(|parent_task| {
-                let bring_resources = parent_task
+                parent_task
                     .spawn((
                         Task {
                             run_type: RunType::Parallel,
@@ -61,6 +62,38 @@ pub fn react_to_blueprints(
                             }
                         }
                     });
+                
+                parent_task.spawn((
+                    Name::new("BuildTask".to_string()),
+                    Task {
+                        run_type: RunType::Leaf,
+                        task_type: Some(TaskType::Build(BuildData {
+                            target: entity
+                        })),
+                        ..Default::default()
+                    },
+                    Job
+                    ));
             });
     }
+}
+
+pub fn score_build(build_data: &BuildData, agents: &[(Entity, &WorldPosition)],
+                   others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
+
+) -> Option<Entity> {
+    let target_position = others_query.get(build_data.target).unwrap().1;
+    
+    let mut best_score = -999999.0;
+    let mut best_agent: Option<Entity> = None;
+    
+    for (agent, world_position) in agents.iter() {
+        let score = target_position.0.distance(world_position.0).mul(-1.0);
+        if score > best_score {
+            best_score = score;
+            best_agent = Some(*agent);
+        }
+    }
+    
+    best_agent
 }

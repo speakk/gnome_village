@@ -1,14 +1,16 @@
-use moonshine_core::prelude::ReflectMapEntities;
 use crate::bundles::settler::Settler;
 use crate::bundles::{Id, ItemId, Reservations, ResourceItem};
 use crate::features::ai::trees::bring_resource::score_bring_resource;
+use crate::features::ai::WorkingOnTask;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
+use crate::features::tasks::jobs::build_task::score_build;
+use bevy::hierarchy::HierarchyEvent;
 use bevy::prelude::Component;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
+use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::{MapEntities, Save};
-use crate::features::ai::WorkingOnTask;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum RunType {
@@ -27,8 +29,12 @@ pub enum Status {
 }
 
 #[derive(Event)]
-pub struct TaskFinished(pub TaskFinishedResult);
+pub struct TaskFinished {
+    pub result: TaskFinishedResult,
+    pub task_entity: Entity,
+}
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum TaskFinishedResult {
     Success,
     Failure,
@@ -59,8 +65,13 @@ pub struct BringResourceData {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
+pub struct BuildData {
+    pub target: Entity,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
 pub enum TaskType {
-    Build,
+    Build(BuildData),
     BringResource(BringResourceData),
     GoTo,
 }
@@ -96,6 +107,73 @@ impl Default for Task {
     }
 }
 
+// pub fn handle_task_added(query: Query<(Entity, &Task), Added<Task>>, mut commands: Commands) {
+//     for (entity, task) in query.iter() {
+//         commands.entity(entity).observe(propagate_finished_upwards);
+//     }
+// }
+
+pub fn propagate_finished_upwards(
+    mut finished_event_reader: EventReader<TaskFinished>,
+    parents: Query<&Parent>,
+    children: Query<&Children>,
+    mut tasks: Query<&mut Task>,
+    mut commands: Commands,
+) {
+    for finished_event in finished_event_reader.read() {
+        println!("Task finished triggered, checking if all children are finished");
+        if finished_event.result != TaskFinishedResult::Success {
+            continue;
+        }
+        
+        let task_entity = finished_event.task_entity;
+
+        if let Some(parent) = parents.parent(task_entity) {
+            let all_parent_children = children.children(parent);
+
+            let all_children_finished = all_parent_children.iter().all(|child| {
+                let task_data = tasks.get(*child).unwrap();
+                task_data.status == Status::Finished
+            });
+
+            if all_children_finished {
+                println!("All children finished, triggering parent finished");
+                let mut parent_task = tasks.get_mut(parent).unwrap();
+                parent_task.status = Status::Finished;
+                commands.entity(parent).trigger(TaskFinished {
+                    result: TaskFinishedResult::Success,
+                    task_entity: parent,
+                });
+            }
+        }
+    }
+    // if let Some(parent) = parents.parent(child) {
+    //     println!("Adding observer to child for TaskFinished");
+    //     commands.entity(child).observe(
+    //         move |_trigger: Trigger<TaskFinished>,
+    //               children: Query<&Children>,
+    //               mut tasks: Query<&mut Task>,
+    //               mut commands: Commands| {
+    //             
+    //             println!("Task finished triggered, checking if all children are finished");
+    //             let all_parent_children = children.children(parent);
+    //             
+    //             let all_children_finished = all_parent_children.iter().all(|child| {
+    //                 let task_data = tasks.get(*child).unwrap();
+    //                 task_data.status == Status::Finished
+    //             });
+    // 
+    //             if all_children_finished {
+    //                 println!("All children finished, triggering parent finished");
+    //                 let mut parent_task = tasks.get_mut(parent).unwrap();
+    //                 parent_task.status = Status::Finished;
+    //                 commands.entity(parent).trigger(TaskFinished(TaskFinishedResult::Success));
+    //             }
+    //         },
+    //     );
+    // }
+}
+
 impl Task {
     pub fn find_best_agent(
         &mut self,
@@ -110,6 +188,7 @@ impl Task {
             Some(TaskType::BringResource(bring_resource_data)) => {
                 score_bring_resource(resources_query, agents, bring_resource_data, others_query)
             }
+            Some(TaskType::Build(build_data)) => score_build(build_data, agents, others_query),
             _ => None,
         }
     }
@@ -132,13 +211,11 @@ pub fn get_available_task(
         RunType::Sequence => {
             if let Some(children) = children {
                 for &child in children.iter() {
-                    let (_entity, child_task_data, sub_children) =
-                        all_tasks.get(&child).unwrap();
+                    let (_entity, child_task_data, sub_children) = all_tasks.get(&child).unwrap();
                     let next_sub_task =
                         get_available_task(child, task_data, *sub_children, all_tasks);
                     if let Some(next_sub_task) = next_sub_task {
-                        let (_, next_sub_task_data, _) =
-                            all_tasks.get(&next_sub_task).unwrap();
+                        let (_, next_sub_task_data, _) = all_tasks.get(&next_sub_task).unwrap();
                         return if next_sub_task_data.status == Status::BeingWorkedOn {
                             None
                         } else {
@@ -157,13 +234,11 @@ pub fn get_available_task(
         RunType::Parallel => {
             if let Some(children) = children {
                 for &child in children.iter() {
-                    let (_entity, _child_task_data, sub_children) =
-                        all_tasks.get(&child).unwrap();
+                    let (_entity, _child_task_data, sub_children) = all_tasks.get(&child).unwrap();
                     let next_sub_task =
                         get_available_task(child, task_data, *sub_children, all_tasks);
                     if let Some(next_sub_task) = next_sub_task {
-                        let (_, next_sub_task_data, _) =
-                            all_tasks.get(&next_sub_task).unwrap();
+                        let (_, next_sub_task_data, _) = all_tasks.get(&next_sub_task).unwrap();
                         if next_sub_task_data.status == Status::Ready {
                             return Some(next_sub_task);
                         }

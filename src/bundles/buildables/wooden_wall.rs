@@ -16,7 +16,8 @@ use bevy::prelude::*;
                 item_id: ItemId::Lumber,
                 amount: 2,
             }
-        ]
+        ],
+        ..Default::default()
     }),
     SimpleMesh(|| SimpleMesh(SimpleMeshType::Cuboid))
 )]

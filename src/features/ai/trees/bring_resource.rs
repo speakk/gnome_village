@@ -1,9 +1,11 @@
 use crate::bundles::settler::Settler;
 use crate::bundles::{Id, Reservation, Reservations, ResourceItem};
+use crate::features::ai::actions::deposit::DepositAction;
 use crate::features::ai::actions::finish_task::FinishTaskAction;
 use crate::features::ai::actions::go_to::GoToAction;
 use crate::features::ai::actions::pick_up::PickUpAction;
 use crate::features::ai::{BehaviourTree, WorkingOnTask};
+use crate::features::inventory::Inventory;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::{
@@ -11,8 +13,6 @@ use crate::features::tasks::task::{
 };
 use beet::prelude::{OnRun, SequenceFlow, TargetEntity};
 use bevy::prelude::*;
-use crate::features::ai::actions::deposit::DepositAction;
-use crate::features::inventory::Inventory;
 
 pub fn create_bring_resource_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
@@ -25,30 +25,27 @@ pub fn create_bring_resource_tree(
         let task = tasks.get(working_on_task.0).unwrap();
         println!("Found WorkingOnTask");
 
-        if let Some(task_type) = &task.task_type {
-            println!(
-                "Task type: {:?} worked on by agent: {:?}",
-                task_type, worker_entity
-            );
-            if let TaskType::BringResource(bring_resource_data) = task_type {
-                println!("Had BringResource task, creating tree");
-                let target_coordinate = match bring_resource_data.target {
-                    DepositTarget::Coordinate(coordinate) => coordinate,
-                    DepositTarget::Inventory(inventory_entity) => {
-                        inventories.get(inventory_entity).unwrap().0.as_ivec2()
-                    }
-                };
-                
-                let resource_target = bring_resource_data
-                    .run_time_data
-                    .unwrap()
-                    .concrete_resource_entity;
-                let resource_position = item_resources.get(resource_target);
+        if let Some(TaskType::BringResource(bring_resource_data)) = &task.task_type {
+            println!("Had BringResource task, creating tree");
+            let target_coordinate = match bring_resource_data.target {
+                DepositTarget::Coordinate(coordinate) => coordinate,
+                DepositTarget::Inventory(inventory_entity) => {
+                    inventories.get(inventory_entity).unwrap().0.as_ivec2()
+                }
+            };
 
-                // TODO: Make mechanism to clean up in case Settler gets despawned
-                commands.spawn((BehaviourTree, SequenceFlow)).with_children(|root| {
+            let resource_target = bring_resource_data
+                .run_time_data
+                .unwrap()
+                .concrete_resource_entity;
+            let resource_position = item_resources.get(resource_target);
+
+            // TODO: Make mechanism to clean up in case Settler gets despawned
+            commands
+                .spawn((BehaviourTree, SequenceFlow))
+                .with_children(|root| {
                     println!("Creating tree, spawning goto");
-                    
+
                     // TODO: Right now using the existence of resource_position as an indicator
                     // that we already picked this resource up. (In case creating tree from save game)
                     // Rather check Inventory for the item
@@ -75,7 +72,7 @@ pub fn create_bring_resource_tree(
                         },
                         TargetEntity(worker_entity),
                     ));
-                    
+
                     root.spawn((
                         DepositAction {
                             deposit_target: bring_resource_data.target,
@@ -83,7 +80,7 @@ pub fn create_bring_resource_tree(
                             item_id: bring_resource_data.item_requirement.item_id,
                         },
                         TargetEntity(worker_entity),
-                        ));
+                    ));
 
                     root.spawn((
                         FinishTaskAction {
@@ -92,8 +89,8 @@ pub fn create_bring_resource_tree(
                         },
                         TargetEntity(worker_entity),
                     ));
-                }).trigger(OnRun);
-            }
+                })
+                .trigger(OnRun);
         }
     }
 }
