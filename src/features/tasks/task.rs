@@ -125,7 +125,7 @@ pub fn propagate_finished_upwards(
         if finished_event.result != TaskFinishedResult::Success {
             continue;
         }
-        
+
         let task_entity = finished_event.task_entity;
 
         if let Some(parent) = parents.parent(task_entity) {
@@ -154,15 +154,15 @@ pub fn propagate_finished_upwards(
     //               children: Query<&Children>,
     //               mut tasks: Query<&mut Task>,
     //               mut commands: Commands| {
-    //             
+    //
     //             println!("Task finished triggered, checking if all children are finished");
     //             let all_parent_children = children.children(parent);
-    //             
+    //
     //             let all_children_finished = all_parent_children.iter().all(|child| {
     //                 let task_data = tasks.get(*child).unwrap();
     //                 task_data.status == Status::Finished
     //             });
-    // 
+    //
     //             if all_children_finished {
     //                 println!("All children finished, triggering parent finished");
     //                 let mut parent_task = tasks.get_mut(parent).unwrap();
@@ -212,9 +212,10 @@ pub fn get_available_task(
             if let Some(children) = children {
                 for &child in children.iter() {
                     let (_entity, child_task_data, sub_children) = all_tasks.get(&child).unwrap();
-                    let next_sub_task =
-                        get_available_task(child, task_data, *sub_children, all_tasks);
-                    if let Some(next_sub_task) = next_sub_task {
+
+                    if let Some(next_sub_task) =
+                        get_available_task(child, child_task_data, *sub_children, all_tasks)
+                    {
                         let (_, next_sub_task_data, _) = all_tasks.get(&next_sub_task).unwrap();
                         return if next_sub_task_data.status == Status::BeingWorkedOn {
                             None
@@ -234,9 +235,9 @@ pub fn get_available_task(
         RunType::Parallel => {
             if let Some(children) = children {
                 for &child in children.iter() {
-                    let (_entity, _child_task_data, sub_children) = all_tasks.get(&child).unwrap();
+                    let (_entity, child_task_data, sub_children) = all_tasks.get(&child).unwrap();
                     let next_sub_task =
-                        get_available_task(child, task_data, *sub_children, all_tasks);
+                        get_available_task(child, child_task_data, *sub_children, all_tasks);
                     if let Some(next_sub_task) = next_sub_task {
                         let (_, next_sub_task_data, _) = all_tasks.get(&next_sub_task).unwrap();
                         if next_sub_task_data.status == Status::Ready {

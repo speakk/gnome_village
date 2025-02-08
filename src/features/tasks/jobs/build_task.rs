@@ -33,7 +33,6 @@ pub fn react_to_blueprints(
                             run_type: RunType::Parallel,
                             ..default()
                         },
-                        Job,
                         Name::new("BringResourcesSequence".to_string()),
                     ))
                     .with_children(|bring_resource_task| {
@@ -56,7 +55,6 @@ pub fn react_to_blueprints(
                                         )),
                                         ..default()
                                     },
-                                    Job,
                                     Name::new("BringResource".to_string()),
                                 ));
                             }
@@ -72,7 +70,6 @@ pub fn react_to_blueprints(
                         })),
                         ..Default::default()
                     },
-                    Job
                     ));
             });
     }

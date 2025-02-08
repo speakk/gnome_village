@@ -1,25 +1,30 @@
-use bevy::prelude::{Added, Changed, Commands, Entity, Or, ParamSet, Query, Trigger, With, Without};
-use bevy::hierarchy::Children;
-use bevy::utils::HashMap;
-use crate::bundles::{Id, Reservations, ResourceItem};
 use crate::bundles::settler::Settler;
+use crate::bundles::{Id, Reservations, ResourceItem};
 use crate::features::ai::WorkingOnTask;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
 use crate::features::tasks::task;
 use crate::features::tasks::task::{Status, Task, TaskFinished};
+use bevy::hierarchy::Children;
+use bevy::prelude::{
+    Added, Changed, Commands, Entity, Or, ParamSet, Query, Trigger, With, Without,
+};
+use bevy::utils::HashMap;
 
-pub fn jobs_changed(tasks_query: Query<Entity, (Or<(Added<Task>, Changed<Task>)>, With<Job>)>) -> bool {
+pub fn jobs_changed(
+    tasks_query: Query<Entity, (Or<(Added<Task>, Changed<Task>)>)>,
+) -> bool {
     !tasks_query.is_empty()
 }
 
 pub fn assign_jobs(
     mut commands: Commands,
     mut set: ParamSet<(
-        Query<(Entity, &Task, Option<&Children>), With<Job>>,
-        Query<(Entity, &mut Task, Option<&Children>), With<Job>>,
+        Query<(Entity, &Task, Option<&Children>)>,
+        Query<(Entity, &mut Task, Option<&Children>)>,
     )>,
+    jobs: Query<Entity, With<Job>>,
     available_settlers: Query<
         (Entity, &WorldPosition),
         (With<Settler>, Without<WorkingOnTask>, With<InWorld>),
@@ -33,13 +38,16 @@ pub fn assign_jobs(
     let mut ready_tasks: Vec<Entity> = vec![];
     {
         let set0 = set.p0();
-        let all_tasks: HashMap<Entity, (Entity, &Task, Option<&Children>)> = set0.iter().map(|x| (x.0, x)).collect();
-        
+        let all_tasks: HashMap<Entity, (Entity, &Task, Option<&Children>)> =
+            set0.iter().map(|x| (x.0, x)).collect();
+
         for (task_entity, task, children) in set0.iter() {
-            let ready_task = task::get_available_task(task_entity, task, children, &all_tasks);
-            if let Some(ready_task) = ready_task {
-                println!("Task {} is ready to go", task_entity);
-                ready_tasks.push(ready_task);
+            if jobs.contains(task_entity) {
+                let ready_task = task::get_available_task(task_entity, task, children, &all_tasks);
+                if let Some(ready_task) = ready_task {
+                    println!("Task {} is ready to go", task_entity);
+                    ready_tasks.push(ready_task);
+                }
             }
         }
     }
@@ -72,13 +80,16 @@ pub fn assign_jobs(
             commands
                 .entity(best_agent)
                 .insert(WorkingOnTask(task_entity));
-            
-            commands.entity(task_entity)
-                .observe(move |_trigger: Trigger<TaskFinished>, mut commands: Commands| {
-                    println!("Task {} finished, thus removing agent WorkingOnTask", task_entity);
+
+            commands.entity(task_entity).observe(
+                move |_trigger: Trigger<TaskFinished>, mut commands: Commands| {
+                    println!(
+                        "Task {} finished, thus removing agent WorkingOnTask",
+                        task_entity
+                    );
                     commands.entity(best_agent).remove::<WorkingOnTask>();
-                });
+                },
+            );
         }
     }
 }
-
