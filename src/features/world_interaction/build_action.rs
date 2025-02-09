@@ -7,9 +7,7 @@ use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
-use crate::features::world_interaction::mouse_selection::{
-    CurrentMouseWorldCoordinate, MapClickedEvent, MapDragEndEvent, MapDragStartEvent,
-};
+use crate::features::world_interaction::mouse_selection::{CurrentMouseWorldCoordinate, DragModifier, MapClickedEvent, MapDragEndEvent, MapDragStartEvent};
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
 
@@ -199,21 +197,46 @@ fn handle_mouse_dragged(
     }
 
     if (drag_info.is_dragging) && (drag_info.map_drag_start_event.is_some()) {
-        let event = drag_info.map_drag_start_event.unwrap();
-        let min_x = current_coordinate.0.x.min(event.coordinate.x);
-        let min_y = current_coordinate.0.y.min(event.coordinate.y);
-        let max_x = current_coordinate.0.x.max(event.coordinate.x);
-        let max_y = current_coordinate.0.y.max(event.coordinate.y);
-        let mut new_coordinates = Vec::new();
-        for x in min_x..=max_x {
-            for y in min_y..=max_y {
-                new_coordinates.push(IVec2::new(x, y));
+        let Some(event) = drag_info.map_drag_start_event else {
+            return;
+        };
+
+
+        match event.drag_modifier {
+            Some(DragModifier::Primary) => {
+
+            },
+            Some(DragModifier::Secondary) => {
+                selected_coordinates.0 = rectangle_select(&current_coordinate, event, true);
+            },
+            None => {
+                selected_coordinates.0 = vec![current_coordinate.0];
             }
         }
-        selected_coordinates.0 = new_coordinates;
+
     } else {
         selected_coordinates.0 = vec![current_coordinate.0];
     }
+}
+
+fn rectangle_select(current_coordinate: &Res<CurrentMouseWorldCoordinate>, event: MapDragStartEvent, hollow: bool) -> Vec<IVec2> {
+    let min_x = current_coordinate.0.x.min(event.coordinate.x);
+    let min_y = current_coordinate.0.y.min(event.coordinate.y);
+    let max_x = current_coordinate.0.x.max(event.coordinate.x);
+    let max_y = current_coordinate.0.y.max(event.coordinate.y);
+    let mut new_coordinates = Vec::new();
+    for x in min_x..=max_x {
+        for y in min_y..=max_y {
+            if hollow {
+                if (x == min_x || x == max_x) || (y == min_y || y == max_y) {
+                    new_coordinates.push(IVec2::new(x, y));
+                }
+            } else {
+                new_coordinates.push(IVec2::new(x, y));
+            }
+        }
+    }
+    new_coordinates
 }
 
 // TODO: Just validate in this and then emit BuildAction
