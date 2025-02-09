@@ -25,6 +25,7 @@ i-cant-believe-its-not-bsn = "0.3.0"
 bevy_spatial = "0.10.0"
 pathfinding = "4.13.1"
 beet = { git = "https://github.com/mrchantey/beet", rev="refs/pull/23/head"}
+bresenham = "0.1.1"
 
 [profile.dev.package."*"]
 opt-level = 3

@@ -1610,6 +1610,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "bresenham"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bfc1116225f66d2ea341a26503f83a6b1205070a6f7199ce1f1550ead91f6fd7"
+
+[[package]]
 name = "bumpalo"
 version = "3.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4619,6 +4625,7 @@ dependencies = [
  "bevy_cobweb",
  "bevy_cobweb_ui",
  "bevy_spatial",
+ "bresenham",
  "directories",
  "i-cant-believe-its-not-bsn",
  "leafwing-input-manager",
@@ -5726,7 +5733,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.48.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]

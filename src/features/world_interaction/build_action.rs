@@ -7,9 +7,12 @@ use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
-use crate::features::world_interaction::mouse_selection::{CurrentMouseWorldCoordinate, DragModifier, MapClickedEvent, MapDragEndEvent, MapDragStartEvent};
+use crate::features::world_interaction::mouse_selection::{
+    CurrentMouseWorldCoordinate, DragModifier, MapClickedEvent, MapDragEndEvent, MapDragStartEvent,
+};
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
+use bresenham::Bresenham;
 
 pub struct BuildActionPlugin;
 
@@ -172,8 +175,11 @@ fn react_to_mouse_drag_ended(
         drag_info_resource.is_dragging = false;
         drag_info_resource.map_drag_start_event = None;
 
-        println!("Got mouse drag end event, sending build intent with coordinates: {:?}", selected_coordinates.0);
-        
+        println!(
+            "Got mouse drag end event, sending build intent with coordinates: {:?}",
+            selected_coordinates.0
+        );
+
         if current_building.0.is_none() {
             return;
         } else {
@@ -201,25 +207,36 @@ fn handle_mouse_dragged(
             return;
         };
 
-
         match event.drag_modifier {
             Some(DragModifier::Primary) => {
-
-            },
+                selected_coordinates.0 = line_select(event.coordinate, current_coordinate.0);
+            }
             Some(DragModifier::Secondary) => {
                 selected_coordinates.0 = rectangle_select(&current_coordinate, event, true);
-            },
+            }
             None => {
                 selected_coordinates.0 = vec![current_coordinate.0];
             }
         }
-
     } else {
         selected_coordinates.0 = vec![current_coordinate.0];
     }
 }
 
-fn rectangle_select(current_coordinate: &Res<CurrentMouseWorldCoordinate>, event: MapDragStartEvent, hollow: bool) -> Vec<IVec2> {
+fn line_select(start_coordinate: IVec2, end_coordinate: IVec2) -> Vec<IVec2> {
+    Bresenham::new(
+        (start_coordinate.x as isize, start_coordinate.y as isize),
+        (end_coordinate.x as isize, end_coordinate.y as isize),
+    )
+    .map(|point| IVec2::new(point.0 as i32, point.1 as i32))
+    .collect()
+}
+
+fn rectangle_select(
+    current_coordinate: &Res<CurrentMouseWorldCoordinate>,
+    event: MapDragStartEvent,
+    hollow: bool,
+) -> Vec<IVec2> {
     let min_x = current_coordinate.0.x.min(event.coordinate.x);
     let min_y = current_coordinate.0.y.min(event.coordinate.y);
     let max_x = current_coordinate.0.x.max(event.coordinate.x);
@@ -254,8 +271,10 @@ fn react_to_build_intent(
         {
             let map_data = map_data.get_single().unwrap();
 
-            
-            println!("Got build intent, creating buildables at coordinates: {:?}", coordinates);
+            println!(
+                "Got build intent, creating buildables at coordinates: {:?}",
+                coordinates
+            );
             for coordinate in coordinates.iter() {
                 let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
                 let world_position = map_data.centered_coordinate_to_world_position(*coordinate);
