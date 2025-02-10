@@ -14,6 +14,13 @@ pub struct MapClickedEvent {
     pub selection_type: SelectionType,
 }
 
+#[derive(Event, Debug)]
+pub struct CoordinatesSelectedEvent {
+    pub coordinates: Vec<IVec2>,
+    pub selection_type: SelectionType,
+    pub drag_modifier: Option<DragModifier>,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum DragModifier {
     Primary,
@@ -53,6 +60,7 @@ impl Plugin for MouseSelectionPlugin {
             .insert_resource(SelectedCoordinates::default())
             .insert_resource(DragInfo::default())
             .add_event::<MapClickedEvent>()
+            .add_event::<CoordinatesSelectedEvent>()
             .add_event::<MapDragStartEvent>()
             .add_event::<MapDragEndEvent>()
             .add_systems(OnEnter(AppState::InGame), setup)
@@ -131,7 +139,7 @@ fn scale_ground_mesh_based_on_map(
 
 fn handle_ground_plane_click(
     click: Trigger<Pointer<Click>>,
-    mut map_clicked_event_writer: EventWriter<MapClickedEvent>,
+    mut coordinates_selected_event: EventWriter<CoordinatesSelectedEvent>,
 ) {
     // This is a workaround for a Bevy(?) bug which causes Click to trigger
     // on drag end as well
@@ -142,13 +150,14 @@ fn handle_ground_plane_click(
     let location = click.hit.position;
     if let Some(location) = location {
         println!("Clicked on location: {:?}", location);
-        map_clicked_event_writer.send(MapClickedEvent {
-            coordinate: IVec2::new(location.x as i32, location.z as i32),
+        coordinates_selected_event.send(CoordinatesSelectedEvent {
+            coordinates: vec![IVec2::new(location.x as i32, location.z as i32)],
             selection_type: if click.button == PointerButton::Primary {
                 SelectionType::Primary
             } else {
                 SelectionType::Secondary
             },
+            drag_modifier: None,
         });
     }
 }
@@ -206,7 +215,9 @@ fn handle_ground_plane_drag_start(
 fn handle_ground_plane_drag_end(
     _drag: Trigger<Pointer<DragEnd>>,
     mut map_drag_end_event_writer: EventWriter<MapDragEndEvent>,
+    mut coordinates_selected_event: EventWriter<CoordinatesSelectedEvent>,
     current_mouse_world_coordinate: Res<CurrentMouseWorldCoordinate>,
+    mut selected_coordinates: ResMut<SelectedCoordinates>,
     mut drag_info_resource: ResMut<DragInfo>,
 ) {
     let location = current_mouse_world_coordinate.0;
@@ -221,6 +232,14 @@ fn handle_ground_plane_drag_end(
     });
     drag_info_resource.is_dragging = false;
     drag_info_resource.map_drag_start_event = None;
+
+    coordinates_selected_event.send(CoordinatesSelectedEvent {
+        coordinates: selected_coordinates.0.clone(),
+        selection_type: drag_info_start_event.selection_type,
+        drag_modifier: drag_info_start_event.drag_modifier,
+    });
+
+    selected_coordinates.0.clear();
 }
 
 #[derive(Resource)]

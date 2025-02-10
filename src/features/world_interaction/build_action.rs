@@ -7,7 +7,7 @@ use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
-use crate::features::world_interaction::mouse_selection::{CurrentMouseWorldCoordinate, DragInfo, MapClickedEvent, MapDragEndEvent, SelectedCoordinates, SelectionType};
+use crate::features::world_interaction::mouse_selection::{CoordinatesSelectedEvent, CurrentMouseWorldCoordinate, DragInfo, MapClickedEvent, MapDragEndEvent, SelectedCoordinates, SelectionType};
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
 use crate::features::world_interaction::mouse_selection;
@@ -24,7 +24,7 @@ impl Plugin for BuildActionPlugin {
                     react_to_buildable_menu_selected,
                     react_to_build_intent,
                     regenerate_preview_entity,
-                    send_build_intent_on_click_or_drag,
+                    send_build_intent,
                 )
                     .run_if(in_state(AppState::InGame)),
             );
@@ -130,9 +130,8 @@ fn regenerate_preview_entity(
     }
 }
 
-fn send_build_intent_on_click_or_drag(
-    mut drag_event_reader: EventReader<MapDragEndEvent>,
-    mut click_event_reader: EventReader<MapClickedEvent>,
+fn send_build_intent(
+    mut coordinated_selected_events: EventReader<CoordinatesSelectedEvent>,
     coordinate: Res<CurrentMouseWorldCoordinate>,
     mut selected_coordinates: ResMut<SelectedCoordinates>,
     mut user_action_intent: EventWriter<UserActionIntent>,
@@ -142,32 +141,18 @@ fn send_build_intent_on_click_or_drag(
         return;
     };
 
-    let mut final_coordinates: Option<Vec<IVec2>> = None;
+    let Some(event) = coordinated_selected_events.read().last() else {
+        return;
+    };
 
-    if let Some(click_event) = click_event_reader.read().last() {
-        if click_event.selection_type != SelectionType::Primary {
-            return;
-        }
-
-        final_coordinates = Some(vec![coordinate.0]);
+    if event.selection_type != SelectionType::Primary {
+        return;
     }
 
-    for event in drag_event_reader.read() {
-        if event.selection_type != SelectionType::Primary {
-            return;
-        }
-
-        final_coordinates = Some(selected_coordinates.0.clone());
-    }
-
-    if let Some(final_coordinates) = final_coordinates {
-        user_action_intent.send(UserActionIntent(UserActionType::Build {
-            coordinates: final_coordinates,
-            bundle_type: current_building,
-        }));
-
-        selected_coordinates.0 = Vec::new();
-    }
+    user_action_intent.send(UserActionIntent(UserActionType::Build {
+        coordinates: event.coordinates.clone(),
+        bundle_type: current_building,
+    }));
 }
 
 // TODO: Just validate in this and then emit BuildAction
