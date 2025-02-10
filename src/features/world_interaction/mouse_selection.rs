@@ -6,7 +6,8 @@ use bevy::prelude::*;
 use leafwing_input_manager::action_state::ActionState;
 use leafwing_input_manager::input_map::InputMap;
 use leafwing_input_manager::InputManagerBundle;
-use crate::features::world_interaction::build_action::DragInfo;
+use bresenham::Bresenham;
+use crate::features::world_interaction::build_action;
 
 #[derive(Event)]
 pub struct MapClickedEvent(pub IVec2);
@@ -17,8 +18,15 @@ pub enum DragModifier {
     Secondary,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum SelectionType {
+    Primary,
+    Secondary,
+}
+
 #[derive(Event, Clone, Copy)]
 pub struct MapDragStartEvent {
+    pub selection_type: SelectionType,
     pub coordinate: IVec2,
     pub drag_modifier: Option<DragModifier>,
 }
@@ -36,13 +44,15 @@ impl Plugin for MouseSelectionPlugin {
         app.add_plugins(MeshPickingPlugin)
             .insert_resource(CurrentMouseWorldPosition(Vec2::ZERO))
             .insert_resource(CurrentMouseWorldCoordinate(IVec2::ZERO))
+            .insert_resource(SelectedCoordinates::default())
+            .insert_resource(DragInfo::default())
             .add_event::<MapClickedEvent>()
             .add_event::<MapDragStartEvent>()
             .add_event::<MapDragEndEvent>()
             .add_systems(OnEnter(AppState::InGame), setup)
             .add_systems(
                 Update,
-                scale_ground_mesh_based_on_map.run_if(in_state(AppState::InGame)),
+                (handle_mouse_dragged, scale_ground_mesh_based_on_map).run_if(in_state(AppState::InGame)),
             );
     }
 }
@@ -136,6 +146,7 @@ fn handle_ground_plane_click(
 fn handle_ground_plane_drag_start(
     drag: Trigger<Pointer<DragStart>>,
     mut map_drag_start_event_writer: EventWriter<MapDragStartEvent>,
+    mut drag_info_resource: ResMut<DragInfo>,
     interaction_action_query: Query<(&ActionState<WorldInteractionAction>,)>,
 ) {
     fn get_modifier_type(
@@ -165,10 +176,17 @@ fn handle_ground_plane_drag_start(
             location, modifier_type
         );
 
-        map_drag_start_event_writer.send(MapDragStartEvent {
+        let event = MapDragStartEvent {
             coordinate: IVec2::new(location.x as i32, location.z as i32),
             drag_modifier: modifier_type,
-        });
+            selection_type: if drag.button == PointerButton::Primary { SelectionType::Primary } else { SelectionType::Secondary },
+        };
+        
+        map_drag_start_event_writer.send(event);
+
+        drag_info_resource.is_dragging = true;
+        drag_info_resource.map_drag_start_event = Some(event);
+
     }
 }
 
@@ -176,10 +194,13 @@ fn handle_ground_plane_drag_end(
     _drag: Trigger<Pointer<DragEnd>>,
     mut map_drag_end_event_writer: EventWriter<MapDragEndEvent>,
     current_mouse_world_coordinate: Res<CurrentMouseWorldCoordinate>,
+    mut drag_info_resource: ResMut<DragInfo>,
 ) {
     let location = current_mouse_world_coordinate.0;
     println!("Drag ended on location: {:?}", location);
     map_drag_end_event_writer.send(MapDragEndEvent(location));
+    drag_info_resource.is_dragging = false;
+    drag_info_resource.map_drag_start_event = None;
 }
 
 #[derive(Resource)]
@@ -211,4 +232,76 @@ fn handle_ground_plane_hover(
 
         //println!("Setting current mouse world coordinate to: {:?}", current_mouse_world_coordinate.0);
     }
+}
+
+#[derive(Resource, Default, Copy, Clone)]
+pub struct DragInfo {
+    pub map_drag_start_event: Option<MapDragStartEvent>,
+    pub is_dragging: bool,
+}
+
+pub fn handle_mouse_dragged(
+    drag_info: Res<DragInfo>,
+    mut selected_coordinates: ResMut<SelectedCoordinates>,
+    current_coordinate: Res<CurrentMouseWorldCoordinate>,
+) {
+    if !current_coordinate.is_changed() {
+        return;
+    }
+
+    if (drag_info.is_dragging) && (drag_info.map_drag_start_event.is_some()) {
+        let Some(event) = drag_info.map_drag_start_event else {
+            return;
+        };
+
+        match event.drag_modifier {
+            Some(DragModifier::Primary) => {
+                selected_coordinates.0 = line_select(event.coordinate, current_coordinate.0);
+            }
+            Some(DragModifier::Secondary) => {
+                selected_coordinates.0 = rectangle_select(&current_coordinate, event, true);
+            }
+            None => {
+                selected_coordinates.0 = vec![current_coordinate.0];
+            }
+        }
+    } else {
+        selected_coordinates.0 = vec![current_coordinate.0];
+    }
+}
+
+#[derive(Resource, Default, Deref, DerefMut, Clone)]
+pub struct SelectedCoordinates(pub Vec<IVec2>);
+
+fn line_select(start_coordinate: IVec2, end_coordinate: IVec2) -> Vec<IVec2> {
+    Bresenham::new(
+        (start_coordinate.x as isize, start_coordinate.y as isize),
+        (end_coordinate.x as isize, end_coordinate.y as isize),
+    )
+    .map(|point| IVec2::new(point.0 as i32, point.1 as i32))
+    .collect()
+}
+
+fn rectangle_select(
+    current_coordinate: &Res<CurrentMouseWorldCoordinate>,
+    event: MapDragStartEvent,
+    hollow: bool,
+) -> Vec<IVec2> {
+    let min_x = current_coordinate.0.x.min(event.coordinate.x);
+    let min_y = current_coordinate.0.y.min(event.coordinate.y);
+    let max_x = current_coordinate.0.x.max(event.coordinate.x);
+    let max_y = current_coordinate.0.y.max(event.coordinate.y);
+    let mut new_coordinates = Vec::new();
+    for x in min_x..=max_x {
+        for y in min_y..=max_y {
+            if hollow {
+                if (x == min_x || x == max_x) || (y == min_y || y == max_y) {
+                    new_coordinates.push(IVec2::new(x, y));
+                }
+            } else {
+                new_coordinates.push(IVec2::new(x, y));
+            }
+        }
+    }
+    new_coordinates
 }

@@ -4,6 +4,7 @@ use bevy::prelude::*;
 
 pub mod build_action;
 pub mod mouse_selection;
+pub mod cancel_job;
 
 pub struct WorldInteractionPlugin;
 

@@ -7,20 +7,16 @@ use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
-use crate::features::world_interaction::mouse_selection::{
-    CurrentMouseWorldCoordinate, DragModifier, MapClickedEvent, MapDragEndEvent, MapDragStartEvent,
-};
+use crate::features::world_interaction::mouse_selection::{CurrentMouseWorldCoordinate, DragInfo, MapClickedEvent, MapDragEndEvent, SelectedCoordinates};
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
-use bresenham::Bresenham;
+use crate::features::world_interaction::mouse_selection;
 
 pub struct BuildActionPlugin;
 
 impl Plugin for BuildActionPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CurrentBuilding::default())
-            .insert_resource(SelectedCoordinates::default())
-            .insert_resource(DragInfo::default())
             .insert_resource(PreviewEntityHierarchy::default())
             .add_systems(
                 Update,
@@ -28,10 +24,7 @@ impl Plugin for BuildActionPlugin {
                     react_to_buildable_menu_selected,
                     react_to_build_intent,
                     regenerate_preview_entity,
-                    react_to_mouse_clicked,
-                    react_to_mouse_drag_started,
-                    react_to_mouse_drag_ended,
-                    handle_mouse_dragged,
+                    send_build_intent_on_click_or_drag,
                 )
                     .run_if(in_state(AppState::InGame)),
             );
@@ -50,31 +43,6 @@ fn react_to_buildable_menu_selected(
         current_building.0 = Some(event.0);
     }
 }
-
-fn react_to_mouse_clicked(
-    mut event_reader: EventReader<MapClickedEvent>,
-    mut event_writer: EventWriter<UserActionIntent>,
-    coordinate: Res<CurrentMouseWorldCoordinate>,
-    current_building: Res<CurrentBuilding>,
-) {
-    for _event in event_reader.read() {
-        if let Some(current_building) = current_building.0 {
-            event_writer.send(UserActionIntent(UserActionType::Build {
-                bundle_type: current_building,
-                coordinates: vec![coordinate.0],
-            }));
-        }
-    }
-}
-
-#[derive(Resource, Default, Copy, Clone)]
-pub struct DragInfo {
-    pub map_drag_start_event: Option<MapDragStartEvent>,
-    pub is_dragging: bool,
-}
-
-#[derive(Resource, Default, Deref, DerefMut, Clone)]
-struct SelectedCoordinates(Vec<IVec2>);
 
 #[derive(Resource, Default, Deref, DerefMut, Clone)]
 struct PreviewEntityHierarchy(Option<Entity>);
@@ -153,107 +121,36 @@ fn regenerate_preview_entity(
     }
 }
 
-fn react_to_mouse_drag_started(
-    mut event_reader: EventReader<MapDragStartEvent>,
-    mut drag_info_resource: ResMut<DragInfo>,
-) {
-    if let Some(event) = event_reader.read().next() {
-        drag_info_resource.is_dragging = true;
-        drag_info_resource.map_drag_start_event = Some(*event);
-        println!("Reacting to mouse drag started");
-    }
-}
-
-fn react_to_mouse_drag_ended(
-    mut event_reader: EventReader<MapDragEndEvent>,
-    mut drag_info_resource: ResMut<DragInfo>,
+fn send_build_intent_on_click_or_drag(
+    mut drag_event_reader: EventReader<MapDragEndEvent>,
+    mut click_event_reader: EventReader<MapClickedEvent>,
+    coordinate: Res<CurrentMouseWorldCoordinate>,
     mut selected_coordinates: ResMut<SelectedCoordinates>,
     mut user_action_intent: EventWriter<UserActionIntent>,
     current_building: Res<CurrentBuilding>,
 ) {
-    if let Some(_) = event_reader.read().next() {
-        drag_info_resource.is_dragging = false;
-        drag_info_resource.map_drag_start_event = None;
+    let Some(current_building) = current_building.0 else {
+        return;
+    };
+    
+    let mut final_coordinates: Option<Vec<IVec2>> = None;
+    
+    for _event in drag_event_reader.read() {
+        final_coordinates = Some(selected_coordinates.0.clone());
+    }
 
-        println!(
-            "Got mouse drag end event, sending build intent with coordinates: {:?}",
-            selected_coordinates.0
-        );
-
-        if current_building.0.is_none() {
-            return;
-        } else {
-            user_action_intent.send(UserActionIntent(UserActionType::Build {
-                coordinates: selected_coordinates.0.clone(),
-                bundle_type: current_building.0.unwrap(),
-            }));
-        }
+    for _event in click_event_reader.read() {
+        final_coordinates = Some(vec![coordinate.0]);
+    }
+    
+    if let Some(final_coordinates) = final_coordinates {
+        user_action_intent.send(UserActionIntent(UserActionType::Build {
+            coordinates: final_coordinates,
+            bundle_type: current_building,
+        }));
 
         selected_coordinates.0 = Vec::new();
     }
-}
-
-fn handle_mouse_dragged(
-    drag_info: Res<DragInfo>,
-    mut selected_coordinates: ResMut<SelectedCoordinates>,
-    current_coordinate: Res<CurrentMouseWorldCoordinate>,
-) {
-    if !current_coordinate.is_changed() {
-        return;
-    }
-
-    if (drag_info.is_dragging) && (drag_info.map_drag_start_event.is_some()) {
-        let Some(event) = drag_info.map_drag_start_event else {
-            return;
-        };
-
-        match event.drag_modifier {
-            Some(DragModifier::Primary) => {
-                selected_coordinates.0 = line_select(event.coordinate, current_coordinate.0);
-            }
-            Some(DragModifier::Secondary) => {
-                selected_coordinates.0 = rectangle_select(&current_coordinate, event, true);
-            }
-            None => {
-                selected_coordinates.0 = vec![current_coordinate.0];
-            }
-        }
-    } else {
-        selected_coordinates.0 = vec![current_coordinate.0];
-    }
-}
-
-fn line_select(start_coordinate: IVec2, end_coordinate: IVec2) -> Vec<IVec2> {
-    Bresenham::new(
-        (start_coordinate.x as isize, start_coordinate.y as isize),
-        (end_coordinate.x as isize, end_coordinate.y as isize),
-    )
-    .map(|point| IVec2::new(point.0 as i32, point.1 as i32))
-    .collect()
-}
-
-fn rectangle_select(
-    current_coordinate: &Res<CurrentMouseWorldCoordinate>,
-    event: MapDragStartEvent,
-    hollow: bool,
-) -> Vec<IVec2> {
-    let min_x = current_coordinate.0.x.min(event.coordinate.x);
-    let min_y = current_coordinate.0.y.min(event.coordinate.y);
-    let max_x = current_coordinate.0.x.max(event.coordinate.x);
-    let max_y = current_coordinate.0.y.max(event.coordinate.y);
-    let mut new_coordinates = Vec::new();
-    for x in min_x..=max_x {
-        for y in min_y..=max_y {
-            if hollow {
-                if (x == min_x || x == max_x) || (y == min_y || y == max_y) {
-                    new_coordinates.push(IVec2::new(x, y));
-                }
-            } else {
-                new_coordinates.push(IVec2::new(x, y));
-            }
-        }
-    }
-    new_coordinates
 }
 
 // TODO: Just validate in this and then emit BuildAction
