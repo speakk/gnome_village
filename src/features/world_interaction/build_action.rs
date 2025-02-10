@@ -132,8 +132,6 @@ fn regenerate_preview_entity(
 
 fn send_build_intent(
     mut coordinated_selected_events: EventReader<CoordinatesSelectedEvent>,
-    coordinate: Res<CurrentMouseWorldCoordinate>,
-    mut selected_coordinates: ResMut<SelectedCoordinates>,
     mut user_action_intent: EventWriter<UserActionIntent>,
     current_building: Res<CurrentBuilding>,
 ) {

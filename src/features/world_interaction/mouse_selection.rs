@@ -259,7 +259,7 @@ fn handle_ground_plane_hover(
         current_mouse_world_position.0 = Vec2::new(location.x, location.z);
 
         let previous_mouse_coordinate = current_mouse_world_coordinate.0;
-        let new_mouse_coordinate = IVec2::new(location.x as i32, location.z as i32);
+        let new_mouse_coordinate = IVec2::new(location.x.round() as i32, location.z.round() as i32);
 
         if previous_mouse_coordinate != new_mouse_coordinate {
             // println!(
@@ -313,12 +313,16 @@ pub fn handle_mouse_dragged(
 pub struct SelectedCoordinates(pub Vec<IVec2>);
 
 fn line_select(start_coordinate: IVec2, end_coordinate: IVec2) -> Vec<IVec2> {
-    Bresenham::new(
+    let mut line: Vec<_> = Bresenham::new(
         (start_coordinate.x as isize, start_coordinate.y as isize),
         (end_coordinate.x as isize, end_coordinate.y as isize),
     )
     .map(|point| IVec2::new(point.0 as i32, point.1 as i32))
-    .collect()
+    .collect();
+    
+    line.push(end_coordinate);
+    
+    line
 }
 
 fn rectangle_select(

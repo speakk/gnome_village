@@ -8,6 +8,10 @@ pub enum UserActionType {
         bundle_type: ItemId,
         coordinates: Vec<IVec2>,
     },
+    CancelJobs {
+        coordinates: Vec<IVec2>,
+        id_filter: Option<Vec<ItemId>>,
+    },
     Orders,
 }
 

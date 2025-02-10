@@ -36,7 +36,7 @@ impl Plugin for CameraPlugin {
     }
 }
 
-fn setup(mut commands: Commands) {
+fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
     let pan_input_map = InputMap::new([
         (CameraPanAction::Left, KeyA),
         (CameraPanAction::Right, KeyD),
@@ -48,6 +48,10 @@ fn setup(mut commands: Commands) {
         .with(CameraZoomAction::In, MouseScrollDirection::UP)
         .with(CameraZoomAction::In, KeyCode::ArrowUp)
         .with(CameraZoomAction::Out, MouseScrollDirection::DOWN);
+
+    for (_, config, _) in gizmo_config.iter_mut() {
+        config.depth_bias = -1.0;
+    }
 
     // camera
     commands
