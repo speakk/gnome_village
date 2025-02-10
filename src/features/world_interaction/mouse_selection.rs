@@ -1,16 +1,18 @@
 use crate::features::input::WorldInteractionAction;
-use crate::features::map::map_model::{MapData, ReservedCoordinatesHelper};
+use crate::features::map::map_model::MapData;
 use crate::features::states::AppState;
 use bevy::prelude::KeyCode::{ControlLeft, KeyA, KeyD, ShiftLeft};
 use bevy::prelude::*;
+use bresenham::Bresenham;
 use leafwing_input_manager::action_state::ActionState;
 use leafwing_input_manager::input_map::InputMap;
 use leafwing_input_manager::InputManagerBundle;
-use bresenham::Bresenham;
-use crate::features::world_interaction::build_action;
 
-#[derive(Event)]
-pub struct MapClickedEvent(pub IVec2);
+#[derive(Event, Debug)]
+pub struct MapClickedEvent {
+    pub coordinate: IVec2,
+    pub selection_type: SelectionType,
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum DragModifier {
@@ -24,7 +26,7 @@ pub enum SelectionType {
     Secondary,
 }
 
-#[derive(Event, Clone, Copy)]
+#[derive(Event, Clone, Copy, Debug)]
 pub struct MapDragStartEvent {
     pub selection_type: SelectionType,
     pub coordinate: IVec2,
@@ -32,7 +34,11 @@ pub struct MapDragStartEvent {
 }
 
 #[derive(Event)]
-pub struct MapDragEndEvent(pub IVec2);
+pub struct MapDragEndEvent {
+    pub selection_type: SelectionType,
+    pub coordinate: IVec2,
+    pub drag_modifier: Option<DragModifier>,
+}
 
 pub struct MouseSelectionPlugin;
 
@@ -52,7 +58,8 @@ impl Plugin for MouseSelectionPlugin {
             .add_systems(OnEnter(AppState::InGame), setup)
             .add_systems(
                 Update,
-                (handle_mouse_dragged, scale_ground_mesh_based_on_map).run_if(in_state(AppState::InGame)),
+                (handle_mouse_dragged, scale_ground_mesh_based_on_map)
+                    .run_if(in_state(AppState::InGame)),
             );
     }
 }
@@ -125,21 +132,24 @@ fn scale_ground_mesh_based_on_map(
 fn handle_ground_plane_click(
     click: Trigger<Pointer<Click>>,
     mut map_clicked_event_writer: EventWriter<MapClickedEvent>,
-    reserved_coordinates: Res<ReservedCoordinatesHelper>,
 ) {
     // This is a workaround for a Bevy(?) bug which causes Click to trigger
     // on drag end as well
     if click.duration.as_secs_f32() > 0.2 {
         return;
     }
-    
+
     let location = click.hit.position;
     if let Some(location) = location {
         println!("Clicked on location: {:?}", location);
-        map_clicked_event_writer.send(MapClickedEvent(IVec2::new(
-            location.x as i32,
-            location.z as i32,
-        )));
+        map_clicked_event_writer.send(MapClickedEvent {
+            coordinate: IVec2::new(location.x as i32, location.z as i32),
+            selection_type: if click.button == PointerButton::Primary {
+                SelectionType::Primary
+            } else {
+                SelectionType::Secondary
+            },
+        });
     }
 }
 
@@ -179,14 +189,17 @@ fn handle_ground_plane_drag_start(
         let event = MapDragStartEvent {
             coordinate: IVec2::new(location.x as i32, location.z as i32),
             drag_modifier: modifier_type,
-            selection_type: if drag.button == PointerButton::Primary { SelectionType::Primary } else { SelectionType::Secondary },
+            selection_type: if drag.button == PointerButton::Primary {
+                SelectionType::Primary
+            } else {
+                SelectionType::Secondary
+            },
         };
-        
+
         map_drag_start_event_writer.send(event);
 
         drag_info_resource.is_dragging = true;
         drag_info_resource.map_drag_start_event = Some(event);
-
     }
 }
 
@@ -198,7 +211,14 @@ fn handle_ground_plane_drag_end(
 ) {
     let location = current_mouse_world_coordinate.0;
     println!("Drag ended on location: {:?}", location);
-    map_drag_end_event_writer.send(MapDragEndEvent(location));
+    let drag_info_start_event = drag_info_resource
+        .map_drag_start_event
+        .expect("Drag start event not set when ending drag");
+    map_drag_end_event_writer.send(MapDragEndEvent {
+        coordinate: location,
+        drag_modifier: drag_info_start_event.drag_modifier,
+        selection_type: drag_info_start_event.selection_type,
+    });
     drag_info_resource.is_dragging = false;
     drag_info_resource.map_drag_start_event = None;
 }
@@ -234,7 +254,7 @@ fn handle_ground_plane_hover(
     }
 }
 
-#[derive(Resource, Default, Copy, Clone)]
+#[derive(Resource, Default, Copy, Clone, Debug)]
 pub struct DragInfo {
     pub map_drag_start_event: Option<MapDragStartEvent>,
     pub is_dragging: bool,

@@ -7,7 +7,7 @@ use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
-use crate::features::world_interaction::mouse_selection::{CurrentMouseWorldCoordinate, DragInfo, MapClickedEvent, MapDragEndEvent, SelectedCoordinates};
+use crate::features::world_interaction::mouse_selection::{CurrentMouseWorldCoordinate, DragInfo, MapClickedEvent, MapDragEndEvent, SelectedCoordinates, SelectionType};
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
 use crate::features::world_interaction::mouse_selection;
@@ -59,6 +59,7 @@ fn regenerate_preview_entity(
     prototypes: Res<Prototypes>,
     render_info_query: Query<(Option<&SimpleMesh>, Option<&GltfAsset>), With<Buildable>>,
     asset_server: Res<AssetServer>,
+    drag_info: Res<DragInfo>
 ) {
     if (!coordinates.is_changed()) && (!current_building.is_changed()) {
         //println!("No changes to coordinates or current building, not regenerating preview entities");
@@ -67,6 +68,14 @@ fn regenerate_preview_entity(
 
     if current_building.0.is_none() {
         return;
+    }
+    
+    if drag_info.is_dragging { 
+        if let Some(drag_event) = drag_info.map_drag_start_event {
+            if drag_event.selection_type != SelectionType::Primary {
+                return;
+            }
+        }
     }
 
     //println!("Got through checks, regenerating preview entities indeed");
@@ -132,17 +141,25 @@ fn send_build_intent_on_click_or_drag(
     let Some(current_building) = current_building.0 else {
         return;
     };
-    
+
     let mut final_coordinates: Option<Vec<IVec2>> = None;
-    
-    for _event in drag_event_reader.read() {
+
+    if let Some(click_event) = click_event_reader.read().last() {
+        if click_event.selection_type != SelectionType::Primary {
+            return;
+        }
+
+        final_coordinates = Some(vec![coordinate.0]);
+    }
+
+    for event in drag_event_reader.read() {
+        if event.selection_type != SelectionType::Primary {
+            return;
+        }
+
         final_coordinates = Some(selected_coordinates.0.clone());
     }
 
-    for _event in click_event_reader.read() {
-        final_coordinates = Some(vec![coordinate.0]);
-    }
-    
     if let Some(final_coordinates) = final_coordinates {
         user_action_intent.send(UserActionIntent(UserActionType::Build {
             coordinates: final_coordinates,
