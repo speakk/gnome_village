@@ -1,24 +1,48 @@
 use crate::features::misc_components::InWorld;
 use bevy::math::Vec2;
 use bevy::prelude::*;
-use bevy_spatial::kdtree::KDTree3;
-use bevy_spatial::{AutomaticUpdate, SpatialStructure, TransformMode};
+use bevy::utils::{HashMap, HashSet};
 use std::time::Duration;
 
 pub struct PositionPlugin;
 
 impl Plugin for PositionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(
-            AutomaticUpdate::<InWorld>::new()
-                .with_spatial_ds(SpatialStructure::KDTree3)
-                .with_frequency(Duration::from_secs(1))
-                .with_transform(TransformMode::Transform),
-        );
+        app
+            .insert_resource(CoordinateToEntity::default())
+            .add_systems(Update, update_coordinate_to_entity);
     }
 }
 
-type SpatialTree = KDTree3<InWorld>;
+#[derive(Resource, Debug, Default)]
+pub struct CoordinateToEntity(pub(crate) HashMap<IVec2, HashSet<Entity>>);
+
+fn update_coordinate_to_entity(
+    mut coordinate_to_entity: ResMut<CoordinateToEntity>,
+    query: Query<
+        (Entity, &WorldPosition, &PreviousWorldPosition),
+        (
+            With<InWorld>,
+            Or<(Added<WorldPosition>, Changed<WorldPosition>)>,
+        ),
+    >,
+) {
+    for (entity, world_position, previous_world_position) in query.iter() {
+        let current = world_position.0.as_ivec2();
+        let previous = previous_world_position.0.as_ivec2();
+        
+        
+        if let Some(entities_in_previous) = coordinate_to_entity.0.get_mut(&previous) {
+            entities_in_previous.retain(|&e| e != entity);
+        }
+        
+        let entities_in_current = coordinate_to_entity.0.entry(current).or_default();
+        entities_in_current.insert(entity);
+        
+        //let mut entities_in_current = coordinate_to_entity.0.get_mut(&current).unwrap_or(&mut vec![]);
+        
+    }
+}
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
 #[reflect(Component)]
