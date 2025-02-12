@@ -1,3 +1,4 @@
+use beet::prelude::WorldExt;
 use crate::bundles::settler::Settler;
 use crate::bundles::{Id, ItemId, Reservations, ResourceItem};
 use crate::features::ai::trees::bring_resource::score_bring_resource;
@@ -66,6 +67,9 @@ impl Command for CancelTaskCommand {
                 task_entity: child,
             });
         }
+
+        world.flush();
+        
     }
 }
 
@@ -227,10 +231,10 @@ pub fn get_available_task(
                         get_available_task(child, child_task_data, *sub_children, all_tasks)
                     {
                         let (_, next_sub_task_data, _) = all_tasks.get(&next_sub_task).unwrap();
-                        return if next_sub_task_data.status == Status::BeingWorkedOn {
-                            None
-                        } else {
-                            Some(next_sub_task)
+                        match next_sub_task_data.status {
+                            Status::Ready => return Some(next_sub_task),
+                            Status::Finished => continue,
+                            _ => return None,
                         };
                     } else if child_task_data.status == Status::Finished {
                         continue;

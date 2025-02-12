@@ -91,7 +91,8 @@ pub fn create_bring_resource_tree(
                 .trigger(OnRun).id();
 
             commands.entity(working_on_task.0).observe(move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
-                commands.entity(tree_entity).try_despawn_recursive();
+                commands.entity(tree_entity).despawn_recursive();
+                println!("Despawned tree_entity?");
             });
         }
     }

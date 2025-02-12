@@ -81,10 +81,22 @@ pub fn apply_pathfinding_result(
 
             if let Some(path) = result {
                 //println!("Has path! {:?}", path);
-                commands.entity(task_entity).insert(PathFollow {
-                    path,
-                    ..Default::default()
-                });
+                commands
+                    .entity(task_entity)
+                    .insert(PathFollow {
+                        path,
+                        ..Default::default()
+                    })
+                    .observe(
+                        move |_trigger: Trigger<OnRemove, PathFollow>,
+                              mut velocity_query: Query<&mut Velocity>| {
+                            let mut velocity = velocity_query
+                                .get_mut(task_entity)
+                                .expect("No velocity for path follow entity");
+
+                            velocity.0 = Vec2::ZERO;
+                        },
+                    );
             }
         }
     }
@@ -103,7 +115,6 @@ pub struct PathFollowFinished {
 
 pub fn follow_path(
     mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut Velocity)>,
-    map_data: Query<&MapData>,
     mut commands: Commands,
 ) {
     const AT_POINT_THRESHOLD: f32 = 1.0;
@@ -113,9 +124,8 @@ pub fn follow_path(
             follow_path_succeed(&mut commands, entity, path_follow, &mut velocity);
             continue;
         }
-        
+
         let current_index = path_follow.current_path_index;
-        let current_point = path_follow.path.steps[current_index];
         let next_point = path_follow.path.steps[current_index + 1];
 
         let direction = (next_point.as_vec2() - world_position.0).normalize_or_zero();
@@ -133,7 +143,12 @@ pub fn follow_path(
     }
 }
 
-fn follow_path_succeed(commands: &mut Commands, entity: Entity, mut path_follow: Mut<PathFollow>, velocity: &mut Mut<Velocity>) {
+fn follow_path_succeed(
+    commands: &mut Commands,
+    entity: Entity,
+    mut path_follow: Mut<PathFollow>,
+    velocity: &mut Mut<Velocity>,
+) {
     velocity.0 = Vec2::ZERO;
     commands
         .entity(entity)
