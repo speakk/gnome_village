@@ -3,8 +3,9 @@ use crate::bundles::buildables::{BluePrint, Buildable};
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
-use crate::features::tasks::task::{BringResourceData, BuildData, DepositTarget, ItemAmount, RunType, Task, TaskType};
+use crate::features::tasks::task::{BringResourceData, BuildData, CancelTaskCommand, DepositTarget, ItemAmount, RunType, Task, TaskCancelled, TaskType};
 use bevy::prelude::*;
+use bevy_cobweb::react::DespawnEvent;
 use crate::bundles::ResourceItem;
 use crate::bundles::settler::Settler;
 
@@ -17,7 +18,7 @@ pub fn react_to_blueprints(
 ) {
     for (entity, blueprint, buildable, world_position) in new_blueprints_query.iter() {
         println!("Got blueprint: {:?}", blueprint);
-        commands
+        let task_entity = commands
             .spawn((
                 Task {
                     run_type: RunType::Sequence,
@@ -71,8 +72,21 @@ pub fn react_to_blueprints(
                         ..Default::default()
                     },
                     ));
+            }).id();
+
+        commands.entity(entity).observe(move |trigger: Trigger<OnRemove, Buildable>, mut commands: Commands| {
+            commands.queue(CancelTaskCommand {
+               reason:  "Target Buildable removed".to_string(),
+                task_entity,
             });
+        });
     }
+}
+
+fn cancel_task_when_buildable_removed(
+    trigger: Trigger<OnRemove, Buildable>
+) {
+
 }
 
 pub fn score_build(build_data: &BuildData, agents: &[(Entity, &WorldPosition)],

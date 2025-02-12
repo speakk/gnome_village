@@ -5,7 +5,7 @@ use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
 use crate::features::tasks::task;
-use crate::features::tasks::task::{Status, Task, TaskFinished};
+use crate::features::tasks::task::{Status, Task, TaskCancelled, TaskFinished};
 use bevy::hierarchy::Children;
 use bevy::prelude::{
     Added, Changed, Commands, Entity, Or, ParamSet, Query, Trigger, With, Without,
@@ -85,6 +85,16 @@ pub fn assign_jobs(
                 move |_trigger: Trigger<TaskFinished>, mut commands: Commands| {
                     println!(
                         "Task {} finished, thus removing agent WorkingOnTask",
+                        task_entity
+                    );
+                    commands.entity(best_agent).remove::<WorkingOnTask>();
+                },
+            );
+
+            commands.entity(task_entity).observe(
+                move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
+                    println!(
+                        "Task {} cancelled, thus removing agent WorkingOnTask",
                         task_entity
                     );
                     commands.entity(best_agent).remove::<WorkingOnTask>();

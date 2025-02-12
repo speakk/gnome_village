@@ -5,7 +5,7 @@ use crate::features::ai::actions::build::BuildAction;
 use crate::features::ai::actions::finish_task::FinishTaskAction;
 use crate::features::ai::actions::go_to::GoToAction;
 use crate::features::position::WorldPosition;
-use crate::features::tasks::task::{Task, TaskType};
+use crate::features::tasks::task::{Task, TaskCancelled, TaskType};
 
 pub fn create_build_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
@@ -22,7 +22,7 @@ pub fn create_build_tree(
             let target_coordinate = world_positions.get(build_data.target).unwrap().0.as_ivec2();
 
             // TODO: Make mechanism to clean up in case Settler gets despawned
-            commands
+            let tree_entity = commands
                 .spawn((BehaviourTree, SequenceFlow))
                 .with_children(|root| {
                     root.spawn((
@@ -47,7 +47,11 @@ pub fn create_build_tree(
                         TargetEntity(worker_entity),
                     ));
                 })
-                .trigger(OnRun);
+                .trigger(OnRun).id();
+            
+            commands.entity(working_on_task.0).observe(move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
+                commands.entity(tree_entity).try_despawn_recursive();
+            });
         }
     }
 }

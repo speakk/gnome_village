@@ -8,9 +8,7 @@ use crate::features::ai::{BehaviourTree, WorkingOnTask};
 use crate::features::inventory::Inventory;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
-use crate::features::tasks::task::{
-    BringResourceData, BringResourceRuntimeData, DepositTarget, Task, TaskType,
-};
+use crate::features::tasks::task::{BringResourceData, BringResourceRuntimeData, DepositTarget, Task, TaskCancelled, TaskType};
 use beet::prelude::{OnRun, SequenceFlow, TargetEntity};
 use bevy::prelude::*;
 
@@ -41,7 +39,7 @@ pub fn create_bring_resource_tree(
             let resource_position = item_resources.get(resource_target);
 
             // TODO: Make mechanism to clean up in case Settler gets despawned
-            commands
+            let tree_entity = commands
                 .spawn((BehaviourTree, SequenceFlow))
                 .with_children(|root| {
                     println!("Creating tree, spawning goto");
@@ -90,7 +88,11 @@ pub fn create_bring_resource_tree(
                         TargetEntity(worker_entity),
                     ));
                 })
-                .trigger(OnRun);
+                .trigger(OnRun).id();
+
+            commands.entity(working_on_task.0).observe(move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
+                commands.entity(tree_entity).try_despawn_recursive();
+            });
         }
     }
 }

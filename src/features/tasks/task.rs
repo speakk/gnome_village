@@ -5,10 +5,13 @@ use crate::features::ai::WorkingOnTask;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::build_task::score_build;
+use bevy::asset::AssetContainer;
+use bevy::ecs::system::SystemState;
 use bevy::hierarchy::HierarchyEvent;
 use bevy::prelude::Component;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
+use bevy_cobweb_ui::tools::iter_descendants_filtered;
 use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::{MapEntities, Save};
 
@@ -31,6 +34,44 @@ pub enum Status {
 #[derive(Event)]
 pub struct TaskFinished {
     pub result: TaskFinishedResult,
+    pub task_entity: Entity,
+}
+
+pub struct CancelTaskCommand {
+    pub task_entity: Entity,
+    pub reason: String,
+}
+
+impl Command for CancelTaskCommand {
+    fn apply(self, world: &mut World) {
+        let mut task_data = world.get_mut::<Task>(self.task_entity).unwrap();
+        task_data.status = Status::Cancelled;
+
+        {
+            let mut commands = world.commands();
+            commands.entity(self.task_entity).trigger(TaskCancelled {
+                reason: self.reason.clone(),
+                task_entity: self.task_entity,
+            });
+        }
+        let mut system_state: SystemState<(Query<&Children>,)> = SystemState::new(world);
+
+        let query = system_state.get(world);
+        let child_entities: Vec<Entity> = query.0.iter_descendants(self.task_entity).collect();
+        for child in child_entities {
+            let mut commands = world.commands();
+            
+            commands.entity(child).trigger(TaskCancelled {
+                reason: self.reason.clone(),
+                task_entity: child,
+            });
+        }
+    }
+}
+
+#[derive(Event)]
+pub struct TaskCancelled {
+    pub reason: String,
     pub task_entity: Entity,
 }
 
@@ -107,12 +148,6 @@ impl Default for Task {
     }
 }
 
-// pub fn handle_task_added(query: Query<(Entity, &Task), Added<Task>>, mut commands: Commands) {
-//     for (entity, task) in query.iter() {
-//         commands.entity(entity).observe(propagate_finished_upwards);
-//     }
-// }
-
 pub fn propagate_finished_upwards(
     mut finished_event_reader: EventReader<TaskFinished>,
     parents: Query<&Parent>,
@@ -147,31 +182,6 @@ pub fn propagate_finished_upwards(
             }
         }
     }
-    // if let Some(parent) = parents.parent(child) {
-    //     println!("Adding observer to child for TaskFinished");
-    //     commands.entity(child).observe(
-    //         move |_trigger: Trigger<TaskFinished>,
-    //               children: Query<&Children>,
-    //               mut tasks: Query<&mut Task>,
-    //               mut commands: Commands| {
-    //
-    //             println!("Task finished triggered, checking if all children are finished");
-    //             let all_parent_children = children.children(parent);
-    //
-    //             let all_children_finished = all_parent_children.iter().all(|child| {
-    //                 let task_data = tasks.get(*child).unwrap();
-    //                 task_data.status == Status::Finished
-    //             });
-    //
-    //             if all_children_finished {
-    //                 println!("All children finished, triggering parent finished");
-    //                 let mut parent_task = tasks.get_mut(parent).unwrap();
-    //                 parent_task.status = Status::Finished;
-    //                 commands.entity(parent).trigger(TaskFinished(TaskFinishedResult::Success));
-    //             }
-    //         },
-    //     );
-    // }
 }
 
 impl Task {
