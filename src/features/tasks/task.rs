@@ -66,6 +66,9 @@ impl Command for CancelTaskCommand {
                 reason: self.reason.clone(),
                 task_entity: child,
             });
+
+            let mut task_data = world.get_mut::<Task>(child).unwrap();
+            task_data.status = Status::Cancelled;
         }
 
         world.flush();
