@@ -1,7 +1,6 @@
 use crate::bundles::{ItemStack};
 use beet::prelude::*;
 use bevy::prelude::*;
-use crate::features::ai::TargetEntity;
 use crate::features::misc_components::gltf_asset::GltfAnimation;
 
 #[action(play_animation_action)]
@@ -13,7 +12,6 @@ pub struct PlayAnimationAction {
 
 fn play_animation_action(
     trigger: Trigger<OnRun>,
-    agents: Query<&TargetEntity>,
     actions: Query<&PlayAnimationAction>,
     mut gltf_animations: Query<&mut GltfAnimation>,
     mut commands: Commands

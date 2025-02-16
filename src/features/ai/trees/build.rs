@@ -1,11 +1,11 @@
-use beet::prelude::{OnRun, OnRunAction, Sequence};
-use bevy::prelude::*;
-use crate::features::ai::{BehaviourTree, TargetEntity, WorkingOnTask};
 use crate::features::ai::actions::build::BuildAction;
 use crate::features::ai::actions::finish_task::FinishTaskAction;
 use crate::features::ai::actions::go_to::GoToAction;
+use crate::features::ai::{BehaviourTree, WorkingOnTask};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::{Task, TaskCancelled, TaskType};
+use beet::prelude::{OnRunAction, Sequence};
+use bevy::prelude::*;
 
 pub fn create_build_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
@@ -25,34 +25,30 @@ pub fn create_build_tree(
             let tree_entity = commands
                 .spawn((BehaviourTree, Sequence))
                 .with_children(|root| {
-                    root.spawn((
-                        GoToAction {
-                            target: target_coordinate,
-                        },
-                        TargetEntity(worker_entity),
-                    ));
+                    root.spawn((GoToAction {
+                        target: target_coordinate,
+                    },));
 
-                    root.spawn((
-                        BuildAction {
-                            target: build_data.target,
-                        },
-                        TargetEntity(worker_entity),
-                    ));
+                    root.spawn((BuildAction {
+                        target: build_data.target,
+                    },));
 
-                    root.spawn((
-                        FinishTaskAction {
-                            task: working_on_task.0,
-                            tree_root: root.parent_entity(),
-                        },
-                        TargetEntity(worker_entity),
-                    ));
-                }).id();
-            
-            commands.entity(tree_entity).trigger(OnRunAction::new(tree_entity, worker_entity, ()));
-            
-            commands.entity(working_on_task.0).observe(move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
-                commands.entity(tree_entity).try_despawn_recursive();
-            });
+                    root.spawn((FinishTaskAction {
+                        task: working_on_task.0,
+                        tree_root: root.parent_entity(),
+                    },));
+                })
+                .id();
+
+            commands
+                .entity(tree_entity)
+                .trigger(OnRunAction::new(tree_entity, worker_entity, ()));
+
+            commands.entity(working_on_task.0).observe(
+                move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
+                    commands.entity(tree_entity).try_despawn_recursive();
+                },
+            );
         }
     }
 }

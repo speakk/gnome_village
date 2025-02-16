@@ -13,17 +13,10 @@ pub fn attach_to_settler(query: Query<Entity, (Added<Settler>, With<InWorld>, Wi
             .with_children(|root| {
                 root.spawn((
                     StuckInWallScorer,
-                   // SequenceFlow,
                     EscapeFromSolidAction,
-                    TargetEntity(entity)
-                    // )).with_children(|sequence| {
-                    //      sequence.spawn(
-                    //          
-                    //      )
-                    //});
                ));
             }).id();
-        
+
         commands.entity(action).trigger(OnRunAction::new(action, entity, ()));
     }
 }

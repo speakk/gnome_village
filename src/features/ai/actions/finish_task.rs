@@ -1,6 +1,5 @@
 use beet::prelude::*;
 use bevy::prelude::*;
-use crate::features::ai::TargetEntity;
 use crate::features::tasks::task::{Status, Task, TaskFinished, TaskFinishedResult};
 
 #[action(finish_task_action)]
@@ -13,7 +12,6 @@ pub struct FinishTaskAction {
 
 fn finish_task_action(
     trigger: Trigger<OnRun>,
-    agents: Query<&TargetEntity>,
     action: Query<&FinishTaskAction>,
     mut task_data: Query<&mut Task>,
     mut commands: Commands,

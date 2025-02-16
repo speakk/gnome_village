@@ -4,11 +4,13 @@ use crate::features::ai::actions::deposit::DepositAction;
 use crate::features::ai::actions::finish_task::FinishTaskAction;
 use crate::features::ai::actions::go_to::GoToAction;
 use crate::features::ai::actions::pick_up::PickUpAction;
-use crate::features::ai::{BehaviourTree, TargetEntity, WorkingOnTask};
+use crate::features::ai::{BehaviourTree, WorkingOnTask};
 use crate::features::inventory::Inventory;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
-use crate::features::tasks::task::{BringResourceData, BringResourceRuntimeData, DepositTarget, Task, TaskCancelled, TaskType};
+use crate::features::tasks::task::{
+    BringResourceData, BringResourceRuntimeData, DepositTarget, Task, TaskCancelled, TaskType,
+};
 use beet::prelude::*;
 use bevy::prelude::*;
 
@@ -48,53 +50,43 @@ pub fn create_bring_resource_tree(
                     // that we already picked this resource up. (In case creating tree from save game)
                     // Rather check Inventory for the item
                     if let Ok(resource_position) = resource_position {
-                        root.spawn((
-                            GoToAction {
-                                target: resource_position.0.as_ivec2(),
-                            },
-                            TargetEntity(worker_entity),
-                        ));
+                        root.spawn((GoToAction {
+                            target: resource_position.0.as_ivec2(),
+                        },));
 
-                        root.spawn((
-                            PickUpAction {
-                                target_entity: resource_target,
-                                amount: bring_resource_data.item_requirement.amount,
-                            },
-                            TargetEntity(worker_entity),
-                        ));
+                        root.spawn((PickUpAction {
+                            target_entity: resource_target,
+                            amount: bring_resource_data.item_requirement.amount,
+                        },));
                     }
 
-                    root.spawn((
-                        GoToAction {
-                            target: target_coordinate,
-                        },
-                        TargetEntity(worker_entity),
-                    ));
+                    root.spawn((GoToAction {
+                        target: target_coordinate,
+                    },));
 
-                    root.spawn((
-                        DepositAction {
-                            deposit_target: bring_resource_data.target,
-                            amount: bring_resource_data.item_requirement.amount,
-                            item_id: bring_resource_data.item_requirement.item_id,
-                        },
-                        TargetEntity(worker_entity),
-                    ));
+                    root.spawn((DepositAction {
+                        deposit_target: bring_resource_data.target,
+                        amount: bring_resource_data.item_requirement.amount,
+                        item_id: bring_resource_data.item_requirement.item_id,
+                    },));
 
-                    root.spawn((
-                        FinishTaskAction {
-                            task: working_on_task.0,
-                            tree_root: root.parent_entity(),
-                        },
-                        TargetEntity(worker_entity),
-                    ));
-                }).id();
-            
-            commands.entity(tree_entity).trigger(OnRunAction::new(tree_entity, worker_entity, ()));
+                    root.spawn((FinishTaskAction {
+                        task: working_on_task.0,
+                        tree_root: root.parent_entity(),
+                    },));
+                })
+                .id();
 
-            commands.entity(working_on_task.0).observe(move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
-                commands.entity(tree_entity).despawn_recursive();
-                println!("Despawned tree_entity?");
-            });
+            commands
+                .entity(tree_entity)
+                .trigger(OnRunAction::new(tree_entity, worker_entity, ()));
+
+            commands.entity(working_on_task.0).observe(
+                move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
+                    commands.entity(tree_entity).despawn_recursive();
+                    println!("Despawned tree_entity?");
+                },
+            );
         }
     }
 }

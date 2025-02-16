@@ -2,7 +2,6 @@ use crate::bundles::{Id, ItemId, ItemSpawners, ItemStack};
 use crate::features::inventory::Inventory;
 use beet::prelude::*;
 use bevy::prelude::*;
-use crate::features::ai::TargetEntity;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::DepositTarget;
 
@@ -17,7 +16,6 @@ pub struct DepositAction {
 
 fn deposit_action(
     trigger: Trigger<OnRun>,
-    agents: Query<&TargetEntity>,
     actions: Query<&DepositAction>,
     mut inventories: Query<&mut Inventory>,
     mut commands: Commands,

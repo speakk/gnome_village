@@ -343,7 +343,7 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 [[package]]
 name = "beet"
 version = "0.0.5-rc.1"
-source = "git+https://github.com/speakk/beet#72289915cef0e85c5f9101fc48fe88a259b1e67d"
+source = "git+https://github.com/mrchantey/beet?branch=main#ac9e7e43b162a8529fe9c876feb95bb83cbe9830"
 dependencies = [
  "beet_flow",
 ]
@@ -351,7 +351,7 @@ dependencies = [
 [[package]]
 name = "beet_flow"
 version = "0.0.5-rc.1"
-source = "git+https://github.com/speakk/beet#72289915cef0e85c5f9101fc48fe88a259b1e67d"
+source = "git+https://github.com/mrchantey/beet?branch=main#ac9e7e43b162a8529fe9c876feb95bb83cbe9830"
 dependencies = [
  "anyhow",
  "beet_flow_macros",
@@ -364,7 +364,7 @@ dependencies = [
 [[package]]
 name = "beet_flow_macros"
 version = "0.0.5-rc.1"
-source = "git+https://github.com/speakk/beet#72289915cef0e85c5f9101fc48fe88a259b1e67d"
+source = "git+https://github.com/mrchantey/beet?branch=main#ac9e7e43b162a8529fe9c876feb95bb83cbe9830"
 dependencies = [
  "anyhow",
  "extend",
@@ -5748,7 +5748,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]

@@ -4,8 +4,7 @@ use crate::features::position::WorldPosition;
 use beet::prelude::*;
 use bevy::prelude::*;
 use bevy::math::{IVec2, Vec2};
-use crate::features::ai::{BehaviourTree, PathFollow, TargetEntity};
-use crate::features::misc_components::gltf_asset::GltfAnimation;
+use crate::features::ai::{PathFollow};
 use crate::features::path_finding::grid::PathingGridResource;
 
 #[action(go_to_action)]
@@ -18,7 +17,6 @@ pub struct GoToAction {
 #[allow(clippy::too_many_arguments)]
 fn go_to_action(
     trigger: Trigger<OnRun>,
-    target_agents: Query<&TargetEntity>,
     world_positions: Query<&WorldPosition>,
     goto_action: Query<&GoToAction>,
     mut commands: Commands,
@@ -26,9 +24,9 @@ fn go_to_action(
     pathing_grid: Res<PathingGridResource>,
 ) {
     let target_agent = trigger.origin;
-    //let target_agent = target_agents.get(trigger.entity()).unwrap().0;
+    let action_entity = trigger.action;
     let world_position = world_positions.get(target_agent).unwrap();
-    let goto_action = goto_action.get(trigger.action).unwrap();
+    let goto_action = goto_action.get(action_entity).unwrap();
     let target_coordinate = goto_action.target;
     println!("Ensure path entered NEW, to {}", target_coordinate);
     let target_position = WorldPosition(Vec2::new(
@@ -42,13 +40,11 @@ fn go_to_action(
         map_data.single(),
         *world_position,
         target_position,
-        Some(trigger.entity()),
+        Some(action_entity),
     );
-
-    let trigger_entity = trigger.entity();
-
+    
     // Cleanup on BT remove
-    commands.entity(trigger_entity).observe(move |_trigger: Trigger<OnRemove, TargetEntity>, mut commands: Commands| {
+    commands.entity(action_entity).observe(move |_trigger: Trigger<OnRemove, ContinueRun>, mut commands: Commands| {
         commands.entity(target_agent).remove::<PathFollow>().remove::<PathfindingTask>();
     });
     
@@ -56,11 +52,11 @@ fn go_to_action(
     
     commands.entity(target_agent).observe(
         move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {
-            if path_follow_trigger.related_task != Some(trigger_entity) {
+            if path_follow_trigger.related_task != Some(action_entity) {
                 return;
             }
             
-            if commands.get_entity(trigger_entity).is_none() {
+            if commands.get_entity(action_entity).is_none() {
                 return;
             }
 

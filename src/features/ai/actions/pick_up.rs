@@ -2,7 +2,6 @@ use crate::bundles::{Id, ItemStack};
 use crate::features::inventory::Inventory;
 use beet::prelude::*;
 use bevy::prelude::*;
-use crate::features::ai::TargetEntity;
 
 #[action(pick_up_action)]
 #[derive(Component, Reflect)]
@@ -14,7 +13,6 @@ pub struct PickUpAction {
 
 fn pick_up_action(
     trigger: Trigger<OnRun>,
-    agents: Query<&TargetEntity>,
     actions: Query<&PickUpAction>,
     mut item_stack: Query<&mut ItemStack>,
     mut inventory: Query<&mut Inventory>,
