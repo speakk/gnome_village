@@ -343,7 +343,7 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 [[package]]
 name = "beet"
 version = "0.0.5-rc.1"
-source = "git+https://github.com/mrchantey/beet?branch=main#ac9e7e43b162a8529fe9c876feb95bb83cbe9830"
+source = "git+https://github.com/mrchantey/beet?branch=main#34eea5da8f04b79336963ce98e8aacc3cd422780"
 dependencies = [
  "beet_flow",
 ]
@@ -351,7 +351,7 @@ dependencies = [
 [[package]]
 name = "beet_flow"
 version = "0.0.5-rc.1"
-source = "git+https://github.com/mrchantey/beet?branch=main#ac9e7e43b162a8529fe9c876feb95bb83cbe9830"
+source = "git+https://github.com/mrchantey/beet?branch=main#34eea5da8f04b79336963ce98e8aacc3cd422780"
 dependencies = [
  "anyhow",
  "beet_flow_macros",
@@ -364,7 +364,7 @@ dependencies = [
 [[package]]
 name = "beet_flow_macros"
 version = "0.0.5-rc.1"
-source = "git+https://github.com/mrchantey/beet?branch=main#ac9e7e43b162a8529fe9c876feb95bb83cbe9830"
+source = "git+https://github.com/mrchantey/beet?branch=main#34eea5da8f04b79336963ce98e8aacc3cd422780"
 dependencies = [
  "anyhow",
  "extend",
