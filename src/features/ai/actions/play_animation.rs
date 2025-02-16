@@ -1,11 +1,12 @@
 use crate::bundles::{ItemStack};
-use beet::prelude::Action;
-use bevy::prelude::{Component, Query, Reflect};
+use beet::prelude::*;
+use bevy::prelude::*;
+use crate::features::ai::TargetEntity;
 use crate::features::misc_components::gltf_asset::GltfAnimation;
 
-#[derive(Component, Action, Reflect)]
+#[action(play_animation_action)]
+#[derive(Component, Reflect)]
 #[require(Name(|| "PlayAnimationAction"))]
-#[observers(play_animation_action)]
 pub struct PlayAnimationAction {
     pub animation_index: usize,
 }
@@ -18,13 +19,11 @@ fn play_animation_action(
     mut commands: Commands
 ) {
     println!("Picking up item, inside pick up action");
-    let agent = agents.get(trigger.entity()).unwrap().0;
-    let action = actions.get(trigger.entity()).unwrap();
+    let agent = trigger.origin;
+    let action = actions.get(trigger.action).unwrap();
     
     let mut gltf_animation = gltf_animations.get_mut(agent).unwrap();
     gltf_animation.current_animation_index = action.animation_index;
 
-    commands
-        .entity(trigger.entity())
-        .trigger(OnRunResult::success());
+    trigger.trigger_result(&mut commands, RunResult::Success);
 }

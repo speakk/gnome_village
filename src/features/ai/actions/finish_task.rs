@@ -1,10 +1,11 @@
-use beet::prelude::Action;
-use bevy::prelude::{Component, Entity, Query, Reflect};
+use beet::prelude::*;
+use bevy::prelude::*;
+use crate::features::ai::TargetEntity;
 use crate::features::tasks::task::{Status, Task, TaskFinished, TaskFinishedResult};
 
-#[derive(Component, Action, Reflect)]
+#[action(finish_task_action)]
+#[derive(Component, Reflect)]
 #[require(Name(|| "FinishTaskAction"))]
-#[observers(finish_task_action)]
 pub struct FinishTaskAction {
     pub task: Entity,
     pub tree_root: Entity,
@@ -18,9 +19,9 @@ fn finish_task_action(
     mut commands: Commands,
     mut event_writer: EventWriter<TaskFinished>,
 ) {
-    let agent = agents.get(trigger.entity()).unwrap().0;
-    let task = action.get(trigger.entity()).unwrap().task;
-    let tree_root = action.get(trigger.entity()).unwrap().tree_root;
+    let agent = trigger.origin;
+    let task = action.get(trigger.action).unwrap().task;
+    let tree_root = action.get(trigger.action).unwrap().tree_root;
     let mut task_data = task_data.get_mut(task).unwrap();
 
     // TODO: THREE mechanisms here for signifying finished, oh dear lord
@@ -36,10 +37,6 @@ fn finish_task_action(
         task_entity: task,
     });
 
-    commands
-        .entity(trigger.entity())
-        .trigger(OnRunResult::success());
-
+    trigger.trigger_result(&mut commands, RunResult::Success);
     commands.entity(tree_root).despawn_recursive();
-
 }

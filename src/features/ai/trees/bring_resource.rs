@@ -4,12 +4,12 @@ use crate::features::ai::actions::deposit::DepositAction;
 use crate::features::ai::actions::finish_task::FinishTaskAction;
 use crate::features::ai::actions::go_to::GoToAction;
 use crate::features::ai::actions::pick_up::PickUpAction;
-use crate::features::ai::{BehaviourTree, WorkingOnTask};
+use crate::features::ai::{BehaviourTree, TargetEntity, WorkingOnTask};
 use crate::features::inventory::Inventory;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::{BringResourceData, BringResourceRuntimeData, DepositTarget, Task, TaskCancelled, TaskType};
-use beet::prelude::{OnRun, SequenceFlow, TargetEntity};
+use beet::prelude::*;
 use bevy::prelude::*;
 
 pub fn create_bring_resource_tree(
@@ -40,7 +40,7 @@ pub fn create_bring_resource_tree(
 
             // TODO: Make mechanism to clean up in case Settler gets despawned
             let tree_entity = commands
-                .spawn((BehaviourTree, SequenceFlow))
+                .spawn((BehaviourTree, Sequence))
                 .with_children(|root| {
                     println!("Creating tree, spawning goto");
 
@@ -87,8 +87,9 @@ pub fn create_bring_resource_tree(
                         },
                         TargetEntity(worker_entity),
                     ));
-                })
-                .trigger(OnRun).id();
+                }).id();
+            
+            commands.entity(tree_entity).trigger(OnRunAction::new(tree_entity, worker_entity, ()));
 
             commands.entity(working_on_task.0).observe(move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
                 commands.entity(tree_entity).despawn_recursive();

@@ -1,4 +1,3 @@
-use beet::prelude::WorldExt;
 use crate::bundles::settler::Settler;
 use crate::bundles::{Id, ItemId, Reservations, ResourceItem};
 use crate::features::ai::trees::bring_resource::score_bring_resource;

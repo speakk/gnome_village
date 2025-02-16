@@ -1,16 +1,15 @@
 use crate::features::map::map_model::MapData;
 use crate::features::path_finding::path_finding::{spawn_pathfinding_task, Path, PathFollowFinished, PathFollowResult};
 use crate::features::position::WorldPosition;
-use beet::prelude::{Action, OnRun, OnRunResult, TargetEntity};
 use bevy::math::{IVec2, Vec2};
-use bevy::prelude::{Commands, Component, Query, Reflect, Res, Trigger};
-use crate::features::ai::PathFollow;
-use crate::features::misc_components::gltf_asset::GltfAnimation;
+use beet::prelude::*;
+use bevy::prelude::*;
+use crate::features::ai::{PathFollow, TargetEntity};
 use crate::features::path_finding::grid::PathingGridResource;
 
-#[derive(Component, Action, Reflect)]
+#[action(escape_from_solid_action)]
+#[derive(Component, Reflect)]
 #[require(ContinueRun, Name(|| "EscapeFromSolidAction"))]
-#[observers(escape_from_solid_action)]
 pub struct EscapeFromSolidAction;
 
 #[allow(clippy::too_many_arguments)]
@@ -23,18 +22,16 @@ fn escape_from_solid_action(
     map_data: Query<&MapData>,
     pathing_grid: Res<PathingGridResource>,
 ) {
-    let target_agent = target_agents.get(trigger.entity()).unwrap().0;
+    let target_agent = trigger.origin;
     let world_position = world_positions.get(target_agent).unwrap();
-    let action = actions.get(trigger.entity()).unwrap();
-    let trigger_entity = trigger.entity();
+    
+    //let trigger_entity = &trigger.entity();
     
     let free_neighbor_coordinate = pathing_grid.get_nearest_available_coordinate(world_position.0.as_ivec2());
     
     if free_neighbor_coordinate.is_none() {
         println!("No free neighbor found, aborting");
-        commands
-            .entity(trigger_entity)
-            .trigger(OnRunResult::failure());
+        trigger.trigger_result(&mut commands, RunResult::Failure);
         return;
     }
     
@@ -42,11 +39,13 @@ fn escape_from_solid_action(
     let path_follow = PathFollow {
         path: Path {
         steps: path,
-            related_task: Some(trigger_entity),
+            related_task: Some(trigger.entity()),
         },
         ..Default::default()
     };
-    
+
+    let trigger_entity = trigger.entity();
+    let trigger_clone = trigger.clone(); 
 
     commands.entity(target_agent).observe(
         move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {
@@ -56,15 +55,11 @@ fn escape_from_solid_action(
 
             match path_follow_trigger.result {
                 PathFollowResult::Success => {
-                    commands
-                        .entity(trigger_entity)
-                        .trigger(OnRunResult::success());
+                    trigger_clone.trigger_result(&mut commands, RunResult::Success);
                     println!("Escape action finished, success!");
                 }
                 PathFollowResult::Failure => {
-                    commands
-                        .entity(trigger_entity)
-                        .trigger(OnRunResult::failure());
+                    trigger_clone.trigger_result(&mut commands, RunResult::Failure);
                     println!("Escape action finished, failure!");
                 }
             }

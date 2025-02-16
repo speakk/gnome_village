@@ -1,6 +1,6 @@
-use beet::prelude::{OnRun, SequenceFlow, TargetEntity};
+use beet::prelude::{OnRun, OnRunAction, Sequence};
 use bevy::prelude::*;
-use crate::features::ai::{BehaviourTree, WorkingOnTask};
+use crate::features::ai::{BehaviourTree, TargetEntity, WorkingOnTask};
 use crate::features::ai::actions::build::BuildAction;
 use crate::features::ai::actions::finish_task::FinishTaskAction;
 use crate::features::ai::actions::go_to::GoToAction;
@@ -23,7 +23,7 @@ pub fn create_build_tree(
 
             // TODO: Make mechanism to clean up in case Settler gets despawned
             let tree_entity = commands
-                .spawn((BehaviourTree, SequenceFlow))
+                .spawn((BehaviourTree, Sequence))
                 .with_children(|root| {
                     root.spawn((
                         GoToAction {
@@ -46,8 +46,9 @@ pub fn create_build_tree(
                         },
                         TargetEntity(worker_entity),
                     ));
-                })
-                .trigger(OnRun).id();
+                }).id();
+            
+            commands.entity(tree_entity).trigger(OnRunAction::new(tree_entity, worker_entity, ()));
             
             commands.entity(working_on_task.0).observe(move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
                 commands.entity(tree_entity).try_despawn_recursive();

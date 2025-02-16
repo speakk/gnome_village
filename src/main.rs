@@ -5,9 +5,11 @@ mod ui;
 use crate::bundles::rock::RockPlugin;
 use crate::bundles::BundlePlugin;
 use crate::features::ai::AiPlugin;
+use crate::features::assets::AssetsPlugin;
 use crate::features::camera::CameraPlugin;
 use crate::features::map::map_model::WorldSeed;
 use crate::features::map::MapPlugin;
+use crate::features::misc_components::MiscComponentsPlugin;
 use crate::features::movement::MovementPlugin;
 use crate::features::position::PositionPlugin;
 use crate::features::save::SavePlugin;
@@ -15,24 +17,20 @@ use crate::features::states::preload::PreloadPlugin;
 use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
 use crate::features::user_actions::UserActionsPlugin;
-use beet::prelude::{LifecyclePlugin};
+use beet::prelude::{BeetDebugPlugin, BeetFlowPlugin};
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::pbr::{DefaultOpaqueRendererMethod, PointLightShadowMap};
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
-use crate::features::assets::AssetsPlugin;
-use crate::features::misc_components::MiscComponentsPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugins(LifecyclePlugin)
+        .add_plugins((BeetFlowPlugin::default()))
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
-        .insert_resource(PointLightShadowMap {
-            size: 256,
-        })
+        .insert_resource(PointLightShadowMap { size: 256 })
         .add_plugins(PreloadPlugin)
         .add_plugins(AssetsPlugin)
         .add_plugins(BundlePlugin)

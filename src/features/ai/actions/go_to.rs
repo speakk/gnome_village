@@ -1,16 +1,16 @@
 use crate::features::map::map_model::MapData;
 use crate::features::path_finding::path_finding::{spawn_pathfinding_task, PathFollowFinished, PathFollowResult, PathfindingTask};
 use crate::features::position::WorldPosition;
-use beet::prelude::{Action, OnRun, OnRunResult, TargetEntity};
+use beet::prelude::*;
+use bevy::prelude::*;
 use bevy::math::{IVec2, Vec2};
-use bevy::prelude::{Commands, Component, Query, Reflect, Res, Trigger};
-use crate::features::ai::{BehaviourTree, PathFollow};
+use crate::features::ai::{BehaviourTree, PathFollow, TargetEntity};
 use crate::features::misc_components::gltf_asset::GltfAnimation;
 use crate::features::path_finding::grid::PathingGridResource;
 
-#[derive(Component, Action, Reflect)]
+#[action(go_to_action)]
+#[derive(Component, Reflect)]
 #[require(ContinueRun, Name(|| "GoToAction"))]
-#[observers(go_to_action)]
 pub struct GoToAction {
     pub(crate) target: IVec2,
 }
@@ -25,9 +25,10 @@ fn go_to_action(
     map_data: Query<&MapData>,
     pathing_grid: Res<PathingGridResource>,
 ) {
-    let target_agent = target_agents.get(trigger.entity()).unwrap().0;
+    let target_agent = trigger.origin;
+    //let target_agent = target_agents.get(trigger.entity()).unwrap().0;
     let world_position = world_positions.get(target_agent).unwrap();
-    let goto_action = goto_action.get(trigger.entity()).unwrap();
+    let goto_action = goto_action.get(trigger.action).unwrap();
     let target_coordinate = goto_action.target;
     println!("Ensure path entered NEW, to {}", target_coordinate);
     let target_position = WorldPosition(Vec2::new(
@@ -51,6 +52,8 @@ fn go_to_action(
         commands.entity(target_agent).remove::<PathFollow>().remove::<PathfindingTask>();
     });
     
+    let trigger_clone = trigger.clone();
+    
     commands.entity(target_agent).observe(
         move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {
             if path_follow_trigger.related_task != Some(trigger_entity) {
@@ -63,15 +66,11 @@ fn go_to_action(
 
             match path_follow_trigger.result {
                 PathFollowResult::Success => {
-                    commands
-                        .entity(trigger_entity)
-                        .trigger(OnRunResult::success());
+                    trigger_clone.trigger_result(&mut commands, RunResult::Success);
                     println!("GoTo action finished, success!");
                 }
                 PathFollowResult::Failure => {
-                    commands
-                        .entity(trigger_entity)
-                        .trigger(OnRunResult::failure());
+                    trigger_clone.trigger_result(&mut commands, RunResult::Failure);
                     println!("GoTo action finished, failure!");
                 }
             }

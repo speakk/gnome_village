@@ -1,13 +1,14 @@
 use crate::bundles::{Id, ItemId, ItemSpawners, ItemStack};
 use crate::features::inventory::Inventory;
-use beet::prelude::Action;
-use bevy::prelude::{Component, Entity, Query, Reflect};
+use beet::prelude::*;
+use bevy::prelude::*;
+use crate::features::ai::TargetEntity;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::DepositTarget;
 
-#[derive(Component, Action, Reflect)]
+#[action(deposit_action)]
+#[derive(Component, Reflect)]
 #[require(Name(|| "DepositAction"))]
-#[observers(deposit_action)]
 pub struct DepositAction {
     pub deposit_target: DepositTarget,
     pub item_id: ItemId,
@@ -23,8 +24,8 @@ fn deposit_action(
     item_spawners: Res<ItemSpawners>
 ) {
     println!("Picking up item, inside pick up action");
-    let agent = agents.get(trigger.entity()).unwrap().0;
-    let action = actions.get(trigger.entity()).unwrap();
+    let agent = trigger.origin;
+    let action = actions.get(trigger.action).unwrap();
     let amount = action.amount;
 
     {
@@ -43,7 +44,5 @@ fn deposit_action(
         }
     }
     
-    commands
-        .entity(trigger.entity())
-        .trigger(OnRunResult::success());
+    trigger.trigger_result(&mut commands, RunResult::Success);
 }
