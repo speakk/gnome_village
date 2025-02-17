@@ -1,8 +1,8 @@
-use crate::features::assets::AnimationId;
+use crate::features::assets::GltfAssetId;
 use crate::features::misc_components::gltf_asset::GltfAnimation;
 use crate::bundles::{Id, ItemId};
 use crate::features::inventory::Inventory;
-use crate::features::misc_components::gltf_asset::GltfAsset;
+use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::movement::Friction;
 use crate::features::movement::Velocity;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
@@ -13,9 +13,12 @@ use bevy::prelude::*;
     Id(|| Id(ItemId::Settler)),
     Velocity,
     Friction(|| Friction(0.1)),
-    GltfAsset(|| "blender_models/settler.glb"),
+    GltfData(|| GltfData {
+        asset_id: GltfAssetId::Settler,
+        scene_name: None
+    }),
     GltfAnimation(|| GltfAnimation {
-        animation_id: AnimationId::Settler,
+        animation_id: GltfAssetId::Settler,
         animation_indices: vec![0, 1, 2],
         current_animation_index: 0,
         should_play: true

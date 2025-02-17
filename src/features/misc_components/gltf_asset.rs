@@ -1,6 +1,7 @@
 use crate::bundles::settler::Settler;
+use crate::features::ai::actions::build::IsBuilding;
 use crate::features::ai::{PathFollow, WorkingOnTask};
-use crate::features::assets::{AnimationId, Animations, SettlerAnimationIndices};
+use crate::features::assets::{Animations, GltfAssetHandles, GltfAssetId, SettlerAnimationIndices};
 use crate::features::misc_components::Prototype;
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
@@ -12,7 +13,6 @@ use bevy::prelude::*;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use std::time::Duration;
-use crate::features::ai::actions::build::IsBuilding;
 
 pub struct GltfAssetPlugin;
 
@@ -20,46 +20,60 @@ impl Plugin for GltfAssetPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (update_animation, react_to_path_follow, react_to_path_idle, react_to_build, react_to_work_finished),
+            (
+                update_animation,
+                react_to_path_follow,
+                react_to_path_idle,
+                react_to_build,
+                react_to_work_finished,
+            ),
         )
-        .add_viewable::<GltfAsset>();
+        .add_viewable::<GltfData>();
     }
 }
 
-#[derive(Component, Default, Reflect)]
+#[derive(Component, Reflect)]
 #[reflect(Component)]
 #[derive(Debug)]
-pub struct GltfAsset(pub String);
+pub struct GltfData {
+    pub asset_id: GltfAssetId,
+    pub scene_name: Option<String>,
+}
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
 #[derive(Debug)]
 pub struct GltfAnimation {
-    pub animation_id: AnimationId,
+    pub animation_id: GltfAssetId,
     pub animation_indices: Vec<usize>,
     pub current_animation_index: usize,
     pub should_play: bool,
 }
 
-impl From<&str> for GltfAsset {
-    fn from(s: &str) -> Self {
-        Self(s.to_string())
-    }
-}
-
-impl BuildView for GltfAsset {
-    fn build(world: &World, object: Object<GltfAsset>, mut view: ViewCommands<GltfAsset>) {
+impl BuildView for GltfData {
+    fn build(world: &World, object: Object<GltfData>, mut view: ViewCommands<GltfData>) {
         if world.get::<Prototype>(object.entity()).is_some() {
             return;
         }
 
         let transform = world.get::<WorldPosition>(object.entity()).unwrap();
-        let asset_server = world.get_resource::<AssetServer>().unwrap();
+        let gltf_assets = world.get_resource::<Assets<Gltf>>().unwrap();
 
-        let gltf_asset = world.get::<GltfAsset>(object.entity()).unwrap();
+        let gltf_data = world.get::<GltfData>(object.entity()).unwrap();
+
+        let asset_handle = world
+            .get_resource::<GltfAssetHandles>()
+            .unwrap()
+            .handles
+            .get(&gltf_data.asset_id)
+            .expect("Could not find asset handle");
+
+        let gltf = gltf_assets.get(asset_handle).unwrap();
+
+        let scene = get_scene_handle(&gltf_data, gltf);
 
         view.insert((
-            SceneRoot(asset_server.load(GltfAssetLabel::Scene(0).from_asset(gltf_asset.0.clone()))),
+            SceneRoot(scene),
             Transform::from_xyz(transform.x, 0.0, transform.y),
             Name::new("Gltf asset view"),
         ));
@@ -69,7 +83,7 @@ impl BuildView for GltfAsset {
 }
 
 fn update_animation(
-    query: Query<(&GltfAnimation, &Viewable<GltfAsset>), Changed<GltfAnimation>>,
+    query: Query<(&GltfAnimation, &Viewable<GltfData>), Changed<GltfAnimation>>,
     children_query: Query<&Children>,
     mut animation_player: Query<(&mut AnimationPlayer, &mut AnimationTransitions)>,
     animations: Res<Animations>,
@@ -98,6 +112,36 @@ fn update_animation(
     }
 }
 
+fn update_scene(
+    query: Query<(&GltfData, &Viewable<GltfData>), Changed<GltfData>>,
+    gltf_assets: Res<Assets<Gltf>>,
+    gltf_asset_handles: Res<GltfAssetHandles>,
+    mut commands: Commands,
+) {
+    for (gltf_data, viewable) in query.iter() {
+        let asset_handle = gltf_asset_handles
+            .handles
+            .get(&gltf_data.asset_id)
+            .expect("Could not find asset handle");
+
+        let gltf = gltf_assets.get(asset_handle).unwrap();
+
+        let scene = get_scene_handle(&gltf_data, gltf);
+
+        let view_entity = viewable.view().entity();
+
+        commands.entity(view_entity).despawn_descendants()
+            .insert(SceneRoot(scene));
+    }
+}
+
+fn get_scene_handle(gltf_data: &&GltfData, gltf: &Gltf) -> Handle<Scene> {
+    if let Some(scene_name) = &gltf_data.scene_name {
+        gltf.named_scenes[scene_name.as_str()].clone()
+    } else {
+        gltf.scenes[0].clone()
+    }
+}
 
 fn react_to_path_follow(mut query: Query<&mut GltfAnimation, Added<PathFollow>>) {
     for mut gltf_animation in query.iter_mut() {
@@ -113,7 +157,10 @@ fn react_to_build(mut query: Query<&mut GltfAnimation, Added<IsBuilding>>) {
     }
 }
 
-fn react_to_work_finished(mut removed: RemovedComponents<WorkingOnTask>, mut gltf_animations: Query<&mut GltfAnimation>) {
+fn react_to_work_finished(
+    mut removed: RemovedComponents<WorkingOnTask>,
+    mut gltf_animations: Query<&mut GltfAnimation>,
+) {
     for entity in removed.read() {
         if let Ok(mut gltf_animation) = gltf_animations.get_mut(entity) {
             gltf_animation.current_animation_index = SettlerAnimationIndices::Idle as usize;

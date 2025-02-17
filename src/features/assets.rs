@@ -7,13 +7,22 @@ use bevy::utils::HashMap;
 pub struct AssetsPlugin;
 
 const SETTLER_PATH: &str = "blender_models/settler.glb";
+const TORCH_PATH: &str = "blender_models/wooden_torch.glb";
+const OAK_TREE_PATH: &str = "blender_models/plants/oak_tree.glb";
+const LUMBER_PATH: &str = "blender_models/wood.glb";
 
 #[derive(Debug, Reflect, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum AnimationId {
-    Settler
+pub enum GltfAssetId {
+    Settler,
+    WoodenTorch,
+    OakTree,
+    Lumber,
 }
 
-// Build, eat, idle, sleep, walk
+#[derive(Resource, Default)]
+pub struct GltfAssetHandles {
+    pub handles: HashMap<GltfAssetId, Handle<Gltf>>,
+}
 
 pub enum SettlerAnimationIndices {
     Build,
@@ -25,14 +34,15 @@ pub enum SettlerAnimationIndices {
 
 #[derive(Resource)]
 pub struct Animations {
-    pub animations: HashMap<AnimationId, Vec<AnimationNodeIndex>>,
+    pub animations: HashMap<GltfAssetId, Vec<AnimationNodeIndex>>,
     pub graph: Handle<AnimationGraph>,
 }
 
 impl Plugin for AssetsPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(Preload), setup)
-            .add_systems(Update, setup_scene_once_loaded);
+            .add_systems(Update, setup_scene_once_loaded)
+            .insert_resource(GltfAssetHandles::default());
     }
 }
 
@@ -40,7 +50,13 @@ fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut graphs: ResMut<Assets<AnimationGraph>>,
+    mut gltf_asset_handles: ResMut<GltfAssetHandles>,
 ) {
+    gltf_asset_handles.handles.insert(GltfAssetId::Settler, asset_server.load(SETTLER_PATH));
+    gltf_asset_handles.handles.insert(GltfAssetId::WoodenTorch, asset_server.load(TORCH_PATH));
+    gltf_asset_handles.handles.insert(GltfAssetId::OakTree, asset_server.load(OAK_TREE_PATH));
+    gltf_asset_handles.handles.insert(GltfAssetId::Lumber, asset_server.load(LUMBER_PATH));
+    
     // Build the animation graph
     let (graph, node_indices) = AnimationGraph::from_clips([
         asset_server.load(GltfAssetLabel::Animation(0).from_asset(SETTLER_PATH)),
@@ -51,7 +67,7 @@ fn setup(
     ]);
     
     let mut animations = HashMap::new();
-    animations.insert(AnimationId::Settler, node_indices);
+    animations.insert(GltfAssetId::Settler, node_indices);
 
     // Insert a resource with the current scene information
     let graph_handle = graphs.add(graph);
@@ -73,7 +89,7 @@ fn setup_scene_once_loaded(
         transitions
             .play(
                 &mut animation_player,
-                animations.animations.get(&AnimationId::Settler).unwrap()[SettlerAnimationIndices::Idle as usize],
+                animations.animations.get(&GltfAssetId::Settler).unwrap()[SettlerAnimationIndices::Idle as usize],
                 Duration::ZERO,
             )
             .repeat();

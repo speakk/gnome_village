@@ -1,6 +1,7 @@
+use crate::features::assets::GltfAssetId;
 use crate::bundles::buildables::Buildable;
 use crate::bundles::{Id, ItemId};
-use crate::features::misc_components::gltf_asset::GltfAsset;
+use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::light_source::LightSource;
 use crate::features::path_finding::grid::Solid;
 use crate::features::tasks::task::ItemAmount;
@@ -22,5 +23,8 @@ use bevy::prelude::*;
         ..Default::default()
     }),
     LightSource(|| LightSource { intensity: 50000.0, color: Color::srgb(1.0, 0.9, 0.6) }),
-    GltfAsset(|| "blender_models/wooden_torch.glb"))]
+    GltfData(|| GltfData {
+        asset_id: GltfAssetId::WoodenTorch,
+        scene_name: None
+    }))]
 pub struct WoodenTorch;

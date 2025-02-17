@@ -1,16 +1,19 @@
 use crate::bundles::buildables::{BluePrint, BluePrintMaterial, Buildable};
 use crate::bundles::{ItemId, ItemSpawners, Prototypes};
+use crate::features::assets::GltfAssetHandles;
 use crate::features::map::map_model::MapData;
-use crate::features::misc_components::gltf_asset::GltfAsset;
+use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
-use crate::features::world_interaction::mouse_selection::{CoordinatesSelectedEvent, CurrentMouseWorldCoordinate, DragInfo, MapClickedEvent, MapDragEndEvent, SelectedCoordinates, SelectionType};
+use crate::features::world_interaction::mouse_selection::{
+    CoordinatesSelectedEvent, DragInfo
+    , SelectedCoordinates, SelectionType,
+};
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
-use crate::features::world_interaction::mouse_selection;
 
 pub struct BuildActionPlugin;
 
@@ -57,9 +60,11 @@ fn regenerate_preview_entity(
     mut commands: Commands,
     blueprint_material: Res<BluePrintMaterial>,
     prototypes: Res<Prototypes>,
-    render_info_query: Query<(Option<&SimpleMesh>, Option<&GltfAsset>), With<Buildable>>,
+    render_info_query: Query<(Option<&SimpleMesh>, Option<&GltfData>), With<Buildable>>,
     asset_server: Res<AssetServer>,
-    drag_info: Res<DragInfo>
+    drag_info: Res<DragInfo>,
+    gltf_asset_handles: Res<GltfAssetHandles>,
+    gltf_assets: Res<Assets<Gltf>>,
 ) {
     if (!coordinates.is_changed()) && (!current_building.is_changed()) {
         //println!("No changes to coordinates or current building, not regenerating preview entities");
@@ -69,8 +74,8 @@ fn regenerate_preview_entity(
     if current_building.0.is_none() {
         return;
     }
-    
-    if drag_info.is_dragging { 
+
+    if drag_info.is_dragging {
         if let Some(drag_event) = drag_info.map_drag_start_event {
             if drag_event.selection_type != SelectionType::Primary {
                 return;
@@ -93,7 +98,7 @@ fn regenerate_preview_entity(
 
     let prototype = prototypes.0.get(&current_building.0.unwrap()).unwrap();
     let mut simple_mesh_data: Option<&SimpleMesh> = None;
-    let mut gltf_asset_data: Option<&GltfAsset> = None;
+    let mut gltf_asset_data: Option<&GltfData> = None;
 
     if let Ok((simple_mesh, gltf_asset)) = render_info_query.get(*prototype) {
         simple_mesh_data = simple_mesh;
@@ -123,7 +128,10 @@ fn regenerate_preview_entity(
 
         if let Some(gltf_asset_data) = gltf_asset_data {
             let scene_root = SceneRoot(
-                asset_server.load(GltfAssetLabel::Scene(0).from_asset(gltf_asset_data.0.clone())),
+                gltf_assets.get(
+                gltf_asset_handles.handles
+                    .get(&gltf_asset_data.asset_id)
+                    .unwrap()).unwrap().scenes[0].clone()
             );
             spawned.insert(scene_root);
         }

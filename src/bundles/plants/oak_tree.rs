@@ -1,13 +1,14 @@
 use crate::bundles::{Id, ItemId, ResourceItem};
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::assets::GltfAssetId;
+use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
-#[require(Id(|| Id(ItemId::Lumber)), Name(|| "Lumber"), ResourceItem,
+#[require(Id(|| Id(ItemId::OakTree)), Name(|| "Oak Tree"), ResourceItem,
     GltfData(|| GltfData {
-        asset_id: GltfAssetId::Lumber,
+        asset_id: GltfAssetId::OakTree,
         scene_name: None
     }))]
-pub struct Lumber;
+pub struct OakTree;

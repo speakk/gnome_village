@@ -3,7 +3,7 @@ pub mod simple_mesh;
 mod simple_mesh_view;
 pub(crate) mod light_source;
 
-use crate::features::misc_components::gltf_asset::{GltfAsset, GltfAssetPlugin};
+use crate::features::misc_components::gltf_asset::{GltfData, GltfAssetPlugin};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint};
 use crate::features::position::{WorldPosition};
@@ -28,8 +28,8 @@ impl Plugin for MiscComponentsPlugin {
                 (
                     viewable_moved::<SimpleMesh>,
                     update_viewable_rotation::<SimpleMesh>,
-                    viewable_moved::<GltfAsset>,
-                    update_viewable_rotation::<GltfAsset>,
+                    viewable_moved::<GltfData>,
+                    update_viewable_rotation::<GltfData>,
                     viewable_moved::<LightSource>,
                     update_viewable_rotation::<LightSource>,
                 ),

@@ -8,7 +8,7 @@ use crate::features::ai::WorkingOnTask;
 use crate::features::input::SaveLoadAction;
 use crate::features::inventory::Inventory;
 use crate::features::map::map_model::{MapData, ReservedCoordinatesHelper};
-use crate::features::misc_components::gltf_asset::GltfAsset;
+use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::simple_mesh::SimpleMesh;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::Task;
@@ -81,7 +81,7 @@ impl Plugin for SavePlugin {
         ))
         .register_type::<Settler>()
         .register_type::<WorldPosition>()
-        .register_type::<GltfAsset>()
+        .register_type::<GltfData>()
         .register_type::<SimpleMesh>()
         .register_type::<Task>()
         .register_type::<Job>()
