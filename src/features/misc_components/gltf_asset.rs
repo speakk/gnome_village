@@ -22,6 +22,7 @@ impl Plugin for GltfAssetPlugin {
             Update,
             (
                 update_animation,
+                update_scene,
                 react_to_path_follow,
                 react_to_path_idle,
                 react_to_build,

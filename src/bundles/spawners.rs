@@ -1,3 +1,4 @@
+use crate::bundles::plants::oak_tree::OakTree;
 use crate::bundles::buildables::torch::WoodenTorch;
 use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::resources::lumber::Lumber;
@@ -19,4 +20,5 @@ pub fn setup_spawners(mut spawners: ResMut<ItemSpawners>) {
     });
 
     spawners.insert(ItemId::Lumber, |commands| commands.spawn((Lumber,)).id());
+    spawners.insert(ItemId::OakTree, |commands| commands.spawn((OakTree,)).id());
 }

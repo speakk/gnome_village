@@ -212,6 +212,10 @@ pub fn generate_test_entities(
             entity_type: ItemId::Lumber,
             amount: 100,
         },
+        EntityGeneration {
+            entity_type: ItemId::OakTree,
+            amount: 20,
+        },
     ];
 
     for test_entity in test_entities {

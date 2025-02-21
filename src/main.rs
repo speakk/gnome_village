@@ -24,6 +24,7 @@ use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
+use crate::features::plants::PlantsPlugin;
 
 fn main() {
     App::new()
@@ -39,6 +40,7 @@ fn main() {
         .add_plugins(SunLightPlugin)
         .add_plugins(PathFindingPlugin)
         .add_plugins(RockPlugin)
+        .add_plugins(PlantsPlugin)
         .add_plugins(MiscComponentsPlugin)
         .add_plugins(features::input::InputPlugin)
         .add_plugins(features::world_interaction::WorldInteractionPlugin)
