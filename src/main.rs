@@ -11,20 +11,20 @@ use crate::features::map::map_model::WorldSeed;
 use crate::features::map::MapPlugin;
 use crate::features::misc_components::MiscComponentsPlugin;
 use crate::features::movement::MovementPlugin;
+use crate::features::plants::PlantsPlugin;
 use crate::features::position::PositionPlugin;
 use crate::features::save::SavePlugin;
 use crate::features::states::preload::PreloadPlugin;
 use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
 use crate::features::user_actions::UserActionsPlugin;
-use beet::prelude::{BeetDebugPlugin, BeetFlowPlugin};
+use beet::prelude::BeetFlowPlugin;
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::pbr::{DefaultOpaqueRendererMethod, PointLightShadowMap};
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
-use crate::features::plants::PlantsPlugin;
 
 fn main() {
     App::new()

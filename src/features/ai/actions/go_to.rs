@@ -1,11 +1,13 @@
+use crate::features::ai::PathFollow;
 use crate::features::map::map_model::MapData;
-use crate::features::path_finding::path_finding::{spawn_pathfinding_task, PathFollowFinished, PathFollowResult, PathfindingTask};
+use crate::features::path_finding::grid::PathingGridResource;
+use crate::features::path_finding::path_finding::{
+    spawn_pathfinding_task, PathFollowFinished, PathFollowResult, PathfindingTask,
+};
 use crate::features::position::WorldPosition;
 use beet::prelude::*;
-use bevy::prelude::*;
 use bevy::math::{IVec2, Vec2};
-use crate::features::ai::{PathFollow};
-use crate::features::path_finding::grid::PathingGridResource;
+use bevy::prelude::*;
 
 #[action(go_to_action)]
 #[derive(Component, Reflect)]
@@ -42,20 +44,25 @@ fn go_to_action(
         target_position,
         Some(action_entity),
     );
-    
+
     // Cleanup on BT remove
-    commands.entity(action_entity).observe(move |_trigger: Trigger<OnRemove, ContinueRun>, mut commands: Commands| {
-        commands.entity(target_agent).remove::<PathFollow>().remove::<PathfindingTask>();
-    });
-    
+    commands.entity(action_entity).observe(
+        move |_trigger: Trigger<OnRemove, ContinueRun>, mut commands: Commands| {
+            commands
+                .entity(target_agent)
+                .remove::<PathFollow>()
+                .remove::<PathfindingTask>();
+        },
+    );
+
     let trigger_clone = trigger.clone();
-    
+
     commands.entity(target_agent).observe(
         move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {
             if path_follow_trigger.related_task != Some(action_entity) {
                 return;
             }
-            
+
             if commands.get_entity(action_entity).is_none() {
                 return;
             }

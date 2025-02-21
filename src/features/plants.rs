@@ -83,7 +83,7 @@ pub fn update_growth_process(
             &plant.growth_requirements,
             world_position,
             &coordinate_to_entity,
-            &mut inventories
+            &mut inventories,
         ) {
             continue;
         }
@@ -116,7 +116,7 @@ fn check_growth_requirements(
             let inventory = inventories.get_mut(*entity);
             if let Ok(mut inventory) = inventory {
                 let mut has_all = true;
-                
+
                 for requirement in growth_requirements {
                     if !inventory.has_amount(requirement.item_id, requirement.amount) {
                         has_all = false;
@@ -129,14 +129,13 @@ fn check_growth_requirements(
                     for requirement in growth_requirements {
                         inventory.remove_item(requirement.item_id, requirement.amount);
                     }
-                    
+
                     return true;
                 }
             }
-
         }
     }
-    
+
     false
 }
 

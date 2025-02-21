@@ -97,12 +97,12 @@ impl PathingGridResource {
             ];
 
             for &(dx, dy, diagonals) in &CARDINAL_DIRECTIONS {
-                if !candidates.contains(&(x.wrapping_add(dx as usize), y.wrapping_add(dy as usize))) {
+                if !candidates.contains(&(x.wrapping_add(dx as usize), y.wrapping_add(dy as usize)))
+                {
                     for &(ddx, ddy) in &diagonals {
-                        if let Some(index) = candidates
-                            .iter()
-                            .position(|&c| c == (x.wrapping_add(ddx as usize), y.wrapping_add(ddy as usize)))
-                        {
+                        if let Some(index) = candidates.iter().position(|&c| {
+                            c == (x.wrapping_add(ddx as usize), y.wrapping_add(ddy as usize))
+                        }) {
                             candidates.swap_remove(index);
                         }
                     }
@@ -120,7 +120,7 @@ impl PathingGridResource {
         let mut final_end = point;
 
         if is_end_occupied {
-            let neighbours = self.neighbours(false,(point.x as usize, point.y as usize));
+            let neighbours = self.neighbours(false, (point.x as usize, point.y as usize));
             let mut found_neighbour = false;
             for neighbour in neighbours {
                 if self.0.has_vertex((neighbour.0, neighbour.1)) {

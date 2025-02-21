@@ -60,7 +60,7 @@ impl Command for CancelTaskCommand {
         let child_entities: Vec<Entity> = query.0.iter_descendants(self.task_entity).collect();
         for child in child_entities {
             let mut commands = world.commands();
-            
+
             commands.entity(child).trigger(TaskCancelled {
                 reason: self.reason.clone(),
                 task_entity: child,
@@ -71,7 +71,6 @@ impl Command for CancelTaskCommand {
         }
 
         world.flush();
-        
     }
 }
 

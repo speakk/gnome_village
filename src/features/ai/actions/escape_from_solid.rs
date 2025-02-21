@@ -1,12 +1,14 @@
-use crate::features::map::map_model::MapData;
-use crate::features::path_finding::path_finding::{spawn_pathfinding_task, Path, PathFollowFinished, PathFollowResult};
-use crate::features::position::WorldPosition;
-use bevy::math::{IVec2, Vec2};
-use beet::prelude::*;
-use bevy::prelude::*;
-use crate::features::ai::{PathFollow};
 use crate::features::ai::actions::build::BuildAction;
+use crate::features::ai::PathFollow;
+use crate::features::map::map_model::MapData;
 use crate::features::path_finding::grid::PathingGridResource;
+use crate::features::path_finding::path_finding::{
+    spawn_pathfinding_task, Path, PathFollowFinished, PathFollowResult,
+};
+use crate::features::position::WorldPosition;
+use beet::prelude::*;
+use bevy::math::{IVec2, Vec2};
+use bevy::prelude::*;
 
 #[derive(Component, Reflect)]
 #[require(ContinueRun, Name(|| "EscapeFromSolidAction"))]
@@ -26,7 +28,8 @@ fn escape_from_solid_action(
 
         //let trigger_entity = &trigger.entity();
 
-        let free_neighbor_coordinate = pathing_grid.get_nearest_available_coordinate(world_position.0.as_ivec2());
+        let free_neighbor_coordinate =
+            pathing_grid.get_nearest_available_coordinate(world_position.0.as_ivec2());
 
         if free_neighbor_coordinate.is_none() {
             println!("No free neighbor found, aborting");
@@ -34,7 +37,10 @@ fn escape_from_solid_action(
             return;
         }
 
-        let path = vec![world_position.0.as_ivec2(), free_neighbor_coordinate.unwrap()];
+        let path = vec![
+            world_position.0.as_ivec2(),
+            free_neighbor_coordinate.unwrap(),
+        ];
         let path_follow = PathFollow {
             path: Path {
                 steps: path,
@@ -53,16 +59,23 @@ fn escape_from_solid_action(
 
                 match path_follow_trigger.result {
                     PathFollowResult::Success => {
-                        running_clone.trigger_result(&mut commands, action_entity, RunResult::Success);
+                        running_clone.trigger_result(
+                            &mut commands,
+                            action_entity,
+                            RunResult::Success,
+                        );
                         println!("Escape action finished, success!");
                     }
                     PathFollowResult::Failure => {
-                        running_clone.trigger_result(&mut commands, action_entity, RunResult::Failure);
+                        running_clone.trigger_result(
+                            &mut commands,
+                            action_entity,
+                            RunResult::Failure,
+                        );
                         println!("Escape action finished, failure!");
                     }
                 }
             },
         );
     }
-    
 }

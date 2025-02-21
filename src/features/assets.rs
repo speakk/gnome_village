@@ -1,8 +1,8 @@
-use std::time::Duration;
 use crate::features::states::AppState::Preload;
 use bevy::app::App;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
+use std::time::Duration;
 
 pub struct AssetsPlugin;
 
@@ -52,11 +52,19 @@ fn setup(
     mut graphs: ResMut<Assets<AnimationGraph>>,
     mut gltf_asset_handles: ResMut<GltfAssetHandles>,
 ) {
-    gltf_asset_handles.handles.insert(GltfAssetId::Settler, asset_server.load(SETTLER_PATH));
-    gltf_asset_handles.handles.insert(GltfAssetId::WoodenTorch, asset_server.load(TORCH_PATH));
-    gltf_asset_handles.handles.insert(GltfAssetId::OakTree, asset_server.load(OAK_TREE_PATH));
-    gltf_asset_handles.handles.insert(GltfAssetId::Lumber, asset_server.load(LUMBER_PATH));
-    
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::Settler, asset_server.load(SETTLER_PATH));
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::WoodenTorch, asset_server.load(TORCH_PATH));
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::OakTree, asset_server.load(OAK_TREE_PATH));
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::Lumber, asset_server.load(LUMBER_PATH));
+
     // Build the animation graph
     let (graph, node_indices) = AnimationGraph::from_clips([
         asset_server.load(GltfAssetLabel::Animation(0).from_asset(SETTLER_PATH)),
@@ -65,7 +73,7 @@ fn setup(
         asset_server.load(GltfAssetLabel::Animation(3).from_asset(SETTLER_PATH)),
         asset_server.load(GltfAssetLabel::Animation(4).from_asset(SETTLER_PATH)),
     ]);
-    
+
     let mut animations = HashMap::new();
     animations.insert(GltfAssetId::Settler, node_indices);
 
@@ -89,11 +97,12 @@ fn setup_scene_once_loaded(
         transitions
             .play(
                 &mut animation_player,
-                animations.animations.get(&GltfAssetId::Settler).unwrap()[SettlerAnimationIndices::Idle as usize],
+                animations.animations.get(&GltfAssetId::Settler).unwrap()
+                    [SettlerAnimationIndices::Idle as usize],
                 Duration::ZERO,
             )
             .repeat();
-        
+
         commands
             .entity(entity)
             .insert(AnimationGraphHandle(animations.graph.clone()))

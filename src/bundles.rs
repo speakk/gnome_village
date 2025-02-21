@@ -3,12 +3,12 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 
 pub mod buildables;
+pub mod plants;
 pub mod resources;
 pub mod rock;
 pub mod settler;
-pub mod spawners;
-pub mod plants;
 pub mod soil;
+pub mod spawners;
 
 pub struct BundlePlugin;
 
@@ -30,7 +30,7 @@ pub enum ItemId {
     Lumber = 4,
     OakTree = 5,
     Water = 6,
-    Dirt = 7
+    Dirt = 7,
 }
 
 #[derive(Component, Reflect, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]

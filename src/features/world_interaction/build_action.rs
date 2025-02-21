@@ -9,8 +9,7 @@ use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
 use crate::features::world_interaction::mouse_selection::{
-    CoordinatesSelectedEvent, DragInfo
-    , SelectedCoordinates, SelectionType,
+    CoordinatesSelectedEvent, DragInfo, SelectedCoordinates, SelectionType,
 };
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
@@ -128,10 +127,16 @@ fn regenerate_preview_entity(
 
         if let Some(gltf_asset_data) = gltf_asset_data {
             let scene_root = SceneRoot(
-                gltf_assets.get(
-                gltf_asset_handles.handles
-                    .get(&gltf_asset_data.asset_id)
-                    .unwrap()).unwrap().scenes[0].clone()
+                gltf_assets
+                    .get(
+                        gltf_asset_handles
+                            .handles
+                            .get(&gltf_asset_data.asset_id)
+                            .unwrap(),
+                    )
+                    .unwrap()
+                    .scenes[0]
+                    .clone(),
             );
             spawned.insert(scene_root);
         }

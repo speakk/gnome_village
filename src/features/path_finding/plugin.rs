@@ -1,9 +1,9 @@
+use crate::features::path_finding::grid::{react_to_blueprint_removed, PathingGridResource};
+use crate::features::path_finding::{grid, path_finding};
+use crate::features::states::AppState;
 use bevy::app::{App, Plugin, Update};
 use bevy::prelude::{in_state, IntoSystemConfigs, OnEnter};
 use pathfinding::grid::Grid;
-use crate::features::path_finding::{grid, path_finding};
-use crate::features::path_finding::grid::{react_to_blueprint_removed, PathingGridResource};
-use crate::features::states::AppState;
 
 pub struct PathFindingPlugin;
 
@@ -18,7 +18,8 @@ impl Plugin for PathFindingPlugin {
                     path_finding::follow_path,
                     react_to_blueprint_removed,
                     //test_add_pathfinding_task_to_settler.run_if(in_state(AppState::InGame)),
-                ).run_if(in_state(AppState::InGame)),
+                )
+                    .run_if(in_state(AppState::InGame)),
             )
             .insert_resource(PathingGridResource(Grid::new(0, 0)));
     }

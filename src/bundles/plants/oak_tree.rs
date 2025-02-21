@@ -1,7 +1,7 @@
-use crate::features::plants::Plant;
 use crate::bundles::{Id, ItemId, ResourceItem};
 use crate::features::assets::GltfAssetId;
 use crate::features::misc_components::gltf_asset::GltfData;
+use crate::features::plants::Plant;
 use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]

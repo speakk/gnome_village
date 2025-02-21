@@ -1,5 +1,5 @@
-pub mod build_task;
 pub mod assign_jobs;
+pub mod build_task;
 
 use bevy::prelude::*;
 

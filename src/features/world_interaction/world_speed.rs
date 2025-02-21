@@ -3,8 +3,8 @@ use bevy::app::{App, Startup, Update};
 use bevy::prelude::*;
 use leafwing_input_manager::action_state::ActionState;
 use leafwing_input_manager::input_map::InputMap;
-use leafwing_input_manager::InputManagerBundle;
 use leafwing_input_manager::prelude::ButtonlikeChord;
+use leafwing_input_manager::InputManagerBundle;
 
 pub struct WorldSpeedPlugin;
 

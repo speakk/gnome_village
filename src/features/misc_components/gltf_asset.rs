@@ -131,7 +131,9 @@ fn update_scene(
 
         let view_entity = viewable.view().entity();
 
-        commands.entity(view_entity).despawn_descendants()
+        commands
+            .entity(view_entity)
+            .despawn_descendants()
             .insert(SceneRoot(scene));
     }
 }

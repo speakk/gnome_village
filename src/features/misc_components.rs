@@ -1,20 +1,20 @@
 pub(crate) mod gltf_asset;
+pub(crate) mod light_source;
 pub mod simple_mesh;
 mod simple_mesh_view;
-pub(crate) mod light_source;
 
+use crate::bundles::ItemId;
 use crate::features::misc_components::gltf_asset::{GltfAssetPlugin, GltfData};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint};
+use crate::features::movement::Velocity;
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
+use light_source::LightSource;
 use moonshine_core::prelude::Save;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
-use light_source::LightSource;
-use crate::bundles::ItemId;
-use crate::features::movement::Velocity;
 
 pub struct MiscComponentsPlugin;
 
@@ -34,7 +34,6 @@ impl Plugin for MiscComponentsPlugin {
                     viewable_moved::<LightSource>,
                     update_viewable_rotation::<LightSource>,
                 ),
-
             )
             .add_viewable::<SimpleMesh>()
             .add_viewable::<LightSource>();
@@ -67,15 +66,19 @@ pub fn viewable_moved<T>(
 pub fn update_viewable_rotation<T>(
     query: Query<(&Viewable<T>, &Velocity)>,
     mut transform: Query<&mut Transform>,
-    time: Res<Time>
-) where T: Component {
+    time: Res<Time>,
+) where
+    T: Component,
+{
     for (model, velocity) in query.iter() {
         let view = model.view();
         let mut transform = transform.get_mut(view.entity()).unwrap();
         if velocity.0.length() > 0.5 {
             let mut target_transform = *transform;
             target_transform.look_to(-Vec3::new(velocity.0.x, 0.0, velocity.0.y), Vec3::Y);
-            transform.rotation.smooth_nudge(&target_transform.rotation, 5.0, time.delta_secs());
+            transform
+                .rotation
+                .smooth_nudge(&target_transform.rotation, 5.0, time.delta_secs());
         }
     }
 }

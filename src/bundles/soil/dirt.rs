@@ -1,6 +1,6 @@
 use crate::bundles::HashMap;
-use crate::features::inventory::Inventory;
 use crate::bundles::{Id, ItemId, ResourceItem};
+use crate::features::inventory::Inventory;
 use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]

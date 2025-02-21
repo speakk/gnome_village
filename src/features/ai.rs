@@ -6,7 +6,9 @@ pub mod utility_ai;
 // use crate::features::ai::actions::finish_task::FinishTaskAction;
 // use crate::features::ai::actions::go_to::GoToAction;
 // use crate::features::ai::actions::pick_up::PickUpAction;
+use crate::features::ai::actions::build::build_action;
 use crate::features::ai::trees::bring_resource::create_bring_resource_tree;
+use crate::features::ai::trees::build::create_build_tree;
 use crate::features::ai::utility_ai::plugin::UtilityAiPlugin;
 use crate::features::path_finding::path_finding::Path;
 use bevy::prelude::*;
@@ -14,8 +16,6 @@ use moonshine_core::prelude::MapEntities;
 use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::Unload;
 use std::fmt::Debug;
-use crate::features::ai::actions::build::build_action;
-use crate::features::ai::trees::build::create_build_tree;
 
 pub struct AiPlugin;
 
@@ -25,7 +25,10 @@ impl Plugin for AiPlugin {
             UtilityAiPlugin,
             //ActionPlugin::<(GoToAction, PickUpAction, FinishTaskAction, DepositAction)>::default(),
         ))
-        .add_systems(Update, (create_bring_resource_tree, create_build_tree, build_action));
+        .add_systems(
+            Update,
+            (create_bring_resource_tree, create_build_tree, build_action),
+        );
     }
 }
 

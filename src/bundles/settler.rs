@@ -1,7 +1,7 @@
-use crate::features::assets::GltfAssetId;
-use crate::features::misc_components::gltf_asset::GltfAnimation;
 use crate::bundles::{Id, ItemId};
+use crate::features::assets::GltfAssetId;
 use crate::features::inventory::Inventory;
+use crate::features::misc_components::gltf_asset::GltfAnimation;
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::movement::Friction;
 use crate::features::movement::Velocity;

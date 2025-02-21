@@ -44,7 +44,6 @@ pub enum WorldSpeedAction {
     Fastest,
 }
 
-
 #[derive(Actionlike, PartialEq, Eq, Hash, Clone, Copy, Debug, Reflect)]
 pub enum SaveLoadAction {
     QuickSave,

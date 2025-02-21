@@ -50,7 +50,7 @@ fn handle_removed(
     let Ok((world_position, previous_world_position)) = query.get(entity) else {
         return;
     };
-    
+
     if let Some(entities) = coordinate_to_entity
         .0
         .get_mut(&previous_world_position.as_ivec2())
@@ -58,10 +58,7 @@ fn handle_removed(
         entities.retain(|&e| e != entity)
     }
 
-    if let Some(entities) = coordinate_to_entity
-        .0
-        .get_mut(&world_position.as_ivec2())
-    {
+    if let Some(entities) = coordinate_to_entity.0.get_mut(&world_position.as_ivec2()) {
         entities.retain(|&e| e != entity)
     }
 }

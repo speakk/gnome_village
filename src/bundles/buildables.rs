@@ -5,9 +5,9 @@ use crate::bundles::buildables::torch::WoodenTorch;
 use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::{ItemId, ItemSpawners, Prototypes};
 use crate::features::inventory::Inventory;
+use crate::features::misc_components::ItemAmount;
 use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
-use crate::features::misc_components::ItemAmount;
 use bevy::prelude::*;
 
 pub struct BuildablesPlugin;
@@ -112,7 +112,7 @@ pub struct Buildable {
 impl Buildable {
     pub fn increase_construction_progress(&mut self, amount: f32) {
         self.construction_progress += amount;
-        
+
         if self.construction_progress >= 1.0 {
             self.finished = true;
             println!("Buildable finished");

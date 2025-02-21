@@ -1,12 +1,12 @@
-use crate::bundles::soil::dirt::Dirt;
-use crate::bundles::plants::oak_tree::OakTree;
 use crate::bundles::buildables::torch::WoodenTorch;
 use crate::bundles::buildables::wooden_wall::WoodenWall;
+use crate::bundles::plants::oak_tree::OakTree;
 use crate::bundles::resources::lumber::Lumber;
+use crate::bundles::resources::water::Water;
 use crate::bundles::settler::Settler;
+use crate::bundles::soil::dirt::Dirt;
 use crate::bundles::{ItemId, ItemSpawners};
 use bevy::prelude::ResMut;
-use crate::bundles::resources::water::Water;
 
 pub fn setup_spawners(mut spawners: ResMut<ItemSpawners>) {
     spawners.insert(ItemId::WoodenTorch, |commands| {

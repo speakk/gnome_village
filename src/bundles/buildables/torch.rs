@@ -1,10 +1,10 @@
-use crate::features::assets::GltfAssetId;
 use crate::bundles::buildables::Buildable;
 use crate::bundles::{Id, ItemId};
+use crate::features::assets::GltfAssetId;
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::light_source::LightSource;
-use crate::features::path_finding::grid::Solid;
 use crate::features::misc_components::ItemAmount;
+use crate::features::path_finding::grid::Solid;
 use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]

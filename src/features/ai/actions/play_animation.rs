@@ -1,7 +1,7 @@
-use crate::bundles::{ItemStack};
+use crate::bundles::ItemStack;
+use crate::features::misc_components::gltf_asset::GltfAnimation;
 use beet::prelude::*;
 use bevy::prelude::*;
-use crate::features::misc_components::gltf_asset::GltfAnimation;
 
 #[action(play_animation_action)]
 #[derive(Component, Reflect)]
@@ -14,12 +14,12 @@ fn play_animation_action(
     trigger: Trigger<OnRun>,
     actions: Query<&PlayAnimationAction>,
     mut gltf_animations: Query<&mut GltfAnimation>,
-    mut commands: Commands
+    mut commands: Commands,
 ) {
     println!("Picking up item, inside pick up action");
     let agent = trigger.origin;
     let action = actions.get(trigger.action).unwrap();
-    
+
     let mut gltf_animation = gltf_animations.get_mut(agent).unwrap();
     gltf_animation.current_animation_index = action.animation_index;
 

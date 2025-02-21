@@ -319,9 +319,9 @@ fn line_select(start_coordinate: IVec2, end_coordinate: IVec2) -> Vec<IVec2> {
     )
     .map(|point| IVec2::new(point.0 as i32, point.1 as i32))
     .collect();
-    
+
     line.push(end_coordinate);
-    
+
     line
 }
 

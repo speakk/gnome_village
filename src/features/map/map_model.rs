@@ -1,4 +1,3 @@
-use std::any::Any;
 use crate::bundles::rock::Rock;
 use crate::bundles::{ItemId, ItemSpawners};
 use crate::features::map::map_view::MapMaterialHandles;
@@ -10,6 +9,7 @@ use bevy::prelude::*;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
+use std::any::Any;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -132,14 +132,12 @@ pub fn generate_map_entity(
                 reserved_coordinates.0.push(centered_coordinate);
             }
 
-            
             let dirt = item_spawners.get(&ItemId::Dirt).unwrap()(&mut commands);
-            commands.entity(dirt).insert((WorldPosition(centered_coordinate.as_vec2()), InWorld));
-            
-            map_data.set_tile_type(
-                centered_coordinate,
-                tile_type,
-            );
+            commands
+                .entity(dirt)
+                .insert((WorldPosition(centered_coordinate.as_vec2()), InWorld));
+
+            map_data.set_tile_type(centered_coordinate, tile_type);
         }
     }
 
@@ -265,11 +263,7 @@ pub fn generate_reserved_debug(
             let coordinate = map_data_query.convert_to_centered_coordinate(UVec2::new(x, y));
             if reserved_coordinates.0.contains(&coordinate) {
                 commands.spawn((
-                    Transform::from_xyz(
-                        coordinate.x as f32,
-                        -0.4,
-                        coordinate.y as f32,
-                    ),
+                    Transform::from_xyz(coordinate.x as f32, -0.4, coordinate.y as f32),
                     Mesh3d(mesh_handle.clone()),
                     MeshMaterial3d(mat_handle.clone()),
                 ));

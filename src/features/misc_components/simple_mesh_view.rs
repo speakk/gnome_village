@@ -1,4 +1,3 @@
-use crate::bundles::buildables::wooden_wall::WoodenWall;
 use crate::bundles::buildables::{BluePrint, BluePrintMaterial, BuildableMaterialHandles};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::Prototype;
@@ -6,7 +5,7 @@ use crate::features::position::WorldPosition;
 use bevy::asset::Handle;
 use bevy::pbr::{MeshMaterial3d, NotShadowCaster, StandardMaterial};
 use bevy::prelude::{
-    Added, Changed, Commands, Component, Mesh3d, Query, RemovedComponents, Res, Transform, World,
+    Added, Commands, Component, Mesh3d, Query, RemovedComponents, Res, Transform, World,
 };
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands, Viewable};

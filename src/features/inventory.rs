@@ -1,5 +1,5 @@
-use crate::ReflectComponent;
 use crate::bundles::ItemId;
+use crate::ReflectComponent;
 use bevy::prelude::{Component, Reflect};
 use bevy::utils::HashMap;
 use std::cmp::Ordering;

@@ -1,6 +1,6 @@
+use crate::features::tasks::task::{Status, Task, TaskFinished, TaskFinishedResult};
 use beet::prelude::*;
 use bevy::prelude::*;
-use crate::features::tasks::task::{Status, Task, TaskFinished, TaskFinishedResult};
 
 #[action(finish_task_action)]
 #[derive(Component, Reflect)]
@@ -24,7 +24,10 @@ fn finish_task_action(
 
     // TODO: THREE mechanisms here for signifying finished, oh dear lord
     task_data.status = Status::Finished;
-    println!("Task finished by agent: {:?}, triggering TaskFinished for task: {:?}", agent, task);
+    println!(
+        "Task finished by agent: {:?}, triggering TaskFinished for task: {:?}",
+        agent, task
+    );
     commands.entity(task).trigger(TaskFinished {
         result: TaskFinishedResult::Success,
         task_entity: task,

@@ -1,6 +1,6 @@
 use crate::bundles::buildables::BluePrint;
 use crate::bundles::Id;
-use crate::features::position::{CoordinateToEntity};
+use crate::features::position::CoordinateToEntity;
 use crate::features::user_actions::{UserActionIntent, UserActionType};
 use crate::features::world_interaction::mouse_selection::{
     CoordinatesSelectedEvent, DragInfo, SelectedCoordinates, SelectionType,

@@ -1,11 +1,11 @@
-use crate::ReflectComponent;
-use bevy::color::Color;
-use bevy::prelude::{default, Component, Reflect, Transform, World};
-use moonshine_view::{BuildView, ViewCommands};
-use moonshine_object::{Object, ObjectInstance};
-use bevy::pbr::{PointLight, PointLightShadowMap};
 use crate::features::misc_components::Prototype;
 use crate::features::position::WorldPosition;
+use crate::ReflectComponent;
+use bevy::color::Color;
+use bevy::pbr::{PointLight, PointLightShadowMap};
+use bevy::prelude::{default, Component, Reflect, Transform, World};
+use moonshine_object::{Object, ObjectInstance};
+use moonshine_view::{BuildView, ViewCommands};
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
