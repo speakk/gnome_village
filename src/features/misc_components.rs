@@ -3,16 +3,17 @@ pub mod simple_mesh;
 mod simple_mesh_view;
 pub(crate) mod light_source;
 
-use crate::features::misc_components::gltf_asset::{GltfData, GltfAssetPlugin};
+use crate::features::misc_components::gltf_asset::{GltfAssetPlugin, GltfData};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint};
-use crate::features::position::{WorldPosition};
+use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_core::prelude::Save;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use light_source::LightSource;
+use crate::bundles::ItemId;
 use crate::features::movement::Velocity;
 
 pub struct MiscComponentsPlugin;
@@ -77,4 +78,10 @@ pub fn update_viewable_rotation<T>(
             transform.rotation.smooth_nudge(&target_transform.rotation, 5.0, time.delta_secs());
         }
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
+pub struct ItemAmount {
+    pub item_id: ItemId,
+    pub amount: u32,
 }

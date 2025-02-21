@@ -2,7 +2,7 @@ use crate::bundles::settler::Settler;
 use crate::bundles::{Id, ItemId, Reservations, ResourceItem};
 use crate::features::ai::trees::bring_resource::score_bring_resource;
 use crate::features::ai::WorkingOnTask;
-use crate::features::misc_components::InWorld;
+use crate::features::misc_components::{InWorld, ItemAmount};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::build_task::score_build;
 use bevy::asset::AssetContainer;
@@ -85,12 +85,6 @@ pub struct TaskCancelled {
 pub enum TaskFinishedResult {
     Success,
     Failure,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
-pub struct ItemAmount {
-    pub item_id: ItemId,
-    pub amount: u32,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]

@@ -4,7 +4,7 @@ use crate::bundles::{Id, ItemId};
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::light_source::LightSource;
 use crate::features::path_finding::grid::Solid;
-use crate::features::tasks::task::ItemAmount;
+use crate::features::misc_components::ItemAmount;
 use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]

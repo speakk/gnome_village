@@ -1,11 +1,10 @@
 use std::ops::Mul;
 use crate::bundles::buildables::{BluePrint, Buildable};
-use crate::features::misc_components::InWorld;
+use crate::features::misc_components::{InWorld, ItemAmount};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
-use crate::features::tasks::task::{BringResourceData, BuildData, CancelTaskCommand, DepositTarget, ItemAmount, RunType, Task, TaskCancelled, TaskType};
+use crate::features::tasks::task::{BringResourceData, BuildData, CancelTaskCommand, DepositTarget, RunType, Task, TaskType};
 use bevy::prelude::*;
-use bevy_cobweb::react::DespawnEvent;
 use crate::bundles::ResourceItem;
 use crate::bundles::settler::Settler;
 

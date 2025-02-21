@@ -1,7 +1,6 @@
 use crate::bundles::{Id, ItemId, ResourceItem};
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::assets::GltfAssetId;
-use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]

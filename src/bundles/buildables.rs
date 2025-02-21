@@ -7,7 +7,7 @@ use crate::bundles::{ItemId, ItemSpawners, Prototypes};
 use crate::features::inventory::Inventory;
 use crate::features::misc_components::Prototype;
 use crate::features::states::AppState;
-use crate::features::tasks::task::ItemAmount;
+use crate::features::misc_components::ItemAmount;
 use bevy::prelude::*;
 
 pub struct BuildablesPlugin;
