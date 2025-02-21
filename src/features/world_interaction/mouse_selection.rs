@@ -151,7 +151,7 @@ fn handle_ground_plane_click(
     if let Some(location) = location {
         println!("Clicked on location: {:?}", location);
         coordinates_selected_event.send(CoordinatesSelectedEvent {
-            coordinates: vec![IVec2::new(location.x as i32, location.z as i32)],
+            coordinates: vec![IVec2::new(location.x.round() as i32, location.z.round() as i32)],
             selection_type: if click.button == PointerButton::Primary {
                 SelectionType::Primary
             } else {
@@ -196,7 +196,7 @@ fn handle_ground_plane_drag_start(
         );
 
         let event = MapDragStartEvent {
-            coordinate: IVec2::new(location.x as i32, location.z as i32),
+            coordinate: IVec2::new(location.x.round() as i32, location.z.round() as i32),
             drag_modifier: modifier_type,
             selection_type: if drag.button == PointerButton::Primary {
                 SelectionType::Primary

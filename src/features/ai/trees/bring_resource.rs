@@ -30,7 +30,7 @@ pub fn create_bring_resource_tree(
             let target_coordinate = match bring_resource_data.target {
                 DepositTarget::Coordinate(coordinate) => coordinate,
                 DepositTarget::Inventory(inventory_entity) => {
-                    inventories.get(inventory_entity).unwrap().0.as_ivec2()
+                    inventories.get(inventory_entity).unwrap().as_coordinate()
                 }
             };
 
@@ -51,7 +51,7 @@ pub fn create_bring_resource_tree(
                     // Rather check Inventory for the item
                     if let Ok(resource_position) = resource_position {
                         root.spawn((GoToAction {
-                            target: resource_position.0.as_ivec2(),
+                            target: resource_position.as_coordinate(),
                         },));
 
                         root.spawn((PickUpAction {
@@ -108,7 +108,7 @@ pub fn score_bring_resource(
     let target = match bring_resource_data.target {
         DepositTarget::Coordinate(coordinate) => coordinate,
         DepositTarget::Inventory(inventory_entity) => {
-            others_query.get(inventory_entity).unwrap().1.as_ivec2()
+            others_query.get(inventory_entity).unwrap().1.as_coordinate()
         }
     };
 

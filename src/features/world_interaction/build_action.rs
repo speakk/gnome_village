@@ -110,7 +110,7 @@ fn regenerate_preview_entity(
         let position = map_data.centered_coordinate_to_world_position(*coordinate);
         let mut spawned = commands.spawn_empty();
         spawned
-            .insert(Transform::from_xyz(position.x, 0.5, position.y))
+            .insert(Transform::from_xyz(position.x, 0.0, position.y))
             .insert(BluePrint)
             .remove::<Prototype>()
             .set_parent(parent_entity);

@@ -109,7 +109,7 @@ fn check_growth_requirements(
     coordinate_to_entity: &CoordinateToEntity,
     inventories: &mut Query<&mut Inventory>,
 ) -> bool {
-    let entities_at_coordinate = coordinate_to_entity.0.get(&world_position.0.as_ivec2());
+    let entities_at_coordinate = coordinate_to_entity.0.get(&world_position.as_coordinate());
     if let Some(entities_at_coordinate) = entities_at_coordinate {
         for entity in entities_at_coordinate {
             let inventory = inventories.get_mut(*entity);

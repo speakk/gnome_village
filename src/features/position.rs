@@ -27,8 +27,8 @@ fn update_coordinate_to_entity(
     >,
 ) {
     for (entity, world_position, previous_world_position) in query.iter() {
-        let current = world_position.0.as_ivec2();
-        let previous = previous_world_position.0.as_ivec2();
+        let current = world_position.as_coordinate();
+        let previous = previous_world_position.as_coordinate();
 
         if let Some(entities_in_previous) = coordinate_to_entity.0.get_mut(&previous) {
             entities_in_previous.retain(|&e| e != entity);
@@ -52,12 +52,12 @@ fn handle_removed(
 
     if let Some(entities) = coordinate_to_entity
         .0
-        .get_mut(&previous_world_position.as_ivec2())
+        .get_mut(&previous_world_position.as_coordinate())
     {
         entities.retain(|&e| e != entity)
     }
 
-    if let Some(entities) = coordinate_to_entity.0.get_mut(&world_position.as_ivec2()) {
+    if let Some(entities) = coordinate_to_entity.0.get_mut(&world_position.as_coordinate()) {
         entities.retain(|&e| e != entity)
     }
 }
@@ -67,7 +67,19 @@ fn handle_removed(
 #[require(PreviousWorldPosition, Transform)]
 pub struct WorldPosition(pub Vec2);
 
+impl WorldPosition {
+    pub fn as_coordinate(&self) -> IVec2 {
+        self.0.round().as_ivec2()
+    }
+}
+
 /// The value [`WorldPosition`] had in the last fixed timestep.
 /// Used for interpolation in the `interpolate_rendered_transform` system.
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
 pub struct PreviousWorldPosition(pub Vec2);
+
+impl PreviousWorldPosition {
+    pub fn as_coordinate(&self) -> IVec2 {
+        self.0.round().as_ivec2()
+    }
+}

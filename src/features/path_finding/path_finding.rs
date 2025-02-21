@@ -32,8 +32,8 @@ pub fn spawn_pathfinding_task(
     let grid = Box::new(grid.clone());
 
     let task = thread_pool.spawn(async move {
-        let start = grid.get_nearest_available_vertex(start.0.as_ivec2());
-        let end = grid.get_nearest_available_vertex(end.0.as_ivec2());
+        let start = grid.get_nearest_available_vertex(start.as_coordinate());
+        let end = grid.get_nearest_available_vertex(end.as_coordinate());
 
         if start.is_none() || end.is_none() {
             println!("start or end not found, returning None from Pathfinding task");
