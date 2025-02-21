@@ -134,7 +134,7 @@ pub fn generate_map_entity(
 
             
             let dirt = item_spawners.get(&ItemId::Dirt).unwrap()(&mut commands);
-            commands.entity(dirt).insert((WorldPosition(centered_coordinate.as_vec2()), Save, InWorld));
+            commands.entity(dirt).insert((WorldPosition(centered_coordinate.as_vec2()), InWorld));
             
             map_data.set_tile_type(
                 centered_coordinate,

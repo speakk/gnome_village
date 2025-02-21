@@ -1,9 +1,11 @@
+use crate::ReflectComponent;
 use crate::bundles::ItemId;
 use bevy::prelude::{Component, Reflect};
 use bevy::utils::HashMap;
 use std::cmp::Ordering;
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
+#[reflect(Component)]
 pub struct Inventory {
     pub items: HashMap<ItemId, u32>,
 }

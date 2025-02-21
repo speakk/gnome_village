@@ -23,6 +23,9 @@ use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
+use crate::bundles::soil::dirt::Dirt;
+use crate::features::misc_components::InWorld;
+use crate::features::plants::Plant;
 use crate::features::tasks::jobs::Job;
 
 pub struct SavePlugin;
@@ -80,6 +83,9 @@ impl Plugin for SavePlugin {
             moonshine_core::load::LoadPlugin,
         ))
         .register_type::<Settler>()
+        .register_type::<Dirt>()
+        .register_type::<Plant>()
+        .register_type::<InWorld>()
         .register_type::<WorldPosition>()
         .register_type::<GltfData>()
         .register_type::<SimpleMesh>()
