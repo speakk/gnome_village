@@ -102,6 +102,7 @@ pub fn generate_map_entity(
     mut commands: Commands,
     world_seed: Res<WorldSeed>,
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
+    item_spawners: Res<ItemSpawners>,
 ) {
     let map_size = UVec2::new(70, 70);
     let mut map_data = MapData {
@@ -131,6 +132,10 @@ pub fn generate_map_entity(
                 reserved_coordinates.0.push(centered_coordinate);
             }
 
+            
+            let dirt = item_spawners.get(&ItemId::Dirt).unwrap()(&mut commands);
+            commands.entity(dirt).insert((WorldPosition(centered_coordinate.as_vec2()), Save, InWorld));
+            
             map_data.set_tile_type(
                 centered_coordinate,
                 tile_type,

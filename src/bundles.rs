@@ -8,6 +8,7 @@ pub mod rock;
 pub mod settler;
 pub mod spawners;
 pub mod plants;
+pub mod soil;
 
 pub struct BundlePlugin;
 
@@ -39,6 +40,8 @@ pub enum ItemId {
     WoodenTorch = 3,
     Lumber = 4,
     OakTree = 5,
+    Water = 6,
+    Dirt = 7
 }
 
 #[derive(Component, Reflect, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]

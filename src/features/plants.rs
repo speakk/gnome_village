@@ -1,11 +1,14 @@
-use std::time::Duration;
+use crate::features::inventory::Inventory;
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::ItemAmount;
+use crate::features::position::{CoordinateToEntity, WorldPosition};
 use bevy::app::{App, Plugin};
+use bevy::ecs::query::QueryIter;
 use bevy::prelude::*;
 use bevy::prelude::{Component, Reflect};
 use bevy::time::common_conditions::on_timer;
 use rand::Rng;
+use std::time::Duration;
 
 pub struct PlantsPlugin;
 
@@ -13,7 +16,10 @@ impl Plugin for PlantsPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<PlantStageAdvanced>()
             .add_systems(Update, initialize_plant)
-            .add_systems(Update, update_growth_process.run_if(on_timer(Duration::from_millis(100))))
+            .add_systems(
+                Update,
+                update_growth_process.run_if(on_timer(Duration::from_millis(100))),
+            )
             .add_observer(update_gltf_based_on_growth_stage);
     }
 }
@@ -57,24 +63,30 @@ pub fn initialize_plant(mut commands: Commands, query: Query<Entity, Added<Plant
 }
 
 pub fn update_growth_process(
-    mut query: Query<(Entity, &mut Plant)>,
+    mut query: Query<(Entity, &mut Plant, &WorldPosition)>,
     time: Res<Time>,
     mut previous_run: Local<f32>,
+    coordinate_to_entity: Res<CoordinateToEntity>,
+    mut inventories: Query<&mut Inventory>,
     mut commands: Commands,
 ) {
     let current_time = time.elapsed_secs();
     let delta = current_time - *previous_run;
     *previous_run = current_time;
 
-
-    for (entity, mut plant) in query.iter_mut() {
+    for (entity, mut plant, world_position) in query.iter_mut() {
         if plant.finished_growing {
             continue;
         }
 
-        // if !check_growth_requirements(&plant.growth_requirements) {
-        //     continue;
-        // }
+        if !check_growth_requirements(
+            &plant.growth_requirements,
+            world_position,
+            &coordinate_to_entity,
+            &mut inventories
+        ) {
+            continue;
+        }
 
         plant.current_stage_growth_process +=
             plant.growth_speed * plant.random_growth_multiplier * delta;
@@ -90,6 +102,42 @@ pub fn update_growth_process(
             }
         }
     }
+}
+
+fn check_growth_requirements(
+    growth_requirements: &Vec<ItemAmount>,
+    world_position: &WorldPosition,
+    coordinate_to_entity: &CoordinateToEntity,
+    inventories: &mut Query<&mut Inventory>,
+) -> bool {
+    let entities_at_coordinate = coordinate_to_entity.0.get(&world_position.0.as_ivec2());
+    if let Some(entities_at_coordinate) = entities_at_coordinate {
+        for entity in entities_at_coordinate {
+            let inventory = inventories.get_mut(*entity);
+            if let Ok(mut inventory) = inventory {
+                let mut has_all = true;
+                
+                for requirement in growth_requirements {
+                    if !inventory.has_amount(requirement.item_id, requirement.amount) {
+                        has_all = false;
+                        break;
+                    }
+                }
+
+                // TODO: Consider whether this should happen elsewhere
+                if has_all {
+                    for requirement in growth_requirements {
+                        inventory.remove_item(requirement.item_id, requirement.amount);
+                    }
+                    
+                    return true;
+                }
+            }
+
+        }
+    }
+    
+    false
 }
 
 pub fn update_gltf_based_on_growth_stage(
