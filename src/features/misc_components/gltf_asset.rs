@@ -1,14 +1,11 @@
-use crate::bundles::settler::Settler;
 use crate::features::ai::actions::build::IsBuilding;
 use crate::features::ai::{PathFollow, WorkingOnTask};
 use crate::features::assets::{Animations, GltfAssetHandles, GltfAssetId, SettlerAnimationIndices};
 use crate::features::misc_components::Prototype;
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
-use bevy::app::{App, PostUpdate};
-use bevy::asset::AssetServer;
+use bevy::app::App;
 use bevy::core::Name;
-use bevy::gltf::GltfAssetLabel;
 use bevy::prelude::*;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};

@@ -5,7 +5,6 @@ use crate::features::misc_components::gltf_asset::GltfAnimation;
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::movement::Friction;
 use crate::features::movement::Velocity;
-use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use bevy::prelude::*;
 
 #[derive(Component, Reflect)]

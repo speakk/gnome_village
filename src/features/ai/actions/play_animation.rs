@@ -1,4 +1,3 @@
-use crate::bundles::ItemStack;
 use crate::features::misc_components::gltf_asset::GltfAnimation;
 use beet::prelude::*;
 use bevy::prelude::*;

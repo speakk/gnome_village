@@ -146,7 +146,7 @@ pub fn follow_path(
 fn follow_path_succeed(
     commands: &mut Commands,
     entity: Entity,
-    mut path_follow: Mut<PathFollow>,
+    path_follow: Mut<PathFollow>,
     velocity: &mut Mut<Velocity>,
 ) {
     velocity.0 = Vec2::ZERO;

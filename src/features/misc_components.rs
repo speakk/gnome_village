@@ -13,8 +13,8 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 use light_source::LightSource;
 use moonshine_core::prelude::Save;
-use moonshine_object::{Object, ObjectInstance};
-use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
+use moonshine_object::ObjectInstance;
+use moonshine_view::{RegisterView, Viewable};
 
 pub struct MiscComponentsPlugin;
 

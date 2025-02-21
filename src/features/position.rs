@@ -2,14 +2,13 @@ use crate::features::misc_components::InWorld;
 use bevy::math::Vec2;
 use bevy::prelude::*;
 use bevy::utils::{HashMap, HashSet};
-use std::time::Duration;
 
 pub struct PositionPlugin;
 
 impl Plugin for PositionPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CoordinateToEntity::default())
-            .add_systems(Update, (update_coordinate_to_entity))
+            .add_systems(Update, update_coordinate_to_entity)
             .add_observer(handle_removed);
     }
 }

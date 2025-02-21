@@ -1,7 +1,6 @@
 use crate::bundles::rock::Rock;
 use crate::bundles::{ItemId, ItemSpawners};
-use crate::features::map::map_view::MapMaterialHandles;
-use crate::features::misc_components::simple_mesh::{SimpleMeshHandles, SimpleMeshType};
+use crate::features::misc_components::simple_mesh::SimpleMeshHandles;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use bevy::math::{IVec2, UVec2, Vec2};
@@ -9,7 +8,6 @@ use bevy::prelude::*;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
-use std::any::Any;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);

@@ -29,7 +29,7 @@ use features::tasks::tasks_plugin::TasksPlugin;
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugins((BeetFlowPlugin::default()))
+        .add_plugins(BeetFlowPlugin::default())
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .insert_resource(PointLightShadowMap { size: 256 })
         .add_plugins(PreloadPlugin)

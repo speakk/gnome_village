@@ -1,13 +1,11 @@
-use crate::features::ai::actions::build::BuildAction;
 use crate::features::ai::PathFollow;
 use crate::features::map::map_model::MapData;
 use crate::features::path_finding::grid::PathingGridResource;
 use crate::features::path_finding::path_finding::{
-    spawn_pathfinding_task, Path, PathFollowFinished, PathFollowResult,
+    Path, PathFollowFinished, PathFollowResult,
 };
 use crate::features::position::WorldPosition;
 use beet::prelude::*;
-use bevy::math::{IVec2, Vec2};
 use bevy::prelude::*;
 
 #[derive(Component, Reflect)]
@@ -49,7 +47,7 @@ fn escape_from_solid_action(
             ..Default::default()
         };
 
-        let running_clone = running.clone();
+        let running_clone = *running;
 
         commands.entity(target_agent).observe(
             move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {

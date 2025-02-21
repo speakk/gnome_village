@@ -1,8 +1,6 @@
 use crate::bundles::buildables::Buildable;
-use crate::features::path_finding::path_finding::{PathFollowFinished, PathFollowResult};
 use beet::prelude::ContinueRun;
 use beet::prelude::*;
-use bevy::math::Vec2;
 use bevy::prelude::*;
 
 #[derive(Component, Reflect)]

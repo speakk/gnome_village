@@ -1,17 +1,14 @@
 use crate::bundles::settler::Settler;
-use crate::bundles::{Id, ItemId, Reservations, ResourceItem};
+use crate::bundles::{Id, Reservations, ResourceItem};
 use crate::features::ai::trees::bring_resource::score_bring_resource;
-use crate::features::ai::WorkingOnTask;
 use crate::features::misc_components::{InWorld, ItemAmount};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::build_task::score_build;
 use bevy::asset::AssetContainer;
 use bevy::ecs::system::SystemState;
-use bevy::hierarchy::HierarchyEvent;
 use bevy::prelude::Component;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
-use bevy_cobweb_ui::tools::iter_descendants_filtered;
 use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::{MapEntities, Save};
 

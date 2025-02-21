@@ -3,7 +3,6 @@ use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::ItemAmount;
 use crate::features::position::{CoordinateToEntity, WorldPosition};
 use bevy::app::{App, Plugin};
-use bevy::ecs::query::QueryIter;
 use bevy::prelude::*;
 use bevy::prelude::{Component, Reflect};
 use bevy::time::common_conditions::on_timer;

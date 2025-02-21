@@ -5,11 +5,10 @@ use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::ReflectComponent;
 use bevy::math::{UVec2, Vec2};
 use bevy::prelude::{
-    Added, Changed, Component, Deref, DerefMut, IVec2, Query, Reflect, RemovedComponents, ResMut,
+    Added, Changed, Component, IVec2, Query, Reflect, RemovedComponents, ResMut,
     Resource, Single, With, Without,
 };
 use pathfinding::grid::Grid;
-use std::ops::Add;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]

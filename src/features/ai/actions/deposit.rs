@@ -1,4 +1,4 @@
-use crate::bundles::{Id, ItemId, ItemSpawners, ItemStack};
+use crate::bundles::{ItemId, ItemSpawners};
 use crate::features::inventory::Inventory;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::DepositTarget;

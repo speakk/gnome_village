@@ -12,7 +12,7 @@ use bevy::prelude::{
 };
 use bevy::utils::HashMap;
 
-pub fn jobs_changed(tasks_query: Query<Entity, (Or<(Added<Task>, Changed<Task>)>)>) -> bool {
+pub fn jobs_changed(tasks_query: Query<Entity, Or<(Added<Task>, Changed<Task>)>>) -> bool {
     !tasks_query.is_empty()
 }
 
