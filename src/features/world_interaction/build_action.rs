@@ -122,7 +122,9 @@ fn regenerate_preview_entity(
                 .unwrap();
             spawned
                 .insert(Mesh3d(mesh_handle.clone()))
-                .insert(MeshMaterial3d(blueprint_material.0.clone().unwrap()));
+                .insert(MeshMaterial3d(blueprint_material.0.clone().unwrap()))
+                .insert(Transform::from_xyz(position.x, 0.5, position.y));
+
         }
 
         if let Some(gltf_asset_data) = gltf_asset_data {

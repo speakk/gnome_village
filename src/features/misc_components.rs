@@ -19,6 +19,7 @@ use light_source::LightSource;
 use moonshine_core::prelude::Save;
 use moonshine_object::ObjectInstance;
 use moonshine_view::{RegisterView, Viewable};
+use crate::features::camera::WorldCamera;
 
 pub struct MiscComponentsPlugin;
 
@@ -46,6 +47,7 @@ impl Plugin for MiscComponentsPlugin {
                     interpolate_rendered_transform::<SimpleMesh>,
                     interpolate_rendered_transform::<GltfData>,
                     interpolate_rendered_transform::<LightSource>,
+                    interpolate_rendered_transform::<WorldCamera>,
                 )
                     .in_set(AfterFixedMainLoop)
                     .run_if(in_state(AppState::InGame)),
@@ -71,7 +73,7 @@ fn interpolate_rendered_transform<T>(
         let rendered_translation = previous.lerp(current, alpha);
         let view_entity = viewable.view().entity();
         let mut transform = transforms.get_mut(view_entity).unwrap();
-        
+
         transform.translation.x = rendered_translation.x;
         transform.translation.z = rendered_translation.y;
     }

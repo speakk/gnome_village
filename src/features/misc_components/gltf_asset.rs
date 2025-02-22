@@ -54,24 +54,16 @@ impl BuildView for GltfData {
             return;
         }
 
-        let world_position = world.get::<WorldPosition>(object.entity()).unwrap();
-        let gltf_assets = world.get_resource::<Assets<Gltf>>().unwrap();
-
         let gltf_data = world.get::<GltfData>(object.entity()).unwrap();
-
-        let asset_handle = world
-            .get_resource::<GltfAssetHandles>()
-            .unwrap()
-            .handles
-            .get(&gltf_data.asset_id)
-            .expect("Could not find asset handle");
-
-        let Some(gltf) = gltf_assets.get(asset_handle) else {
-            return;
+        let gltf_assets = world.get_resource::<Assets<Gltf>>().unwrap();
+        let gltf_asset_handles = world.get_resource::<GltfAssetHandles>().unwrap();
+        
+        let scene = match get_scene_from_gltf_data(gltf_asset_handles, gltf_assets, &gltf_data) {
+            Some(value) => value,
+            None => return,
         };
-
-        let scene = get_scene_handle(&gltf_data, gltf);
-
+        
+        let world_position = world.get::<WorldPosition>(object.entity()).unwrap();
         view.insert((
             SceneRoot(scene),
             Transform::from_xyz(world_position.x, 0.0, world_position.y),
@@ -80,6 +72,20 @@ impl BuildView for GltfData {
 
         println!("Building gltf asset view finished");
     }
+}
+
+pub fn get_scene_from_gltf_data(asset_handles: &GltfAssetHandles, gltf_assets: &Assets<Gltf>, gltf_data: &&GltfData) -> Option<Handle<Scene>> {
+    let asset_handle = asset_handles
+        .handles
+        .get(&gltf_data.asset_id)
+        .expect("Could not find asset handle");
+
+    let Some(gltf) = gltf_assets.get(asset_handle) else {
+        return None;
+    };
+
+    let scene = get_scene_handle(&gltf_data, gltf);
+    Some(scene)
 }
 
 fn update_animation(
