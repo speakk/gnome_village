@@ -10,6 +10,7 @@ use crate::features::input::SaveLoadAction;
 use crate::features::inventory::Inventory;
 use crate::features::map::map_model::{MapData, ReservedCoordinatesHelper};
 use crate::features::misc_components::gltf_asset::GltfData;
+use crate::features::misc_components::preview_carry::PreviewCarry;
 use crate::features::misc_components::simple_mesh::SimpleMesh;
 use crate::features::misc_components::InWorld;
 use crate::features::plants::Plant;
@@ -27,7 +28,6 @@ use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
-use crate::features::misc_components::preview_carry::PreviewCarry;
 
 pub struct SavePlugin;
 
@@ -83,33 +83,33 @@ impl Plugin for SavePlugin {
             moonshine_core::save::SavePlugin,
             moonshine_core::load::LoadPlugin,
         ))
-        .register_type::<Settler>()
-        .register_type::<Dirt>()
-        .register_type::<Plant>()
-        .register_type::<InWorld>()
-        .register_type::<WorldPosition>()
-        .register_type::<GltfData>()
-        .register_type::<SimpleMesh>()
-        .register_type::<Task>()
-        .register_type::<Job>()
-        .register_type::<PreviewCarry>()
-        .register_type::<ReservedCoordinatesHelper>()
-        .register_type::<BluePrint>()
-        .register_type::<WorkingOnTask>()
-        .register_type::<ItemStack>()
-        .register_type::<ResourceItem>()
-        .register_type::<Inventory>()
-        .register_type::<MapData>()
-        .register_type::<Rock>()
-        .register_type::<WoodenTorch>()
-        .register_type::<WoodenWall>()
-        .add_systems(Startup, setup)
-        .add_systems(
-            PreUpdate,
-            save_default().into(file_from_resource::<SaveRequest>()),
-        )
-        .add_systems(PreUpdate, load(file_from_resource::<LoadRequest>()))
-        .add_systems(Update, handle_save_input);
+            .register_type::<Settler>()
+            .register_type::<Dirt>()
+            .register_type::<Plant>()
+            .register_type::<InWorld>()
+            .register_type::<WorldPosition>()
+            .register_type::<GltfData>()
+            .register_type::<SimpleMesh>()
+            .register_type::<Task>()
+            .register_type::<Job>()
+            .register_type::<PreviewCarry>()
+            .register_type::<ReservedCoordinatesHelper>()
+            .register_type::<BluePrint>()
+            .register_type::<WorkingOnTask>()
+            .register_type::<ItemStack>()
+            .register_type::<ResourceItem>()
+            .register_type::<Inventory>()
+            .register_type::<MapData>()
+            .register_type::<Rock>()
+            .register_type::<WoodenTorch>()
+            .register_type::<WoodenWall>()
+            .add_systems(Startup, setup)
+            .add_systems(
+                PreUpdate,
+                save_default().into(file_from_resource::<SaveRequest>()),
+            )
+            .add_systems(PreUpdate, load(file_from_resource::<LoadRequest>()))
+            .add_systems(Update, handle_save_input);
     }
 }
 

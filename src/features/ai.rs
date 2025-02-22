@@ -25,10 +25,10 @@ impl Plugin for AiPlugin {
             UtilityAiPlugin,
             //ActionPlugin::<(GoToAction, PickUpAction, FinishTaskAction, DepositAction)>::default(),
         ))
-        .add_systems(
-            Update,
-            (create_bring_resource_tree, create_build_tree, build_action),
-        );
+            .add_systems(
+                Update,
+                (create_bring_resource_tree, create_build_tree, build_action),
+            );
     }
 }
 

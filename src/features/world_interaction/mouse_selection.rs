@@ -187,7 +187,7 @@ fn handle_ground_plane_drag_start(
         let modifier_type: Option<DragModifier> = get_modifier_type(
             interaction_action_query
                 .iter()
-                .map(|(state,)| state)
+                .map(|(state, )| state)
                 .collect(),
         );
         println!(
@@ -317,8 +317,8 @@ fn line_select(start_coordinate: IVec2, end_coordinate: IVec2) -> Vec<IVec2> {
         (start_coordinate.x as isize, start_coordinate.y as isize),
         (end_coordinate.x as isize, end_coordinate.y as isize),
     )
-    .map(|point| IVec2::new(point.0 as i32, point.1 as i32))
-    .collect();
+        .map(|point| IVec2::new(point.0 as i32, point.1 as i32))
+        .collect();
 
     line.push(end_coordinate);
 

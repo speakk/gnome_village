@@ -145,7 +145,7 @@ pub fn score_bring_resource(
             .get_mut(resource_entity)
             .unwrap()
             .3
-             .0
+            .0
             .push(Reservation {
                 reserved_by: best_agent.unwrap(),
                 amount: bring_resource_data.item_requirement.amount,

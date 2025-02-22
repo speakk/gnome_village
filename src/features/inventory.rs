@@ -1,9 +1,9 @@
 use crate::bundles::ItemId;
+use crate::features::misc_components::InWorld;
 use crate::ReflectComponent;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 use std::cmp::Ordering;
-use crate::features::misc_components::InWorld;
 
 pub struct InventoryPlugin;
 

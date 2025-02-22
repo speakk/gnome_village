@@ -1,9 +1,8 @@
 use crate::features::camera::AccumulatedInput;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::features::states::AppState;
-use bevy::app::RunFixedMainLoopSystem::{AfterFixedMainLoop, BeforeFixedMainLoop};
+use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
 use bevy::prelude::*;
-use moonshine_view::Viewable;
 
 pub struct MovementPlugin;
 

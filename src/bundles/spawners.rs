@@ -6,8 +6,8 @@ use crate::bundles::resources::water::Water;
 use crate::bundles::settler::Settler;
 use crate::bundles::soil::dirt::Dirt;
 use crate::bundles::{ItemId, ItemSpawners, Prototypes};
-use bevy::prelude::{Commands, ResMut};
 use crate::features::misc_components::Prototype;
+use bevy::prelude::{Commands, ResMut};
 
 macro_rules! create_spawners_and_prototypes {
     ( $commands:expr,$spawners:expr,$prototypes:expr,$( ($item_id:expr, $component:expr) ),*, ) => {
@@ -23,7 +23,7 @@ macro_rules! create_spawners_and_prototypes {
 }
 
 
-pub fn setup_spawners_and_prototypes(mut prototypes: ResMut<Prototypes>, mut spawners: ResMut<ItemSpawners>, mut commands: Commands,) {
+pub fn setup_spawners_and_prototypes(mut prototypes: ResMut<Prototypes>, mut spawners: ResMut<ItemSpawners>, mut commands: Commands) {
     create_spawners_and_prototypes!(commands, spawners, prototypes,
         (ItemId::WoodenTorch, WoodenTorch),
         (ItemId::WoodenWall, WoodenWall),

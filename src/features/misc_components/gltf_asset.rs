@@ -26,7 +26,7 @@ impl Plugin for GltfAssetPlugin {
                 react_to_work_finished,
             ),
         )
-        .add_viewable::<GltfData>();
+            .add_viewable::<GltfData>();
     }
 }
 
@@ -57,12 +57,12 @@ impl BuildView for GltfData {
         let gltf_data = world.get::<GltfData>(object.entity()).unwrap();
         let gltf_assets = world.get_resource::<Assets<Gltf>>().unwrap();
         let gltf_asset_handles = world.get_resource::<GltfAssetHandles>().unwrap();
-        
+
         let scene = match get_scene_from_gltf_data(gltf_asset_handles, gltf_assets, &gltf_data) {
             Some(value) => value,
             None => return,
         };
-        
+
         let world_position = world.get::<WorldPosition>(object.entity()).unwrap();
         view.insert((
             SceneRoot(scene),

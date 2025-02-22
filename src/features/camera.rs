@@ -1,6 +1,6 @@
 use crate::features::input::{CameraPanAction, CameraZoomAction};
 use crate::features::movement::{Acceleration, Friction, Velocity};
-use crate::features::position::{PreviousWorldPosition, WorldPosition};
+use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
 use bevy::app::{App, Plugin, RunFixedMainLoop};
@@ -13,9 +13,9 @@ use bevy::prelude::*;
 use bevy::render::camera::ScalingMode;
 use bevy_atmosphere::plugin::{AtmosphereCamera, AtmospherePlugin};
 use leafwing_input_manager::prelude::*;
-use std::ops::{Add, Sub};
 use moonshine_object::Object;
-use moonshine_view::{BuildView, RegisterView, View, ViewCommands};
+use moonshine_view::{BuildView, RegisterView, ViewCommands};
+use std::ops::{Add, Sub};
 
 pub struct CameraPlugin;
 
@@ -65,7 +65,7 @@ fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
         WorldCamera,
         InputManagerBundle::with_map(pan_input_map),
         InputManagerBundle::with_map(zoom_input_map),
-        ));
+    ));
 }
 
 impl BuildView for WorldCamera {

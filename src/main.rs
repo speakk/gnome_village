@@ -7,6 +7,7 @@ use crate::bundles::BundlePlugin;
 use crate::features::ai::AiPlugin;
 use crate::features::assets::AssetsPlugin;
 use crate::features::camera::CameraPlugin;
+use crate::features::inventory::InventoryPlugin;
 use crate::features::map::map_model::WorldSeed;
 use crate::features::map::MapPlugin;
 use crate::features::misc_components::MiscComponentsPlugin;
@@ -25,7 +26,6 @@ use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
-use crate::features::inventory::InventoryPlugin;
 
 fn main() {
     App::new()

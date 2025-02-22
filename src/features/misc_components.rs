@@ -5,6 +5,7 @@ pub mod simple_mesh;
 mod simple_mesh_view;
 
 use crate::bundles::ItemId;
+use crate::features::camera::WorldCamera;
 use crate::features::misc_components::gltf_asset::{GltfAssetPlugin, GltfData};
 use crate::features::misc_components::preview_carry::{PreviewCarry, PreviewCarryPlugin};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
@@ -18,7 +19,6 @@ use bevy::utils::HashMap;
 use light_source::LightSource;
 use moonshine_core::prelude::Save;
 use moonshine_view::{RegisterView, Viewable};
-use crate::features::camera::WorldCamera;
 
 pub struct MiscComponentsPlugin;
 
