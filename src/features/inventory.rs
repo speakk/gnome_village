@@ -3,6 +3,7 @@ use crate::ReflectComponent;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 use std::cmp::Ordering;
+use crate::features::misc_components::InWorld;
 
 pub struct InventoryPlugin;
 
@@ -51,7 +52,7 @@ impl Inventory {
 pub struct InventoryChanged;
 
 pub fn trigger_inventory_changed(
-    query: Query<(Entity, &Inventory), Changed<Inventory>>,
+    query: Query<(Entity, &Inventory), (Changed<Inventory>, With<InWorld>)>,
     mut commands: Commands,
 ) {
     for (entity, inventory) in query.iter() {

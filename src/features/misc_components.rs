@@ -6,7 +6,7 @@ mod simple_mesh_view;
 
 use crate::bundles::ItemId;
 use crate::features::misc_components::gltf_asset::{GltfAssetPlugin, GltfData};
-use crate::features::misc_components::preview_carry::PreviewCarryPlugin;
+use crate::features::misc_components::preview_carry::{PreviewCarry, PreviewCarryPlugin};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint};
 use crate::features::movement::Velocity;
@@ -17,7 +17,6 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 use light_source::LightSource;
 use moonshine_core::prelude::Save;
-use moonshine_object::ObjectInstance;
 use moonshine_view::{RegisterView, Viewable};
 use crate::features::camera::WorldCamera;
 
@@ -33,12 +32,10 @@ impl Plugin for MiscComponentsPlugin {
             .add_systems(
                 PostUpdate,
                 (
-                    //viewable_moved::<SimpleMesh>,
-                    //viewable_moved::<GltfData>,
-                    //viewable_moved::<LightSource>,
                     update_viewable_rotation::<SimpleMesh>,
                     update_viewable_rotation::<GltfData>,
                     update_viewable_rotation::<LightSource>,
+                    update_viewable_rotation::<PreviewCarry>,
                 ),
             )
             .add_systems(
@@ -48,6 +45,7 @@ impl Plugin for MiscComponentsPlugin {
                     interpolate_rendered_transform::<GltfData>,
                     interpolate_rendered_transform::<LightSource>,
                     interpolate_rendered_transform::<WorldCamera>,
+                    interpolate_rendered_transform::<PreviewCarry>,
                 )
                     .in_set(AfterFixedMainLoop)
                     .run_if(in_state(AppState::InGame)),

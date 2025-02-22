@@ -66,56 +66,6 @@ fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
         InputManagerBundle::with_map(pan_input_map),
         InputManagerBundle::with_map(zoom_input_map),
         ));
-    //
-    // // camera
-    // commands
-    //     .spawn((
-    //         Camera3d::default(),
-    //         Camera {
-    //             order: 0,
-    //             ..default()
-    //         },
-    //         Projection::from(OrthographicProjection {
-    //             // 6 world units per pixel of window height.
-    //             scaling_mode: ScalingMode::FixedVertical {
-    //                 viewport_height: 48.0,
-    //             },
-    //             near: -100.0,
-    //             far: 200.0,
-    //             ..OrthographicProjection::default_3d()
-    //         }),
-    //         //ScreenSpaceAmbientOcclusion::default(),
-    //         Msaa::Off,
-    //         AtmosphereCamera::default(),
-    //         // Skybox {
-    //         //     image: sky_image_handle.clone(),
-    //         //     brightness: 6000.0,
-    //         //     rotation: Quat::from_rotation_x(std::f32::consts::FRAC_PI_2 / 1.5),
-    //         // },
-    //         Transform::from_xyz(0.0, 20.0, 20.0).looking_at(Vec3::ZERO, Vec3::Y),
-    //         InputManagerBundle::with_map(pan_input_map),
-    //         InputManagerBundle::with_map(zoom_input_map),
-    //         RayCastPickable,
-    //         Velocity::default(),
-    //         Acceleration::default(),
-    //         WorldPosition::default(),
-    //         PreviousWorldPosition::default(),
-    //         AccumulatedInput::default(),
-    //         Friction(2.0),
-    //     ))
-    //     .insert(DepthPrepass)
-    //     .insert(NormalPrepass)
-    //     .insert(DeferredPrepass)
-    //     .insert(ClusterConfig::FixedZ {
-    //         // 4096 clusters is the Bevy default
-    //         // if you don't have many lights, you can reduce this value
-    //         total: 4096,
-    //         // Bevy default is 24 Z-slices
-    //         // For a top-down-view game, 1 is probably optimal.
-    //         z_slices: 1,
-    //         dynamic_resizing: true,
-    //         z_config: Default::default(),
-    //     });
 }
 
 impl BuildView for WorldCamera {
