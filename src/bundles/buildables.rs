@@ -1,13 +1,8 @@
 pub mod torch;
 pub mod wooden_wall;
 
-use crate::bundles::buildables::torch::WoodenTorch;
-use crate::bundles::buildables::wooden_wall::WoodenWall;
-use crate::bundles::{ItemId, ItemSpawners, Prototypes};
 use crate::features::inventory::Inventory;
 use crate::features::misc_components::ItemAmount;
-use crate::features::misc_components::Prototype;
-use crate::features::states::AppState;
 use bevy::prelude::*;
 
 pub struct BuildablesPlugin;

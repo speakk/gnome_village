@@ -6,7 +6,7 @@ use crate::features::misc_components::Prototype;
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
 use bevy::prelude::*;
-use moonshine_object::{Kind, Object, ObjectInstance};
+use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 
 pub struct PreviewCarryPlugin;
@@ -82,7 +82,7 @@ pub fn react_to_inventory_change(
         let gltf_data = gltf_data_query.get(*prototype);
         if let Ok(gltf_data) = gltf_data {
             let scene =
-                match get_scene_from_gltf_data(&*gltf_asset_handles, &*gltf_assets, &gltf_data) {
+                match get_scene_from_gltf_data(&gltf_asset_handles, &gltf_assets, &gltf_data) {
                     Some(value) => value,
                     None => return,
                 };

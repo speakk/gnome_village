@@ -50,7 +50,7 @@ fn apply_velocity(
     mut query: Query<(&mut WorldPosition, &mut PreviousWorldPosition, &Velocity)>,
     time: Res<Time<Fixed>>,
 ) {
-    for (mut world_position, mut previous_world_position, velocity) in &mut query {
+    for (mut world_position, previous_world_position, velocity) in &mut query {
         world_position.x += velocity.0.x * time.delta_secs();
         world_position.y += velocity.0.y * time.delta_secs();
     }

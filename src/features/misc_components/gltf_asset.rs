@@ -84,7 +84,7 @@ pub fn get_scene_from_gltf_data(asset_handles: &GltfAssetHandles, gltf_assets: &
         return None;
     };
 
-    let scene = get_scene_handle(&gltf_data, gltf);
+    let scene = get_scene_handle(gltf_data, gltf);
     Some(scene)
 }
 
