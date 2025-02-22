@@ -1,8 +1,9 @@
 use crate::features::camera::AccumulatedInput;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::features::states::AppState;
-use bevy::app::RunFixedMainLoopSystem::AfterFixedMainLoop;
+use bevy::app::RunFixedMainLoopSystem::{AfterFixedMainLoop, BeforeFixedMainLoop};
 use bevy::prelude::*;
+use moonshine_view::Viewable;
 
 pub struct MovementPlugin;
 
@@ -17,6 +18,7 @@ pub struct Friction(pub f32);
 
 impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
+        app.add_systems(FixedUpdate, set_previous_world_position.in_set(BeforeFixedMainLoop));
         app.add_systems(
             FixedUpdate,
             (
@@ -27,14 +29,15 @@ impl Plugin for MovementPlugin {
             )
                 .chain()
                 .run_if(in_state(AppState::InGame)),
-        )
-        // .add_systems(Update, interpolate_rendered_transform);
-        .add_systems(
-            RunFixedMainLoop,
-            interpolate_rendered_transform
-                .in_set(AfterFixedMainLoop)
-                .run_if(in_state(AppState::InGame)),
         );
+        // .add_systems(Update, interpolate_rendered_transform);
+
+    }
+}
+
+fn set_previous_world_position(mut query: Query<(&WorldPosition, &mut PreviousWorldPosition)>) {
+    for (world_position, mut previous_position) in query.iter_mut() {
+        previous_position.0 = world_position.0;
     }
 }
 
@@ -49,8 +52,6 @@ fn apply_velocity(
     time: Res<Time<Fixed>>,
 ) {
     for (mut world_position, mut previous_world_position, velocity) in &mut query {
-        previous_world_position.0 = world_position.0;
-
         world_position.x += velocity.0.x * time.delta_secs();
         world_position.y += velocity.0.y * time.delta_secs();
     }
@@ -76,22 +77,5 @@ fn apply_friction(mut query: Query<(&Friction, &mut Velocity)>, time: Res<Time<F
         if velocity.0.length() < min_velocity {
             velocity.0 = Vec2::ZERO;
         }
-    }
-}
-
-fn interpolate_rendered_transform(
-    fixed_time: Res<Time<Fixed>>,
-    mut query: Query<(&mut Transform, &WorldPosition, &PreviousWorldPosition)>,
-) {
-    for (mut transform, current_world_position, previous_world_position) in query.iter_mut() {
-        let previous = previous_world_position.0;
-        let current = current_world_position.0;
-        // The overstep fraction is a value between 0 and 1 that tells us how far we are between two fixed timesteps.
-        let alpha = fixed_time.overstep_fraction();
-
-        //println!("previous vs current: {:?}", (previous, current));
-        let rendered_translation = previous.lerp(current, alpha);
-        transform.translation.x = rendered_translation.x;
-        transform.translation.z = rendered_translation.y;
     }
 }

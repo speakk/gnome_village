@@ -1,3 +1,4 @@
+use crate::features::misc_components::preview_carry::PreviewCarry;
 use crate::bundles::{Id, ItemId};
 use crate::features::assets::GltfAssetId;
 use crate::features::inventory::Inventory;
@@ -23,6 +24,7 @@ use bevy::prelude::*;
         should_play: true
     }),
     Inventory,
+    PreviewCarry,
     Name(|| "Settler"))]
 #[reflect(Component)]
 pub struct Settler {

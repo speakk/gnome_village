@@ -9,12 +9,19 @@ impl Plugin for PositionPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CoordinateToEntity::default())
             .add_systems(Update, update_coordinate_to_entity)
+            //.add_observer(ensure_transform)
             .add_observer(handle_removed);
     }
 }
 
 #[derive(Resource, Debug, Default)]
 pub struct CoordinateToEntity(pub(crate) HashMap<IVec2, HashSet<Entity>>);
+// 
+// fn ensure_transform(trigger: Trigger<OnAdd, WorldPosition>, world_positions: Query<&WorldPosition>, mut commands: Commands) {
+//     let world_position = world_positions.get(trigger.entity()).unwrap();
+//     let transform = Transform::from_xyz(world_position.0.x, 0.0, world_position.0.y);
+//     commands.entity(trigger.entity()).insert_if_new(transform);
+// }
 
 fn update_coordinate_to_entity(
     mut coordinate_to_entity: ResMut<CoordinateToEntity>,
@@ -64,7 +71,7 @@ fn handle_removed(
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
 #[reflect(Component)]
-#[require(PreviousWorldPosition, Transform)]
+#[require(PreviousWorldPosition)]
 pub struct WorldPosition(pub Vec2);
 
 impl WorldPosition {

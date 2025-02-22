@@ -1,7 +1,7 @@
 use crate::features::ai::actions::build::IsBuilding;
 use crate::features::ai::{PathFollow, WorkingOnTask};
 use crate::features::assets::{Animations, GltfAssetHandles, GltfAssetId, SettlerAnimationIndices};
-use crate::features::misc_components::Prototype;
+use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
 use bevy::app::App;
@@ -32,7 +32,7 @@ impl Plugin for GltfAssetPlugin {
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GltfData {
     pub asset_id: GltfAssetId,
     pub scene_name: Option<String>,
@@ -54,7 +54,7 @@ impl BuildView for GltfData {
             return;
         }
 
-        let transform = world.get::<WorldPosition>(object.entity()).unwrap();
+        let world_position = world.get::<WorldPosition>(object.entity()).unwrap();
         let gltf_assets = world.get_resource::<Assets<Gltf>>().unwrap();
 
         let gltf_data = world.get::<GltfData>(object.entity()).unwrap();
@@ -66,13 +66,15 @@ impl BuildView for GltfData {
             .get(&gltf_data.asset_id)
             .expect("Could not find asset handle");
 
-        let gltf = gltf_assets.get(asset_handle).unwrap();
+        let Some(gltf) = gltf_assets.get(asset_handle) else {
+            return;
+        };
 
         let scene = get_scene_handle(&gltf_data, gltf);
 
         view.insert((
             SceneRoot(scene),
-            Transform::from_xyz(transform.x, 0.0, transform.y),
+            Transform::from_xyz(world_position.x, 0.0, world_position.y),
             Name::new("Gltf asset view"),
         ));
 
@@ -111,7 +113,7 @@ fn update_animation(
 }
 
 fn update_scene(
-    query: Query<(&GltfData, &Viewable<GltfData>), Changed<GltfData>>,
+    query: Query<(&GltfData, &Viewable<GltfData>), (Changed<GltfData>, With<InWorld>)>,
     gltf_assets: Res<Assets<Gltf>>,
     gltf_asset_handles: Res<GltfAssetHandles>,
     mut commands: Commands,

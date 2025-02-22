@@ -5,24 +5,33 @@ use crate::bundles::resources::lumber::Lumber;
 use crate::bundles::resources::water::Water;
 use crate::bundles::settler::Settler;
 use crate::bundles::soil::dirt::Dirt;
-use crate::bundles::{ItemId, ItemSpawners};
-use bevy::prelude::ResMut;
+use crate::bundles::{ItemId, ItemSpawners, Prototypes};
+use bevy::prelude::{Commands, ResMut};
+use crate::features::misc_components::Prototype;
 
-pub fn setup_spawners(mut spawners: ResMut<ItemSpawners>) {
-    spawners.insert(ItemId::WoodenTorch, |commands| {
-        commands.spawn((WoodenTorch,)).id()
-    });
+macro_rules! create_spawners_and_prototypes {
+    ( $commands:expr,$spawners:expr,$prototypes:expr,$( ($item_id:expr, $component:expr) ),*, ) => {
+        {
+            $(
+                $prototypes.0.insert($item_id, $commands.spawn(($component, Prototype)).id());
+                $spawners.insert($item_id, |commands| {
+                    commands.spawn(($component,)).id()
+                });
+            )*
+        }
+    };
+}
 
-    spawners.insert(ItemId::WoodenWall, |commands| {
-        commands.spawn((WoodenWall,)).id()
-    });
 
-    spawners.insert(ItemId::Settler, |commands| {
-        commands.spawn((Settler::default(),)).id()
-    });
-
-    spawners.insert(ItemId::Lumber, |commands| commands.spawn((Lumber,)).id());
-    spawners.insert(ItemId::OakTree, |commands| commands.spawn((OakTree,)).id());
-    spawners.insert(ItemId::Water, |commands| commands.spawn((Water,)).id());
-    spawners.insert(ItemId::Dirt, |commands| commands.spawn((Dirt,)).id());
+pub fn setup_spawners_and_prototypes(mut prototypes: ResMut<Prototypes>, mut spawners: ResMut<ItemSpawners>, mut commands: Commands,) {
+    create_spawners_and_prototypes!(commands, spawners, prototypes,
+        (ItemId::WoodenTorch, WoodenTorch),
+        (ItemId::WoodenWall, WoodenWall),
+        (ItemId::Settler, Settler::default()),
+        (ItemId::Lumber, Lumber),
+        (ItemId::OakTree, OakTree),
+        (ItemId::Water, Water),
+        (ItemId::Dirt, Dirt),
+        
+    );
 }

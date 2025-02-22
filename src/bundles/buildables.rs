@@ -20,8 +20,7 @@ impl Plugin for BuildablesPlugin {
                 Startup,
                 (setup_buildable_materials, setup_blueprint_material),
             )
-            .add_systems(Update, remove_blueprint_on_inventory_change)
-            .add_systems(OnEnter(AppState::InGame), add_buildable_prototypes);
+            .add_systems(Update, remove_blueprint_on_inventory_change);
     }
 }
 
@@ -64,41 +63,6 @@ pub fn setup_buildable_materials(
 ) {
     let wood_material = materials.add(Color::srgb(0.6, 0.4, 0.37));
     buildable_material_handles.wood = Some(wood_material);
-}
-
-// macro_rules! apply_prototype_commands {
-//     ( $y:expr,$( $x:expr ),* ) => {
-//         {
-//             $(
-//                 $y.spawn(($x, Prototype, Visibility::Hidden));
-//             )*
-//         }
-//     };
-// }
-
-pub fn add_buildable_prototypes(
-    mut commands: Commands,
-    mut item_spawners: ResMut<ItemSpawners>,
-    mut prototypes: ResMut<Prototypes>,
-) {
-    //apply_prototype_commands!(commands, WoodenWall, WoodenTorch);
-
-    prototypes.0.insert(
-        ItemId::WoodenTorch,
-        commands.spawn((WoodenTorch, Prototype)).id(),
-    );
-    prototypes.0.insert(
-        ItemId::WoodenWall,
-        commands.spawn((WoodenWall, Prototype)).id(),
-    );
-
-    item_spawners.0.insert(ItemId::WoodenTorch, |commands| {
-        commands.spawn((WoodenTorch,)).id()
-    });
-
-    item_spawners.0.insert(ItemId::WoodenWall, |commands| {
-        commands.spawn((WoodenWall,)).id()
-    });
 }
 
 #[derive(Component, Default, Reflect)]

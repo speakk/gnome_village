@@ -1,8 +1,17 @@
 use crate::bundles::ItemId;
 use crate::ReflectComponent;
-use bevy::prelude::{Component, Reflect};
+use bevy::prelude::*;
 use bevy::utils::HashMap;
 use std::cmp::Ordering;
+
+pub struct InventoryPlugin;
+
+impl Plugin for InventoryPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_event::<InventoryChanged>()
+            .add_systems(Update, trigger_inventory_changed);
+    }
+}
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
 #[reflect(Component)]
@@ -35,5 +44,17 @@ impl Inventory {
     pub fn has_amount(&self, item_id: ItemId, amount: u32) -> bool {
         let current_amount = self.items.get(&item_id).unwrap_or(&0);
         current_amount >= &amount
+    }
+}
+
+#[derive(Event)]
+pub struct InventoryChanged;
+
+pub fn trigger_inventory_changed(
+    query: Query<(Entity, &Inventory), Changed<Inventory>>,
+    mut commands: Commands,
+) {
+    for (entity, inventory) in query.iter() {
+        commands.entity(entity).trigger(InventoryChanged);
     }
 }

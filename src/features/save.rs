@@ -27,6 +27,7 @@ use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
+use crate::features::misc_components::preview_carry::PreviewCarry;
 
 pub struct SavePlugin;
 
@@ -91,6 +92,7 @@ impl Plugin for SavePlugin {
         .register_type::<SimpleMesh>()
         .register_type::<Task>()
         .register_type::<Job>()
+        .register_type::<PreviewCarry>()
         .register_type::<ReservedCoordinatesHelper>()
         .register_type::<BluePrint>()
         .register_type::<WorkingOnTask>()

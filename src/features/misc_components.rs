@@ -1,14 +1,18 @@
 pub(crate) mod gltf_asset;
 pub(crate) mod light_source;
+pub mod preview_carry;
 pub mod simple_mesh;
 mod simple_mesh_view;
 
 use crate::bundles::ItemId;
 use crate::features::misc_components::gltf_asset::{GltfAssetPlugin, GltfData};
+use crate::features::misc_components::preview_carry::PreviewCarryPlugin;
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint};
 use crate::features::movement::Velocity;
-use crate::features::position::WorldPosition;
+use crate::features::position::{PreviousWorldPosition, WorldPosition};
+use crate::features::states::AppState;
+use bevy::app::RunFixedMainLoopSystem::AfterFixedMainLoop;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 use light_source::LightSource;
@@ -23,20 +27,53 @@ impl Plugin for MiscComponentsPlugin {
         app.insert_resource(SimpleMeshHandles(HashMap::default()))
             .add_systems(Startup, simple_mesh::create_simple_meshes)
             .add_plugins(GltfAssetPlugin)
+            .add_plugins(PreviewCarryPlugin)
             .add_systems(PostUpdate, (on_add_blueprint, on_remove_blueprint))
             .add_systems(
                 PostUpdate,
                 (
-                    viewable_moved::<SimpleMesh>,
+                    //viewable_moved::<SimpleMesh>,
+                    //viewable_moved::<GltfData>,
+                    //viewable_moved::<LightSource>,
                     update_viewable_rotation::<SimpleMesh>,
-                    viewable_moved::<GltfData>,
                     update_viewable_rotation::<GltfData>,
-                    viewable_moved::<LightSource>,
                     update_viewable_rotation::<LightSource>,
                 ),
             )
+            .add_systems(
+                RunFixedMainLoop,
+                (
+                    interpolate_rendered_transform::<SimpleMesh>,
+                    interpolate_rendered_transform::<GltfData>,
+                    interpolate_rendered_transform::<LightSource>,
+                )
+                    .in_set(AfterFixedMainLoop)
+                    .run_if(in_state(AppState::InGame)),
+            )
             .add_viewable::<SimpleMesh>()
             .add_viewable::<LightSource>();
+    }
+}
+
+fn interpolate_rendered_transform<T>(
+    fixed_time: Res<Time<Fixed>>,
+    query: Query<(&WorldPosition, &PreviousWorldPosition, &Viewable<T>)>,
+    mut transforms: Query<&mut Transform>,
+) where
+    T: Component,
+{
+    for (current_world_position, previous_world_position, viewable) in query.iter() {
+        let previous = previous_world_position.0;
+        let current = current_world_position.0;
+        // The overstep fraction is a value between 0 and 1 that tells us how far we are between two fixed timesteps.
+        let alpha = fixed_time.overstep_fraction();
+
+        let rendered_translation = previous.lerp(current, alpha);
+        let view_entity = viewable.view().entity();
+        let mut transform = transforms.get_mut(view_entity).unwrap();
+        
+        transform.translation.x = rendered_translation.x;
+        transform.translation.z = rendered_translation.y;
     }
 }
 
@@ -50,21 +87,22 @@ pub struct InWorld;
 #[reflect(Component)]
 pub struct Prototype;
 
-pub fn viewable_moved<T>(
-    query: Query<(&WorldPosition, &Viewable<T>), Changed<WorldPosition>>,
-    mut transform: Query<&mut Transform>,
-) where
-    T: Component,
-{
-    for (position, model) in query.iter() {
-        let view = model.view();
-        let mut transform = transform.get_mut(view.entity()).unwrap();
-        transform.translation = Vec3::new(position.x, 0.0, position.y);
-    }
-}
+// pub fn viewable_moved<T>(
+//     query: Query<(&Transform, &Viewable<T>), (Changed<Transform>, With<InWorld>)>,
+//     mut transform: Query<&mut Transform, Without<Viewable<T>>>,
+// ) where
+//     T: Component,
+// {
+//     for (position, model) in query.iter() {
+//         let view = model.view();
+//         let mut transform = transform.get_mut(view.entity()).unwrap();
+//         transform.translation = position.translation;
+//         //transform.translation = Vec3::new(position.translation.x, 0.0, position.translation.z);
+//     }
+// }
 
 pub fn update_viewable_rotation<T>(
-    query: Query<(&Viewable<T>, &Velocity)>,
+    query: Query<(&Viewable<T>, &Velocity), With<InWorld>>,
     mut transform: Query<&mut Transform>,
     time: Res<Time>,
 ) where
