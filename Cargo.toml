@@ -25,6 +25,7 @@ i-cant-believe-its-not-bsn = "0.3.0"
 pathfinding = "4.13.1"
 beet = { git = "https://github.com/mrchantey/beet", branch = "main" }
 bresenham = "0.1.1"
+wyrand = "0.3.2"
 
 [profile.dev.package."*"]
 opt-level = 3

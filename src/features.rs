@@ -15,3 +15,5 @@ pub mod sun_light;
 pub mod tasks;
 pub mod user_actions;
 pub mod world_interaction;
+pub mod item_drop;
+pub mod seeded_random;
