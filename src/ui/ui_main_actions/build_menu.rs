@@ -18,7 +18,7 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
             |id: UpdateId,
              event: BroadcastEvent<MainMenuSelected>,
              mut commands: Commands,
-             mut _scene_builder: ResMut<SceneBuilder>,
+             mut scene_builder: ResMut<SceneBuilder>,
              buildables: Query<&Buildable>,
              names: Query<&Name, With<Buildable>>,
              prototypes: Res<Prototypes>| {
@@ -30,7 +30,7 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
 
                     commands.ui_builder(*id).spawn_scene_and_edit(
                         ("build_menu", "build_menu"),
-                        &mut _scene_builder,
+                        &mut scene_builder,
                         move |build_benu_handle| {
                             for (item_id, prototype_entity) in prototypes.0.clone() {
                                 if buildables.get(prototype_entity).is_err() {

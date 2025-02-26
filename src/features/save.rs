@@ -28,6 +28,7 @@ use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
+use crate::bundles::category_tags::Tree;
 
 pub struct SavePlugin;
 
@@ -103,14 +104,39 @@ impl Plugin for SavePlugin {
             .register_type::<Rock>()
             .register_type::<WoodenTorch>()
             .register_type::<WoodenWall>()
+            .register_type::<Tree>()
             .add_systems(Startup, setup)
             .add_systems(
                 PreUpdate,
                 save_default().into(file_from_resource::<SaveRequest>()),
             )
             .add_systems(PreUpdate, load(file_from_resource::<LoadRequest>()))
+            .add_systems(Startup, register_components)
             .add_systems(Update, handle_save_input);
     }
+}
+
+pub fn register_components(world: &mut World) {
+    world.register_component::<Settler>();
+    world.register_component::<Dirt>();
+    world.register_component::<Plant>();
+    world.register_component::<InWorld>();
+    world.register_component::<WorldPosition>();
+    world.register_component::<GltfData>();
+    world.register_component::<SimpleMesh>();
+    world.register_component::<Task>();
+    world.register_component::<Job>();
+    world.register_component::<PreviewCarry>();
+    world.register_component::<BluePrint>();
+    world.register_component::<WorkingOnTask>();
+    world.register_component::<ItemStack>();
+    world.register_component::<ResourceItem>();
+    world.register_component::<Inventory>();
+    world.register_component::<MapData>();
+    world.register_component::<Rock>();
+    world.register_component::<WoodenTorch>();
+    world.register_component::<WoodenWall>();
+    world.register_component::<Tree>();
 }
 
 fn setup(mut commands: Commands) {

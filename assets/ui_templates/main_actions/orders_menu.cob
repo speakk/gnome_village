@@ -3,20 +3,20 @@ action_menu_base as action_menu_base
 colours as colours
 
 #scenes
-"build_menu"
+"orders_menu"
     +action_menu_base::action_menu{}
 
-    "build_items"
+    "order_items"
         GridNode{ grid_auto_flow: Column}
 
-"build_item"
+"order_item"
     GridNode{}
     Interactive{}
     ControlRoot
 
     "label"
         GridNode{}
-        TextLine{ text:"build_item_label" size:25 font:{family: "m5x7" } justify: Center}
+        TextLine{ text:"order_item_label" size:25 font:{family: "m5x7" } justify: Center}
         TextLineColor($colours::primary)
         ControlMember
         Animated<TextLineColor>{

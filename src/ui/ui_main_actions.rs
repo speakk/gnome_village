@@ -9,6 +9,7 @@ use bevy_cobweb_ui::prelude::*;
 
 pub mod build_menu;
 pub mod main_action_buttons;
+pub mod orders_menu;
 
 #[derive(Event)]
 pub struct MainActionMenuButtonPressed(pub MainActionButtonType);
@@ -46,16 +47,13 @@ pub fn initialize_main_actions_menu<'a>(
             if let Ok(event) = event.try_read() {
                 commands.react().broadcast(MainMenuSelectionCleared);
 
-                println!("MainActionMenuButton pressed {:?}", event.0);
                 if Some(event.0) == currently_selected_menu.0 {
-                    println!("Clearing main menu");
                     currently_selected_menu.0 = None;
                     return;
                 }
 
                 currently_selected_menu.0 = Some(event.0);
                 commands.react().broadcast(MainMenuSelected(event.0));
-                println!("Setting main menu to {:?}", event.0);
             }
         },
     );

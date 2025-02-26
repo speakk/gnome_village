@@ -9,6 +9,7 @@ pub mod rock;
 pub mod settler;
 pub mod soil;
 pub mod spawners;
+pub mod category_tags;
 
 pub struct BundlePlugin;
 
