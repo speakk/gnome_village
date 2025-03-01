@@ -29,6 +29,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
 use crate::bundles::category_tags::Tree;
+use crate::features::world_interaction::destruct_action::DestructTarget;
 
 pub struct SavePlugin;
 
@@ -127,6 +128,7 @@ pub fn register_components(world: &mut World) {
     world.register_component::<Task>();
     world.register_component::<Job>();
     world.register_component::<PreviewCarry>();
+    world.register_component::<DestructTarget>();
     world.register_component::<BluePrint>();
     world.register_component::<WorkingOnTask>();
     world.register_component::<ItemStack>();

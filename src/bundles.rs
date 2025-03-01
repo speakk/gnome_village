@@ -17,6 +17,8 @@ impl Plugin for BundlePlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(Prototypes(HashMap::new()))
             .insert_resource(ItemSpawners(HashMap::new()))
+            .insert_resource(ItemCategories(HashMap::new()))
+            .add_systems(Startup, setup_item_categories)
             .add_systems(Update, react_to_emptied_stack)
             .add_plugins(BuildablesPlugin);
     }
@@ -40,7 +42,7 @@ pub enum ItemCategory {
 }
 
 #[derive(Resource)]
-pub struct ItemCategories(HashMap<ItemCategory, Vec<ItemId>>);
+pub struct ItemCategories(pub(crate) HashMap<ItemCategory, Vec<ItemId>>);
 
 pub fn setup_item_categories(mut item_categories: ResMut<ItemCategories>) {
     item_categories.0.insert(ItemCategory::Tree, vec![ItemId::OakTree]);

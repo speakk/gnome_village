@@ -7,6 +7,7 @@ use bresenham::Bresenham;
 use leafwing_input_manager::action_state::ActionState;
 use leafwing_input_manager::input_map::InputMap;
 use leafwing_input_manager::InputManagerBundle;
+use crate::features::user_actions::{CurrentUserActionState, UserActionState};
 
 #[derive(Event, Debug)]
 pub struct MapClickedEvent {
@@ -283,6 +284,7 @@ pub fn handle_mouse_dragged(
     drag_info: Res<DragInfo>,
     mut selected_coordinates: ResMut<SelectedCoordinates>,
     current_coordinate: Res<CurrentMouseWorldCoordinate>,
+    current_action_state: Res<CurrentUserActionState>
 ) {
     if !current_coordinate.is_changed() {
         return;
@@ -298,7 +300,8 @@ pub fn handle_mouse_dragged(
                 selected_coordinates.0 = line_select(event.coordinate, current_coordinate.0);
             }
             Some(DragModifier::Secondary) => {
-                selected_coordinates.0 = rectangle_select(&current_coordinate, event, true);
+                let hollow = matches!(current_action_state.0, UserActionState::PlacingBuilding(_));
+                selected_coordinates.0 = rectangle_select(&current_coordinate, event, hollow);
             }
             None => {
                 selected_coordinates.0 = vec![current_coordinate.0];

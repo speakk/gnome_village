@@ -3,12 +3,13 @@ use crate::features::world_interaction::cancel_job::CancelJobPlugin;
 use crate::features::world_interaction::mouse_selection::MouseSelectionPlugin;
 use crate::features::world_interaction::world_speed::WorldSpeedPlugin;
 use bevy::prelude::*;
+use crate::features::world_interaction::destruct_action::DestructActionPlugin;
 
 pub mod build_action;
 pub mod cancel_job;
 pub mod mouse_selection;
 pub mod world_speed;
-mod destruct_action;
+pub mod destruct_action;
 
 pub struct WorldInteractionPlugin;
 
@@ -19,6 +20,7 @@ impl Plugin for WorldInteractionPlugin {
             MouseSelectionPlugin,
             CancelJobPlugin,
             WorldSpeedPlugin,
+            DestructActionPlugin
         ));
     }
 }

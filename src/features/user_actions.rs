@@ -18,7 +18,7 @@ pub enum UserActionType {
     },
     Destruct {
         coordinates: Vec<IVec2>,
-        id_filter: CategoryFilter,
+        category_id_filter: CategoryFilter,
     },
 }
 

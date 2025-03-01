@@ -1,11 +1,12 @@
 use crate::bundles::buildables::BluePrint;
 use crate::bundles::Id;
 use crate::features::position::CoordinateToEntity;
-use crate::features::user_actions::{UserActionIntent, UserActionType};
+use crate::features::user_actions::{CurrentUserActionState, UserActionIntent, UserActionState, UserActionType};
 use crate::features::world_interaction::mouse_selection::{
     CoordinatesSelectedEvent, DragInfo, SelectedCoordinates, SelectionType,
 };
 use bevy::prelude::*;
+use crate::features::world_interaction::destruct_action::draw_rectangle_selection;
 
 pub struct CancelJobPlugin;
 
@@ -23,32 +24,24 @@ impl Plugin for CancelJobPlugin {
 }
 
 fn draw_cancel_gizmo(
+    current_user_action: Res<CurrentUserActionState>,
     drag_info: Res<DragInfo>,
     selected_coordinates: Res<SelectedCoordinates>,
     mut gizmos: Gizmos,
 ) {
-    if !drag_info.is_dragging {
+    if drag_info.map_drag_start_event.is_none() {
         return;
-    }
+    };
 
+    if !matches!(current_user_action.0, UserActionState::CancellingJobs(_)) {
+        return
+    }
+    
     if selected_coordinates.0.is_empty() {
         return;
     }
 
-    let drag_start_event = drag_info
-        .map_drag_start_event
-        .expect("Drag start event not set when dragging");
-    if drag_start_event.selection_type != SelectionType::Secondary {
-        return;
-    }
-
-    for coordinate in selected_coordinates.0.iter() {
-        gizmos.rounded_rect(
-            Vec3::new(coordinate.x as f32, 0.1, coordinate.y as f32),
-            Vec2::splat(1.0),
-            Srgba::hex("#a84832").unwrap(),
-        );
-    }
+    draw_rectangle_selection(selected_coordinates, &mut gizmos);
 }
 
 fn send_cancel_intent(
