@@ -8,7 +8,7 @@ use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 
 #[derive(Event)]
-pub struct BuildMenuBuildableSelected(pub ItemId);
+pub(crate) struct BuildMenuBuildableSelected(pub ItemId);
 
 pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Commands) {
     commands

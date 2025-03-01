@@ -7,7 +7,7 @@ use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandle
 use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
-use crate::features::user_actions::{UserActionIntent, UserActionType};
+use crate::features::user_actions::{CurrentUserActionState, UserActionIntent, UserActionState, UserActionType};
 use crate::features::world_interaction::mouse_selection::{
     CoordinatesSelectedEvent, DragInfo, SelectedCoordinates, SelectionType,
 };
@@ -23,7 +23,7 @@ impl Plugin for BuildActionPlugin {
             .add_systems(
                 Update,
                 (
-                    react_to_buildable_menu_selected,
+                    react_to_building_state,
                     react_to_build_intent,
                     regenerate_preview_entity,
                     send_build_intent,
@@ -36,13 +36,14 @@ impl Plugin for BuildActionPlugin {
 #[derive(Resource, Default, Debug, Deref, DerefMut)]
 struct CurrentBuilding(Option<ItemId>);
 
-fn react_to_buildable_menu_selected(
-    mut build_menu_buildable_selected: EventReader<BuildMenuBuildableSelected>,
+fn react_to_building_state(
+    user_action_state: Res<CurrentUserActionState>,
     mut current_building: ResMut<CurrentBuilding>,
 ) {
-    for event in build_menu_buildable_selected.read() {
-        println!("Reacting to buildable menu selected, setting current_building");
-        current_building.0 = Some(event.0);
+    if user_action_state.is_changed() {
+        if let UserActionState::PlacingBuilding(item_id) = user_action_state.0 {
+            current_building.0 = Some(item_id);
+        }
     }
 }
 

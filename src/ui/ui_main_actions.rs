@@ -6,6 +6,7 @@ use bevy_cobweb::prelude::{broadcast, BroadcastEvent, ReactCommandsExt};
 use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;
 use bevy_cobweb_ui::loading::SceneHandle;
 use bevy_cobweb_ui::prelude::*;
+use crate::ui::ui_main_actions::orders_menu::OrderMenuItemSelected;
 
 pub mod build_menu;
 pub mod main_action_buttons;
@@ -31,7 +32,8 @@ impl Plugin for MainActionsPlugin {
             .add_event::<MainActionMenuButtonPressed>()
             .add_event::<MainMenuSelectionCleared>()
             .add_event::<MainMenuSelected>()
-            .add_event::<BuildMenuBuildableSelected>();
+            .add_event::<BuildMenuBuildableSelected>()
+            .add_event::<OrderMenuItemSelected>();
     }
 }
 

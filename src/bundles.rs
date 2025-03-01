@@ -34,6 +34,18 @@ pub enum ItemId {
     Dirt = 7,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
+pub enum ItemCategory {
+    Tree = 0
+}
+
+#[derive(Resource)]
+pub struct ItemCategories(HashMap<ItemCategory, Vec<ItemId>>);
+
+pub fn setup_item_categories(mut item_categories: ResMut<ItemCategories>) {
+    item_categories.0.insert(ItemCategory::Tree, vec![ItemId::OakTree]);
+}
+
 #[derive(Component, Reflect, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[require(ItemStack, Reservations)]
 #[reflect(Component)]

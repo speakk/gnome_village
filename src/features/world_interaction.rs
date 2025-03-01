@@ -8,6 +8,7 @@ pub mod build_action;
 pub mod cancel_job;
 pub mod mouse_selection;
 pub mod world_speed;
+mod destruct_action;
 
 pub struct WorldInteractionPlugin;
 

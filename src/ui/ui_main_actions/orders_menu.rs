@@ -7,10 +7,12 @@ use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 use crate::bundles::category_tags::Tree;
+use crate::bundles::ItemCategory;
+use crate::features::user_actions::{CategoryFilter, IdFilter};
 
 #[derive(Clone, Debug)]
 pub enum OrderId {
-    Destruct(Vec<ComponentId>),
+    Destruct(CategoryFilter),
 }
 
 #[derive(Clone, Debug)]
@@ -20,31 +22,16 @@ pub struct OrderItem {
 }
 
 #[derive(Event)]
-pub struct OrderMenuItemSelected(pub OrderId);
-
-pub fn get_filtered_entities(mut world: &mut World, filters: Vec<ComponentId>) -> Vec<Entity> {
-    //let filtered_entities = world.get
-    let mut builder = QueryBuilder::<FilteredEntityMut>::new(&mut world);
-    //builder.and(filters.iter().for_each(|id| { id }));
-    filters.iter().for_each(|id| {
-        builder.and(|builder| {
-            builder.ref_id(*id);
-        });
-    });
-
-    let mut query_state = builder.build();
-    query_state.iter(&world).map(|e| e.id()).collect::<Vec<_>>()
-}
+pub(crate) struct OrderMenuItemSelected(pub OrderId);
 
 #[derive(Resource, Default)]
 pub struct OrderUiItems(pub Vec<OrderItem>);
 
-pub fn setup_order_ui_items(mut order_ui_items: ResMut<OrderUiItems>, components: &Components) {
+pub fn setup_order_ui_items(mut order_ui_items: ResMut<OrderUiItems>) {
     order_ui_items.0 = vec![OrderItem {
-        id: OrderId::Destruct(vec![components.component_id::<Tree>().unwrap()]),
+        id: OrderId::Destruct(Some(vec![ItemCategory::Tree])),
         name: "Chop Trees".to_string(),
     }];
-    
 }
 
 pub fn insert_orders_menu(

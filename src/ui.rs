@@ -1,9 +1,11 @@
 use crate::ui::ui_main_actions::build_menu::insert_build_menu;
 use crate::ui::ui_main_actions::main_action_buttons::initialize_menu_buttons;
+use crate::ui::ui_main_actions::orders_menu::{
+    insert_orders_menu, setup_order_ui_items, OrderUiItems,
+};
 use crate::ui::ui_main_actions::{initialize_main_actions_menu, MainActionsPlugin};
 use bevy::prelude::*;
 use bevy_cobweb_ui::prelude::*;
-use crate::ui::ui_main_actions::orders_menu::{insert_orders_menu, setup_order_ui_items, OrderMenuItemSelected, OrderUiItems};
 
 pub mod ui_main_actions;
 
@@ -20,10 +22,18 @@ impl Plugin for UiPlugin {
         app.add_plugins(CobwebUiPlugin)
             .add_plugins(MainActionsPlugin)
             .insert_resource::<UiSceneHandles>(UiSceneHandles::default())
-            .add_event::<OrderMenuItemSelected>()
             .insert_resource::<OrderUiItems>(OrderUiItems::default())
             .load("ui_templates/manifest.cob")
-            .add_systems(OnEnter(LoadState::Done), (setup_order_ui_items, build_ui, insert_build_menu, insert_orders_menu).chain());
+            .add_systems(
+                OnEnter(LoadState::Done),
+                (
+                    setup_order_ui_items,
+                    build_ui,
+                    insert_build_menu,
+                    insert_orders_menu,
+                )
+                    .chain(),
+            );
     }
 }
 
