@@ -1,3 +1,4 @@
+use crate::features::health::Health;
 use crate::features::item_drop::SingleItemDrop;
 use crate::bundles::{Id, ItemId, ResourceItem};
 use crate::features::assets::GltfAssetId;
@@ -11,7 +12,6 @@ use bevy::prelude::*;
 #[require(
     Id(|| Id(ItemId::OakTree)),
     Name(|| "Oak Tree"),
-    ResourceItem,
     GltfData(|| GltfData {
         asset_id: GltfAssetId::OakTree,
         scene_name: None
@@ -21,6 +21,7 @@ use bevy::prelude::*;
         growth_requirements: vec![],
         ..Default::default()
     }),
+    Health(|| Health::new(1.0)),
     ItemDrop(|| ItemDrop {
         item_drops: vec![
             SingleItemDrop { item_id: ItemId::Lumber, chance: 1.0 },

@@ -85,8 +85,6 @@ pub fn react_to_blueprints(
     }
 }
 
-fn cancel_task_when_buildable_removed(trigger: Trigger<OnRemove, Buildable>) {}
-
 pub fn score_build(
     build_data: &BuildData,
     agents: &[(Entity, &WorldPosition)],

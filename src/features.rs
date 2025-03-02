@@ -17,3 +17,4 @@ pub mod user_actions;
 pub mod world_interaction;
 pub mod item_drop;
 pub mod seeded_random;
+pub mod health;

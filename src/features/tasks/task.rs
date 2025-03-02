@@ -11,6 +11,7 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::{MapEntities, Save};
+use crate::features::tasks::jobs::destruct_task::score_destruct;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum RunType {
@@ -107,10 +108,15 @@ pub struct BuildData {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
+pub struct DestructData {
+    pub target: Entity,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
 pub enum TaskType {
     Build(BuildData),
     BringResource(BringResourceData),
-    GoTo,
+    Destruct(DestructData),
 }
 
 #[derive(Component, Debug, Clone, Reflect)]
@@ -195,7 +201,8 @@ impl Task {
                 score_bring_resource(resources_query, agents, bring_resource_data, others_query)
             }
             Some(TaskType::Build(build_data)) => score_build(build_data, agents, others_query),
-            _ => None,
+            Some(TaskType::Destruct(destruct_data)) => { score_destruct(destruct_data, agents, others_query) },
+            None => None,
         }
     }
 }

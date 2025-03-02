@@ -10,6 +10,7 @@ pub struct RandomSource(pub(crate) WyRand);
 
 impl Plugin for SeededRandomPlugin {
     fn build(&self, app: &mut App) {
+        app.insert_resource(RandomSource(WyRand::new(0)));
         app.add_systems(Update, seed_changed);
     }
 }

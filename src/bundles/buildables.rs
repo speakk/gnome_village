@@ -1,6 +1,7 @@
 pub mod torch;
 pub mod wooden_wall;
 
+use crate::features::health::Health;
 use crate::features::inventory::Inventory;
 use crate::features::misc_components::ItemAmount;
 use bevy::prelude::*;
@@ -61,6 +62,7 @@ pub fn setup_buildable_materials(
 }
 
 #[derive(Component, Default, Reflect)]
+#[require(Health)]
 #[reflect(Component)]
 pub struct Buildable {
     pub(crate) item_requirements: Vec<ItemAmount>,
