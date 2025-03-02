@@ -38,7 +38,8 @@ pub enum ItemId {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum ItemCategory {
-    Tree = 0
+    Tree = 0,
+    Rocks = 1,
 }
 
 #[derive(Resource)]
@@ -46,6 +47,7 @@ pub struct ItemCategories(pub(crate) HashMap<ItemCategory, Vec<ItemId>>);
 
 pub fn setup_item_categories(mut item_categories: ResMut<ItemCategories>) {
     item_categories.0.insert(ItemCategory::Tree, vec![ItemId::OakTree]);
+    item_categories.0.insert(ItemCategory::Rocks, vec![ItemId::Rock]);
 }
 
 #[derive(Component, Reflect, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]

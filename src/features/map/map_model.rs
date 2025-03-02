@@ -182,7 +182,7 @@ pub fn generate_rocks(
             let reserved = reserved_coordinates.0.contains(&centered_coordinate);
 
             if (noise_value / 2.0 + 1.0) + mapped_value < 0.65 && !reserved {
-                commands.spawn((Rock, WorldPosition(centered_coordinate.as_vec2())));
+                commands.spawn((Rock, InWorld, WorldPosition(centered_coordinate.as_vec2())));
 
                 reserved_coordinates.0.push(centered_coordinate);
             }

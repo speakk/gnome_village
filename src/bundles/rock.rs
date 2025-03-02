@@ -1,3 +1,4 @@
+use crate::features::health::Health;
 use crate::bundles::{Id, ItemId};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshType};
 use crate::features::path_finding::grid::Solid;
@@ -31,6 +32,7 @@ pub fn setup_rock_materials(
     Id(|| Id(ItemId::Rock)),
     Solid,
     Save,
+    Health(|| Health::new(1.0)),
     Name(|| "Rock"),
     SimpleMesh(|| SimpleMesh(SimpleMeshType::Cuboid))
 )]

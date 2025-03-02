@@ -1,14 +1,11 @@
+use crate::bundles::ItemCategory;
+use crate::features::user_actions::CategoryFilter;
 use crate::ui::ui_main_actions::main_action_buttons::MainActionButtonType;
 use crate::ui::ui_main_actions::{MainMenuSelected, MainMenuSelectionCleared};
 use crate::ui::UiSceneHandles;
-use bevy::ecs::component::{ComponentId, Components};
-use bevy::ecs::world::FilteredEntityMut;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
-use crate::bundles::category_tags::Tree;
-use crate::bundles::ItemCategory;
-use crate::features::user_actions::{CategoryFilter, IdFilter};
 
 #[derive(Clone, Debug)]
 pub enum OrderId {
@@ -28,17 +25,19 @@ pub(crate) struct OrderMenuItemSelected(pub OrderId);
 pub struct OrderUiItems(pub Vec<OrderItem>);
 
 pub fn setup_order_ui_items(mut order_ui_items: ResMut<OrderUiItems>) {
-    order_ui_items.0 = vec![OrderItem {
-        id: OrderId::Destruct(Some(vec![ItemCategory::Tree])),
-        name: "Chop Trees".to_string(),
-    }];
+    order_ui_items.0 = vec![
+        OrderItem {
+            id: OrderId::Destruct(Some(vec![ItemCategory::Tree])),
+            name: "Chop Trees".to_string(),
+        },
+        OrderItem {
+            id: OrderId::Destruct(Some(vec![ItemCategory::Rocks])),
+            name: "Mine rocks".to_string(),
+        },
+    ];
 }
 
-pub fn insert_orders_menu(
-    ui_scene_handles: Res<UiSceneHandles>,
-    mut commands: Commands,
-) {
-
+pub fn insert_orders_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Commands) {
     commands
         .ui_builder(ui_scene_handles.action_menu_container.unwrap())
         .update_on(
@@ -47,8 +46,7 @@ pub fn insert_orders_menu(
              event: BroadcastEvent<MainMenuSelected>,
              mut commands: Commands,
              mut scene_builder: ResMut<SceneBuilder>,
-             order_ui_items: Res<OrderUiItems>
-            | {
+             order_ui_items: Res<OrderUiItems>| {
                 if let Ok(event) = event.try_read() {
                     if event.0 != MainActionButtonType::Orders {
                         return;
@@ -70,8 +68,9 @@ pub fn insert_orders_menu(
                                                 OrderMenuItemSelected,
                                             >| {
                                                 println!("Build item pressed, broadcasting");
-                                                order_item_selected_writer
-                                                    .send(OrderMenuItemSelected(order_item.id.clone()));
+                                                order_item_selected_writer.send(
+                                                    OrderMenuItemSelected(order_item.id.clone()),
+                                                );
                                             },
                                         );
                                     },
