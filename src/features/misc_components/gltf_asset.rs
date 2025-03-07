@@ -7,9 +7,10 @@ use crate::ReflectComponent;
 use bevy::app::App;
 use bevy::core::Name;
 use bevy::prelude::*;
-use moonshine_object::{Object, ObjectInstance};
+use moonshine_object::{Kind, Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use std::time::Duration;
+use crate::features::inventory::InInventory;
 
 pub struct GltfAssetPlugin;
 
@@ -26,7 +27,7 @@ impl Plugin for GltfAssetPlugin {
                 react_to_work_finished,
             ),
         )
-            .add_viewable::<GltfData>();
+            .add_view::<GltfData, GltfValid>();
     }
 }
 
@@ -48,12 +49,14 @@ pub struct GltfAnimation {
     pub should_play: bool,
 }
 
-impl BuildView for GltfData {
-    fn build(world: &World, object: Object<GltfData>, mut view: ViewCommands<GltfData>) {
-        if world.get::<Prototype>(object.entity()).is_some() {
-            return;
-        }
+struct GltfValid;
 
+impl Kind for GltfValid {
+    type Filter =(Without<Prototype>, Without<InInventory>);
+}
+
+impl BuildView<GltfData> for GltfValid {
+    fn build(world: &World, object: Object<GltfData>, mut view: ViewCommands<GltfData>) {
         let gltf_data = world.get::<GltfData>(object.entity()).unwrap();
         let gltf_assets = world.get_resource::<Assets<Gltf>>().unwrap();
         let gltf_asset_handles = world.get_resource::<GltfAssetHandles>().unwrap();

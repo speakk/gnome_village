@@ -10,6 +10,7 @@ const SETTLER_PATH: &str = "blender_models/settler.glb";
 const TORCH_PATH: &str = "blender_models/wooden_torch.glb";
 const OAK_TREE_PATH: &str = "blender_models/plants/oak_tree.glb";
 const LUMBER_PATH: &str = "blender_models/wood.glb";
+const WATER_WELL_PATH: &str = "blender_models/well.glb";
 
 #[derive(Debug, Reflect, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GltfAssetId {
@@ -17,6 +18,7 @@ pub enum GltfAssetId {
     WoodenTorch,
     OakTree,
     Lumber,
+    WaterWell
 }
 
 #[derive(Resource, Default)]
@@ -64,6 +66,9 @@ fn setup(
     gltf_asset_handles
         .handles
         .insert(GltfAssetId::Lumber, asset_server.load(LUMBER_PATH));
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::WaterWell, asset_server.load(WATER_WELL_PATH));
 
     // Build the animation graph
     let (graph, node_indices) = AnimationGraph::from_clips([

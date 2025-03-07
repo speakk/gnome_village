@@ -1,5 +1,6 @@
 use crate::bundles::{Id, ItemStack};
-use crate::features::inventory::Inventory;
+use crate::features::inventory::{Inventory, InventoryChanged, InventoryChangedType};
+use crate::features::misc_components::ItemAmount;
 use beet::prelude::*;
 use bevy::prelude::*;
 
@@ -15,7 +16,6 @@ fn pick_up_action(
     trigger: Trigger<OnRun>,
     actions: Query<&PickUpAction>,
     mut item_stack: Query<&mut ItemStack>,
-    mut inventory: Query<&mut Inventory>,
     item_ids: Query<&Id>,
     mut commands: Commands,
 ) {
@@ -23,13 +23,17 @@ fn pick_up_action(
     let agent = trigger.origin;
     let action = actions.get(trigger.action).unwrap();
 
-    let mut inventory = inventory.get_mut(agent).unwrap();
     let target_entity = action.target_entity;
     let mut item_stack = item_stack.get_mut(target_entity).unwrap();
     let amount = action.amount;
 
     item_stack.0 -= amount;
-    inventory.add_item(**item_ids.get(target_entity).unwrap(), amount);
+    commands
+        .entity(agent)
+        .trigger(InventoryChanged(InventoryChangedType::Add(ItemAmount {
+            item_id: **item_ids.get(target_entity).unwrap(),
+            amount,
+        })));
 
     trigger.trigger_result(&mut commands, RunResult::Success);
 }

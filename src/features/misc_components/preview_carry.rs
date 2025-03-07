@@ -1,6 +1,6 @@
 use crate::bundles::Prototypes;
 use crate::features::assets::GltfAssetHandles;
-use crate::features::inventory::{Inventory, InventoryChanged};
+use crate::features::inventory::{Inventory, InventoryChanged, InventoryChangedType};
 use crate::features::misc_components::gltf_asset::{get_scene_from_gltf_data, GltfData};
 use crate::features::misc_components::Prototype;
 use crate::features::position::WorldPosition;
@@ -64,7 +64,7 @@ impl BuildView for PreviewCarry {
 
 pub fn react_to_inventory_change(
     trigger: Trigger<InventoryChanged>,
-    query: Query<(&Inventory, &Viewable<PreviewCarry>, &WorldPosition), With<PreviewCarry>>,
+    query: Query<(&Viewable<PreviewCarry>, &WorldPosition), With<PreviewCarry>>,
     prototypes: Res<Prototypes>,
     gltf_asset_handles: Res<GltfAssetHandles>,
     gltf_assets: Res<Assets<Gltf>>,
@@ -72,26 +72,28 @@ pub fn react_to_inventory_change(
     mut commands: Commands,
 ) {
     let entity = trigger.entity();
-    let Ok((inventory, viewable, world_position)) = query.get(entity) else {
+    let Ok((viewable, world_position)) = query.get(entity) else {
         return;
     };
-
-    let first_item = inventory.items.keys().next();
-    if let Some(first_item) = first_item {
-        let prototype = prototypes.0.get(first_item).unwrap();
-        let gltf_data = gltf_data_query.get(*prototype);
-        if let Ok(gltf_data) = gltf_data {
-            let scene =
-                match get_scene_from_gltf_data(&gltf_asset_handles, &gltf_assets, &gltf_data) {
-                    Some(value) => value,
-                    None => return,
-                };
-            commands.entity(viewable.view().entity()).insert((
-                SceneRoot(scene),
-                Transform::from_xyz(world_position.x, 1.3, world_position.y),
-            ));
+    
+    match trigger.0 {
+        InventoryChangedType::Add(item_amount) => {
+            let prototype = prototypes.0.get(&item_amount.item_id).unwrap();
+            let gltf_data = gltf_data_query.get(*prototype);
+            if let Ok(gltf_data) = gltf_data {
+                let scene =
+                    match get_scene_from_gltf_data(&gltf_asset_handles, &gltf_assets, &gltf_data) {
+                        Some(value) => value,
+                        None => return,
+                    };
+                commands.entity(viewable.view().entity()).insert((
+                    SceneRoot(scene),
+                    Transform::from_xyz(world_position.x, 1.3, world_position.y),
+                ));
+            }
         }
-    } else {
-        commands.entity(viewable.view().entity()).despawn_descendants();
+        InventoryChangedType::Remove(_) => {
+            commands.entity(viewable.view().entity()).despawn_descendants();
+        }
     }
 }

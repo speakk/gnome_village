@@ -1,4 +1,4 @@
-use crate::features::inventory::Inventory;
+use crate::features::inventory::{Inventory, InventoryChanged, InventoryChangedType};
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::ItemAmount;
 use crate::features::position::{CoordinateToEntity, WorldPosition};
@@ -35,6 +35,10 @@ pub struct Plant {
     pub random_growth_multiplier: f32,
 }
 
+#[derive(Component, Default, Debug, Clone, Reflect)]
+#[reflect(Component)]
+pub struct GrowthProvider;
+
 #[derive(Event)]
 pub struct PlantStageAdvanced;
 
@@ -66,7 +70,7 @@ pub fn update_growth_process(
     time: Res<Time>,
     mut previous_run: Local<f32>,
     coordinate_to_entity: Res<CoordinateToEntity>,
-    mut inventories: Query<&mut Inventory>,
+    mut inventories: Query<&mut Inventory, With<GrowthProvider>>,
     mut commands: Commands,
 ) {
     let current_time = time.elapsed_secs();
@@ -83,6 +87,7 @@ pub fn update_growth_process(
             world_position,
             &coordinate_to_entity,
             &mut inventories,
+            &mut commands
         ) {
             continue;
         }
@@ -107,13 +112,14 @@ fn check_growth_requirements(
     growth_requirements: &Vec<ItemAmount>,
     world_position: &WorldPosition,
     coordinate_to_entity: &CoordinateToEntity,
-    inventories: &mut Query<&mut Inventory>,
+    inventories: &mut Query<&mut Inventory, With<GrowthProvider>>,
+    mut commands: &mut Commands,
 ) -> bool {
     let entities_at_coordinate = coordinate_to_entity.0.get(&world_position.as_coordinate());
     if let Some(entities_at_coordinate) = entities_at_coordinate {
         for entity in entities_at_coordinate {
-            let inventory = inventories.get_mut(*entity);
-            if let Ok(mut inventory) = inventory {
+            let inventory = inventories.get(*entity);
+            if let Ok(inventory) = inventory {
                 let mut has_all = true;
 
                 for requirement in growth_requirements {
@@ -126,7 +132,8 @@ fn check_growth_requirements(
                 // TODO: Consider whether this should happen elsewhere
                 if has_all {
                     for requirement in growth_requirements {
-                        inventory.remove_item(requirement.item_id, requirement.amount);
+                        commands.entity(*entity).trigger(InventoryChanged(InventoryChangedType::Remove(*requirement)));
+                        //inventory.remove_item(requirement.item_id, requirement.amount);
                     }
 
                     return true;

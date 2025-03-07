@@ -1,5 +1,6 @@
 use crate::bundles::{ItemId, ItemSpawners};
-use crate::features::inventory::Inventory;
+use crate::features::inventory::{Inventory, InventoryChanged, InventoryChangedType};
+use crate::features::misc_components::ItemAmount;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::DepositTarget;
 use beet::prelude::*;
@@ -17,7 +18,6 @@ pub struct DepositAction {
 fn deposit_action(
     trigger: Trigger<OnRun>,
     actions: Query<&DepositAction>,
-    mut inventories: Query<&mut Inventory>,
     mut commands: Commands,
     item_spawners: Res<ItemSpawners>,
 ) {
@@ -26,15 +26,21 @@ fn deposit_action(
     let action = actions.get(trigger.action).unwrap();
     let amount = action.amount;
 
-    {
-        let mut source_inventory = inventories.get_mut(agent).unwrap();
-        source_inventory.remove_item(action.item_id, amount);
-    }
+    commands
+        .entity(agent)
+        .trigger(InventoryChanged(InventoryChangedType::Remove(ItemAmount {
+            item_id: action.item_id,
+            amount,
+        })));
 
     match action.deposit_target {
         DepositTarget::Inventory(inventory_entity) => {
-            let mut target_inventory = inventories.get_mut(inventory_entity).unwrap();
-            target_inventory.add_item(action.item_id, amount);
+            commands
+                .entity(inventory_entity)
+                .trigger(InventoryChanged(InventoryChangedType::Add(ItemAmount {
+                    item_id: action.item_id,
+                    amount,
+                })));
         }
         DepositTarget::Coordinate(coordinate) => {
             let new_item = item_spawners.0.get(&action.item_id).unwrap()(&mut commands);

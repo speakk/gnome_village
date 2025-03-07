@@ -70,10 +70,10 @@ fn interpolate_rendered_transform<T>(
 
         let rendered_translation = previous.lerp(current, alpha);
         let view_entity = viewable.view().entity();
-        let mut transform = transforms.get_mut(view_entity).unwrap();
-
-        transform.translation.x = rendered_translation.x;
-        transform.translation.z = rendered_translation.y;
+        if let Ok(mut transform) = transforms.get_mut(view_entity) {
+            transform.translation.x = rendered_translation.x;
+            transform.translation.z = rendered_translation.y;
+        }
     }
 }
 

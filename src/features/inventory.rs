@@ -1,16 +1,19 @@
-use crate::bundles::ItemId;
-use crate::features::misc_components::InWorld;
+use crate::bundles::{Id, ItemId, ItemSpawners};
+use crate::features::misc_components::{ItemAmount};
+use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
-use std::cmp::Ordering;
+use std::cmp::{Ordering};
 
 pub struct InventoryPlugin;
 
 impl Plugin for InventoryPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<InventoryChanged>()
-            .add_systems(Update, trigger_inventory_changed);
+            .add_observer(update_inventory_amount)
+            .add_observer(spawn_public_items)
+            .add_observer(remove_public_items);
     }
 }
 
@@ -18,17 +21,18 @@ impl Plugin for InventoryPlugin {
 #[reflect(Component)]
 pub struct Inventory {
     pub items: HashMap<ItemId, u32>,
+    pub public_container: bool,
 }
 
 impl Inventory {
-    pub fn add_item(&mut self, item_id: ItemId, amount: u32) {
+    fn add_item(&mut self, item_id: ItemId, amount: u32) {
         self.items
             .entry(item_id)
             .and_modify(|v| *v += amount)
             .or_insert(amount);
     }
 
-    pub fn remove_item(&mut self, item_id: ItemId, amount: u32) {
+    fn remove_item(&mut self, item_id: ItemId, amount: u32) {
         let current_amount = self.items.get(&item_id).unwrap_or(&0);
 
         match current_amount.cmp(&amount) {
@@ -48,14 +52,85 @@ impl Inventory {
     }
 }
 
-#[derive(Event)]
-pub struct InventoryChanged;
+#[derive(Component, Debug, Clone)]
+pub struct InInventory(pub Entity);
 
-pub fn trigger_inventory_changed(
-    query: Query<(Entity, &Inventory), (Changed<Inventory>, With<InWorld>)>,
+#[derive(Debug, Clone)]
+pub enum InventoryChangedType {
+    Add(ItemAmount),
+    Remove(ItemAmount)
+}
+
+#[derive(Event)]
+pub struct InventoryChanged(pub InventoryChangedType);
+
+pub fn spawn_public_items(
+    trigger: Trigger<InventoryChanged>,
+    inventories: Query<(&Inventory, &WorldPosition)>,
+    mut commands: Commands,
+    item_spawners: Res<ItemSpawners>,
+) {
+    let InventoryChangedType::Add(item_amount) = trigger.0 else {
+        return;
+    };
+    
+    let (inventory, world_position) = inventories.get(trigger.entity()).unwrap();
+
+    if !inventory.public_container {
+        return;
+    }
+
+    for i in 0..item_amount.amount {
+        let new_item = item_spawners.0.get(&item_amount.item_id).unwrap()(&mut commands);
+        commands.entity(new_item).insert((
+            InInventory(trigger.entity()),
+            WorldPosition(world_position.0),
+        ));
+
+        commands.entity(trigger.entity()).add_child(new_item);
+    }
+}
+
+pub fn remove_public_items(
+    trigger: Trigger<InventoryChanged>,
+    children: Query<&Children>,
+    item_ids: Query<&Id>,
     mut commands: Commands,
 ) {
-    for (entity, inventory) in query.iter() {
-        commands.entity(entity).trigger(InventoryChanged);
+    let InventoryChangedType::Remove(item_amount) = trigger.0 else {
+        return;
+    };
+    
+    let valid_children = children
+        .iter_descendants(trigger.entity())
+        .filter(|child| {
+            if let Ok(item_id) = item_ids.get(*child) {
+                if item_id.0 == item_amount.item_id {
+                    return true;
+                }
+            }
+
+            false
+        })
+        .take(item_amount.amount as usize)
+        .collect::<Vec<_>>();
+
+    for child in valid_children {
+        commands.entity(child).despawn();
+    }
+}
+
+pub fn update_inventory_amount(
+    trigger: Trigger<InventoryChanged>,
+    mut inventories: Query<&mut Inventory>,
+) {
+    let mut inventory = inventories.get_mut(trigger.entity()).unwrap();
+    match trigger.0 {
+        InventoryChangedType::Add(item_amount) => {
+            inventory.add_item(item_amount.item_id, item_amount.amount);
+        },
+        InventoryChangedType::Remove(item_amount) => {
+            inventory.remove_item(item_amount.item_id, item_amount.amount);
+        }
     }
 }
