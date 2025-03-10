@@ -8,6 +8,7 @@ use bevy::prelude::*;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
+use crate::features::plants::Planted;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -193,6 +194,13 @@ pub fn generate_rocks(
 struct EntityGeneration {
     entity_type: ItemId,
     amount: u32,
+    func: Option<fn(&mut EntityCommands)>,
+    
+}
+
+struct EntityGenerationFunc {
+    entity_type: ItemId,
+    amount: u32,
 }
 
 pub fn generate_test_entities(
@@ -208,14 +216,19 @@ pub fn generate_test_entities(
         EntityGeneration {
             entity_type: ItemId::Settler,
             amount: 4,
+            func: None,
         },
         EntityGeneration {
             entity_type: ItemId::Lumber,
             amount: 100,
+            func: None,
         },
         EntityGeneration {
             entity_type: ItemId::OakTree,
             amount: 20,
+            func: Some(|entity_commands| {
+                entity_commands.insert(Planted);
+            })
         },
     ];
 
@@ -234,6 +247,10 @@ pub fn generate_test_entities(
                     Save,
                     InWorld,
                 ));
+                
+                if let Some(func) = test_entity.func {
+                    func(&mut commands.entity(item));
+                }
 
                 reserved_coordinates.0.push(centered_coordinate);
                 entity_amount -= 1;

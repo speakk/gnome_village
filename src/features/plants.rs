@@ -35,6 +35,10 @@ pub struct Plant {
     pub random_growth_multiplier: f32,
 }
 
+#[derive(Component, Debug, Clone, Reflect)]
+#[reflect(Component)]
+pub struct Planted;
+
 #[derive(Component, Default, Debug, Clone, Reflect)]
 #[reflect(Component)]
 pub struct GrowthProvider;
@@ -66,7 +70,7 @@ pub fn initialize_plant(mut commands: Commands, query: Query<Entity, Added<Plant
 }
 
 pub fn update_growth_process(
-    mut query: Query<(Entity, &mut Plant, &WorldPosition)>,
+    mut query: Query<(Entity, &mut Plant, &WorldPosition), With<Planted>>,
     time: Res<Time>,
     mut previous_run: Local<f32>,
     coordinate_to_entity: Res<CoordinateToEntity>,
@@ -113,7 +117,7 @@ fn check_growth_requirements(
     world_position: &WorldPosition,
     coordinate_to_entity: &CoordinateToEntity,
     inventories: &mut Query<&mut Inventory, With<GrowthProvider>>,
-    mut commands: &mut Commands,
+    commands: &mut Commands,
 ) -> bool {
     let entities_at_coordinate = coordinate_to_entity.0.get(&world_position.as_coordinate());
     if let Some(entities_at_coordinate) = entities_at_coordinate {
@@ -133,7 +137,6 @@ fn check_growth_requirements(
                 if has_all {
                     for requirement in growth_requirements {
                         commands.entity(*entity).trigger(InventoryChanged(InventoryChangedType::Remove(*requirement)));
-                        //inventory.remove_item(requirement.item_id, requirement.amount);
                     }
 
                     return true;

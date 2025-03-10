@@ -83,9 +83,7 @@ pub fn get_scene_from_gltf_data(asset_handles: &GltfAssetHandles, gltf_assets: &
         .get(&gltf_data.asset_id)
         .expect("Could not find asset handle");
 
-    let Some(gltf) = gltf_assets.get(asset_handle) else {
-        return None;
-    };
+    let gltf = gltf_assets.get(asset_handle)?;
 
     let scene = get_scene_handle(gltf_data, gltf);
     Some(scene)
