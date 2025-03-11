@@ -8,7 +8,6 @@ use bevy::prelude::*;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
-use crate::features::plants::Planted;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -226,9 +225,12 @@ pub fn generate_test_entities(
         EntityGeneration {
             entity_type: ItemId::OakTree,
             amount: 20,
-            func: Some(|entity_commands| {
-                entity_commands.insert(Planted);
-            })
+            func: None
+        },
+        EntityGeneration {
+            entity_type: ItemId::PotatoPlantSeed,
+            amount: 20,
+            func: None
         },
     ];
 

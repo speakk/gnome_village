@@ -20,7 +20,7 @@ pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Co
              mut commands: Commands,
              mut scene_builder: ResMut<SceneBuilder>,
              buildables: Query<&Buildable>,
-             names: Query<&Name, With<Buildable>>,
+             names: Query<&Name>,
              prototypes: Res<Prototypes>| {
                 println!("In insert_build_menu thing!!");
                 if let Ok(event) = event.try_read() {

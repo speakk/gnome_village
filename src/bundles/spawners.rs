@@ -8,6 +8,7 @@ use crate::bundles::soil::dirt::Dirt;
 use crate::bundles::{ItemId, ItemSpawners, Prototypes};
 use crate::features::misc_components::Prototype;
 use bevy::prelude::{Commands, ResMut};
+use crate::bundles::plants::potato_plant::{PotatoPlant, PotatoPlantSeed};
 
 macro_rules! create_spawners_and_prototypes {
     ( $commands:expr,$spawners:expr,$prototypes:expr,$( ($item_id:expr, $component:expr) ),*, ) => {
@@ -32,6 +33,8 @@ pub fn setup_spawners_and_prototypes(mut prototypes: ResMut<Prototypes>, mut spa
         (ItemId::OakTree, OakTree),
         (ItemId::Water, Water),
         (ItemId::Dirt, Dirt),
-        
+        (ItemId::PotatoPlant, PotatoPlant),
+        (ItemId::PotatoPlantSeed, PotatoPlantSeed),
+
     );
 }

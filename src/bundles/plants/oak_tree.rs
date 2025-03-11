@@ -1,3 +1,4 @@
+use crate::features::misc_components::ItemAmount;
 use crate::features::health::Health;
 use crate::features::item_drop::SingleItemDrop;
 use crate::bundles::{Id, ItemId, ResourceItem};
@@ -18,7 +19,12 @@ use bevy::prelude::*;
     }),
     Plant(|| Plant {
         growth_stages: 4,
-        growth_requirements: vec![],
+        growth_requirements: vec![
+            ItemAmount {
+                item_id: ItemId::Water,
+                amount: 1
+            }
+        ],
         ..Default::default()
     }),
     Health(|| Health::new(1.0)),

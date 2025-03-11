@@ -8,6 +8,7 @@ use bevy::prelude::{Component, Reflect};
 use bevy::time::common_conditions::on_timer;
 use rand::Rng;
 use std::time::Duration;
+use crate::bundles::buildables::BluePrint;
 
 pub struct PlantsPlugin;
 
@@ -34,10 +35,6 @@ pub struct Plant {
     pub finished_growing: bool,
     pub random_growth_multiplier: f32,
 }
-
-#[derive(Component, Debug, Clone, Reflect)]
-#[reflect(Component)]
-pub struct Planted;
 
 #[derive(Component, Default, Debug, Clone, Reflect)]
 #[reflect(Component)]
@@ -70,7 +67,7 @@ pub fn initialize_plant(mut commands: Commands, query: Query<Entity, Added<Plant
 }
 
 pub fn update_growth_process(
-    mut query: Query<(Entity, &mut Plant, &WorldPosition), With<Planted>>,
+    mut query: Query<(Entity, &mut Plant, &WorldPosition), Without<BluePrint>>,
     time: Res<Time>,
     mut previous_run: Local<f32>,
     coordinate_to_entity: Res<CoordinateToEntity>,

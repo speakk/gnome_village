@@ -35,7 +35,9 @@ pub enum ItemId {
     Water = 6,
     Dirt = 7,
     WaterWell = 8,
-    PotatoPlant = 9
+    PotatoPlant = 9,
+    PotatoPlantSeed = 10,
+    Potato = 11,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
