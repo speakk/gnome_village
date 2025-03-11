@@ -9,6 +9,7 @@ pub struct AssetsPlugin;
 const SETTLER_PATH: &str = "blender_models/settler.glb";
 const TORCH_PATH: &str = "blender_models/wooden_torch.glb";
 const OAK_TREE_PATH: &str = "blender_models/plants/oak_tree.glb";
+const POTATO_PLANT_PATH: &str = "blender_models/plants/potato_plant.glb";
 const LUMBER_PATH: &str = "blender_models/wood.glb";
 const WATER_WELL_PATH: &str = "blender_models/well.glb";
 
@@ -18,7 +19,8 @@ pub enum GltfAssetId {
     WoodenTorch,
     OakTree,
     Lumber,
-    WaterWell
+    WaterWell,
+    PotatoPlant,
 }
 
 #[derive(Resource, Default)]
@@ -69,6 +71,9 @@ fn setup(
     gltf_asset_handles
         .handles
         .insert(GltfAssetId::WaterWell, asset_server.load(WATER_WELL_PATH));
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::PotatoPlant, asset_server.load(POTATO_PLANT_PATH));
 
     // Build the animation graph
     let (graph, node_indices) = AnimationGraph::from_clips([
