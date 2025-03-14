@@ -1,5 +1,5 @@
 use crate::bundles::{Id, ItemId, ItemSpawners};
-use crate::features::misc_components::{ItemAmount};
+use crate::features::misc_components::{InWorld, ItemAmount};
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
 use bevy::prelude::*;
@@ -13,11 +13,12 @@ impl Plugin for InventoryPlugin {
         app.add_event::<InventoryChanged>()
             .add_observer(update_inventory_amount)
             .add_observer(spawn_public_items)
-            .add_observer(remove_public_items);
+            .add_observer(remove_public_items)
+            .add_systems(Update, emit_inventory_changed_on_spawn);
     }
 }
 
-#[derive(Component, Default, Reflect, Debug, Clone)]
+#[derive(Component, Default, Reflect, Debug)]
 #[reflect(Component)]
 pub struct Inventory {
     pub items: HashMap<ItemId, u32>,
@@ -48,7 +49,7 @@ impl Inventory {
 
     pub fn has_amount(&self, item_id: ItemId, amount: u32) -> bool {
         let current_amount = self.items.get(&item_id).unwrap_or(&0);
-        current_amount >= &amount
+        *current_amount >= amount
     }
 }
 
@@ -64,6 +65,16 @@ pub enum InventoryChangedType {
 #[derive(Event)]
 pub struct InventoryChanged(pub InventoryChangedType);
 
+pub fn emit_inventory_changed_on_spawn(query: Query<(Entity, &Inventory), Added<Inventory>>, mut commands: Commands) {
+    for (entity, inventory) in query.iter() {
+        for (id, amount) in &inventory.items {
+            commands.entity(entity).trigger(InventoryChanged(InventoryChangedType::Add(ItemAmount {
+                item_id: *id, amount: *amount
+            })));
+        }
+    }
+}
+
 pub fn spawn_public_items(
     trigger: Trigger<InventoryChanged>,
     inventories: Query<(&Inventory, &WorldPosition)>,
@@ -74,17 +85,20 @@ pub fn spawn_public_items(
         return;
     };
     
-    let (inventory, world_position) = inventories.get(trigger.entity()).unwrap();
+    let Ok((inventory, world_position)) = inventories.get(trigger.entity()) else {
+        return;
+    };
 
     if !inventory.public_container {
         return;
     }
 
-    for i in 0..item_amount.amount {
+    for _i in 0..item_amount.amount {
         let new_item = item_spawners.0.get(&item_amount.item_id).unwrap()(&mut commands);
         commands.entity(new_item).insert((
             InInventory(trigger.entity()),
             WorldPosition(world_position.0),
+            InWorld
         ));
 
         commands.entity(trigger.entity()).add_child(new_item);

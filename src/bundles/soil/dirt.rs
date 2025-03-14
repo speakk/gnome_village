@@ -8,9 +8,8 @@ use bevy::prelude::*;
 #[reflect(Component)]
 #[require(Id(|| Id(ItemId::Dirt)),
     Name(|| "Dirt"),
-    ResourceItem,
     Inventory(|| Inventory {
-        items: HashMap::from([(ItemId::Water, 100)]),
+        items: HashMap::from([(ItemId::Nitrogen, 100)]),
         ..Default::default()
     }),
     GrowthProvider,

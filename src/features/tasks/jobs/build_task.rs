@@ -3,7 +3,7 @@ use crate::bundles::settler::Settler;
 use crate::bundles::ResourceItem;
 use crate::features::misc_components::{InWorld, ItemAmount};
 use crate::features::position::WorldPosition;
-use crate::features::tasks::jobs::Job;
+use crate::features::tasks::jobs::{create_bring_resource_task_from_item_amount, Job};
 use crate::features::tasks::task::{
     BringResourceData, BuildData, CancelTaskCommand, DepositTarget, RunType, Task, TaskType,
 };
@@ -41,25 +41,7 @@ pub fn react_to_blueprints(
                         for item_requirement in buildable.item_requirements.as_slice() {
                             // TODO: For now just split into 1 task each. In the future do splitting as needed
                             // (depending on carry capacity of worker, etc)
-                            for _ in 0..item_requirement.amount {
-                                bring_resource_task.spawn((
-                                    Task {
-                                        run_type: RunType::Leaf,
-                                        task_type: Some(TaskType::BringResource(
-                                            BringResourceData {
-                                                item_requirement: ItemAmount {
-                                                    item_id: item_requirement.item_id,
-                                                    amount: 1,
-                                                },
-                                                target: DepositTarget::Inventory(entity),
-                                                run_time_data: None,
-                                            },
-                                        )),
-                                        ..default()
-                                    },
-                                    Name::new("BringResource".to_string()),
-                                ));
-                            }
+                            create_bring_resource_task_from_item_amount(entity, bring_resource_task, item_requirement);
                         }
                     });
 

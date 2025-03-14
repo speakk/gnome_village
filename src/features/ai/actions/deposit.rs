@@ -41,12 +41,15 @@ fn deposit_action(
                     item_id: action.item_id,
                     amount,
                 })));
+            println!("Deposited item into inventory: {:?} {:?}", action.item_id, amount);
         }
         DepositTarget::Coordinate(coordinate) => {
             let new_item = item_spawners.0.get(&action.item_id).unwrap()(&mut commands);
             commands
                 .entity(new_item)
                 .insert(WorldPosition(coordinate.as_vec2()));
+            println!("Deposited item to coordinate: {:?} {:?}", action.item_id, amount);
+            
         }
     }
 

@@ -21,7 +21,7 @@ use bevy::prelude::*;
         growth_stages: 4,
         growth_requirements: vec![
             ItemAmount {
-                item_id: ItemId::Water,
+                item_id: ItemId::Nitrogen,
                 amount: 1
             }
         ],

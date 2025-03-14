@@ -38,6 +38,8 @@ pub enum ItemId {
     PotatoPlant = 9,
     PotatoPlantSeed = 10,
     Potato = 11,
+    Nitrogen = 12,
+    Potassium = 13,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
