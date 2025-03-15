@@ -37,6 +37,7 @@ pub struct MapData {
 pub struct WorldSeed(pub u64);
 
 impl MapData {
+    #[expect(unused)]
     pub fn get_tile_type(&self, coordinate: IVec2) -> Option<TileType> {
         let x = (coordinate.x + (self.size.x as i32) / 2) as usize;
         let y = (coordinate.y + (self.size.y as i32) / 2) as usize;
@@ -196,11 +197,6 @@ struct EntityGeneration {
     func: Option<fn(&mut EntityCommands)>,
 }
 
-struct EntityGenerationFunc {
-    entity_type: ItemId,
-    amount: u32,
-}
-
 pub fn generate_test_entities(
     mut commands: Commands,
     map_data_query: Query<&MapData>,
@@ -208,7 +204,7 @@ pub fn generate_test_entities(
     item_spawners: Res<ItemSpawners>,
 ) {
     let map_data = map_data_query.single();
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
 
     let test_entities = vec![
         EntityGeneration {
@@ -237,8 +233,8 @@ pub fn generate_test_entities(
         let mut entity_amount = test_entity.amount;
         let mut max_attempts = 3000;
         while entity_amount > 0 && max_attempts > 0 {
-            let x = rng.gen_range(0..map_data.size.x);
-            let y = rng.gen_range(0..map_data.size.y);
+            let x = rng.random_range(0..map_data.size.x);
+            let y = rng.random_range(0..map_data.size.y);
             let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
             if !reserved_coordinates.0.contains(&centered_coordinate) {
@@ -257,33 +253,6 @@ pub fn generate_test_entities(
                 entity_amount -= 1;
             }
             max_attempts -= 1;
-        }
-    }
-}
-
-pub fn generate_reserved_debug(
-    mut commands: Commands,
-    reserved_coordinates: Res<ReservedCoordinatesHelper>,
-    simple_mesh_handles: Res<SimpleMeshHandles>,
-    map_data_query: Single<&MapData>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-) {
-    let map_size = map_data_query.size;
-
-    let mat_handle = materials.add(Color::srgb(1.0, 0.0, 0.0));
-    let mesh_handle = meshes.add(Sphere::default());
-
-    for x in 0..map_size.x {
-        for y in 0..map_size.y {
-            let coordinate = map_data_query.convert_to_centered_coordinate(UVec2::new(x, y));
-            if reserved_coordinates.0.contains(&coordinate) {
-                commands.spawn((
-                    Transform::from_xyz(coordinate.x as f32, -0.4, coordinate.y as f32),
-                    Mesh3d(mesh_handle.clone()),
-                    MeshMaterial3d(mat_handle.clone()),
-                ));
-            }
         }
     }
 }

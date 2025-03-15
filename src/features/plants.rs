@@ -91,8 +91,7 @@ pub fn update_growth_process(
             &plant.growth_requirements,
             world_position,
             &coordinate_to_entity,
-            &mut inventories,
-            &mut commands,
+            &mut inventories
         );
 
         let Some(valid_growth_provider) = valid_growth_provider else {
@@ -143,7 +142,6 @@ fn find_suitable_growth_provider(
     world_position: &WorldPosition,
     coordinate_to_entity: &CoordinateToEntity,
     inventories: &mut Query<&mut Inventory, With<GrowthProvider>>,
-    commands: &mut Commands,
 ) -> Option<Entity> {
     let entities_at_coordinate = coordinate_to_entity.0.get(&world_position.as_coordinate());
     if let Some(entities_at_coordinate) = entities_at_coordinate {

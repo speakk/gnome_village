@@ -92,7 +92,7 @@ pub fn react_to_cancel_intent(
                         let entity_id = item_ids.get(*entity).unwrap();
                         println!("Entity id: {:?}", entity_id);
 
-                        if let Ok(blueprint) = blueprints.get(*entity) {
+                        if blueprints.contains(*entity) {
                             commands.entity(*entity).despawn();
                         }
                     }

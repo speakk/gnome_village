@@ -33,13 +33,10 @@ struct StuckInWallScorer;
 fn provide_score(
     trigger: Trigger<OnRun<RequestScore>>,
     mut commands: Commands,
-    query: Query<(&Parent, &TargetEntity)>,
     world_positions: Query<&WorldPosition>,
     pathing_grid: Res<PathingGridResource>,
 ) {
     let target_entity = trigger.origin;
-    // let (parent, target_entity) = query
-    //     .get(trigger.entity()).expect("Target or parent not found");
 
     let world_position = world_positions
         .get(target_entity)

@@ -62,13 +62,11 @@ fn regenerate_preview_entity(
     blueprint_material: Res<BluePrintMaterial>,
     prototypes: Res<Prototypes>,
     render_info_query: Query<(Option<&SimpleMesh>, Option<&GltfData>), With<Buildable>>,
-    asset_server: Res<AssetServer>,
     drag_info: Res<DragInfo>,
     gltf_asset_handles: Res<GltfAssetHandles>,
     gltf_assets: Res<Assets<Gltf>>,
 ) {
     if (!coordinates.is_changed()) && (!current_building.is_changed()) {
-        //println!("No changes to coordinates or current building, not regenerating preview entities");
         return;
     }
 
@@ -83,8 +81,6 @@ fn regenerate_preview_entity(
             }
         }
     }
-
-    //println!("Got through checks, regenerating preview entities indeed");
 
     if let Some(preview_entity_hierarchy) = preview_entity_hierarchy.0 {
         commands

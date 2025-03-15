@@ -13,11 +13,11 @@ use std::ops::Mul;
 pub fn react_to_blueprints(
     mut commands: Commands,
     new_blueprints_query: Query<
-        (Entity, &BluePrint, &Buildable, &WorldPosition),
+        (Entity, &BluePrint, &Buildable),
         (Added<BluePrint>, With<InWorld>),
     >,
 ) {
-    for (entity, blueprint, buildable, world_position) in new_blueprints_query.iter() {
+    for (entity, blueprint, buildable) in new_blueprints_query.iter() {
         println!("Got blueprint: {:?}", blueprint);
         let task_entity = commands
             .spawn((
@@ -61,7 +61,7 @@ pub fn react_to_blueprints(
             .id();
 
         commands.entity(entity).observe(
-            move |trigger: Trigger<OnRemove, Buildable>, mut commands: Commands| {
+            move |_trigger: Trigger<OnRemove, Buildable>, mut commands: Commands| {
                 commands.queue(CancelTaskCommand {
                     reason: "Target Buildable removed".to_string(),
                     task_entity,

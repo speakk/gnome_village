@@ -10,9 +10,9 @@ use std::ops::Mul;
 
 pub fn react_to_destruct_target(
     mut commands: Commands,
-    query: Query<(Entity, &WorldPosition), (Added<DestructTarget>, With<InWorld>)>,
+    query: Query<(Entity), (Added<DestructTarget>, With<InWorld>)>,
 ) {
-    for (entity, world_position) in query.iter() {
+    for (entity) in query.iter() {
         let task_entity = commands
             .spawn((
                 Task {

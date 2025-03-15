@@ -5,7 +5,6 @@ use crate::features::misc_components::{InWorld, ItemAmount};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::build_task::score_build;
 use crate::features::tasks::jobs::destruct_task::score_destruct;
-use bevy::asset::AssetContainer;
 use bevy::ecs::system::SystemState;
 use bevy::prelude::Component;
 use bevy::prelude::*;

@@ -1,6 +1,5 @@
 use crate::bundles::settler::Settler;
 use crate::features::ai::PathFollow;
-use crate::features::map::map_model::MapData;
 use crate::features::movement::Velocity;
 use crate::features::path_finding::grid::PathingGridResource;
 use crate::features::position::WorldPosition;
@@ -22,12 +21,10 @@ pub fn spawn_pathfinding_task(
     commands: &mut Commands,
     target_entity: Entity,
     grid: &PathingGridResource,
-    map_data: &MapData,
     start: WorldPosition,
     end: WorldPosition,
     related_task: Option<Entity>,
 ) {
-    //
     let thread_pool = AsyncComputeTaskPool::get();
     let grid = Box::new(grid.clone());
 
@@ -80,7 +77,6 @@ pub fn apply_pathfinding_result(
             commands.entity(task_entity).remove::<PathfindingTask>();
 
             if let Some(path) = result {
-                //println!("Has path! {:?}", path);
                 commands
                     .entity(task_entity)
                     .insert(PathFollow {
@@ -163,7 +159,6 @@ fn follow_path_succeed(
 pub fn test_add_pathfinding_task_to_settler(
     added_settler: Query<(Entity, &WorldPosition), Added<Settler>>,
     mut commands: Commands,
-    map_data: Query<&MapData>,
     pathing_grid: Res<PathingGridResource>,
 ) {
     for (entity, world_position) in added_settler.iter() {
@@ -173,7 +168,6 @@ pub fn test_add_pathfinding_task_to_settler(
             &mut commands,
             entity,
             &pathing_grid,
-            map_data.single(),
             *world_position,
             end,
             None,

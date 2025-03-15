@@ -68,7 +68,7 @@ fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
 }
 
 impl BuildView for WorldCamera {
-    fn build(_world: &World, object: Object<Self>, mut view: ViewCommands<Self>) {
+    fn build(_world: &World, _object: Object<Self>, mut view: ViewCommands<Self>) {
         view.insert((
             Camera3d::default(),
             Camera {

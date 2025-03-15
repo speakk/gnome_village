@@ -49,10 +49,10 @@ fn apply_acceleration(mut query: Query<(&mut Velocity, &Acceleration)>, time: Re
 }
 
 fn apply_velocity(
-    mut query: Query<(&mut WorldPosition, &mut PreviousWorldPosition, &Velocity)>,
+    mut query: Query<(&mut WorldPosition, &Velocity)>,
     time: Res<Time<Fixed>>,
 ) {
-    for (mut world_position, previous_world_position, velocity) in &mut query {
+    for (mut world_position, velocity) in &mut query {
         world_position.x += velocity.0.x * time.delta_secs();
         world_position.y += velocity.0.y * time.delta_secs();
     }
@@ -72,10 +72,10 @@ fn apply_friction(mut query: Query<(&Friction, &mut Velocity)>, time: Res<Time<F
         let friction_coefficient = friction.0;
 
         // TODO: This is to stop camera from gliding for too long - this is SILLY
-        const min_velocity: f32 = 2.0;
+        const MIN_VELOCITY: f32 = 2.0;
 
         velocity.0 += friction_coefficient * friction_vector * time.delta_secs();
-        if velocity.0.length() < min_velocity {
+        if velocity.0.length() < MIN_VELOCITY {
             velocity.0 = Vec2::ZERO;
         }
     }

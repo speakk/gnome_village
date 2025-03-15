@@ -10,12 +10,6 @@ use leafwing_input_manager::input_map::InputMap;
 use leafwing_input_manager::InputManagerBundle;
 
 #[derive(Event, Debug)]
-pub struct MapClickedEvent {
-    pub coordinate: IVec2,
-    pub selection_type: SelectionType,
-}
-
-#[derive(Event, Debug)]
 pub struct CoordinatesSelectedEvent {
     pub coordinates: Vec<IVec2>,
     pub selection_type: SelectionType,
@@ -60,7 +54,6 @@ impl Plugin for MouseSelectionPlugin {
             .insert_resource(CurrentMouseWorldCoordinate(IVec2::ZERO))
             .insert_resource(SelectedCoordinates::default())
             .insert_resource(DragInfo::default())
-            .add_event::<MapClickedEvent>()
             .add_event::<CoordinatesSelectedEvent>()
             .add_event::<MapDragStartEvent>()
             .add_event::<MapDragEndEvent>()

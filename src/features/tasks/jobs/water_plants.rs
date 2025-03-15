@@ -57,7 +57,7 @@ pub fn react_to_lacking_growth_requirements(
         .id();
 
     commands.entity(entity).observe(
-        move |trigger: Trigger<OnRemove, Buildable>, mut commands: Commands| {
+        move |_trigger: Trigger<OnRemove, Buildable>, mut commands: Commands| {
             commands.queue(CancelTaskCommand {
                 reason: "Target Buildable removed".to_string(),
                 task_entity,

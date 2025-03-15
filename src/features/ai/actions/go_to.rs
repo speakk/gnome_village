@@ -39,7 +39,6 @@ fn go_to_action(
         &mut commands,
         target_agent,
         &pathing_grid,
-        map_data.single(),
         *world_position,
         target_position,
         Some(action_entity),
