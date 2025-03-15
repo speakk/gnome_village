@@ -1,9 +1,7 @@
 use crate::features::ai::PathFollow;
 use crate::features::map::map_model::MapData;
 use crate::features::path_finding::grid::PathingGridResource;
-use crate::features::path_finding::path_finding::{
-    Path, PathFollowFinished, PathFollowResult,
-};
+use crate::features::path_finding::path_finding::{Path, PathFollowFinished, PathFollowResult};
 use crate::features::position::WorldPosition;
 use beet::prelude::*;
 use bevy::prelude::*;

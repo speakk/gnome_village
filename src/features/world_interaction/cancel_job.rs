@@ -1,12 +1,14 @@
 use crate::bundles::buildables::BluePrint;
 use crate::bundles::Id;
 use crate::features::position::CoordinateToEntity;
-use crate::features::user_actions::{CurrentUserActionState, UserActionIntent, UserActionState, UserActionType};
+use crate::features::user_actions::{
+    CurrentUserActionState, UserActionIntent, UserActionState, UserActionType,
+};
+use crate::features::world_interaction::destruct_action::draw_rectangle_selection;
 use crate::features::world_interaction::mouse_selection::{
     CoordinatesSelectedEvent, DragInfo, SelectedCoordinates, SelectionType,
 };
 use bevy::prelude::*;
-use crate::features::world_interaction::destruct_action::draw_rectangle_selection;
 
 pub struct CancelJobPlugin;
 
@@ -34,9 +36,9 @@ fn draw_cancel_gizmo(
     };
 
     if !matches!(current_user_action.0, UserActionState::CancellingJobs(_)) {
-        return
+        return;
     }
-    
+
     if selected_coordinates.0.is_empty() {
         return;
     }

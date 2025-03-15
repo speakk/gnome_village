@@ -43,7 +43,7 @@ impl Health {
             health: max_health,
         }
     }
-    
+
     pub fn reduce_health(&mut self, amount: f32) {
         self.health -= amount;
     }

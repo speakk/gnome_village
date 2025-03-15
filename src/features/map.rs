@@ -1,6 +1,5 @@
 use crate::features::map::map_model::{
-    generate_map_entity, generate_rocks, generate_test_entities,
-    ReservedCoordinatesHelper,
+    generate_map_entity, generate_rocks, generate_test_entities, ReservedCoordinatesHelper,
 };
 use crate::features::map::map_view::{create_map_materials, MapMaterialHandles};
 use crate::features::states::AppState;

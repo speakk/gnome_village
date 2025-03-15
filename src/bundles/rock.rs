@@ -1,5 +1,5 @@
-use crate::features::health::Health;
 use crate::bundles::{Id, ItemId};
+use crate::features::health::Health;
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshType};
 use crate::features::path_finding::grid::Solid;
 use bevy::prelude::*;

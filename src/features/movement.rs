@@ -17,7 +17,10 @@ pub struct Friction(pub f32);
 
 impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(FixedUpdate, set_previous_world_position.in_set(BeforeFixedMainLoop));
+        app.add_systems(
+            FixedUpdate,
+            set_previous_world_position.in_set(BeforeFixedMainLoop),
+        );
         app.add_systems(
             FixedUpdate,
             (
@@ -30,7 +33,6 @@ impl Plugin for MovementPlugin {
                 .run_if(in_state(AppState::InGame)),
         );
         // .add_systems(Update, interpolate_rendered_transform);
-
     }
 }
 

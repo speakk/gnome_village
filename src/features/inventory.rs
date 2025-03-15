@@ -4,7 +4,7 @@ use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
-use std::cmp::{Ordering};
+use std::cmp::Ordering;
 
 pub struct InventoryPlugin;
 
@@ -59,18 +59,24 @@ pub struct InInventory(pub Entity);
 #[derive(Debug, Clone)]
 pub enum InventoryChangedType {
     Add(ItemAmount),
-    Remove(ItemAmount)
+    Remove(ItemAmount),
 }
 
 #[derive(Event)]
 pub struct InventoryChanged(pub InventoryChangedType);
 
-pub fn emit_inventory_changed_on_spawn(query: Query<(Entity, &Inventory), Added<Inventory>>, mut commands: Commands) {
+pub fn emit_inventory_changed_on_spawn(
+    query: Query<(Entity, &Inventory), Added<Inventory>>,
+    mut commands: Commands,
+) {
     for (entity, inventory) in query.iter() {
         for (id, amount) in &inventory.items {
-            commands.entity(entity).trigger(InventoryChanged(InventoryChangedType::Add(ItemAmount {
-                item_id: *id, amount: *amount
-            })));
+            commands
+                .entity(entity)
+                .trigger(InventoryChanged(InventoryChangedType::Add(ItemAmount {
+                    item_id: *id,
+                    amount: *amount,
+                })));
         }
     }
 }
@@ -84,7 +90,7 @@ pub fn spawn_public_items(
     let InventoryChangedType::Add(item_amount) = trigger.0 else {
         return;
     };
-    
+
     let Ok((inventory, world_position)) = inventories.get(trigger.entity()) else {
         return;
     };
@@ -98,7 +104,7 @@ pub fn spawn_public_items(
         commands.entity(new_item).insert((
             InInventory(trigger.entity()),
             WorldPosition(world_position.0),
-            InWorld
+            InWorld,
         ));
 
         commands.entity(trigger.entity()).add_child(new_item);
@@ -114,7 +120,7 @@ pub fn remove_public_items(
     let InventoryChangedType::Remove(item_amount) = trigger.0 else {
         return;
     };
-    
+
     let valid_children = children
         .iter_descendants(trigger.entity())
         .filter(|child| {
@@ -142,7 +148,7 @@ pub fn update_inventory_amount(
     match trigger.0 {
         InventoryChangedType::Add(item_amount) => {
             inventory.add_item(item_amount.item_id, item_amount.amount);
-        },
+        }
         InventoryChangedType::Remove(item_amount) => {
             inventory.remove_item(item_amount.item_id, item_amount.amount);
         }

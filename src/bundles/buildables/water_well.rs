@@ -1,9 +1,9 @@
-use crate::features::inventory::Inventory;
-use crate::bundles::HashMap;
-use crate::features::assets::GltfAssetId;
-use crate::features::misc_components::gltf_asset::GltfData;
 use crate::bundles::buildables::Buildable;
+use crate::bundles::HashMap;
 use crate::bundles::{Id, ItemId};
+use crate::features::assets::GltfAssetId;
+use crate::features::inventory::Inventory;
+use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::ItemAmount;
 use crate::features::path_finding::grid::Solid;
 use bevy::prelude::*;

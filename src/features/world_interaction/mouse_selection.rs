@@ -1,13 +1,13 @@
 use crate::features::input::WorldInteractionAction;
 use crate::features::map::map_model::MapData;
 use crate::features::states::AppState;
+use crate::features::user_actions::{CurrentUserActionState, UserActionState};
 use bevy::prelude::KeyCode::{ControlLeft, KeyA, KeyD, ShiftLeft};
 use bevy::prelude::*;
 use bresenham::Bresenham;
 use leafwing_input_manager::action_state::ActionState;
 use leafwing_input_manager::input_map::InputMap;
 use leafwing_input_manager::InputManagerBundle;
-use crate::features::user_actions::{CurrentUserActionState, UserActionState};
 
 #[derive(Event, Debug)]
 pub struct MapClickedEvent {
@@ -152,7 +152,10 @@ fn handle_ground_plane_click(
     if let Some(location) = location {
         println!("Clicked on location: {:?}", location);
         coordinates_selected_event.send(CoordinatesSelectedEvent {
-            coordinates: vec![IVec2::new(location.x.round() as i32, location.z.round() as i32)],
+            coordinates: vec![IVec2::new(
+                location.x.round() as i32,
+                location.z.round() as i32,
+            )],
             selection_type: if click.button == PointerButton::Primary {
                 SelectionType::Primary
             } else {
@@ -188,7 +191,7 @@ fn handle_ground_plane_drag_start(
         let modifier_type: Option<DragModifier> = get_modifier_type(
             interaction_action_query
                 .iter()
-                .map(|(state, )| state)
+                .map(|(state,)| state)
                 .collect(),
         );
         println!(
@@ -284,7 +287,7 @@ pub fn handle_mouse_dragged(
     drag_info: Res<DragInfo>,
     mut selected_coordinates: ResMut<SelectedCoordinates>,
     current_coordinate: Res<CurrentMouseWorldCoordinate>,
-    current_action_state: Res<CurrentUserActionState>
+    current_action_state: Res<CurrentUserActionState>,
 ) {
     if !current_coordinate.is_changed() {
         return;
@@ -320,8 +323,8 @@ fn line_select(start_coordinate: IVec2, end_coordinate: IVec2) -> Vec<IVec2> {
         (start_coordinate.x as isize, start_coordinate.y as isize),
         (end_coordinate.x as isize, end_coordinate.y as isize),
     )
-        .map(|point| IVec2::new(point.0 as i32, point.1 as i32))
-        .collect();
+    .map(|point| IVec2::new(point.0 as i32, point.1 as i32))
+    .collect();
 
     line.push(end_coordinate);
 

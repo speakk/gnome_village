@@ -3,13 +3,13 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 
 pub mod buildables;
+pub mod category_tags;
 pub mod plants;
 pub mod resources;
 pub mod rock;
 pub mod settler;
 pub mod soil;
 pub mod spawners;
-pub mod category_tags;
 
 pub struct BundlePlugin;
 
@@ -52,8 +52,12 @@ pub enum ItemCategory {
 pub struct ItemCategories(pub(crate) HashMap<ItemCategory, Vec<ItemId>>);
 
 pub fn setup_item_categories(mut item_categories: ResMut<ItemCategories>) {
-    item_categories.0.insert(ItemCategory::Tree, vec![ItemId::OakTree]);
-    item_categories.0.insert(ItemCategory::Rocks, vec![ItemId::Rock]);
+    item_categories
+        .0
+        .insert(ItemCategory::Tree, vec![ItemId::OakTree]);
+    item_categories
+        .0
+        .insert(ItemCategory::Rocks, vec![ItemId::Rock]);
 }
 
 #[derive(Component, Reflect, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]

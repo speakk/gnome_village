@@ -3,15 +3,19 @@ pub mod build_task;
 pub mod destruct_task;
 pub mod water_plants;
 
-use bevy::prelude::*;
 use crate::features::misc_components::ItemAmount;
 use crate::features::tasks::task::{BringResourceData, DepositTarget, RunType, Task, TaskType};
+use bevy::prelude::*;
 
 #[derive(Component, Debug, Clone, Reflect)]
 #[reflect(Component)]
 pub struct Job;
 
-fn create_bring_resource_task_from_item_amount(target_inventory_entity: Entity, child_builder: &mut ChildBuilder, item_amount: &ItemAmount) {
+fn create_bring_resource_task_from_item_amount(
+    target_inventory_entity: Entity,
+    child_builder: &mut ChildBuilder,
+    item_amount: &ItemAmount,
+) {
     for _ in 0..item_amount.amount {
         child_builder.spawn((
             Task {

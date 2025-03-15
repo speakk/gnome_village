@@ -1,8 +1,12 @@
-use bevy::prelude::*;
 use crate::bundles::{Id, ItemCategories};
 use crate::features::position::CoordinateToEntity;
-use crate::features::user_actions::{CurrentUserActionState, UserActionIntent, UserActionState, UserActionType};
-use crate::features::world_interaction::mouse_selection::{CoordinatesSelectedEvent, DragInfo, SelectedCoordinates};
+use crate::features::user_actions::{
+    CurrentUserActionState, UserActionIntent, UserActionState, UserActionType,
+};
+use crate::features::world_interaction::mouse_selection::{
+    CoordinatesSelectedEvent, DragInfo, SelectedCoordinates,
+};
+use bevy::prelude::*;
 
 pub struct DestructActionPlugin;
 
@@ -12,7 +16,14 @@ pub struct DestructTarget;
 
 impl Plugin for DestructActionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, (draw_destruct_gizmo, send_destruct_intent, react_to_destruct_intent));
+        app.add_systems(
+            Update,
+            (
+                draw_destruct_gizmo,
+                send_destruct_intent,
+                react_to_destruct_intent,
+            ),
+        );
     }
 }
 
@@ -27,7 +38,7 @@ fn draw_destruct_gizmo(
     };
 
     if !matches!(current_user_action.0, UserActionState::Destructing(_)) {
-        return
+        return;
     }
 
     if selected_coordinates.0.is_empty() {
@@ -45,7 +56,7 @@ fn send_destruct_intent(
     let Some(event) = coordinated_selected_events.read().last() else {
         return;
     };
-    
+
     if let UserActionState::Destructing(category_id_filter) = &current_user_action.0 {
         user_action_intent.send(UserActionIntent(UserActionType::Destruct {
             coordinates: event.coordinates.clone(),
@@ -83,12 +94,15 @@ pub fn react_to_destruct_intent(
                             for category_id in category_id_filter.iter() {
                                 let ids_in_category = item_categories.0.get(category_id);
                                 if let Some(ids_in_category) = ids_in_category {
-                                    if ids_in_category.iter().collect::<Vec<_>>().contains(&&id_data.0) {
+                                    if ids_in_category
+                                        .iter()
+                                        .collect::<Vec<_>>()
+                                        .contains(&&id_data.0)
+                                    {
                                         matches_category = true;
                                         break;
                                     }
                                 }
-
                             }
                         } else {
                             matches_category = true;
@@ -104,8 +118,10 @@ pub fn react_to_destruct_intent(
     }
 }
 
-
-pub fn draw_rectangle_selection(selected_coordinates: Res<SelectedCoordinates>, gizmos: &mut Gizmos) {
+pub fn draw_rectangle_selection(
+    selected_coordinates: Res<SelectedCoordinates>,
+    gizmos: &mut Gizmos,
+) {
     for coordinate in selected_coordinates.0.iter() {
         gizmos.rounded_rect(
             Vec3::new(coordinate.x as f32, 0.1, coordinate.y as f32),

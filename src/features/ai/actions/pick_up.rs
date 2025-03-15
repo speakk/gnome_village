@@ -1,5 +1,5 @@
 use crate::bundles::{Id, ItemStack};
-use crate::features::inventory::{Inventory, InventoryChanged, InventoryChangedType};
+use crate::features::inventory::{InventoryChanged, InventoryChangedType};
 use crate::features::misc_components::ItemAmount;
 use beet::prelude::*;
 use bevy::prelude::*;

@@ -1,7 +1,7 @@
 use crate::bundles::{ItemCategory, ItemId};
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
-use bevy::prelude::*;
 use crate::ui::ui_main_actions::orders_menu::{OrderId, OrderMenuItemSelected};
+use bevy::prelude::*;
 
 pub type IdFilter = Option<Vec<ItemId>>;
 pub type CategoryFilter = Option<Vec<ItemCategory>>;
@@ -43,7 +43,13 @@ impl Plugin for UserActionsPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CurrentUserActionState(UserActionState::None))
             .add_event::<UserActionIntent>()
-            .add_systems(Update, (react_to_buildable_menu_item_selected, react_to_order_item_selected));
+            .add_systems(
+                Update,
+                (
+                    react_to_buildable_menu_item_selected,
+                    react_to_order_item_selected,
+                ),
+            );
     }
 }
 

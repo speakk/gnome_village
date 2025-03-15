@@ -107,9 +107,11 @@ pub fn score_bring_resource(
 
     let target = match bring_resource_data.target {
         DepositTarget::Coordinate(coordinate) => coordinate,
-        DepositTarget::Inventory(inventory_entity) => {
-            others_query.get(inventory_entity).unwrap().1.as_coordinate()
-        }
+        DepositTarget::Inventory(inventory_entity) => others_query
+            .get(inventory_entity)
+            .unwrap()
+            .1
+            .as_coordinate(),
     };
 
     let valid_resources = resources_query
@@ -145,7 +147,7 @@ pub fn score_bring_resource(
             .get_mut(resource_entity)
             .unwrap()
             .3
-            .0
+             .0
             .push(Reservation {
                 reserved_by: best_agent.unwrap(),
                 amount: bring_resource_data.item_requirement.amount,

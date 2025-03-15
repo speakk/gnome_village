@@ -194,7 +194,6 @@ struct EntityGeneration {
     entity_type: ItemId,
     amount: u32,
     func: Option<fn(&mut EntityCommands)>,
-    
 }
 
 struct EntityGenerationFunc {
@@ -225,12 +224,12 @@ pub fn generate_test_entities(
         EntityGeneration {
             entity_type: ItemId::OakTree,
             amount: 20,
-            func: None
+            func: None,
         },
         EntityGeneration {
             entity_type: ItemId::PotatoPlantSeed,
             amount: 20,
-            func: None
+            func: None,
         },
     ];
 
@@ -249,7 +248,7 @@ pub fn generate_test_entities(
                     Save,
                     InWorld,
                 ));
-                
+
                 if let Some(func) = test_entity.func {
                     func(&mut commands.entity(item));
                 }

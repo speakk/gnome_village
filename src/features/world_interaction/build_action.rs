@@ -7,11 +7,12 @@ use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandle
 use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
-use crate::features::user_actions::{CurrentUserActionState, UserActionIntent, UserActionState, UserActionType};
+use crate::features::user_actions::{
+    CurrentUserActionState, UserActionIntent, UserActionState, UserActionType,
+};
 use crate::features::world_interaction::mouse_selection::{
     CoordinatesSelectedEvent, DragInfo, SelectedCoordinates, SelectionType,
 };
-use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use bevy::prelude::*;
 
 pub struct BuildActionPlugin;

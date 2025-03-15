@@ -4,6 +4,7 @@ use crate::features::ai::trees::bring_resource::score_bring_resource;
 use crate::features::misc_components::{InWorld, ItemAmount};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::build_task::score_build;
+use crate::features::tasks::jobs::destruct_task::score_destruct;
 use bevy::asset::AssetContainer;
 use bevy::ecs::system::SystemState;
 use bevy::prelude::Component;
@@ -11,7 +12,6 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::{MapEntities, Save};
-use crate::features::tasks::jobs::destruct_task::score_destruct;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum RunType {
@@ -201,7 +201,9 @@ impl Task {
                 score_bring_resource(resources_query, agents, bring_resource_data, others_query)
             }
             Some(TaskType::Build(build_data)) => score_build(build_data, agents, others_query),
-            Some(TaskType::Destruct(destruct_data)) => { score_destruct(destruct_data, agents, others_query) },
+            Some(TaskType::Destruct(destruct_data)) => {
+                score_destruct(destruct_data, agents, others_query)
+            }
             None => None,
         }
     }

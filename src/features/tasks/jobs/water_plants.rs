@@ -23,15 +23,19 @@ pub fn react_to_lacking_growth_requirements(
     let (plant, world_position) = query.get(entity).unwrap();
     println!("Got plant in need for growth requirements: {:?}", plant);
 
-    let Some(entities_at_coordinate) = coordinate_to_entity.0.get(&world_position.as_coordinate()) else {
+    let Some(entities_at_coordinate) = coordinate_to_entity.0.get(&world_position.as_coordinate())
+    else {
         return;
     };
 
-    let growth_providers = entities_at_coordinate.iter().filter(|entity| growth_providers.contains(**entity)).collect::<Vec<_>>();
+    let growth_providers = entities_at_coordinate
+        .iter()
+        .filter(|entity| growth_providers.contains(**entity))
+        .collect::<Vec<_>>();
     let Some(growth_provider) = growth_providers.into_iter().next() else {
         return;
     };
-    
+
     let task_entity = commands
         .spawn((
             Task {

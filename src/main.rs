@@ -7,7 +7,9 @@ use crate::bundles::BundlePlugin;
 use crate::features::ai::AiPlugin;
 use crate::features::assets::AssetsPlugin;
 use crate::features::camera::CameraPlugin;
+use crate::features::health::HealthPlugin;
 use crate::features::inventory::InventoryPlugin;
+use crate::features::item_drop::ItemDropPlugin;
 use crate::features::map::map_model::WorldSeed;
 use crate::features::map::MapPlugin;
 use crate::features::misc_components::MiscComponentsPlugin;
@@ -15,6 +17,7 @@ use crate::features::movement::MovementPlugin;
 use crate::features::plants::PlantsPlugin;
 use crate::features::position::PositionPlugin;
 use crate::features::save::SavePlugin;
+use crate::features::seeded_random::SeededRandomPlugin;
 use crate::features::states::preload::PreloadPlugin;
 use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
@@ -26,9 +29,6 @@ use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
-use crate::features::health::HealthPlugin;
-use crate::features::item_drop::ItemDropPlugin;
-use crate::features::seeded_random::SeededRandomPlugin;
 
 fn main() {
     App::new()

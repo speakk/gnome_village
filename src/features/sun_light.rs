@@ -75,7 +75,7 @@ pub fn setup_lights(mut commands: Commands) {
             maximum_distance: maximum_shadow_distance,
             ..default()
         }
-            .build(),
+        .build(),
     ));
 
     commands.spawn((
@@ -98,7 +98,7 @@ pub fn setup_lights(mut commands: Commands) {
             maximum_distance: maximum_shadow_distance,
             ..default()
         }
-            .build(),
+        .build(),
     ));
 }
 

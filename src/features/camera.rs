@@ -23,7 +23,6 @@ pub struct CameraPlugin;
 #[require(WorldPosition, Velocity, Acceleration, Friction(|| Friction(2.0)), AccumulatedInput)]
 pub struct WorldCamera;
 
-
 /// A vector representing the player's input, accumulated over all frames that ran
 /// since the last time the physics simulation was advanced.
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
@@ -96,22 +95,21 @@ impl BuildView for WorldCamera {
             Transform::from_xyz(0.0, 20.0, 20.0).looking_at(Vec3::ZERO, Vec3::Y),
             RayCastPickable,
         ))
-            .insert(DepthPrepass)
-            .insert(NormalPrepass)
-            .insert(DeferredPrepass)
-            .insert(ClusterConfig::FixedZ {
-                // 4096 clusters is the Bevy default
-                // if you don't have many lights, you can reduce this value
-                total: 4096,
-                // Bevy default is 24 Z-slices
-                // For a top-down-view game, 1 is probably optimal.
-                z_slices: 1,
-                dynamic_resizing: true,
-                z_config: Default::default(),
-            });
+        .insert(DepthPrepass)
+        .insert(NormalPrepass)
+        .insert(DeferredPrepass)
+        .insert(ClusterConfig::FixedZ {
+            // 4096 clusters is the Bevy default
+            // if you don't have many lights, you can reduce this value
+            total: 4096,
+            // Bevy default is 24 Z-slices
+            // For a top-down-view game, 1 is probably optimal.
+            z_slices: 1,
+            dynamic_resizing: true,
+            z_config: Default::default(),
+        });
     }
 }
-
 
 fn handle_pan_input(
     mut query: Query<

@@ -1,3 +1,4 @@
+use crate::bundles::buildables::BluePrint;
 use crate::features::inventory::{Inventory, InventoryChanged, InventoryChangedType};
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::ItemAmount;
@@ -8,7 +9,6 @@ use bevy::prelude::{Component, Reflect};
 use bevy::time::common_conditions::on_timer;
 use rand::Rng;
 use std::time::Duration;
-use crate::bundles::buildables::BluePrint;
 
 pub struct PlantsPlugin;
 
@@ -87,18 +87,22 @@ pub fn update_growth_process(
             continue;
         }
 
-        let valid_growth_provider = find_suitable_growth_provider(&plant.growth_requirements,
-                                                                  world_position,
-                                                                  &coordinate_to_entity,
-                                                                  &mut inventories,
-                                                                  &mut commands);
-        
+        let valid_growth_provider = find_suitable_growth_provider(
+            &plant.growth_requirements,
+            world_position,
+            &coordinate_to_entity,
+            &mut inventories,
+            &mut commands,
+        );
+
         let Some(valid_growth_provider) = valid_growth_provider else {
             commands.entity(entity).insert(PlantLacksGrowthRequirements);
             continue;
         };
 
-        commands.entity(entity).remove::<PlantLacksGrowthRequirements>();
+        commands
+            .entity(entity)
+            .remove::<PlantLacksGrowthRequirements>();
 
         plant.current_stage_growth_process +=
             plant.growth_speed * plant.random_growth_multiplier * delta;
@@ -107,8 +111,12 @@ pub fn update_growth_process(
             plant.current_growth_stage += 1;
 
             commands.entity(entity).trigger(PlantStageAdvanced);
-            
-            consume_growth_requirements(&plant.growth_requirements, valid_growth_provider, &mut commands);
+
+            consume_growth_requirements(
+                &plant.growth_requirements,
+                valid_growth_provider,
+                &mut commands,
+            );
 
             if plant.current_growth_stage >= plant.growth_stages as u8 - 1 {
                 plant.finished_growing = true;
@@ -118,9 +126,15 @@ pub fn update_growth_process(
     }
 }
 
-fn consume_growth_requirements(growth_requirements: &Vec<ItemAmount>, growth_provider: Entity, commands: &mut Commands) {
+fn consume_growth_requirements(
+    growth_requirements: &Vec<ItemAmount>,
+    growth_provider: Entity,
+    commands: &mut Commands,
+) {
     for requirement in growth_requirements {
-        commands.entity(growth_provider).trigger(InventoryChanged(InventoryChangedType::Remove(*requirement)));
+        commands
+            .entity(growth_provider)
+            .trigger(InventoryChanged(InventoryChangedType::Remove(*requirement)));
     }
 }
 
@@ -145,7 +159,6 @@ fn find_suitable_growth_provider(
                     }
                 }
 
-                // TODO: Consider whether this should happen elsewhere
                 if has_all {
                     return Some(*entity);
                 }

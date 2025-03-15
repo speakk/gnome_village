@@ -1,5 +1,5 @@
 use crate::bundles::{ItemId, ItemSpawners};
-use crate::features::inventory::{Inventory, InventoryChanged, InventoryChangedType};
+use crate::features::inventory::{InventoryChanged, InventoryChangedType};
 use crate::features::misc_components::ItemAmount;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::DepositTarget;
@@ -41,15 +41,20 @@ fn deposit_action(
                     item_id: action.item_id,
                     amount,
                 })));
-            println!("Deposited item into inventory: {:?} {:?}", action.item_id, amount);
+            println!(
+                "Deposited item into inventory: {:?} {:?}",
+                action.item_id, amount
+            );
         }
         DepositTarget::Coordinate(coordinate) => {
             let new_item = item_spawners.0.get(&action.item_id).unwrap()(&mut commands);
             commands
                 .entity(new_item)
                 .insert(WorldPosition(coordinate.as_vec2()));
-            println!("Deposited item to coordinate: {:?} {:?}", action.item_id, amount);
-            
+            println!(
+                "Deposited item to coordinate: {:?} {:?}",
+                action.item_id, amount
+            );
         }
     }
 

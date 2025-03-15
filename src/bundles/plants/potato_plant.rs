@@ -1,12 +1,12 @@
-use crate::features::misc_components::ItemAmount;
 use crate::bundles::buildables::Buildable;
-use crate::features::health::Health;
-use crate::features::item_drop::SingleItemDrop;
 use crate::bundles::{Id, ItemId, ResourceItem};
 use crate::features::assets::GltfAssetId;
-use crate::features::misc_components::gltf_asset::GltfData;
-use crate::features::plants::Plant;
+use crate::features::health::Health;
 use crate::features::item_drop::ItemDrop;
+use crate::features::item_drop::SingleItemDrop;
+use crate::features::misc_components::gltf_asset::GltfData;
+use crate::features::misc_components::ItemAmount;
+use crate::features::plants::Plant;
 use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]

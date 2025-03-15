@@ -1,12 +1,12 @@
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use crate::ui::ui_main_actions::main_action_buttons::MainActionButtonType;
+use crate::ui::ui_main_actions::orders_menu::OrderMenuItemSelected;
 use bevy::app::{App, Plugin};
 use bevy::prelude::{Commands, Entity, Event, ResMut, Resource};
 use bevy_cobweb::prelude::{broadcast, BroadcastEvent, ReactCommandsExt};
 use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;
 use bevy_cobweb_ui::loading::SceneHandle;
 use bevy_cobweb_ui::prelude::*;
-use crate::ui::ui_main_actions::orders_menu::OrderMenuItemSelected;
 
 pub mod build_menu;
 pub mod main_action_buttons;

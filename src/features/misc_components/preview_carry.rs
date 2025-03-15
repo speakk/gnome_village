@@ -75,7 +75,7 @@ pub fn react_to_inventory_change(
     let Ok((viewable, world_position)) = query.get(entity) else {
         return;
     };
-    
+
     match trigger.0 {
         InventoryChangedType::Add(item_amount) => {
             let prototype = prototypes.0.get(&item_amount.item_id).unwrap();
@@ -93,7 +93,9 @@ pub fn react_to_inventory_change(
             }
         }
         InventoryChangedType::Remove(_) => {
-            commands.entity(viewable.view().entity()).despawn_descendants();
+            commands
+                .entity(viewable.view().entity())
+                .despawn_descendants();
         }
     }
 }

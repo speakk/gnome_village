@@ -1,6 +1,6 @@
 pub mod torch;
-pub mod wooden_wall;
 pub mod water_well;
+pub mod wooden_wall;
 
 use crate::features::health::Health;
 use crate::features::inventory::Inventory;

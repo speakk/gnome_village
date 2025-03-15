@@ -1,6 +1,7 @@
 use crate::features::ai::actions::build::IsBuilding;
 use crate::features::ai::{PathFollow, WorkingOnTask};
 use crate::features::assets::{Animations, GltfAssetHandles, GltfAssetId, SettlerAnimationIndices};
+use crate::features::inventory::InInventory;
 use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
@@ -10,7 +11,6 @@ use bevy::prelude::*;
 use moonshine_object::{Kind, Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use std::time::Duration;
-use crate::features::inventory::InInventory;
 
 pub struct GltfAssetPlugin;
 
@@ -27,7 +27,7 @@ impl Plugin for GltfAssetPlugin {
                 react_to_work_finished,
             ),
         )
-            .add_view::<GltfData, GltfValid>();
+        .add_view::<GltfData, GltfValid>();
     }
 }
 
@@ -52,7 +52,7 @@ pub struct GltfAnimation {
 struct GltfValid;
 
 impl Kind for GltfValid {
-    type Filter =(Without<Prototype>, Without<InInventory>);
+    type Filter = (Without<Prototype>, Without<InInventory>);
 }
 
 impl BuildView<GltfData> for GltfValid {
@@ -77,7 +77,11 @@ impl BuildView<GltfData> for GltfValid {
     }
 }
 
-pub fn get_scene_from_gltf_data(asset_handles: &GltfAssetHandles, gltf_assets: &Assets<Gltf>, gltf_data: &&GltfData) -> Option<Handle<Scene>> {
+pub fn get_scene_from_gltf_data(
+    asset_handles: &GltfAssetHandles,
+    gltf_assets: &Assets<Gltf>,
+    gltf_data: &&GltfData,
+) -> Option<Handle<Scene>> {
     let asset_handle = asset_handles
         .handles
         .get(&gltf_data.asset_id)

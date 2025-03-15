@@ -1,7 +1,7 @@
-use crate::features::plants::GrowthProvider;
 use crate::bundles::HashMap;
-use crate::bundles::{Id, ItemId, ResourceItem};
+use crate::bundles::{Id, ItemId};
 use crate::features::inventory::Inventory;
+use crate::features::plants::GrowthProvider;
 use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]

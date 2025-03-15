@@ -56,7 +56,10 @@ fn handle_removed(
         entities.retain(|&e| e != entity)
     }
 
-    if let Some(entities) = coordinate_to_entity.0.get_mut(&world_position.as_coordinate()) {
+    if let Some(entities) = coordinate_to_entity
+        .0
+        .get_mut(&world_position.as_coordinate())
+    {
         entities.retain(|&e| e != entity)
     }
 }

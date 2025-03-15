@@ -73,9 +73,10 @@ fn setup(
     gltf_asset_handles
         .handles
         .insert(GltfAssetId::WaterWell, asset_server.load(WATER_WELL_PATH));
-    gltf_asset_handles
-        .handles
-        .insert(GltfAssetId::PotatoPlant, asset_server.load(POTATO_PLANT_PATH));
+    gltf_asset_handles.handles.insert(
+        GltfAssetId::PotatoPlant,
+        asset_server.load(POTATO_PLANT_PATH),
+    );
     gltf_asset_handles
         .handles
         .insert(GltfAssetId::Potato, asset_server.load(POTATO_PATH));
