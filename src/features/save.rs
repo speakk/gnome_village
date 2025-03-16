@@ -5,7 +5,7 @@ use crate::bundles::category_tags::Tree;
 use crate::bundles::rock::Rock;
 use crate::bundles::settler::Settler;
 use crate::bundles::soil::dirt::Dirt;
-use crate::bundles::{ItemStack, ResourceItem};
+use crate::bundles::{Id, ItemStack, ResourceItem};
 use crate::features::ai::WorkingOnTask;
 use crate::features::input::SaveLoadAction;
 use crate::features::inventory::Inventory;
@@ -14,7 +14,7 @@ use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::preview_carry::PreviewCarry;
 use crate::features::misc_components::simple_mesh::SimpleMesh;
 use crate::features::misc_components::InWorld;
-use crate::features::plants::Plant;
+use crate::features::plants::{GrowthProvider, Plant};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
 use crate::features::tasks::task::Task;
@@ -30,6 +30,7 @@ use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
+use crate::features::camera::WorldCamera;
 
 pub struct SavePlugin;
 
@@ -106,6 +107,9 @@ impl Plugin for SavePlugin {
         .register_type::<WoodenTorch>()
         .register_type::<WoodenWall>()
         .register_type::<Tree>()
+        .register_type::<GrowthProvider>()
+        .register_type::<WorldCamera>()
+        .register_type::<Id>()
         .add_systems(Startup, setup)
         .add_systems(
             PreUpdate,

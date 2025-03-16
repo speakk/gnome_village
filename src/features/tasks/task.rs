@@ -130,11 +130,27 @@ pub struct Task {
 // TODO: Wow this seems untenable, perhaps separate Concrete Runtime Data from Task
 impl MapEntities for Task {
     fn map_entities<M: EntityMapper>(&mut self, entity_mapper: &mut M) {
-        if let Some(TaskType::BringResource(bring_resource_data)) = &mut self.task_type {
-            if let Some(run_time_data) = &mut bring_resource_data.run_time_data {
-                let entity = &mut run_time_data.concrete_resource_entity;
+        match &mut self.task_type {
+            Some(TaskType::BringResource(bring_resource_data)) => {
+                if let Some(run_time_data) = &mut bring_resource_data.run_time_data {
+                    let entity = &mut run_time_data.concrete_resource_entity;
+                    *entity = entity_mapper.map_entity(*entity);
+                }
+
+                
+                if let DepositTarget::Inventory(inventory_entity) = &mut bring_resource_data.target {
+                    *inventory_entity = entity_mapper.map_entity(*inventory_entity);
+                }
+            },
+            Some(TaskType::Build(build_data)) => {
+                let entity = &mut build_data.target;
                 *entity = entity_mapper.map_entity(*entity);
-            }
+            },
+            Some(TaskType::Destruct(destruct_data)) => {
+                let entity = &mut destruct_data.target;
+                *entity = entity_mapper.map_entity(*entity);
+            },
+            None => {},
         }
     }
 }

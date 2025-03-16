@@ -16,10 +16,12 @@ use leafwing_input_manager::prelude::*;
 use moonshine_object::Object;
 use moonshine_view::{BuildView, RegisterView, ViewCommands};
 use std::ops::{Add, Sub};
+use moonshine_core::save::Save;
 
 pub struct CameraPlugin;
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 #[require(WorldPosition, Velocity, Acceleration, Friction(|| Friction(2.0)), AccumulatedInput)]
 pub struct WorldCamera;
 
@@ -64,6 +66,7 @@ fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
         WorldCamera,
         InputManagerBundle::with_map(pan_input_map),
         InputManagerBundle::with_map(zoom_input_map),
+        Save
     ));
 }
 

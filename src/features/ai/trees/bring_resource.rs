@@ -30,6 +30,7 @@ pub fn create_bring_resource_tree(
             let target_coordinate = match bring_resource_data.target {
                 DepositTarget::Coordinate(coordinate) => coordinate,
                 DepositTarget::Inventory(inventory_entity) => {
+                    let id = inventory_entity.to_bits();
                     inventories.get(inventory_entity).unwrap().as_coordinate()
                 }
             };

@@ -16,8 +16,22 @@ pub fn react_to_blueprints(
         (Entity, &BluePrint, &Buildable),
         (Added<BluePrint>, With<InWorld>),
     >,
+    tasks: Query<&Task>,
 ) {
     for (entity, blueprint, buildable) in new_blueprints_query.iter() {
+        let task_exists = tasks.iter().any(|task| {
+           if let Some(TaskType::Build(build_data)) = &task.task_type {
+               if build_data.target == entity {
+                   return true;
+               }
+           }
+            false
+        });
+        
+        if task_exists {
+            continue;
+        }
+        
         println!("Got blueprint: {:?}", blueprint);
         let task_entity = commands
             .spawn((

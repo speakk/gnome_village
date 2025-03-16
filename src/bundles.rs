@@ -96,7 +96,8 @@ pub fn react_to_emptied_stack(
     }
 }
 
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash, Deref, DerefMut)]
+#[derive(Component, Reflect, Debug, Clone, Copy, PartialEq, Eq, Hash, Deref, DerefMut)]
+#[reflect(Component)]
 pub struct Id(pub(crate) ItemId);
 
 #[derive(Resource, Deref, DerefMut)]
