@@ -741,6 +741,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_easings"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5d8d7c387613eb418b6b461dd9d0cc32b4bc7d71444185bca81e8041e7db4388"
+dependencies = [
+ "bevy",
+ "interpolation",
+]
+
+[[package]]
 name = "bevy_ecs"
 version = "0.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3101,6 +3111,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "interpolation"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9c13ae9d91148fcb4aab6654c4c2a7d02a15395ea9e23f65170f175f8b269ce"
+
+[[package]]
 name = "intl-memoizer"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4637,6 +4653,7 @@ dependencies = [
  "bevy_atmosphere",
  "bevy_cobweb",
  "bevy_cobweb_ui",
+ "bevy_easings",
  "bresenham",
  "directories",
  "i-cant-believe-its-not-bsn",

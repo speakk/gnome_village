@@ -9,6 +9,7 @@ use bevy::prelude::{
 };
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands, Viewable};
+use crate::features::juice::TransformJuice;
 
 impl BuildView for SimpleMesh {
     fn build(world: &World, object: Object<SimpleMesh>, mut view: ViewCommands<SimpleMesh>) {
@@ -48,6 +49,7 @@ impl BuildView for SimpleMesh {
             MeshMaterial3d(final_material_handle.clone()),
             OriginalMaterial(material_handle.clone()),
             Transform::from_xyz(transform.x, 0.5, transform.y),
+            TransformJuice
         ));
 
         if has_blueprint {

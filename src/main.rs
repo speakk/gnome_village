@@ -26,14 +26,17 @@ use beet::prelude::BeetFlowPlugin;
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::pbr::{DefaultOpaqueRendererMethod, PointLightShadowMap};
 use bevy::prelude::*;
+use bevy_easings::EasingsPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
+use crate::features::juice::JuicePlugin;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(BeetFlowPlugin::default())
+        .add_plugins(EasingsPlugin::default())
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .insert_resource(PointLightShadowMap { size: 256 })
         .add_plugins(SavePlugin)
@@ -57,6 +60,7 @@ fn main() {
         .add_plugins(AiPlugin)
         .add_plugins(MovementPlugin)
         .add_plugins(TasksPlugin)
+        .add_plugins(JuicePlugin)
         .add_plugins(ui::UiPlugin)
         .add_plugins(UserActionsPlugin)
         .insert_resource(WorldSeed(555))

@@ -26,6 +26,7 @@ pathfinding = "4.13.1"
 beet = { git = "https://github.com/mrchantey/beet", branch = "main" }
 bresenham = "0.1.1"
 wyrand = "0.3.2"
+bevy_easings = "0.15.0"
 
 [profile.dev.package."*"]
 opt-level = 3

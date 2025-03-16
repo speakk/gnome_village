@@ -18,3 +18,4 @@ pub mod sun_light;
 pub mod tasks;
 pub mod user_actions;
 pub mod world_interaction;
+pub mod juice;

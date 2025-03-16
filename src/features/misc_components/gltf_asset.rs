@@ -11,6 +11,7 @@ use bevy::prelude::*;
 use moonshine_object::{Kind, Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use std::time::Duration;
+use crate::features::juice::TransformJuice;
 
 pub struct GltfAssetPlugin;
 
@@ -70,6 +71,7 @@ impl BuildView<GltfData> for GltfValid {
         view.insert((
             SceneRoot(scene),
             Transform::from_xyz(world_position.x, 0.0, world_position.y),
+            TransformJuice,
             Name::new("Gltf asset view"),
         ));
 
