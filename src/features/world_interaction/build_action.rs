@@ -5,7 +5,7 @@ use crate::features::map::map_model::MapData;
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::{InWorld, Prototype};
-use crate::features::position::WorldPosition;
+use crate::features::position::{CoordinateToEntity, WorldPosition};
 use crate::features::states::AppState;
 use crate::features::user_actions::{
     CurrentUserActionState, UserActionIntent, UserActionState, UserActionType,
@@ -19,6 +19,7 @@ use std::time::Duration;
 
 use bevy_mod_async::{time::TimingTaskExt, SpawnCommandExt};
 use crate::features::juice::AddTransformJuice;
+use crate::features::path_finding::grid::{PathingGridResource, Solid};
 
 pub struct BuildActionPlugin;
 
@@ -175,6 +176,9 @@ fn react_to_build_intent(
     item_spawners: Res<ItemSpawners>,
     mut commands: Commands,
     map_data: Query<&MapData>,
+    pathing_grid_resource: Res<PathingGridResource>,
+    coordinate_to_entity: Res<CoordinateToEntity>,
+    solids: Query<&Solid>,
     mut user_action_intent: EventReader<UserActionIntent>,
 ) {
     for event in user_action_intent.read() {
@@ -189,11 +193,23 @@ fn react_to_build_intent(
                 "Got build intent, creating buildables at coordinates: {:?}",
                 coordinates
             );
-
-            let batch_size = coordinates.iter().len();
             
-            for (i, coordinate) in coordinates.iter().enumerate() {
-                let world_position = map_data.centered_coordinate_to_world_position(*coordinate);
+            let valid_coordinates: Vec<_> = coordinates.iter().filter(|coordinate| {
+                if let Some(entities) = coordinate_to_entity.0.get(*coordinate) {
+                    for entity in entities.iter() {
+                        if solids.contains(*entity) {
+                            return false;
+                        }
+                    }
+                }
+                
+                true
+            }).collect();
+
+            let batch_size = valid_coordinates.iter().len();
+            
+            for (i, coordinate) in valid_coordinates.iter().enumerate() {
+                let world_position = map_data.centered_coordinate_to_world_position(**coordinate);
                 let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
                 println!("Creating buildable at: {:?}", world_position);
                 

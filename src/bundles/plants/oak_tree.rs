@@ -1,3 +1,4 @@
+use crate::features::path_finding::grid::Solid;
 use crate::bundles::{Id, ItemId};
 use crate::features::assets::GltfAssetId;
 use crate::features::health::Health;
@@ -17,6 +18,7 @@ use bevy::prelude::*;
         asset_id: GltfAssetId::OakTree,
         scene_name: None
     }),
+    Solid,
     Plant(|| Plant {
         growth_stages: 4,
         growth_requirements: vec![
