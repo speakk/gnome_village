@@ -63,9 +63,7 @@ impl BuildView<SimpleMesh> for SimpleMeshValid {
         }
         
         if let Some(add_transform_juice) = add_transform_juice {
-            view.insert(TransformJuice {
-                delay: add_transform_juice.delay,
-            });
+            view.insert(TransformJuice::from(*add_transform_juice));
         }
     }
 }

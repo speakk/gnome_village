@@ -76,9 +76,7 @@ impl BuildView<GltfData> for GltfValid {
         ));
 
         if let Some(add_transform_juice) = add_transform_juice {
-            view.insert(TransformJuice {
-                delay: add_transform_juice.delay,
-            });
+            view.insert(TransformJuice::from(*add_transform_juice));
         }
 
         println!("Building gltf asset view finished");

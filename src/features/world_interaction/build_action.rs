@@ -190,6 +190,8 @@ fn react_to_build_intent(
                 coordinates
             );
 
+            let batch_size = coordinates.iter().len();
+            
             for (i, coordinate) in coordinates.iter().enumerate() {
                 let world_position = map_data.centered_coordinate_to_world_position(*coordinate);
                 let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
@@ -213,7 +215,8 @@ fn react_to_build_intent(
                     .insert(WorldPosition(world_position))
                     .insert(BluePrint)
                     .insert(AddTransformJuice {
-                        delay: Duration::from_millis(i as u64 * 10),
+                        batch_index: i,
+                        batch_size,
                     })
                     .insert(InWorld);
             }
