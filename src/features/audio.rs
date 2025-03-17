@@ -16,7 +16,7 @@ pub fn emit_placement_sound(
     audio: Res<Audio>,
 ) {
     for event in events.read() {
-        let pitch = 1.0 + event.batch_index as f64 / event.batch_size as f64;
-        audio.play(asset_server.load("sounds/placement.ogg")).with_playback_rate(pitch);
+        let pitch = 0.5 + event.batch_index as f64 / event.batch_size as f64 + rand::random::<f64>() * 0.2;
+        audio.play(asset_server.load("sounds/placement_2.ogg")).with_playback_rate(pitch);
     }
 }

@@ -53,14 +53,29 @@ fn juice_new_transform(
     query: Query<(Entity, &Transform, &TransformJuice), Added<Transform>>,
     mut commands: Commands,
 ) {
+    let maximum_length = Duration::from_secs(1); // Base maximum duration
+    let scaling_factor_k = 8.0; // Controls how aggressively small batch sizes are shortened
+
     let cloned: Vec<_> = query.iter().map(|(e, t, tj)| (e, *t, *tj)).collect();
     for (entity, transform, transform_juice) in cloned {
         let translation = transform.translation;
-        let duration = Duration::from_millis(transform_juice.batch_index as u64 * 20);
-        
-        
+
+        // Dynamic scaling of maximum_length based on batch_size
+        let adjusted_maximum_length = if transform_juice.batch_size > 0 {
+            let scale_factor = 1.0 - scaling_factor_k / (transform_juice.batch_size as f32 + scaling_factor_k);
+            let adjusted_secs =
+                maximum_length.as_secs_f32() * scale_factor.clamp(0.3, 1.0); // Clamp to prevent too short/long delays
+            Duration::from_secs_f32(adjusted_secs)
+        } else {
+            Duration::ZERO // No delay if batch_size is zero
+        };
+
+        // Calculate dynamic delay
+        let scaled_delay = adjusted_maximum_length / transform_juice.batch_size as u32;
+        let delay = scaled_delay * transform_juice.batch_index as u32;
+
         commands.spawn_task(move |cx| async move {
-            cx.sleep(duration).await;
+            cx.sleep(delay).await;
             
             const TRANSFORM_DURATION: Duration = Duration::from_millis(500);
             
