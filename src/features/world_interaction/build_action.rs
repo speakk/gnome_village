@@ -196,19 +196,6 @@ fn react_to_build_intent(
                 let world_position = map_data.centered_coordinate_to_world_position(*coordinate);
                 let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
                 println!("Creating buildable at: {:?}", world_position);
-                // 
-                // commands.spawn_task(move |cx| async move {
-                //     cx.sleep(Duration::from_millis((50 * i) as u64)).await;
-                //     cx.with_world(move |world| {
-                //         let mut commands = world.commands();
-                // 
-                //         commands
-                //             .entity(concrete_entity)
-                //             .insert((WorldPosition(world_position), InWorld, BluePrint));
-                //         world.flush();
-                //     })
-                //     .await;
-                // });
                 
                 commands
                     .entity(concrete_entity)

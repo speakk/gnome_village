@@ -29,7 +29,7 @@ impl From<AddTransformJuice> for TransformJuice {
 
 impl Plugin for JuicePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, juice_new_transform)
+        app.add_systems(PostUpdate, juice_new_transform)
             .add_event::<TransformJuiceFinished>();
     }
 }
