@@ -28,6 +28,7 @@ use bevy::pbr::{DefaultOpaqueRendererMethod, PointLightShadowMap};
 use bevy::prelude::*;
 use bevy_easings::EasingsPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_mod_async::AsyncTasksPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
 use crate::features::juice::JuicePlugin;
@@ -37,6 +38,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugins(BeetFlowPlugin::default())
         .add_plugins(EasingsPlugin::default())
+        .add_plugins(AsyncTasksPlugin)
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .insert_resource(PointLightShadowMap { size: 256 })
         .add_plugins(SavePlugin)

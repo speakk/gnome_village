@@ -13,7 +13,12 @@ use crate::features::user_actions::{
 use crate::features::world_interaction::mouse_selection::{
     CoordinatesSelectedEvent, DragInfo, SelectedCoordinates, SelectionType,
 };
+use bevy::asset::AssetContainer;
 use bevy::prelude::*;
+use std::time::Duration;
+
+use bevy_mod_async::{time::TimingTaskExt, SpawnCommandExt};
+use crate::features::juice::AddTransformJuice;
 
 pub struct BuildActionPlugin;
 
@@ -184,14 +189,32 @@ fn react_to_build_intent(
                 "Got build intent, creating buildables at coordinates: {:?}",
                 coordinates
             );
-            for coordinate in coordinates.iter() {
-                let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
+
+            for (i, coordinate) in coordinates.iter().enumerate() {
                 let world_position = map_data.centered_coordinate_to_world_position(*coordinate);
+                let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
                 println!("Creating buildable at: {:?}", world_position);
+                // 
+                // commands.spawn_task(move |cx| async move {
+                //     cx.sleep(Duration::from_millis((50 * i) as u64)).await;
+                //     cx.with_world(move |world| {
+                //         let mut commands = world.commands();
+                // 
+                //         commands
+                //             .entity(concrete_entity)
+                //             .insert((WorldPosition(world_position), InWorld, BluePrint));
+                //         world.flush();
+                //     })
+                //     .await;
+                // });
+                
                 commands
                     .entity(concrete_entity)
                     .insert(WorldPosition(world_position))
                     .insert(BluePrint)
+                    .insert(AddTransformJuice {
+                        delay: Duration::from_millis(i as u64 * 10),
+                    })
                     .insert(InWorld);
             }
 

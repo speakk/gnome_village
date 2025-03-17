@@ -4,22 +4,29 @@ use crate::features::misc_components::Prototype;
 use crate::features::position::WorldPosition;
 use bevy::asset::Handle;
 use bevy::pbr::{MeshMaterial3d, NotShadowCaster, StandardMaterial};
-use bevy::prelude::{
-    Added, Commands, Component, Mesh3d, Query, RemovedComponents, Res, Transform, World,
-};
+use bevy::prelude::{Added, Commands, Component, Mesh3d, Query, RemovedComponents, Res, Transform, With, Without, World};
+use moonshine_core::kind::Kind;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands, Viewable};
-use crate::features::juice::TransformJuice;
+use crate::features::inventory::InInventory;
+use crate::features::juice::{AddTransformJuice, TransformJuice};
 
-impl BuildView for SimpleMesh {
+pub struct SimpleMeshValid;
+
+impl Kind for SimpleMeshValid {
+    type Filter = (Without<Prototype>, Without<InInventory>, With<WorldPosition>);
+}
+
+impl BuildView<SimpleMesh> for SimpleMeshValid {
     fn build(world: &World, object: Object<SimpleMesh>, mut view: ViewCommands<SimpleMesh>) {
-        // println!("Building simple mesh VIEW");
+        println!("Building simple mesh VIEW");
 
         if world.get::<Prototype>(object.entity()).is_some() {
             return;
         }
 
         let simple_mesh_data = world.get::<SimpleMesh>(object.entity()).unwrap();
+        let add_transform_juice = world.get::<AddTransformJuice>(object.entity());
 
         let transform = world.get::<WorldPosition>(object.entity()).unwrap();
         let material_handles = world.get_resource::<BuildableMaterialHandles>().unwrap();
@@ -49,11 +56,16 @@ impl BuildView for SimpleMesh {
             MeshMaterial3d(final_material_handle.clone()),
             OriginalMaterial(material_handle.clone()),
             Transform::from_xyz(transform.x, 0.5, transform.y),
-            TransformJuice
         ));
 
         if has_blueprint {
             view.insert(NotShadowCaster);
+        }
+        
+        if let Some(add_transform_juice) = add_transform_juice {
+            view.insert(TransformJuice {
+                delay: add_transform_juice.delay,
+            });
         }
     }
 }
@@ -62,7 +74,7 @@ impl BuildView for SimpleMesh {
 pub struct OriginalMaterial(Handle<StandardMaterial>);
 
 pub fn on_add_blueprint(
-    query: Query<&Viewable<SimpleMesh>, Added<WorldPosition>>,
+    query: Query<&Viewable<SimpleMeshValid>, Added<WorldPosition>>,
     mut materials_query: Query<&mut MeshMaterial3d<StandardMaterial>>,
     blueprint_material: Res<BluePrintMaterial>,
     mut commands: Commands,
@@ -80,7 +92,7 @@ pub fn on_add_blueprint(
 pub fn on_remove_blueprint(
     mut removed: RemovedComponents<BluePrint>,
     mut materials_query: Query<&mut MeshMaterial3d<StandardMaterial>>,
-    viewable_query: Query<&Viewable<SimpleMesh>>,
+    viewable_query: Query<&Viewable<SimpleMeshValid>>,
     original_materials_query: Query<&OriginalMaterial>,
     mut commands: Commands,
 ) {

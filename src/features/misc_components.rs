@@ -9,7 +9,7 @@ use crate::features::camera::WorldCamera;
 use crate::features::misc_components::gltf_asset::{GltfAssetPlugin, GltfData};
 use crate::features::misc_components::preview_carry::{PreviewCarry, PreviewCarryPlugin};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
-use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint};
+use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint, SimpleMeshValid};
 use crate::features::movement::Velocity;
 use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::features::states::AppState;
@@ -50,7 +50,7 @@ impl Plugin for MiscComponentsPlugin {
                     .in_set(AfterFixedMainLoop)
                     .run_if(in_state(AppState::InGame)),
             )
-            .add_viewable::<SimpleMesh>()
+            .add_view::<SimpleMesh, SimpleMeshValid>()
             .add_viewable::<LightSource>();
     }
 }
