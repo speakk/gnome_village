@@ -4,7 +4,7 @@ use crate::features::map::water_material::{
 };
 use crate::features::misc_components::simple_mesh::{SimpleMeshHandles, SimpleMeshType};
 use bevy::asset::{Assets, UntypedHandle};
-use bevy::color::palettes::css::SKY_BLUE;
+use bevy::color::palettes::css::{CADET_BLUE, SKY_BLUE};
 use bevy::color::Color;
 use bevy::hierarchy::{BuildChildren, ChildBuild};
 use bevy::math::{UVec2, Vec2};
@@ -30,7 +30,8 @@ pub(super) fn create_map_materials(
     let dirt_material_handles = vec![material_handle1.untyped(), material_handle2.untyped()];
 
     let water_material_handle = water_materials.add(WaterMaterial {
-        color_1: SKY_BLUE.into(),
+        //color_1: Color::oklch(75.33, 0.1, 221.29).to_linear(),
+        color_1: Color::srgb(0.2, 0.4, 0.6).into(),
         alpha_mode: AlphaMode::Blend,
         noise_texture_1: Some(asset_server.load(NOISE_TEXTURE_1_PATH)),
         noise_texture_2: Some(asset_server.load(NOISE_TEXTURE_2_PATH)),
@@ -46,6 +47,9 @@ impl BuildView for MapData {
         println!("Building map view for object: {:?}", object);
 
         view.insert((Transform::default(), InheritedVisibility::default()));
+        
+        let opaque_materials = [TileType::Dirt];
+        let translucent_materials = [TileType::Water, TileType::Empty];
 
         view.with_children(|view| {
             if let Some(map_data) = world.get::<MapData>(object.entity()) {
@@ -60,13 +64,19 @@ impl BuildView for MapData {
                         };
 
                         let tile_below = map_data.get_tile_type_non_centered(UVec2::new(x, y + 1));
-                        let has_tile_below =
-                            tile_below.is_some() && tile_below.unwrap() != TileType::Empty;
+                        
+                        let should_be_cuboid = {
+                            if let Some(tile_below) = tile_below {
+                                opaque_materials.contains(&tile_type) && translucent_materials.contains(&tile_below)
+                            } else {
+                                true
+                            }
+                        };
 
-                        let mesh_type = if has_tile_below {
-                            SimpleMeshType::Plane
-                        } else {
+                        let mesh_type = if should_be_cuboid {
                             SimpleMeshType::Cuboid
+                        } else {
+                            SimpleMeshType::Plane
                         };
 
                         let mesh_handles = world.get_resource::<SimpleMeshHandles>().unwrap();
