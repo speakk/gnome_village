@@ -1,13 +1,15 @@
 use crate::features::map::map_model::{MapData, TileType};
+use crate::features::map::water_material::{
+    WaterMaterial, NOISE_TEXTURE_1_PATH, NOISE_TEXTURE_2_PATH,
+};
 use crate::features::misc_components::simple_mesh::{SimpleMeshHandles, SimpleMeshType};
 use bevy::asset::{Assets, UntypedHandle};
+use bevy::color::palettes::css::SKY_BLUE;
 use bevy::color::Color;
 use bevy::hierarchy::{BuildChildren, ChildBuild};
 use bevy::math::{UVec2, Vec2};
 use bevy::pbr::{MeshMaterial3d, NotShadowCaster, StandardMaterial};
-use bevy::prelude::{
-    Deref, DerefMut, InheritedVisibility, Mesh3d, ResMut, Resource, Transform, World,
-};
+use bevy::prelude::*;
 use bevy::utils::HashMap;
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
@@ -16,17 +18,23 @@ use noisy_bevy::simplex_noise_2d;
 #[derive(Resource, Default, Deref, DerefMut)]
 pub struct MapMaterialHandles(pub HashMap<TileType, Vec<UntypedHandle>>);
 
-pub fn create_map_materials(
+pub(super) fn create_map_materials(
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut map_material_handles: ResMut<MapMaterialHandles>,
-    //mut water_materials: ResMut<Assets<StandardWaterMaterial>>,
+    mut water_materials: ResMut<Assets<WaterMaterial>>,
+    asset_server: Res<AssetServer>,
     //mut settings: ResMut<WaterSettings>,
 ) {
     let material_handle1 = materials.add(Color::srgb(0.8, 0.7, 0.6));
     let material_handle2 = materials.add(Color::srgb(0.8, 0.6, 0.5));
     let dirt_material_handles = vec![material_handle1.untyped(), material_handle2.untyped()];
 
-    let water_material_handle = materials.add(Color::srgb(0.2, 0.3, 0.5));
+    let water_material_handle = water_materials.add(WaterMaterial {
+        color_1: SKY_BLUE.into(),
+        alpha_mode: AlphaMode::Blend,
+        noise_texture_1: Some(asset_server.load(NOISE_TEXTURE_1_PATH)),
+        noise_texture_2: Some(asset_server.load(NOISE_TEXTURE_2_PATH)),
+    });
 
     map_material_handles.insert(TileType::Dirt, dirt_material_handles);
 
@@ -98,7 +106,7 @@ impl BuildView for MapData {
                             TileType::Water => {
                                 // TODO: Change this once using a custom material again
                                 view_entity.insert(MeshMaterial3d(
-                                    material_handle.typed::<StandardMaterial>(),
+                                    material_handle.typed::<WaterMaterial>(),
                                 ));
                             }
                             _ => (),

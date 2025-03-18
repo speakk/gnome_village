@@ -147,17 +147,19 @@ fn handle_pan_input(
     }
 }
 
-fn handle_zoom_input(mut query: Query<(&ActionState<CameraZoomAction>, &mut Projection)>) {
+fn handle_zoom_input(mut query: Query<(&ActionState<CameraZoomAction>)>, mut actual_camera: Query<&mut Projection, With<Camera3d>>) {
     let zoom_amount = 0.3;
-    for (action_state, camera_projection) in &mut query {
-        if let Projection::Orthographic(ref mut ortho_projection) = *camera_projection.into_inner()
-        {
-            if action_state.pressed(&CameraZoomAction::In) {
-                ortho_projection.scale = ortho_projection.scale.add(zoom_amount).min(3.0);
-            }
+    for (action_state) in &mut query {
+        if let Ok(camera_projection) = actual_camera.get_single_mut() {
+            if let Projection::Orthographic(ref mut ortho_projection) = *camera_projection.into_inner()
+            {
+                if action_state.pressed(&CameraZoomAction::In) {
+                    ortho_projection.scale = ortho_projection.scale.add(zoom_amount).min(3.0);
+                }
 
-            if action_state.pressed(&CameraZoomAction::Out) {
-                ortho_projection.scale = ortho_projection.scale.sub(zoom_amount).max(0.4);
+                if action_state.pressed(&CameraZoomAction::Out) {
+                    ortho_projection.scale = ortho_projection.scale.sub(zoom_amount).max(0.4);
+                }
             }
         }
     }

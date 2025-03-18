@@ -6,9 +6,11 @@ use crate::features::states::AppState;
 use bevy::app::{App, Plugin};
 use bevy::prelude::*;
 use moonshine_view::RegisterView;
+use crate::features::map::water_material::WaterMaterialPlugin;
 
 pub mod map_model;
 pub mod map_view;
+mod water_material;
 
 pub struct MapPlugin;
 
@@ -16,6 +18,7 @@ impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(MapMaterialHandles::default())
             .add_viewable::<map_model::MapData>()
+            .add_plugins(WaterMaterialPlugin)
             .insert_resource(ReservedCoordinatesHelper::default())
             .add_systems(
                 OnEnter(AppState::MapGeneration),
