@@ -104,13 +104,13 @@ pub fn generate_map_entity(
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
     item_spawners: Res<ItemSpawners>,
 ) {
-    let map_size = UVec2::new(100, 100);
+    let map_size = UVec2::new(170, 170);
     let mut map_data = MapData {
         data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
         size: map_size,
     };
 
-    let min_bound = map_size.x.min(map_size.y) as f32;
+    let min_bound = map_size.x.min(map_size.y) as f32 - 50.0;
 
     let mut dirt_bundles: Vec<(Dirt, Id, WorldPosition, InWorld)> = vec![];
     //let mut ocean_bundles: Vec<(Ocean, Id, WorldPosition, InWorld)> = vec![];
