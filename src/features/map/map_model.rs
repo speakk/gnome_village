@@ -1,5 +1,5 @@
 use crate::bundles::rock::Rock;
-use crate::bundles::{ItemId, ItemSpawners};
+use crate::bundles::{Id, ItemId, ItemSpawners};
 use crate::features::misc_components::simple_mesh::SimpleMeshHandles;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
@@ -8,6 +8,7 @@ use bevy::prelude::*;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
+use crate::bundles::soil::dirt::Dirt;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -103,13 +104,16 @@ pub fn generate_map_entity(
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
     item_spawners: Res<ItemSpawners>,
 ) {
-    let map_size = UVec2::new(70, 70);
+    let map_size = UVec2::new(100, 100);
     let mut map_data = MapData {
         data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
         size: map_size,
     };
 
     let min_bound = map_size.x.min(map_size.y) as f32;
+
+    let mut dirt_bundles: Vec<(Dirt, Id, WorldPosition, InWorld)> = vec![];
+    //let mut ocean_bundles: Vec<(Ocean, Id, WorldPosition, InWorld)> = vec![];
 
     for x in 0..map_size.x {
         for y in 0..map_size.y {
@@ -129,16 +133,21 @@ pub fn generate_map_entity(
             if (noise_value / 2.0 + 1.0) * mapped_value > SHORELINE_NOISE_THRESHOLD {
                 tile_type = TileType::Water;
                 reserved_coordinates.0.push(centered_coordinate);
+            } else {
+                dirt_bundles.push((Dirt, Id(ItemId::Dirt),WorldPosition(centered_coordinate.as_vec2()), InWorld));
             }
 
-            let dirt = item_spawners.get(&ItemId::Dirt).unwrap()(&mut commands);
-            commands
-                .entity(dirt)
-                .insert((WorldPosition(centered_coordinate.as_vec2()), InWorld));
+            //let dirt = item_spawners.get(&ItemId::Dirt).unwrap()(&mut commands);
+            // commands
+            //     .entity(dirt)
+            //     .insert((WorldPosition(centered_coordinate.as_vec2()), InWorld));
+
 
             map_data.set_tile_type(centered_coordinate, tile_type);
         }
     }
+
+    commands.spawn_batch(dirt_bundles);
 
     commands.spawn((map_data, Save));
 }

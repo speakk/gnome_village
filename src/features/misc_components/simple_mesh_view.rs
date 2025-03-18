@@ -19,8 +19,6 @@ impl Kind for SimpleMeshValid {
 
 impl BuildView<SimpleMesh> for SimpleMeshValid {
     fn build(world: &World, object: Object<SimpleMesh>, mut view: ViewCommands<SimpleMesh>) {
-        println!("Building simple mesh VIEW");
-
         if world.get::<Prototype>(object.entity()).is_some() {
             return;
         }
