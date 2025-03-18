@@ -64,6 +64,11 @@ fn handle_removed(
     }
 }
 
+
+#[derive(Debug, Component, Clone, Copy, Default, Reflect)]
+#[reflect(Component)]
+pub struct InterpolatePosition;
+
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
 #[reflect(Component)]
 #[require(PreviousWorldPosition)]

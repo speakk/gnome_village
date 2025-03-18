@@ -1,3 +1,4 @@
+use crate::features::position::InterpolatePosition;
 use crate::bundles::{Id, ItemId};
 use crate::features::assets::GltfAssetId;
 use crate::features::inventory::Inventory;
@@ -23,6 +24,7 @@ use bevy::prelude::*;
         current_animation_index: 0,
         should_play: true
     }),
+    InterpolatePosition,
     Inventory,
     PreviewCarry,
     Name(|| "Settler"))]

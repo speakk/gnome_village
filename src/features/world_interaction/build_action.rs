@@ -15,9 +15,7 @@ use crate::features::world_interaction::mouse_selection::{
 };
 use bevy::asset::AssetContainer;
 use bevy::prelude::*;
-use std::time::Duration;
 
-use bevy_mod_async::{time::TimingTaskExt, SpawnCommandExt};
 use crate::features::juice::AddTransformJuice;
 use crate::features::path_finding::grid::{PathingGridResource, Solid};
 
@@ -193,26 +191,31 @@ fn react_to_build_intent(
                 "Got build intent, creating buildables at coordinates: {:?}",
                 coordinates
             );
-            
-            let valid_coordinates: Vec<_> = coordinates.iter().filter(|coordinate| {
-                if let Some(entities) = coordinate_to_entity.0.get(*coordinate) {
-                    for entity in entities.iter() {
-                        if solids.contains(*entity) {
-                            return false;
+
+            let valid_coordinates: Vec<_> = coordinates
+                .iter()
+                .filter(|coordinate| {
+                    if let Some(entities) = coordinate_to_entity.0.get(*coordinate)
+                    {
+                        for entity in entities.iter() {
+                            if solids.contains(*entity) {
+                                return false;
+                            }
                         }
-                    }
-                }
-                
-                true
-            }).collect();
+                    };
+
+                    let top_left_coordinate = map_data.center_to_top_left_coordinate(**coordinate);
+                    pathing_grid_resource.0.has_vertex((top_left_coordinate.x as usize, top_left_coordinate.y as usize))
+                })
+                .collect();
 
             let batch_size = valid_coordinates.iter().len();
-            
+
             for (i, coordinate) in valid_coordinates.iter().enumerate() {
                 let world_position = map_data.centered_coordinate_to_world_position(**coordinate);
                 let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
                 println!("Creating buildable at: {:?}", world_position);
-                
+
                 commands
                     .entity(concrete_entity)
                     .insert(WorldPosition(world_position))

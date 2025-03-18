@@ -1,3 +1,4 @@
+use crate::features::position::InterpolatePosition;
 use crate::features::input::{CameraPanAction, CameraZoomAction};
 use crate::features::movement::{Acceleration, Friction, Velocity};
 use crate::features::position::WorldPosition;
@@ -22,7 +23,7 @@ pub struct CameraPlugin;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-#[require(WorldPosition, Velocity, Acceleration, Friction(|| Friction(2.0)), AccumulatedInput)]
+#[require(WorldPosition, Velocity, Acceleration, Friction(|| Friction(2.0)), AccumulatedInput, InterpolatePosition)]
 pub struct WorldCamera;
 
 /// A vector representing the player's input, accumulated over all frames that ran

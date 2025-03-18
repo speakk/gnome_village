@@ -11,7 +11,7 @@ use crate::features::misc_components::preview_carry::{PreviewCarry, PreviewCarry
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint, SimpleMeshValid};
 use crate::features::movement::Velocity;
-use crate::features::position::{PreviousWorldPosition, WorldPosition};
+use crate::features::position::{InterpolatePosition, PreviousWorldPosition, WorldPosition};
 use crate::features::states::AppState;
 use bevy::app::RunFixedMainLoopSystem::AfterFixedMainLoop;
 use bevy::prelude::*;
@@ -57,7 +57,7 @@ impl Plugin for MiscComponentsPlugin {
 
 fn interpolate_rendered_transform<T>(
     fixed_time: Res<Time<Fixed>>,
-    query: Query<(&WorldPosition, &PreviousWorldPosition, &Viewable<T>)>,
+    query: Query<(&WorldPosition, &PreviousWorldPosition, &Viewable<T>), With<InterpolatePosition>>,
     mut transforms: Query<&mut Transform>,
 ) where
     T: Component,

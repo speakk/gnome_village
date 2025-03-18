@@ -1,7 +1,7 @@
 use crate::bundles::buildables::{BluePrint, BluePrintMaterial, BuildableMaterialHandles};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
 use crate::features::misc_components::Prototype;
-use crate::features::position::WorldPosition;
+use crate::features::position::{InterpolatePosition, WorldPosition};
 use bevy::asset::Handle;
 use bevy::pbr::{MeshMaterial3d, NotShadowCaster, StandardMaterial};
 use bevy::prelude::{Added, Commands, Component, Mesh3d, Query, RemovedComponents, Res, Transform, With, Without, World};
@@ -38,6 +38,7 @@ impl BuildView<SimpleMesh> for SimpleMeshValid {
         let material_handle = material_handles.wood.clone().unwrap();
 
         let has_blueprint = world.get::<BluePrint>(object.entity()).is_some();
+        let has_interpolate = world.get::<InterpolatePosition>(object.entity()).is_some();
 
         let final_material_handle = if has_blueprint {
             //println!("Had blueprint, immediately making blueprint material");
@@ -64,6 +65,10 @@ impl BuildView<SimpleMesh> for SimpleMeshValid {
         
         if let Some(add_transform_juice) = add_transform_juice {
             view.insert(TransformJuice::from(*add_transform_juice));
+        }
+        
+        if has_interpolate {
+            view.insert(InterpolatePosition);
         }
     }
 }

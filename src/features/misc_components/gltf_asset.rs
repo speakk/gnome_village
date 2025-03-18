@@ -3,7 +3,7 @@ use crate::features::ai::{PathFollow, WorkingOnTask};
 use crate::features::assets::{Animations, GltfAssetHandles, GltfAssetId, SettlerAnimationIndices};
 use crate::features::inventory::InInventory;
 use crate::features::misc_components::{InWorld, Prototype};
-use crate::features::position::WorldPosition;
+use crate::features::position::{InterpolatePosition, WorldPosition};
 use crate::ReflectComponent;
 use bevy::app::App;
 use bevy::core::Name;
@@ -63,6 +63,8 @@ impl BuildView<GltfData> for GltfValid {
         let gltf_asset_handles = world.get_resource::<GltfAssetHandles>().unwrap();
         let add_transform_juice = world.get::<AddTransformJuice>(object.entity());
 
+        let has_interpolate = world.get::<InterpolatePosition>(object.entity()).is_some();
+        
         let scene = match get_scene_from_gltf_data(gltf_asset_handles, gltf_assets, &gltf_data) {
             Some(value) => value,
             None => return,
@@ -77,6 +79,10 @@ impl BuildView<GltfData> for GltfValid {
 
         if let Some(add_transform_juice) = add_transform_juice {
             view.insert(TransformJuice::from(*add_transform_juice));
+        }
+        
+        if has_interpolate {
+            view.insert(InterpolatePosition);
         }
 
         println!("Building gltf asset view finished");
