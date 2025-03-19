@@ -20,3 +20,4 @@ pub mod user_actions;
 pub mod world_interaction;
 pub mod juice;
 pub mod audio;
+pub mod particles;

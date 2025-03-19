@@ -218,12 +218,12 @@ pub fn generate_test_entities(
     let test_entities = vec![
         EntityGeneration {
             entity_type: ItemId::Settler,
-            amount: 4,
+            amount: 40,
             func: None,
         },
         EntityGeneration {
             entity_type: ItemId::Lumber,
-            amount: 100,
+            amount: 300,
             func: None,
         },
         EntityGeneration {

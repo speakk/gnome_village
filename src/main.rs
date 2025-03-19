@@ -27,6 +27,7 @@ use bevy::input::common_conditions::input_toggle_active;
 use bevy::pbr::{DefaultOpaqueRendererMethod, PointLightShadowMap};
 use bevy::prelude::*;
 use bevy_easings::EasingsPlugin;
+use bevy_hanabi::HanabiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_kira_audio::AudioPlugin;
 use bevy_mod_async::AsyncTasksPlugin;
@@ -34,6 +35,7 @@ use features::path_finding::plugin::PathFindingPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
 use crate::features::audio::GameAudioPlugin;
 use crate::features::juice::JuicePlugin;
+use crate::features::particles::ParticlePlugin;
 
 fn main() {
     App::new()
@@ -42,6 +44,7 @@ fn main() {
         .add_plugins(EasingsPlugin::default())
         .add_plugins(AsyncTasksPlugin)
         .add_plugins(AudioPlugin)
+        .add_plugins(HanabiPlugin)
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .insert_resource(PointLightShadowMap { size: 256 })
         .add_plugins(SavePlugin)
@@ -58,6 +61,7 @@ fn main() {
         .add_plugins(ItemDropPlugin)
         .add_plugins(HealthPlugin)
         .add_plugins(SeededRandomPlugin)
+        .add_plugins(ParticlePlugin)
         .add_plugins(MiscComponentsPlugin)
         .add_plugins(features::input::InputPlugin)
         .add_plugins(features::world_interaction::WorldInteractionPlugin)

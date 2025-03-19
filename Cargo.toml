@@ -62,6 +62,7 @@ bresenham = "0.1.1"
 wyrand = "0.3.2"
 bevy_easings = "0.15.0"
 bevy_mod_async = "0.8.0"
+bevy_hanabi = "0.14.0"
 
 [profile.dev.package."*"]
 opt-level = 3

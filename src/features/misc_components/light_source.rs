@@ -1,9 +1,11 @@
 use crate::features::misc_components::Prototype;
+use crate::features::particles::{ParticleHandles, ParticleType};
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
 use bevy::color::Color;
 use bevy::pbr::PointLight;
-use bevy::prelude::{default, Component, Reflect, Transform, World};
+use bevy::prelude::{default, BuildChildren, Component, Reflect, Transform, Vec3, World};
+use bevy_hanabi::{ParticleEffect, ParticleEffectBundle};
 use moonshine_object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
 
@@ -33,6 +35,8 @@ impl BuildView for LightSource {
         let transform = world.get::<WorldPosition>(object.entity()).unwrap();
         let light_source = world.get::<LightSource>(object.entity()).unwrap();
 
+        let particle_handles = world.get_resource::<ParticleHandles>().unwrap();
+
         view.insert((
             PointLight {
                 color: light_source.color,
@@ -43,5 +47,27 @@ impl BuildView for LightSource {
             },
             Transform::from_xyz(transform.x, 1.5, transform.y),
         ));
+
+        view.insert(ParticleEffect::new(
+            particle_handles
+                .0
+                .get(&ParticleType::LightSparkle)
+                .unwrap()
+                .clone(),
+        ));
+
+        view.with_child(
+            ParticleEffectBundle {
+                effect: ParticleEffect::new(
+                    particle_handles
+                        .0
+                        .get(&ParticleType::LightSparkle)
+                        .unwrap()
+                        .clone(),
+                ),
+                transform: Transform::from_xyz(0.0, -0.8, 0.0),
+                ..Default::default()
+            },
+        );
     }
 }
