@@ -1,6 +1,6 @@
-use crate::features::position::InterpolatePosition;
 use crate::features::input::{CameraPanAction, CameraZoomAction};
 use crate::features::movement::{Acceleration, Friction, Velocity};
+use crate::features::position::InterpolatePosition;
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
@@ -11,13 +11,13 @@ use bevy::math::{Vec2, Vec3};
 use bevy::pbr::ClusterConfig;
 use bevy::prelude::KeyCode::{KeyA, KeyD, KeyS, KeyW};
 use bevy::prelude::*;
-use bevy::render::camera::ScalingMode;
+use bevy::render::camera::{CameraOutputMode, ScalingMode};
 use bevy_atmosphere::plugin::{AtmosphereCamera, AtmospherePlugin};
 use leafwing_input_manager::prelude::*;
+use moonshine_core::save::Save;
 use moonshine_object::Object;
 use moonshine_view::{BuildView, RegisterView, ViewCommands};
 use std::ops::{Add, Sub};
-use moonshine_core::save::Save;
 
 pub struct CameraPlugin;
 
@@ -67,7 +67,17 @@ fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
         WorldCamera,
         InputManagerBundle::with_map(pan_input_map),
         InputManagerBundle::with_map(zoom_input_map),
-        Save
+        Save,
+    ));
+
+    commands.spawn((
+        Camera2d,
+        Camera {
+            order: 1,
+            clear_color: ClearColorConfig::None,
+            ..Default::default()
+        },
+        Msaa::Off,
     ));
 }
 
@@ -77,7 +87,8 @@ impl BuildView for WorldCamera {
             Camera3d::default(),
             Camera {
                 order: 0,
-                ..default()
+                clear_color: ClearColorConfig::None,
+                ..Default::default()
             },
             Projection::from(OrthographicProjection {
                 // 6 world units per pixel of window height.
@@ -147,11 +158,15 @@ fn handle_pan_input(
     }
 }
 
-fn handle_zoom_input(mut query: Query<(&ActionState<CameraZoomAction>)>, mut actual_camera: Query<&mut Projection, With<Camera3d>>) {
+fn handle_zoom_input(
+    mut query: Query<(&ActionState<CameraZoomAction>)>,
+    mut actual_camera: Query<&mut Projection, With<Camera3d>>,
+) {
     let zoom_amount = 0.3;
     for (action_state) in &mut query {
         if let Ok(camera_projection) = actual_camera.get_single_mut() {
-            if let Projection::Orthographic(ref mut ortho_projection) = *camera_projection.into_inner()
+            if let Projection::Orthographic(ref mut ortho_projection) =
+                *camera_projection.into_inner()
             {
                 if action_state.pressed(&CameraZoomAction::In) {
                     ortho_projection.scale = ortho_projection.scale.add(zoom_amount).min(3.0);
