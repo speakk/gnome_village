@@ -36,6 +36,7 @@ use features::tasks::tasks_plugin::TasksPlugin;
 use crate::features::audio::GameAudioPlugin;
 use crate::features::juice::JuicePlugin;
 use crate::features::particles::ParticlePlugin;
+use crate::features::world_interaction::WorldInteractionPlugin;
 
 fn main() {
     App::new()
@@ -64,7 +65,7 @@ fn main() {
         .add_plugins(ParticlePlugin)
         .add_plugins(MiscComponentsPlugin)
         .add_plugins(features::input::InputPlugin)
-        .add_plugins(features::world_interaction::WorldInteractionPlugin)
+        .add_plugins(WorldInteractionPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(PositionPlugin)
         .add_plugins(AiPlugin)

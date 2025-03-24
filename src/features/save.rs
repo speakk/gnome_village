@@ -31,6 +31,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use KeyCode::F5;
 use crate::features::camera::WorldCamera;
+use crate::features::sun_light::PlanetOrigin;
 
 pub struct SavePlugin;
 
@@ -110,6 +111,7 @@ impl Plugin for SavePlugin {
         .register_type::<GrowthProvider>()
         .register_type::<WorldCamera>()
         .register_type::<Id>()
+        .register_type::<PlanetOrigin>()
         .add_systems(Startup, setup)
         .add_systems(
             PreUpdate,
