@@ -90,7 +90,7 @@ fn rotate_indicator(
 ) {
     if current_time_of_day.is_changed() {
         for mut transform in query.iter_mut() {
-            transform.rotation = Quat::from_rotation_z(current_time_of_day.time_of_day * PI);
+            transform.rotation = Quat::from_rotation_z(current_time_of_day.time_of_day * PI * 2.0 + PI);
         }
     }
 }

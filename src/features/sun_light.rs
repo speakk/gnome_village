@@ -9,7 +9,7 @@ use bevy::prelude::*;
 use bevy::window::WindowResized;
 use bevy_atmosphere::model::AtmosphereModel;
 use bevy_atmosphere::prelude::{AtmosphereMut, Nishita};
-use std::f32::consts::PI;
+use std::f32::consts::{PI, TAU};
 
 pub struct SunLightPlugin;
 
@@ -38,8 +38,8 @@ pub struct CurrentTimeOfDay {
 impl Default for CurrentTimeOfDay {
     fn default() -> Self {
         CurrentTimeOfDay {
-            total_time: 0.0,
-            time_of_day: 0.3, // Let's start in the morning
+            total_time: 0.25, // Let's start in the morning
+            time_of_day: 0.0,
         }
     }
 }
@@ -52,7 +52,7 @@ impl Plugin for SunLightPlugin {
                 TimerMode::Repeating,
             )))
             .insert_resource(AtmosphereTimer(Timer::new(
-                bevy::utils::Duration::from_millis(2000),
+                bevy::utils::Duration::from_millis(50),
                 TimerMode::Repeating,
             )))
             .insert_resource(CurrentTimeOfDay::default())
@@ -104,7 +104,7 @@ pub fn setup_lights(mut commands: Commands) {
                 DirectionalLight {
                     color: Color::srgb(0.4, 0.4, 1.0),
                     illuminance: 4000.0,
-                    shadows_enabled: false,
+                    shadows_enabled: true,
                     ..default()
                 },
                 Visibility::Hidden,
@@ -139,35 +139,28 @@ pub fn setup_lights(mut commands: Commands) {
 #[allow(clippy::too_many_arguments)]
 #[allow(clippy::type_complexity)]
 fn daylight_cycle(
-    mut timer: ResMut<CycleTimer>,
     mut current_time_of_day: ResMut<CurrentTimeOfDay>,
     time: Res<Time>,
 ) {
-    timer.0.tick(time.delta());
+    // At 60.0 one day takes a minute
+    let timer_scale_division = 60.0;
+    let total_time = current_time_of_day.total_time + time.delta_secs() / timer_scale_division;
 
-    // TODO: Figure out the math in this, this was partially straight from bevy_atmosphere example
-
-    let timer_scale_division = 6.0;
-    let t = time.elapsed_secs_wrapped() / timer_scale_division;
-
-    if timer.0.finished() {
-        const DAY_LENGTH: f32 = 30.0;
-        let time_of_day = t % DAY_LENGTH;
-        current_time_of_day.total_time = t;
-        current_time_of_day.time_of_day = time_of_day;
-    }
+    let time_of_day = total_time % 1.0;
+    current_time_of_day.total_time = total_time;
+    current_time_of_day.time_of_day = time_of_day;
 }
 
 #[derive(Resource)]
 struct AtmosphereTimer(Timer);
 
-pub fn rotate_planet(
+fn rotate_planet(
     mut sun_query: Query<
-        (&mut Transform, &mut DirectionalLight, Entity),
+        (&mut Transform, &mut DirectionalLight, &mut Visibility),
         (With<Sun>, Without<Moon>),
     >,
     mut moon_query: Query<
-        (&mut Transform, &mut DirectionalLight, Entity),
+        (&mut Transform, &mut DirectionalLight, &mut Visibility),
         (With<Moon>, Without<Sun>),
     >,
     mut planet_origin: Query<&mut Transform, (Without<Moon>, Without<Sun>, With<PlanetOrigin>)>,
@@ -178,45 +171,38 @@ pub fn rotate_planet(
     }
 
     let t = current_time_of_day.time_of_day;
+    println!("T is: {:?}", t);
 
     if let Ok(mut transform) = planet_origin.get_single_mut() {
-        transform.rotation = Quat::from_euler(EulerRot::YXZ, t * PI / 4.0, t * PI, 0.0);
+        transform.rotation = Quat::from_euler(EulerRot::YXZ, t * PI / 4.0, t * TAU + PI, 0.0);
     }
 
-    if let Some((mut light_trans, mut directional, entity)) = sun_query.single_mut().into() {
-        light_trans.look_at(Vec3::ZERO, Vec3::Y);
-        //light_trans.rotation = Quat::from_rotation_x(-t);
-        // let illuminance = t.sin().max(0.0).powf(2.0) * AMBIENT_DAYLIGHT;
-        // // TODO: Base this on rotation
-        // if illuminance < 10.0 {
-        //     if visibility_query.get_mut(entity).is_ok() {
-        //         commands.entity(entity).remove::<Visibility>();
-        //     }
-        // } else if let Err(_visibility) = visibility_query.get_mut(entity) {
-        //     commands.entity(entity).insert(Visibility::Visible);
-        // }
-        // directional.illuminance = illuminance;1
-    }
+    if let Some((mut sun_transform, mut sun_light, mut sun_visibility)) =
+        sun_query.single_mut().into()
+    {
+        if let Some((mut moon_transform, mut moon_light, mut moon_visibility)) =
+            moon_query.single_mut().into()
+        {
+            if (0.25..=0.75).contains(&t) {
+                *sun_visibility = Visibility::Visible;
+                *moon_visibility = Visibility::Hidden;
 
-    if let Some((mut light_trans, mut directional, entity)) = moon_query.single_mut().into() {
-        // let moon_t = -t - PI;
-        // //light_trans.rotation = Quat::from_rotation_x(moon_t);
-        // let illuminance = (-moon_t).sin().max(0.2).powf(2.0) * AMBIENT_DAYLIGHT * 0.5;
-        //
-        // // TODO: Base this on rotation
-        // if illuminance < 201.0 {
-        //     if visibility_query.get_mut(entity).is_ok() {
-        //         commands.entity(entity).remove::<Visibility>();
-        //     }
-        // } else if let Err(_visibility) = visibility_query.get_mut(entity) {
-        //     commands.entity(entity).insert(Visibility::Visible);
-        // }
-        //
-        // directional.illuminance = illuminance;
+                sun_transform.look_at(Vec3::ZERO, Vec3::Y);
+                let illuminance = t.sin().max(0.0).powf(2.0) * AMBIENT_DAYLIGHT;
+                sun_light.illuminance = illuminance;
+            } else {
+                *moon_visibility = Visibility::Visible;
+                *sun_visibility = Visibility::Hidden;
+
+                moon_transform.look_at(Vec3::ZERO, Vec3::Y);
+                //let illuminance = (t + 0.75).sin().max(0.0).powf(2.0) * AMBIENT_DAYLIGHT;
+                //moon_light.illuminance = illuminance;
+            }
+        }
     }
 }
 
-pub fn rotate_atmosphere(
+fn rotate_atmosphere(
     mut atmosphere: AtmosphereMut<Nishita>,
     mut atmosphere_timer: ResMut<AtmosphereTimer>,
     current_time_of_day: Res<CurrentTimeOfDay>,
@@ -225,6 +211,7 @@ pub fn rotate_atmosphere(
     atmosphere_timer.0.tick(time.delta());
     if atmosphere_timer.0.finished() {
         let t = current_time_of_day.time_of_day;
-        atmosphere.sun_position = Vec3::new(0., t.sin(), t.cos());
+        atmosphere.sun_position =
+            Quat::from_euler(EulerRot::YXZ, t * PI / 4.0, t * PI * 2.0 + PI, 0.0).xyz() * Vec3::new(1.0, -1.0, 1.0);
     }
 }
