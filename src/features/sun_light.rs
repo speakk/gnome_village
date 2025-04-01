@@ -171,7 +171,6 @@ fn rotate_planet(
     }
 
     let t = current_time_of_day.time_of_day;
-    println!("T is: {:?}", t);
 
     if let Ok(mut transform) = planet_origin.get_single_mut() {
         transform.rotation = Quat::from_euler(EulerRot::YXZ, t * PI / 4.0, t * TAU + PI, 0.0);
