@@ -40,6 +40,7 @@ use crate::features::world_interaction::WorldInteractionPlugin;
 
 fn main() {
     App::new()
+        .enable_state_scoped_entities::<AppState>()
         .add_plugins(DefaultPlugins)
         .add_plugins(BeetFlowPlugin::default())
         .add_plugins(EasingsPlugin::default())

@@ -7,9 +7,11 @@ use crate::ui::ui_main_actions::{initialize_main_actions_menu, MainActionsPlugin
 use bevy::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 use crate::ui::day_cycle_indicator::DayCycleIndicatorPlugin;
+use crate::ui::main_menu::MainMenuPlugin;
 
 pub mod ui_main_actions;
 mod day_cycle_indicator;
+mod main_menu;
 
 pub struct UiPlugin;
 
@@ -22,6 +24,7 @@ pub struct UiSceneHandles {
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(CobwebUiPlugin)
+            .add_plugins(MainMenuPlugin)
             .add_plugins(MainActionsPlugin)
             .add_plugins(DayCycleIndicatorPlugin)
             .insert_resource::<UiSceneHandles>(UiSceneHandles::default())

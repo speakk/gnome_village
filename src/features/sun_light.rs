@@ -138,10 +138,7 @@ pub fn setup_lights(mut commands: Commands) {
 // We can edit the Atmosphere resource and it will be updated automatically
 #[allow(clippy::too_many_arguments)]
 #[allow(clippy::type_complexity)]
-fn daylight_cycle(
-    mut current_time_of_day: ResMut<CurrentTimeOfDay>,
-    time: Res<Time>,
-) {
+fn daylight_cycle(mut current_time_of_day: ResMut<CurrentTimeOfDay>, time: Res<Time>) {
     // At 60.0 one day takes a minute
     let timer_scale_division = 60.0;
     let total_time = current_time_of_day.total_time + time.delta_secs() / timer_scale_division;
@@ -176,9 +173,7 @@ fn rotate_planet(
         transform.rotation = Quat::from_euler(EulerRot::YXZ, t * PI / 4.0, t * TAU + PI, 0.0);
     }
 
-    if let Some((mut sun_transform, mut sun_light, mut sun_visibility)) =
-        sun_query.single_mut().into()
-    {
+    if let Ok((mut sun_transform, mut sun_light, mut sun_visibility)) = sun_query.get_single_mut() {
         if let Some((mut moon_transform, mut moon_light, mut moon_visibility)) =
             moon_query.single_mut().into()
         {
@@ -211,6 +206,7 @@ fn rotate_atmosphere(
     if atmosphere_timer.0.finished() {
         let t = current_time_of_day.time_of_day;
         atmosphere.sun_position =
-            Quat::from_euler(EulerRot::YXZ, t * PI / 4.0, t * PI * 2.0 + PI, 0.0).xyz() * Vec3::new(1.0, -1.0, 1.0);
+            Quat::from_euler(EulerRot::YXZ, t * PI / 4.0, t * PI * 2.0 + PI, 0.0).xyz()
+                * Vec3::new(1.0, -1.0, 1.0);
     }
 }

@@ -12,6 +12,7 @@ use moonshine_object::{Kind, Object, ObjectInstance};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use std::time::Duration;
 use crate::features::juice::{AddTransformJuice, TransformJuice};
+use crate::features::states::AppState::InGame;
 
 pub struct GltfAssetPlugin;
 
@@ -26,7 +27,7 @@ impl Plugin for GltfAssetPlugin {
                 react_to_path_idle,
                 react_to_build,
                 react_to_work_finished,
-            ),
+            ).run_if(in_state(InGame)),
         )
         .add_view::<GltfData, GltfValid>();
     }

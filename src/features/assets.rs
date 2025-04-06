@@ -1,4 +1,4 @@
-use crate::features::states::AppState::Preload;
+use crate::features::states::AppState::{InGame, Preload};
 use bevy::app::App;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
@@ -47,7 +47,7 @@ pub struct Animations {
 impl Plugin for AssetsPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(Preload), setup)
-            .add_systems(Update, setup_scene_once_loaded)
+            .add_systems(Update, setup_scene_once_loaded.run_if(in_state(InGame)))
             .insert_resource(GltfAssetHandles::default());
     }
 }
