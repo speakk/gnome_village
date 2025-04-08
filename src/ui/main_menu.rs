@@ -52,6 +52,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         ))
         .with_children(|parent| {
             create_button(
+                "New game".to_string(),
                 parent,
                 &asset_server,
                 IntoObserverSystem::into_system(
@@ -62,10 +63,24 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     },
                 ),
             );
+
+            create_button(
+                "Quit".to_string(),
+                parent,
+                &asset_server,
+                IntoObserverSystem::into_system(
+                    move |mut trigger: Trigger<Pointer<Click>>,
+                          mut exit: EventWriter<AppExit>| {
+                        exit.send(AppExit::Success);
+                        trigger.propagate(false);
+                    },
+                ),
+            );
         });
 }
 
 fn create_button(
+    label: String,
     parent: &mut ChildBuilder,
     asset_server: &Res<AssetServer>,
     observe_logic: impl ObserverSystem<Pointer<Click>, (), ()> + 'static,
@@ -86,7 +101,7 @@ fn create_button(
             BackgroundColor(NORMAL_BUTTON),
         ))
         .with_child((
-            Text::new("New Game"),
+            Text::new(label),
             TextFont {
                 font: asset_server.load("fonts/ThaleahFat.ttf"),
                 font_size: 23.0,
