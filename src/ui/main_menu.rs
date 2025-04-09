@@ -1,7 +1,6 @@
 use crate::features::states::AppState;
 use crate::features::states::AppState::MainMenu;
-use crate::ui::colours::{THEME_1_200, THEME_1_400, THEME_1_800, THEME_2_200, THEME_2_400, THEME_2_600, THEME_2_DEFAULT};
-use bevy::color::palettes::basic::RED;
+use crate::ui::colours::{THEME_1_400, THEME_1_800, THEME_2_400, THEME_2_600, THEME_2_DEFAULT};
 use bevy::ecs::system::{IntoObserverSystem, ObserverSystem};
 use bevy::prelude::*;
 use bevy::ui::widget::NodeImageMode;
@@ -52,6 +51,16 @@ fn setup(
             StateScoped(MainMenu),
         ))
         .with_children(|parent| {
+            parent.spawn((
+                Text::new("Gnome Village".to_uppercase()),
+                TextFont {
+                    font: asset_server.load("fonts/ThaleahFat.ttf"),
+                    font_size: 84.0,
+                    ..default()
+                },
+                TextColor(THEME_1_800),
+            ));
+
             create_button(
                 "New game".to_string(),
                 parent,
@@ -89,7 +98,7 @@ fn create_button(
     observe_logic: impl ObserverSystem<Pointer<Click>, (), ()> + 'static,
 ) {
     let slicer = TextureSlicer {
-        border: BorderRect::square(28.0),
+        border: BorderRect::square(32.0),
         center_scale_mode: SliceScaleMode::Stretch,
         sides_scale_mode: SliceScaleMode::Stretch,
         max_corner_scale: 1.0,
@@ -130,36 +139,22 @@ fn create_button(
 
 fn button_system(
     mut interaction_query: Query<
-        (
-            &Interaction,
-            &mut BackgroundColor,
-            &mut BorderColor,
-            &mut ImageNode,
-            &Children,
-        ),
+        (&Interaction, &mut ImageNode, &Children),
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
 ) {
-    for (interaction, mut color, mut border_color, mut image_node, children) in
-        &mut interaction_query
-    {
+    for (interaction, mut image_node, children) in &mut interaction_query {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
             Interaction::Pressed => {
-                //*color = THEME_2_200.into();
                 image_node.color = THEME_2_400;
-                border_color.0 = RED.into();
             }
             Interaction::Hovered => {
-                //*color = THEME_2_600.into();
                 image_node.color = THEME_2_600;
-                border_color.0 = Color::WHITE;
             }
             Interaction::None => {
-                //*color = THEME_2_DEFAULT.into();
                 image_node.color = THEME_2_DEFAULT;
-                border_color.0 = Color::BLACK;
             }
         }
     }
