@@ -1,9 +1,10 @@
 use crate::features::states::AppState;
 use crate::features::states::AppState::MainMenu;
+use crate::ui::colours::{THEME_1_200, THEME_1_400, THEME_2_200, THEME_2_600, THEME_2_DEFAULT};
 use bevy::color::palettes::basic::RED;
 use bevy::ecs::system::{IntoObserverSystem, ObserverSystem};
 use bevy::prelude::*;
-use crate::ui::colours::{THEME_1_100, THEME_1_200, THEME_1_400, THEME_2_100, THEME_2_200, THEME_2_600, THEME_2_DEFAULT, THEME_3_100, THEME_3_300, THEME_3_DEFAULT, THEME_4_DEFAULT};
+use bevy::ui::widget::NodeImageMode;
 
 pub struct MainMenuPlugin;
 
@@ -11,11 +12,21 @@ impl Plugin for MainMenuPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, button_system);
         app.add_systems(OnEnter(MainMenu), setup);
+        //app.init_resource::<ButtonImage>();
         //app.a
     }
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+// #[derive(Resource, Default)]
+// struct ButtonImage(Option<Handle<Image>>);
+fn setup(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    //mut button_image: ResMut<ButtonImage>,
+) {
+    let button_image: Handle<Image> = asset_server.load("textures/button_1.png");
+    //button_image.0 = Some(image);
+
     commands.spawn((
         Camera2d,
         Camera {
@@ -44,6 +55,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             create_button(
                 "New game".to_string(),
                 parent,
+                button_image.clone(),
                 &asset_server,
                 IntoObserverSystem::into_system(
                     move |mut trigger: Trigger<Pointer<Click>>,
@@ -57,6 +69,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             create_button(
                 "Quit".to_string(),
                 parent,
+                button_image.clone(),
                 &asset_server,
                 IntoObserverSystem::into_system(
                     move |mut trigger: Trigger<Pointer<Click>>, mut exit: EventWriter<AppExit>| {
@@ -71,23 +84,37 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 fn create_button(
     label: String,
     parent: &mut ChildBuilder,
+    image: Handle<Image>,
     asset_server: &Res<AssetServer>,
     observe_logic: impl ObserverSystem<Pointer<Click>, (), ()> + 'static,
 ) {
+    let slicer = TextureSlicer {
+        border: BorderRect::square(28.0),
+        center_scale_mode: SliceScaleMode::Stretch,
+        sides_scale_mode: SliceScaleMode::Stretch,
+        max_corner_scale: 1.0,
+    };
+
     parent
         .spawn((
             Button,
+            ImageNode {
+                image: image.clone(),
+                image_mode: NodeImageMode::Sliced(slicer.clone()),
+                ..default()
+            },
             Node {
                 width: Val::Px(150.0),
                 height: Val::Px(65.0),
-                border: UiRect::all(Val::Px(2.0)),
+                //border: UiRect::all(Val::Px(2.0)),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
+                margin: UiRect::all(Val::Px(10.0)),
                 ..default()
             },
-            BorderColor(THEME_1_400),
-            BorderRadius::all(Val::Px(5.0)),
-            BackgroundColor(THEME_2_DEFAULT),
+            //BorderColor(THEME_1_400),
+            //BorderRadius::all(Val::Px(5.0)),
+            //BackgroundColor(THEME_2_DEFAULT),
         ))
         .with_child((
             Text::new(label),
@@ -107,28 +134,31 @@ fn button_system(
             &Interaction,
             &mut BackgroundColor,
             &mut BorderColor,
+            &mut ImageNode,
             &Children,
         ),
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
 ) {
-    for (interaction, mut color, mut border_color, children) in &mut interaction_query {
+    for (interaction, mut color, mut border_color, mut image_node, children) in
+        &mut interaction_query
+    {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
             Interaction::Pressed => {
-                //**text = "Press".to_string();
-                *color = THEME_2_200.into();
+                //*color = THEME_2_200.into();
+                image_node.color = THEME_2_200;
                 border_color.0 = RED.into();
             }
             Interaction::Hovered => {
-                //**text = "Hover".to_string();
-                *color = THEME_2_600.into();
+                //*color = THEME_2_600.into();
+                image_node.color = THEME_2_600;
                 border_color.0 = Color::WHITE;
             }
             Interaction::None => {
-                //**text = "Button".to_string();
-                *color = THEME_2_DEFAULT.into();
+                //*color = THEME_2_DEFAULT.into();
+                image_node.color = THEME_2_DEFAULT;
                 border_color.0 = Color::BLACK;
             }
         }
