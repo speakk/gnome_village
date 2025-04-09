@@ -10,6 +10,7 @@ use crate::ui::day_cycle_indicator::DayCycleIndicatorPlugin;
 use crate::ui::main_menu::MainMenuPlugin;
 
 pub mod ui_main_actions;
+mod colours;
 mod day_cycle_indicator;
 mod main_menu;
 
