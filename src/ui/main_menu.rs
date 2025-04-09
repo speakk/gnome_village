@@ -115,15 +115,11 @@ fn create_button(
             Node {
                 width: Val::Px(230.0),
                 height: Val::Px(80.0),
-                //border: UiRect::all(Val::Px(2.0)),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
                 margin: UiRect::all(Val::Px(10.0)),
                 ..default()
             },
-            //BorderColor(THEME_1_400),
-            //BorderRadius::all(Val::Px(5.0)),
-            //BackgroundColor(THEME_2_DEFAULT),
         ))
         .with_child((
             Text::new(label),
