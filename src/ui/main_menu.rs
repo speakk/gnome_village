@@ -1,6 +1,6 @@
 use crate::features::states::AppState;
 use crate::features::states::AppState::MainMenu;
-use crate::ui::colours::{THEME_1_200, THEME_1_400, THEME_2_200, THEME_2_600, THEME_2_DEFAULT};
+use crate::ui::colours::{THEME_1_200, THEME_1_400, THEME_1_800, THEME_2_200, THEME_2_400, THEME_2_600, THEME_2_DEFAULT};
 use bevy::color::palettes::basic::RED;
 use bevy::ecs::system::{IntoObserverSystem, ObserverSystem};
 use bevy::prelude::*;
@@ -104,8 +104,8 @@ fn create_button(
                 ..default()
             },
             Node {
-                width: Val::Px(150.0),
-                height: Val::Px(65.0),
+                width: Val::Px(230.0),
+                height: Val::Px(80.0),
                 //border: UiRect::all(Val::Px(2.0)),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
@@ -120,10 +120,10 @@ fn create_button(
             Text::new(label),
             TextFont {
                 font: asset_server.load("fonts/ThaleahFat.ttf"),
-                font_size: 23.0,
+                font_size: 42.0,
                 ..default()
             },
-            TextColor(THEME_1_200),
+            TextColor(THEME_1_800),
         ))
         .observe(observe_logic);
 }
@@ -148,7 +148,7 @@ fn button_system(
         match *interaction {
             Interaction::Pressed => {
                 //*color = THEME_2_200.into();
-                image_node.color = THEME_2_200;
+                image_node.color = THEME_2_400;
                 border_color.0 = RED.into();
             }
             Interaction::Hovered => {
