@@ -5,6 +5,8 @@ use bevy::prelude::*;
 use bevy::render::mesh::CircleMeshBuilder;
 use bevy::window::WindowResized;
 use std::f32::consts::PI;
+use std::slice::Windows;
+use crate::features::states::AppState::InGame;
 use crate::features::sun_light::CurrentTimeOfDay;
 
 pub(super) struct DayCycleIndicatorPlugin;
@@ -12,7 +14,7 @@ pub(super) struct DayCycleIndicatorPlugin;
 impl Plugin for DayCycleIndicatorPlugin {
     fn build(&self, app: &mut App) {
         app.init_gizmo_group::<MyGizmos>()
-            .add_systems(Startup, setup)
+            .add_systems(OnEnter(InGame), setup)
             .init_resource::<CurrentPosition>()
             .add_systems(
                 Update,
@@ -47,14 +49,20 @@ fn setup(
     mut commands: Commands,
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>,
+    windows: Query<&Window>
 ) {
     let texture_handle = asset_server.load("daynight_cycle.png");
+
+    let window = windows.single();
+    let resolution = &window.resolution;
+    let new_position = Vec2::new(resolution.width() / 2.0 - RADIUS * 2.0, -resolution.height() / 2.0);
 
     let handle = meshes.add(CircleMeshBuilder::new(RADIUS, 30));
     commands.spawn((
         Mesh2d(handle),
         DayCycleCircle,
         MeshMaterial2d(materials.add(texture_handle)),
+        Transform::from_translation(new_position.extend(0.0)),
     ));
 
     let handle = meshes.add(CircleMeshBuilder::new(RADIUS + PADDING, 30));
@@ -62,6 +70,7 @@ fn setup(
         Mesh2d(handle),
         DayCycleCircleBorder,
         MeshMaterial2d(materials.add(ColorMaterial::from_color(SIENNA))),
+        Transform::from_translation(new_position.extend(0.0)),
     ));
 }
 //

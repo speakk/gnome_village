@@ -6,6 +6,7 @@ use crate::ui::ui_main_actions::orders_menu::{
 use crate::ui::ui_main_actions::{initialize_main_actions_menu, MainActionsPlugin};
 use bevy::prelude::*;
 use bevy_cobweb_ui::prelude::*;
+use crate::features::states::AppState::InGame;
 use crate::ui::day_cycle_indicator::DayCycleIndicatorPlugin;
 use crate::ui::main_menu::MainMenuPlugin;
 
@@ -32,7 +33,7 @@ impl Plugin for UiPlugin {
             .insert_resource::<OrderUiItems>(OrderUiItems::default())
             .load("ui_templates/manifest.cob")
             .add_systems(
-                OnEnter(LoadState::Done),
+                OnEnter(InGame),
                 (
                     setup_order_ui_items,
                     build_ui,
