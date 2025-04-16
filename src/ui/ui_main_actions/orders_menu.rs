@@ -1,11 +1,11 @@
 use crate::bundles::ItemCategory;
 use crate::features::user_actions::CategoryFilter;
-use crate::ui::ui_main_actions::main_action_buttons::MainActionButtonType;
 use crate::ui::ui_main_actions::{MainMenuSelected, MainMenuSelectionCleared};
 use crate::ui::UiSceneHandles;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
+use crate::ui::new_in_game::MainActionButtonType;
 
 #[derive(Clone, Debug)]
 pub enum OrderId {

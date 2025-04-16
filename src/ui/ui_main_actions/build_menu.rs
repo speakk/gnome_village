@@ -1,11 +1,11 @@
 use crate::bundles::buildables::Buildable;
 use crate::bundles::{ItemId, Prototypes};
-use crate::ui::ui_main_actions::main_action_buttons::MainActionButtonType;
 use crate::ui::ui_main_actions::{MainMenuSelected, MainMenuSelectionCleared};
 use crate::ui::UiSceneHandles;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
+use crate::ui::new_in_game::MainActionButtonType;
 
 #[derive(Event)]
 pub(crate) struct BuildMenuBuildableSelected(pub ItemId);

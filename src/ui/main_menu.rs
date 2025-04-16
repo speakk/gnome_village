@@ -1,9 +1,8 @@
 use crate::features::states::AppState;
 use crate::features::states::AppState::MainMenu;
 use crate::ui::colours::{THEME_1_400, THEME_1_800, THEME_2_400, THEME_2_600, THEME_2_DEFAULT};
-use bevy::ecs::system::{IntoObserverSystem, ObserverSystem};
+use crate::ui::widgets::{CreateButtonParams, WidgetSystems};
 use bevy::prelude::*;
-use bevy::ui::widget::NodeImageMode;
 
 pub struct MainMenuPlugin;
 
@@ -21,7 +20,7 @@ impl Plugin for MainMenuPlugin {
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    //mut button_image: ResMut<ButtonImage>,
+    widget_systems: Res<WidgetSystems>, //mut button_image: ResMut<ButtonImage>,
 ) {
     let button_image: Handle<Image> = asset_server.load("textures/button_1.png");
     //button_image.0 = Some(image);
@@ -50,7 +49,7 @@ fn setup(
             },
             StateScoped(MainMenu),
         ))
-        .with_children(|parent| {
+        .with_children(move |parent| {
             parent.spawn((
                 Text::new("Gnome Village".to_uppercase()),
                 TextFont {
@@ -61,76 +60,51 @@ fn setup(
                 TextColor(THEME_1_800),
             ));
 
-            create_button(
-                "New game".to_string(),
-                parent,
-                button_image.clone(),
-                &asset_server,
-                IntoObserverSystem::into_system(
+            let button_system_id = widget_systems.button.clone();
+
+            let button_entity = parent
+                .spawn_empty()
+                .observe(
                     move |mut trigger: Trigger<Pointer<Click>>,
                           mut next_state: ResMut<NextState<AppState>>| {
                         next_state.set(AppState::Preload);
                         trigger.propagate(false);
                     },
-                ),
-            );
+                )
+                .id();
 
-            create_button(
-                "Quit".to_string(),
-                parent,
-                button_image.clone(),
-                &asset_server,
-                IntoObserverSystem::into_system(
+            parent.enqueue_command(move |world: &mut World| {
+                let mut commands = world.commands();
+                commands.run_system_with_input(
+                    button_system_id.clone(),
+                    CreateButtonParams {
+                        label: "New game".to_string(),
+                        button_entity,
+                    },
+                );
+            });
+
+            let button_entity = parent
+                .spawn_empty()
+                .observe(
                     move |mut trigger: Trigger<Pointer<Click>>, mut exit: EventWriter<AppExit>| {
                         exit.send(AppExit::Success);
                         trigger.propagate(false);
                     },
-                ),
-            );
+                )
+                .id();
+
+            parent.enqueue_command(move |world: &mut World| {
+                let mut commands = world.commands();
+                commands.run_system_with_input(
+                    button_system_id.clone(),
+                    CreateButtonParams {
+                        label: "Quit".to_string(),
+                        button_entity,
+                    },
+                );
+            });
         });
-}
-
-fn create_button(
-    label: String,
-    parent: &mut ChildBuilder,
-    image: Handle<Image>,
-    asset_server: &Res<AssetServer>,
-    observe_logic: impl ObserverSystem<Pointer<Click>, (), ()> + 'static,
-) {
-    let slicer = TextureSlicer {
-        border: BorderRect::square(32.0),
-        center_scale_mode: SliceScaleMode::Stretch,
-        sides_scale_mode: SliceScaleMode::Stretch,
-        max_corner_scale: 1.0,
-    };
-
-    parent
-        .spawn((
-            Button,
-            ImageNode {
-                image: image.clone(),
-                image_mode: NodeImageMode::Sliced(slicer.clone()),
-                ..default()
-            },
-            Node {
-                width: Val::Px(230.0),
-                height: Val::Px(80.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                margin: UiRect::all(Val::Px(10.0)),
-                ..default()
-            },
-        ))
-        .with_child((
-            Text::new(label),
-            TextFont {
-                font: asset_server.load("fonts/ThaleahFat.ttf"),
-                font_size: 42.0,
-                ..default()
-            },
-            TextColor(THEME_1_800),
-        ))
-        .observe(observe_logic);
 }
 
 fn button_system(
