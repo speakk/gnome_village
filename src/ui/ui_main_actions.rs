@@ -1,15 +1,16 @@
+use crate::features::states::AppState::InGame;
+use crate::ui::new_in_game::MainActionButtonType;
 use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
 use crate::ui::ui_main_actions::orders_menu::OrderMenuItemSelected;
-use bevy::app::{App, Plugin};
-use bevy::prelude::{Commands, Entity, Event, ResMut, Resource};
-use bevy_cobweb::prelude::{broadcast, BroadcastEvent, ReactCommandsExt};
+use bevy::app::{App, Plugin, Update};
+use bevy::prelude::{
+    in_state, Event, EventReader, EventWriter, IntoSystemConfigs, ResMut, Resource,
+};
+use bevy_cobweb::prelude::ReactCommandsExt;
 use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;
-use bevy_cobweb_ui::loading::SceneHandle;
 use bevy_cobweb_ui::prelude::*;
-use crate::ui::new_in_game::MainActionButtonType;
 
 pub mod build_menu;
-pub mod main_action_buttons;
 pub mod orders_menu;
 
 #[derive(Event)]
@@ -34,29 +35,29 @@ impl Plugin for MainActionsPlugin {
             .add_event::<MainMenuSelected>()
             .add_event::<BuildMenuBuildableSelected>()
             .add_event::<OrderMenuItemSelected>();
+
+        app.add_systems(
+            Update,
+            react_to_main_action_menu_button_pressed.run_if(in_state(InGame)),
+        );
     }
 }
 
-pub fn initialize_main_actions_menu<'a>(
-    main_scene: &mut SceneHandle<'a, <UiBuilder<'_, Entity> as SceneNodeBuilder>::Builder<'a>>,
+pub fn react_to_main_action_menu_button_pressed(
+    mut event_reader: EventReader<MainActionMenuButtonPressed>,
+    mut main_menu_selection_cleared: EventWriter<MainMenuSelectionCleared>,
+    mut currently_selected_menu: ResMut<CurrentlySelectedMenu>,
+    mut main_menu_selected: EventWriter<MainMenuSelected>,
 ) {
-    main_scene.get("action_menu_container").update_on(
-        broadcast::<MainActionMenuButtonPressed>(),
-        move |_id: UpdateId,
-              event: BroadcastEvent<MainActionMenuButtonPressed>,
-              mut currently_selected_menu: ResMut<CurrentlySelectedMenu>,
-              mut commands: Commands| {
-            if let Ok(event) = event.try_read() {
-                commands.react().broadcast(MainMenuSelectionCleared);
+    for event in event_reader.read() {
+        main_menu_selection_cleared.send(MainMenuSelectionCleared);
 
-                if Some(event.0) == currently_selected_menu.0 {
-                    currently_selected_menu.0 = None;
-                    return;
-                }
+        if Some(event.0) == currently_selected_menu.0 {
+            currently_selected_menu.0 = None;
+            return;
+        }
 
-                currently_selected_menu.0 = Some(event.0);
-                commands.react().broadcast(MainMenuSelected(event.0));
-            }
-        },
-    );
+        currently_selected_menu.0 = Some(event.0);
+        main_menu_selected.send(MainMenuSelected(event.0));
+    }
 }

@@ -2,7 +2,7 @@ use crate::ui::ui_main_actions::build_menu::insert_build_menu;
 use crate::ui::ui_main_actions::orders_menu::{
     insert_orders_menu, setup_order_ui_items, OrderUiItems,
 };
-use crate::ui::ui_main_actions::{initialize_main_actions_menu, MainActionsPlugin};
+use crate::ui::ui_main_actions::{MainActionsPlugin};
 use bevy::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 use crate::features::states::AppState::InGame;
