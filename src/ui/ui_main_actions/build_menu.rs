@@ -10,6 +10,10 @@ use crate::ui::new_in_game::MainActionButtonType;
 #[derive(Event)]
 pub(crate) struct BuildMenuBuildableSelected(pub ItemId);
 
+pub fn create_build_menu() {
+    
+}
+
 pub fn insert_build_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Commands) {
     commands
         .ui_builder(ui_scene_handles.action_menu_container.unwrap())

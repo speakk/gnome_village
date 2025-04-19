@@ -80,6 +80,7 @@ fn setup(
                     CreateButtonParams {
                         label: "New game".to_string(),
                         button_entity,
+                        ..Default::default()
                     },
                 );
             });
@@ -97,10 +98,11 @@ fn setup(
             parent.enqueue_command(move |world: &mut World| {
                 let mut commands = world.commands();
                 commands.run_system_with_input(
-                    button_system_id.clone(),
+                    button_system_id,
                     CreateButtonParams {
                         label: "Quit".to_string(),
                         button_entity,
+                        ..Default::default()
                     },
                 );
             });

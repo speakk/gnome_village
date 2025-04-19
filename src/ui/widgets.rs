@@ -5,9 +5,9 @@ use bevy::ui::widget::NodeImageMode;
 use crate::features::states::AppState;
 
 pub fn widget_plugin(app: &mut App) {
-    app.add_systems(OnEnter(AppState::MainMenu), setup_button_image);
+    app.add_systems(OnEnter(AppState::MainMenu), setup_button_data);
     app.init_resource::<WidgetSystems>();
-    app.init_resource::<ButtonImage>();
+    app.init_resource::<ButtonData>();
 }
 
 #[derive(Resource)]
@@ -16,13 +16,24 @@ pub struct WidgetSystems {
 }
 
 #[derive(Resource, Default)]
-pub struct ButtonImage(Option<Handle<Image>>);
+pub struct ButtonData {
+    image: Option<Handle<Image>>,
+    slicer: Option<TextureSlicer>
+}
 
-fn setup_button_image(
+fn setup_button_data(
     asset_server: Res<AssetServer>,
-    mut button_image: ResMut<ButtonImage>,
+    mut button_data: ResMut<ButtonData>,
 ) {
-    button_image.0 = Some(asset_server.load("textures/button_1.png"));
+    *button_data = ButtonData {
+        image: Some(asset_server.load("textures/button_1.png")),
+        slicer: Some(TextureSlicer {
+            border: BorderRect::square(32.0),
+            center_scale_mode: SliceScaleMode::Stretch,
+            sides_scale_mode: SliceScaleMode::Stretch,
+            max_corner_scale: 1.0,
+        })
+    }
 }
 
 impl FromWorld for WidgetSystems {
@@ -36,31 +47,39 @@ impl FromWorld for WidgetSystems {
 pub struct CreateButtonParams {
     pub label: String,
     pub button_entity: Entity,
+    pub font: String,
+    pub font_size: f32
+}
+
+impl Default for CreateButtonParams {
+    fn default() -> Self {
+        CreateButtonParams {
+            label: "".to_string(),
+            button_entity: Entity::PLACEHOLDER,
+            font: "fonts/ThaleahFat.ttf".to_string(),
+            font_size: 42.0
+        }
+    }
 }
 
 pub fn create_button_system(
     In(CreateButtonParams {
         label,
         button_entity,
+        font,
+        font_size
     }): In<CreateButtonParams>,
-    button_image: Res<ButtonImage>,
+    button_data: Res<ButtonData>,
     asset_server: Res<AssetServer>,
     mut commands: Commands,
 ) {
-    let slicer = TextureSlicer {
-        border: BorderRect::square(32.0),
-        center_scale_mode: SliceScaleMode::Stretch,
-        sides_scale_mode: SliceScaleMode::Stretch,
-        max_corner_scale: 1.0,
-    };
-
     commands
         .entity(button_entity)
-        .insert((
+        .insert_if_new((
             Button,
             ImageNode {
-                image: button_image.0.clone().unwrap(),
-                image_mode: NodeImageMode::Sliced(slicer.clone()),
+                image: button_data.image.clone().unwrap(),
+                image_mode: NodeImageMode::Sliced(button_data.slicer.clone().unwrap()),
                 ..default()
             },
             Node {
@@ -75,8 +94,8 @@ pub fn create_button_system(
         .with_child((
             Text::new(label),
             TextFont {
-                font: asset_server.load("fonts/ThaleahFat.ttf"),
-                font_size: 42.0,
+                font: asset_server.load(font),
+                font_size,
                 ..default()
             },
             TextColor(THEME_1_800),
