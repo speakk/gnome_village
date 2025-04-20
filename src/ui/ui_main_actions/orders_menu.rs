@@ -1,13 +1,11 @@
 use crate::bundles::ItemCategory;
 use crate::features::user_actions::CategoryFilter;
 use crate::ui::colours::{THEME_4_400, THEME_4_600, THEME_4_DEFAULT};
-use crate::ui::new_in_game::{MainActionButtonType, MainActionMenuContainer};
+use crate::ui::in_game::{MainActionButtonType, MainActionMenuContainer};
 use crate::ui::ui_main_actions::{MainMenuSelected, MainMenuSelectionCleared};
 use crate::ui::widgets::{ColorDefinition, CreateButtonParams, WidgetSystems};
 use crate::ui::{UiSceneHandles, FONT_SMALL};
 use bevy::prelude::*;
-use bevy_cobweb::prelude::*;
-use bevy_cobweb_ui::prelude::*;
 
 #[derive(Clone, Debug)]
 pub enum OrderId {
@@ -107,51 +105,4 @@ pub fn create_orders_menu(
                 });
         }
     }
-}
-
-pub fn insert_orders_menu(ui_scene_handles: Res<UiSceneHandles>, mut commands: Commands) {
-    commands
-        .ui_builder(ui_scene_handles.action_menu_container.unwrap())
-        .update_on(
-            broadcast::<MainMenuSelected>(),
-            |id: UpdateId,
-             event: BroadcastEvent<MainMenuSelected>,
-             mut commands: Commands,
-             mut scene_builder: ResMut<SceneBuilder>,
-             order_ui_items: Res<OrderUiItems>| {
-                if let Ok(event) = event.try_read() {
-                    if event.0 != MainActionButtonType::Orders {
-                        return;
-                    }
-
-                    commands.ui_builder(*id).spawn_scene_and_edit(
-                        ("orders_menu", "orders_menu"),
-                        &mut scene_builder,
-                        move |orders_menu_handle| {
-                            for order_item in order_ui_items.0.clone() {
-                                let name = order_item.name.clone();
-
-                                orders_menu_handle.spawn_scene_and_edit(
-                                    ("orders_menu", "order_item"),
-                                    move |order_item_handle| {
-                                        order_item_handle.get("label").update_text(name);
-                                        order_item_handle.on_pressed(
-                                            move |mut order_item_selected_writer: EventWriter<
-                                                OrderMenuItemSelected,
-                                            >| {
-                                                println!("Build item pressed, broadcasting");
-                                                order_item_selected_writer.send(
-                                                    OrderMenuItemSelected(order_item.id.clone()),
-                                                );
-                                            },
-                                        );
-                                    },
-                                );
-                            }
-                            orders_menu_handle.despawn_on_broadcast::<MainMenuSelectionCleared>();
-                        },
-                    );
-                }
-            },
-        );
 }

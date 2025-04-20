@@ -1,12 +1,9 @@
 use crate::features::states::AppState::InGame;
-use crate::ui::new_in_game::{MainActionButtonType, MainActionMenuContainer};
+use crate::ui::in_game::{MainActionButtonType, MainActionMenuContainer};
 use crate::ui::ui_main_actions::build_menu::{create_build_menu, BuildMenuBuildableSelected};
 use crate::ui::ui_main_actions::orders_menu::{create_orders_menu, OrderMenuItemSelected};
 use bevy::app::{App, Plugin, Update};
 use bevy::prelude::*;
-use bevy_cobweb::prelude::ReactCommandsExt;
-use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;
-use bevy_cobweb_ui::prelude::*;
 
 pub mod build_menu;
 pub mod orders_menu;

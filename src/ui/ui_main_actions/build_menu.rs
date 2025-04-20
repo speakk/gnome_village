@@ -3,7 +3,7 @@ use crate::bundles::{ItemId, Prototypes};
 use crate::ui::colours::{
     THEME_4_400, THEME_4_600, THEME_4_DEFAULT,
 };
-use crate::ui::new_in_game::{MainActionButtonType, MainActionMenuContainer};
+use crate::ui::in_game::{MainActionButtonType, MainActionMenuContainer};
 use crate::ui::ui_main_actions::MainMenuSelected;
 use crate::ui::widgets::{ColorDefinition, CreateButtonParams, WidgetSystems};
 use crate::ui::FONT_SMALL;
