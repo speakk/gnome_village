@@ -1,14 +1,15 @@
 use crate::features::states::AppState;
 use crate::features::states::AppState::MainMenu;
-use crate::ui::colours::{THEME_1_400, THEME_1_800, THEME_2_400, THEME_2_600, THEME_2_DEFAULT};
+use crate::ui::colours::{THEME_1_400, THEME_1_800};
 use crate::ui::widgets::{CreateButtonParams, WidgetSystems};
 use bevy::prelude::*;
+use crate::ui::{widgets, FONT_BOLD};
 
 pub struct MainMenuPlugin;
 
 impl Plugin for MainMenuPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, button_system);
+        app.add_systems(Update, widgets::button_colouring);
         app.add_systems(OnEnter(MainMenu), setup);
         //app.init_resource::<ButtonImage>();
         //app.a
@@ -53,7 +54,7 @@ fn setup(
             parent.spawn((
                 Text::new("Gnome Village".to_uppercase()),
                 TextFont {
-                    font: asset_server.load("fonts/ThaleahFat.ttf"),
+                    font: asset_server.load(FONT_BOLD),
                     font_size: 84.0,
                     ..default()
                 },
@@ -109,25 +110,3 @@ fn setup(
         });
 }
 
-fn button_system(
-    mut interaction_query: Query<
-        (&Interaction, &mut ImageNode, &Children),
-        (Changed<Interaction>, With<Button>),
-    >,
-    mut text_query: Query<&mut Text>,
-) {
-    for (interaction, mut image_node, children) in &mut interaction_query {
-        let mut text = text_query.get_mut(children[0]).unwrap();
-        match *interaction {
-            Interaction::Pressed => {
-                image_node.color = THEME_2_400;
-            }
-            Interaction::Hovered => {
-                image_node.color = THEME_2_600;
-            }
-            Interaction::None => {
-                image_node.color = THEME_2_DEFAULT;
-            }
-        }
-    }
-}

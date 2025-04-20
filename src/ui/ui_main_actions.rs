@@ -1,11 +1,9 @@
 use crate::features::states::AppState::InGame;
-use crate::ui::new_in_game::MainActionButtonType;
-use crate::ui::ui_main_actions::build_menu::BuildMenuBuildableSelected;
+use crate::ui::new_in_game::{MainActionButtonType, MainActionMenuContainer};
+use crate::ui::ui_main_actions::build_menu::{create_build_menu, BuildMenuBuildableSelected};
 use crate::ui::ui_main_actions::orders_menu::OrderMenuItemSelected;
 use bevy::app::{App, Plugin, Update};
-use bevy::prelude::{
-    in_state, Event, EventReader, EventWriter, IntoSystemConfigs, ResMut, Resource,
-};
+use bevy::prelude::*;
 use bevy_cobweb::prelude::ReactCommandsExt;
 use bevy_cobweb_ui::loading::scene_traits::SceneNodeBuilder;
 use bevy_cobweb_ui::prelude::*;
@@ -38,19 +36,22 @@ impl Plugin for MainActionsPlugin {
 
         app.add_systems(
             Update,
-            react_to_main_action_menu_button_pressed.run_if(in_state(InGame)),
+            (react_to_main_action_menu_button_pressed, create_build_menu).run_if(in_state(InGame)),
         );
     }
 }
 
-pub fn react_to_main_action_menu_button_pressed(
+fn react_to_main_action_menu_button_pressed(
     mut event_reader: EventReader<MainActionMenuButtonPressed>,
     mut main_menu_selection_cleared: EventWriter<MainMenuSelectionCleared>,
     mut currently_selected_menu: ResMut<CurrentlySelectedMenu>,
     mut main_menu_selected: EventWriter<MainMenuSelected>,
+    query: Query<Entity, With<MainActionMenuContainer>>,
+    mut commands: Commands,
 ) {
     for event in event_reader.read() {
         main_menu_selection_cleared.send(MainMenuSelectionCleared);
+        commands.entity(query.single()).despawn_descendants();
 
         if Some(event.0) == currently_selected_menu.0 {
             currently_selected_menu.0 = None;

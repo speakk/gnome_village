@@ -5,6 +5,7 @@ edition = "2021"
 
 [lints.clippy]
 type_complexity = "allow"
+too_many_arguments = "allow"
 
 [dependencies]
 #bevy = { version = "0.15.0", features = ["dynamic_linking"] }

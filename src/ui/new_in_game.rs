@@ -59,7 +59,15 @@ fn main_action_buttons(mut commands: Commands, widget_systems: Res<WidgetSystems
                 width: Val::Percent(100.0),
                 height: Val::Auto,
                 ..Default::default()
-            }, PickingBehavior::IGNORE));
+            }, PickingBehavior::IGNORE))
+                .with_children(|top_container| {
+                    top_container.spawn((Node {
+                        position_type: PositionType::Absolute,
+                        bottom: Val::Px(0.0),
+                        left: Val::Px(12.0),
+                        ..Default::default()
+                    }, MainActionMenuContainer));
+                });
 
             // Action buttons container
             root_node

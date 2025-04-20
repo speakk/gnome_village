@@ -1,4 +1,3 @@
-use crate::ui::ui_main_actions::build_menu::insert_build_menu;
 use crate::ui::ui_main_actions::orders_menu::{
     insert_orders_menu, setup_order_ui_items, OrderUiItems,
 };
@@ -19,6 +18,9 @@ mod new_in_game;
 mod widgets;
 
 pub struct UiPlugin;
+
+pub static FONT_BOLD:&'static str = "fonts/ThaleahFat.ttf";
+pub static FONT_SMALL:&'static str = "fonts/m5x7.ttf";
 
 #[derive(Resource, Default)]
 pub struct UiSceneHandles {
