@@ -10,6 +10,9 @@ use crate::bundles::soil::dirt::Dirt;
 use crate::bundles::{ItemId, ItemSpawners, Prototypes};
 use crate::features::misc_components::Prototype;
 use bevy::prelude::{Commands, ResMut};
+use crate::bundles::plants::barren_tree::BarrenTree;
+use crate::bundles::plants::maple_tree::MapleTree;
+use crate::bundles::plants::pine_tree::PineTree;
 
 macro_rules! create_spawners_and_prototypes {
     ( $commands:expr,$spawners:expr,$prototypes:expr,$( ($item_id:expr, $component:expr) ),*, ) => {
@@ -38,6 +41,9 @@ pub fn setup_spawners_and_prototypes(
         (ItemId::Settler, Settler::default()),
         (ItemId::Lumber, Lumber),
         (ItemId::OakTree, OakTree),
+        (ItemId::MapleTree, MapleTree),
+        (ItemId::PineTree, PineTree),
+        (ItemId::BarrenTree, BarrenTree),
         (ItemId::Water, Water),
         (ItemId::Dirt, Dirt),
         (ItemId::PotatoPlant, PotatoPlant),

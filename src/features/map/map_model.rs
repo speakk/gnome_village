@@ -232,6 +232,21 @@ pub fn generate_test_entities(
             func: None,
         },
         EntityGeneration {
+            entity_type: ItemId::PineTree,
+            amount: 20,
+            func: None,
+        },
+        EntityGeneration {
+            entity_type: ItemId::MapleTree,
+            amount: 20,
+            func: None,
+        },
+        EntityGeneration {
+            entity_type: ItemId::BarrenTree,
+            amount: 20,
+            func: None,
+        },
+        EntityGeneration {
             entity_type: ItemId::PotatoPlantSeed,
             amount: 20,
             func: None,

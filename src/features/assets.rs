@@ -9,6 +9,9 @@ pub struct AssetsPlugin;
 const SETTLER_PATH: &str = "blender_models/settler.glb";
 const TORCH_PATH: &str = "blender_models/wooden_torch.glb";
 const OAK_TREE_PATH: &str = "blender_models/plants/oak_tree.glb";
+const PINE_TREE_PATH: &str = "blender_models/plants/pine_tree.glb";
+const MAPLE_TREE_PATH: &str = "blender_models/plants/maple_tree.glb";
+const BARREN_TREE_PATH: &str = "blender_models/plants/bare_tree.glb";
 const POTATO_PLANT_PATH: &str = "blender_models/plants/potato_plant.glb";
 const POTATO_PATH: &str = "blender_models/plants/potato_harvested.glb";
 const LUMBER_PATH: &str = "blender_models/wood.glb";
@@ -19,6 +22,9 @@ pub enum GltfAssetId {
     Settler,
     WoodenTorch,
     OakTree,
+    PineTree,
+    MapleTree,
+    BarrenTree,
     Lumber,
     WaterWell,
     PotatoPlant,
@@ -67,6 +73,15 @@ fn setup(
     gltf_asset_handles
         .handles
         .insert(GltfAssetId::OakTree, asset_server.load(OAK_TREE_PATH));
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::PineTree, asset_server.load(PINE_TREE_PATH));
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::MapleTree, asset_server.load(MAPLE_TREE_PATH));
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::BarrenTree, asset_server.load(BARREN_TREE_PATH));
     gltf_asset_handles
         .handles
         .insert(GltfAssetId::Lumber, asset_server.load(LUMBER_PATH));
