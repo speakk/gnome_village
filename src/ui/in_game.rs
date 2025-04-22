@@ -10,9 +10,11 @@ pub enum MainActionButtonType {
     Orders,
 }
 
-struct MainActionButton {
-    label: String,
-    main_action_type: MainActionButtonType,
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub(super) struct MainActionButton {
+    pub(super) label: String,
+    pub(super) main_action_type: MainActionButtonType,
+    pub(super) index: usize, // TODO: Temporary index to position menu that pops up
 }
 
 // Markers start
@@ -29,10 +31,12 @@ fn main_action_buttons(mut commands: Commands, widget_systems: Res<WidgetSystems
         MainActionButton {
             label: "Build".to_string(),
             main_action_type: MainActionButtonType::Build,
+            index: 0
         },
         MainActionButton {
             label: "Orders".to_string(),
             main_action_type: MainActionButtonType::Orders,
+            index: 1
         },
     ];
 
@@ -80,7 +84,8 @@ fn main_action_buttons(mut commands: Commands, widget_systems: Res<WidgetSystems
                     ..Default::default()
                 },))
                 .with_children(|action_buttons_container| {
-                    for button in buttons {
+                    for button in buttons.iter().cloned() {
+                        let button_click = button.clone();
                         let button_entity = action_buttons_container
                             .spawn(Node {
                                 width: Val::Px(130.0),
@@ -96,7 +101,7 @@ fn main_action_buttons(mut commands: Commands, widget_systems: Res<WidgetSystems
                                     MainActionMenuButtonPressed,
                                 >| {
                                     event_writer
-                                        .send(MainActionMenuButtonPressed(button.main_action_type));
+                                        .send(MainActionMenuButtonPressed(button_click.clone()));
                                 },
                             )
                             .id();
@@ -106,7 +111,7 @@ fn main_action_buttons(mut commands: Commands, widget_systems: Res<WidgetSystems
                             commands.run_system_with_input(
                                 button_widget_system,
                                 CreateButtonParams {
-                                    label: button.label,
+                                    label: button.clone().label.clone(),
                                     button_entity,
                                     font_size: 32.0,
                                     ..Default::default()
