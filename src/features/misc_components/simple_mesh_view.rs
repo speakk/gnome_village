@@ -28,7 +28,6 @@ impl BuildView<SimpleMesh> for SimpleMeshValid {
 
         let transform = world.get::<WorldPosition>(object.entity()).unwrap();
         let material_handles = world.get_resource::<BuildableMaterialHandles>().unwrap();
-        // TODO: Possibly use own meshes one day, but so far the map cuboid is fine
         let mesh_handles = world.get_resource::<SimpleMeshHandles>().unwrap();
         let mesh_handle = &mesh_handles.0.get(&simple_mesh_data.0).unwrap().clone();
 

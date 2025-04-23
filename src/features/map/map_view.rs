@@ -4,7 +4,6 @@ use crate::features::map::water_material::{
 };
 use crate::features::misc_components::simple_mesh::{SimpleMeshHandles, SimpleMeshType};
 use bevy::asset::{Assets, UntypedHandle};
-use bevy::color::palettes::css::{CADET_BLUE, SKY_BLUE};
 use bevy::color::Color;
 use bevy::hierarchy::{BuildChildren, ChildBuild};
 use bevy::math::{UVec2, Vec2};
@@ -47,7 +46,7 @@ impl BuildView for MapData {
         println!("Building map view for object: {:?}", object);
 
         view.insert((Transform::default(), InheritedVisibility::default()));
-        
+
         let opaque_materials = [TileType::Dirt];
         let translucent_materials = [TileType::Water, TileType::Empty];
 
@@ -64,10 +63,11 @@ impl BuildView for MapData {
                         };
 
                         let tile_below = map_data.get_tile_type_non_centered(UVec2::new(x, y + 1));
-                        
+
                         let should_be_cuboid = {
                             if let Some(tile_below) = tile_below {
-                                opaque_materials.contains(&tile_type) && translucent_materials.contains(&tile_below)
+                                opaque_materials.contains(&tile_type)
+                                    && translucent_materials.contains(&tile_below)
                             } else {
                                 true
                             }
@@ -87,22 +87,22 @@ impl BuildView for MapData {
                         let value = simplex_noise_2d(Vec2::new(x as f32, y as f32) * 0.1);
                         let material_index = (value * material_handles.len() as f32) as usize;
                         let material_handle = material_handles[material_index].clone();
-                        //
-                        // let final_handle = {
-                        //     match tile_type {
-                        //         TileType::Water => material_handle.typed::<ToonWaterMaterial>()
-                        //     }
-                        // }
 
                         let centered_coordinate =
                             map_data.convert_to_centered_coordinate(UVec2::new(x, y));
+
+                        let y = if mesh_type == SimpleMeshType::Cuboid {
+                            -0.5
+                        } else {
+                            0.0
+                        };
 
                         let mut view_entity = view.spawn((
                             Mesh3d(mesh_handle.clone()),
                             NotShadowCaster,
                             Transform::from_xyz(
                                 centered_coordinate.x as f32,
-                                0.0,
+                                y,
                                 centered_coordinate.y as f32,
                             ),
                         ));
