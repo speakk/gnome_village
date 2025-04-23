@@ -1,6 +1,4 @@
-use crate::features::map::map_model::{
-    generate_map_entity, generate_rocks, generate_test_entities, ReservedCoordinatesHelper,
-};
+use crate::features::map::map_model::{generate_map_entity, generate_rocks, generate_test_entities, generate_trees, ReservedCoordinatesHelper};
 use crate::features::map::map_view::{create_map_materials, MapMaterialHandles};
 use crate::features::states::AppState;
 use bevy::app::{App, Plugin};
@@ -26,6 +24,7 @@ impl Plugin for MapPlugin {
                     create_map_materials,
                     generate_map_entity,
                     generate_rocks,
+                    generate_trees,
                     //|world: &mut World| { world.flush() },
                     generate_test_entities,
                     //generate_reserved_debug,

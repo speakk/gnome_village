@@ -98,7 +98,7 @@ impl MapData {
     }
 }
 
-pub fn generate_map_entity(
+pub(super) fn generate_map_entity(
     mut commands: Commands,
     world_seed: Res<WorldSeed>,
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
@@ -113,7 +113,6 @@ pub fn generate_map_entity(
     let min_bound = map_size.x.min(map_size.y) as f32 - 50.0;
 
     let mut dirt_bundles: Vec<(Dirt, Id, WorldPosition, InWorld)> = vec![];
-    //let mut ocean_bundles: Vec<(Ocean, Id, WorldPosition, InWorld)> = vec![];
 
     for x in 0..map_size.x {
         for y in 0..map_size.y {
@@ -136,12 +135,6 @@ pub fn generate_map_entity(
             } else {
                 dirt_bundles.push((Dirt, Id(ItemId::Dirt),WorldPosition(centered_coordinate.as_vec2()), InWorld));
             }
-
-            //let dirt = item_spawners.get(&ItemId::Dirt).unwrap()(&mut commands);
-            // commands
-            //     .entity(dirt)
-            //     .insert((WorldPosition(centered_coordinate.as_vec2()), InWorld));
-
 
             map_data.set_tile_type(centered_coordinate, tile_type);
         }
@@ -171,7 +164,7 @@ fn remap_to_distance_from_center(
     }
 }
 
-pub fn generate_rocks(
+pub(super) fn generate_rocks(
     mut commands: Commands,
     map_query: Query<&MapData>,
     world_seed: Res<WorldSeed>,
@@ -193,6 +186,45 @@ pub fn generate_rocks(
 
             if (noise_value / 2.0 + 1.0) + mapped_value < 0.65 && !reserved {
                 commands.spawn((Rock, InWorld, WorldPosition(centered_coordinate.as_vec2())));
+
+                reserved_coordinates.0.push(centered_coordinate);
+            }
+        }
+    }
+}
+
+pub(super) fn generate_trees(
+    mut commands: Commands,
+    map_query: Query<&MapData>,
+    world_seed: Res<WorldSeed>,
+    mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
+    item_spawners: Res<ItemSpawners>,
+) {
+    let map_data = map_query.single();
+    let min_bound = map_data.size.x.min(map_data.size.y) as f32;
+
+    const TREE_TYPES: [ItemId; 4] = [ItemId::OakTree, ItemId::PineTree, ItemId::MapleTree, ItemId::BarrenTree];
+
+    //for x in 0..map_data.size.x {
+    for x in (0..map_data.size.x).step_by(2) {
+        for y in (0..map_data.size.y).step_by(2) {
+            let noise_value =
+                simplex_noise_2d_seeded(Vec2::new(x as f32, y as f32) * 0.017, world_seed.0 as f32 + 2.0);
+            let subtract_noise_value =
+                simplex_noise_2d_seeded(Vec2::new(x as f32, y as f32) * 0.2, world_seed.0 as f32 + 2.0);
+
+            let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
+            let reserved = reserved_coordinates.0.contains(&centered_coordinate);
+
+            if noise_value > 0.40 && subtract_noise_value > 0.30 && !reserved {
+                let tree_type = TREE_TYPES[rand::rng().random_range(0..TREE_TYPES.len())];
+                let item = item_spawners.get(&tree_type).unwrap()(&mut commands);
+
+                commands.entity(item).insert((
+                    WorldPosition(centered_coordinate.as_vec2()),
+                    Save,
+                    InWorld,
+                ));
 
                 reserved_coordinates.0.push(centered_coordinate);
             }
@@ -224,26 +256,6 @@ pub fn generate_test_entities(
         EntityGeneration {
             entity_type: ItemId::Lumber,
             amount: 300,
-            func: None,
-        },
-        EntityGeneration {
-            entity_type: ItemId::OakTree,
-            amount: 20,
-            func: None,
-        },
-        EntityGeneration {
-            entity_type: ItemId::PineTree,
-            amount: 20,
-            func: None,
-        },
-        EntityGeneration {
-            entity_type: ItemId::MapleTree,
-            amount: 20,
-            func: None,
-        },
-        EntityGeneration {
-            entity_type: ItemId::BarrenTree,
-            amount: 20,
             func: None,
         },
         EntityGeneration {
