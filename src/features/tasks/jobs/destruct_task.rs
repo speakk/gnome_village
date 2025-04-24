@@ -4,7 +4,7 @@ use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
 use crate::features::tasks::task::{CancelTaskCommand, DestructData, RunType, Task, TaskType};
-use crate::features::world_interaction::destruct_action::DestructTarget;
+use crate::features::misc_components::destruct_target::DestructTarget;
 use bevy::prelude::*;
 use std::ops::Mul;
 

@@ -3,6 +3,7 @@ pub(crate) mod light_source;
 pub mod preview_carry;
 pub mod simple_mesh;
 mod simple_mesh_view;
+pub mod destruct_target;
 
 use crate::bundles::ItemId;
 use crate::features::camera::WorldCamera;
@@ -19,6 +20,7 @@ use bevy::utils::HashMap;
 use light_source::LightSource;
 use moonshine_core::prelude::Save;
 use moonshine_view::{RegisterView, Viewable};
+use crate::features::misc_components::destruct_target::{destruct_target_plugin, DestructTarget};
 
 pub struct MiscComponentsPlugin;
 
@@ -28,6 +30,7 @@ impl Plugin for MiscComponentsPlugin {
             .add_systems(Startup, simple_mesh::create_simple_meshes)
             .add_plugins(GltfAssetPlugin)
             .add_plugins(PreviewCarryPlugin)
+            .add_plugins(destruct_target_plugin)
             .add_systems(PostUpdate, (on_add_blueprint, on_remove_blueprint))
             .add_systems(
                 PostUpdate,

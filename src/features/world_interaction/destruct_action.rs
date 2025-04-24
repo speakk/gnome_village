@@ -7,19 +7,16 @@ use crate::features::world_interaction::mouse_selection::{
     CoordinatesSelectedEvent, DragInfo, SelectedCoordinates,
 };
 use bevy::prelude::*;
+use crate::features::misc_components::destruct_target::DestructTarget;
 
 pub struct DestructActionPlugin;
-
-#[derive(Component, Debug, Clone, Default, Reflect)]
-#[reflect(Component)]
-pub struct DestructTarget;
 
 impl Plugin for DestructActionPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
             (
-                draw_destruct_gizmo,
+                draw_destruct_selection_gizmo,
                 send_destruct_intent,
                 react_to_destruct_intent,
             ),
@@ -27,7 +24,7 @@ impl Plugin for DestructActionPlugin {
     }
 }
 
-fn draw_destruct_gizmo(
+fn draw_destruct_selection_gizmo(
     current_user_action: Res<CurrentUserActionState>,
     drag_info: Res<DragInfo>,
     selected_coordinates: Res<SelectedCoordinates>,

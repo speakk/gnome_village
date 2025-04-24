@@ -18,6 +18,7 @@ use moonshine_core::save::Save;
 use moonshine_object::Object;
 use moonshine_view::{BuildView, RegisterView, ViewCommands};
 use std::ops::{Add, Sub};
+use bevy::render::view::RenderLayers;
 
 pub struct CameraPlugin;
 
@@ -78,6 +79,8 @@ fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
             ..Default::default()
         },
         Msaa::Off,
+        // This seems to fix 3d gizmos appearing as small mini versions in the middle of the screen
+        RenderLayers::layer(1)
     ));
 }
 

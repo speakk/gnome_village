@@ -18,7 +18,7 @@ use crate::features::plants::{GrowthProvider, Plant};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
 use crate::features::tasks::task::Task;
-use crate::features::world_interaction::destruct_action::DestructTarget;
+use crate::features::misc_components::destruct_target::DestructTarget;
 use bevy::prelude::KeyCode::F8;
 use bevy::prelude::*;
 use directories::ProjectDirs;
