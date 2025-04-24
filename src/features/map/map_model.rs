@@ -9,6 +9,7 @@ use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
 use crate::bundles::soil::dirt::Dirt;
+use crate::features::seeded_random::RandomSource;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -197,6 +198,7 @@ pub(super) fn generate_trees(
     mut commands: Commands,
     map_query: Query<&MapData>,
     world_seed: Res<WorldSeed>,
+    mut random_source: ResMut<RandomSource>,
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
     item_spawners: Res<ItemSpawners>,
 ) {
@@ -210,13 +212,16 @@ pub(super) fn generate_trees(
         for y in (0..map_data.size.y).step_by(2) {
             let noise_value =
                 simplex_noise_2d_seeded(Vec2::new(x as f32, y as f32) * 0.017, world_seed.0 as f32 + 2.0);
-            let subtract_noise_value =
-                simplex_noise_2d_seeded(Vec2::new(x as f32, y as f32) * 0.2, world_seed.0 as f32 + 2.0);
 
             let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
             let reserved = reserved_coordinates.0.contains(&centered_coordinate);
 
-            if noise_value > 0.40 && subtract_noise_value > 0.30 && !reserved {
+
+            let steepness = 2.2;
+            let cutoff = 1.2;
+            let spawn_probability = 1.0 / (1.0 + (-steepness * (noise_value - cutoff)).exp());
+
+            if random_source.0.random::<f32>() < spawn_probability && !reserved {
                 let tree_type = TREE_TYPES[rand::rng().random_range(0..TREE_TYPES.len())];
                 let item = item_spawners.get(&tree_type).unwrap()(&mut commands);
 
