@@ -62,9 +62,9 @@ fn juice_new_transform(
 
         // Dynamic scaling of maximum_length based on batch_size
         let adjusted_maximum_length = if transform_juice.batch_size > 0 {
-            let scale_factor = 1.0 - scaling_factor_k / (transform_juice.batch_size as f32 + scaling_factor_k);
-            let adjusted_secs =
-                maximum_length.as_secs_f32() * scale_factor.clamp(0.3, 1.0); // Clamp to prevent too short/long delays
+            let scale_factor =
+                1.0 - scaling_factor_k / (transform_juice.batch_size as f32 + scaling_factor_k);
+            let adjusted_secs = maximum_length.as_secs_f32() * scale_factor.clamp(0.3, 1.0); // Clamp to prevent too short/long delays
             Duration::from_secs_f32(adjusted_secs)
         } else {
             Duration::ZERO // No delay if batch_size is zero
@@ -76,22 +76,25 @@ fn juice_new_transform(
 
         commands.spawn_task(move |cx| async move {
             cx.sleep(delay).await;
-            
+
             const TRANSFORM_DURATION: Duration = Duration::from_millis(500);
-            
+
             cx.with_world(move |world| {
                 let mut commands = world.commands();
 
-                commands.entity(entity).insert(
-                    Transform::from_xyz(translation.x, translation.y + 1.0, translation.z).ease_to(
-                        Transform::from_xyz(translation.x, translation.y, translation.z),
-                        bevy_easings::EaseFunction::BounceOut,
-                        bevy_easings::EasingType::Once {
-                            duration: TRANSFORM_DURATION,
-                        },
-                    ),
-                );
-                world.flush();
+                if let Some(mut entity_commands) = commands.get_entity(entity) {
+                    entity_commands.insert(
+                        Transform::from_xyz(translation.x, translation.y + 1.0, translation.z)
+                            .ease_to(
+                                Transform::from_xyz(translation.x, translation.y, translation.z),
+                                bevy_easings::EaseFunction::BounceOut,
+                                bevy_easings::EasingType::Once {
+                                    duration: TRANSFORM_DURATION,
+                                },
+                            ),
+                    );
+                    world.flush();
+                }
             })
             .await;
 
@@ -99,7 +102,8 @@ fn juice_new_transform(
             cx.with_world(move |world| {
                 world.send_event(TransformJuiceFinished::from(transform_juice));
                 world.flush();
-            }).await;
+            })
+            .await;
         });
     }
 }
