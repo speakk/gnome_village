@@ -27,8 +27,7 @@ pub(super) fn new_in_game_plugin(app: &mut App) {
 }
 
 fn main_action_buttons(mut commands: Commands, widget_systems: Res<WidgetSystems>) {
-    let buttons = vec![
-        MainActionButton {
+    let buttons = [MainActionButton {
             label: "Build".to_string(),
             main_action_type: MainActionButtonType::Build,
             index: 0
@@ -37,8 +36,7 @@ fn main_action_buttons(mut commands: Commands, widget_systems: Res<WidgetSystems
             label: "Orders".to_string(),
             main_action_type: MainActionButtonType::Orders,
             index: 1
-        },
-    ];
+        }];
 
     let button_widget_system = widget_systems.button;
 

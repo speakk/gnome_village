@@ -37,7 +37,7 @@ fn draw_destruct_gizmo(
         return;
     };
 
-    if !matches!(current_user_action.0, UserActionState::Destructing(_)) {
+    if !matches!(current_user_action.0, Some(UserActionState::Destructing(_))) {
         return;
     }
 
@@ -57,7 +57,7 @@ fn send_destruct_intent(
         return;
     };
 
-    if let UserActionState::Destructing(category_id_filter) = &current_user_action.0 {
+    if let Some(UserActionState::Destructing(category_id_filter)) = &current_user_action.0 {
         user_action_intent.send(UserActionIntent(UserActionType::Destruct {
             coordinates: event.coordinates.clone(),
             category_id_filter: category_id_filter.clone(),

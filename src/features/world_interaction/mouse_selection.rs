@@ -296,7 +296,7 @@ pub fn handle_mouse_dragged(
                 selected_coordinates.0 = line_select(event.coordinate, current_coordinate.0);
             }
             Some(DragModifier::Secondary) => {
-                let hollow = matches!(current_action_state.0, UserActionState::PlacingBuilding(_));
+                let hollow = matches!(current_action_state.0, Some(UserActionState::PlacingBuilding(_)));
                 selected_coordinates.0 = rectangle_select(&current_coordinate, event, hollow);
             }
             None => {

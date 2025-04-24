@@ -46,8 +46,10 @@ fn react_to_building_state(
     mut current_building: ResMut<CurrentBuilding>,
 ) {
     if user_action_state.is_changed() {
-        if let UserActionState::PlacingBuilding(item_id) = user_action_state.0 {
+        if let Some(UserActionState::PlacingBuilding(item_id)) = user_action_state.0 {
             current_building.0 = Some(item_id);
+        } else {
+            current_building.0 = None;
         }
     }
 }

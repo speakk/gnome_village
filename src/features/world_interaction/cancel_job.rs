@@ -35,7 +35,7 @@ fn draw_cancel_gizmo(
         return;
     };
 
-    if !matches!(current_user_action.0, UserActionState::CancellingJobs(_)) {
+    if !matches!(current_user_action.0, Some(UserActionState::CancellingJobs(_))) {
         return;
     }
 
