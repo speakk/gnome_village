@@ -12,13 +12,13 @@ use bevy::prelude::*;
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 #[require(
-    Id(|| Id(ItemId::PotatoPlant)),
-    Name(|| "Potato Plant"),
-    GltfData(|| GltfData {
+    Id = Id(ItemId::PotatoPlant),
+    Name = Name::new("Potato Plant"),
+    GltfData = GltfData {
         asset_id: GltfAssetId::PotatoPlant,
         scene_name: None
-    }),
-    Plant(|| Plant {
+    },
+    Plant = Plant {
         growth_stages: 4,
         growth_requirements: vec![
             ItemAmount {
@@ -27,8 +27,8 @@ use bevy::prelude::*;
             }
         ],
         ..Default::default()
-    }),
-    Buildable(|| Buildable {
+    },
+    Buildable = Buildable {
         item_requirements: vec![
             ItemAmount {
                 item_id: ItemId::PotatoPlantSeed,
@@ -36,46 +36,46 @@ use bevy::prelude::*;
             }
         ],
         ..Default::default()
-    }),
-    Health(|| Health::new(1.0)),
-    ItemDrop(|| ItemDrop {
+    },
+    Health = Health::new(1.0),
+    ItemDrop = ItemDrop {
         item_drops: vec![
             SingleItemDrop { item_id: ItemId::Potato, chance: 1.0 },
             SingleItemDrop { item_id: ItemId::Potato, chance: 0.5 },
             SingleItemDrop { item_id: ItemId::Potato, chance: 0.3 },
             SingleItemDrop { item_id: ItemId::Potato, chance: 0.1 },
         ],
-    }),
+    },
 )]
 pub struct PotatoPlant;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 #[require(
-    Id(|| Id(ItemId::PotatoPlantSeed)),
-    Name(|| "Potato Plant Seed"),
+    Id = Id(ItemId::PotatoPlantSeed),
+    Name = Name::new("Potato Plant Seed"),
     ResourceItem,
-    GltfData(|| GltfData {
+    GltfData = GltfData {
         asset_id: GltfAssetId::PotatoPlant,
         scene_name: Some("stage_0".to_string())
-    }),
+    },
 )]
 pub struct PotatoPlantSeed;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 #[require(
-    Id(|| Id(ItemId::Potato)),
-    Name(|| "Potato"),
-    GltfData(|| GltfData {
+    Id = Id(ItemId::Potato),
+    Name = Name::new("Potato"),
+    GltfData = GltfData {
         asset_id: GltfAssetId::Potato,
         scene_name: None
-    }),
-    Plant(|| Plant {
+    },
+    Plant = Plant {
         growth_stages: 4,
         growth_requirements: vec![],
         ..Default::default()
-    }),
-    Health(|| Health::new(1.0))
+    },
+    Health = Health::new(1.0)
 )]
 pub struct Potato;

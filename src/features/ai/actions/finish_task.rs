@@ -4,7 +4,7 @@ use bevy::prelude::*;
 
 #[action(finish_task_action)]
 #[derive(Component, Reflect)]
-#[require(Name(|| "FinishTaskAction"))]
+#[require(Name::new("FinishTaskAction"))]
 pub struct FinishTaskAction {
     pub task: Entity,
     pub tree_root: Entity,

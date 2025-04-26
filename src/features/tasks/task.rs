@@ -8,7 +8,7 @@ use crate::features::tasks::jobs::destruct_task::score_destruct;
 use bevy::ecs::system::SystemState;
 use bevy::prelude::Component;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+use bevy_platform::collections::HashMap;
 use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::{MapEntities, Save};
 
@@ -134,21 +134,21 @@ impl MapEntities for Task {
             Some(TaskType::BringResource(bring_resource_data)) => {
                 if let Some(run_time_data) = &mut bring_resource_data.run_time_data {
                     let entity = &mut run_time_data.concrete_resource_entity;
-                    *entity = entity_mapper.map_entity(*entity);
+                    *entity = entity_mapper.get_mapped(*entity);
                 }
 
                 
                 if let DepositTarget::Inventory(inventory_entity) = &mut bring_resource_data.target {
-                    *inventory_entity = entity_mapper.map_entity(*inventory_entity);
+                    *inventory_entity = entity_mapper.get_mapped(*inventory_entity);
                 }
             },
             Some(TaskType::Build(build_data)) => {
                 let entity = &mut build_data.target;
-                *entity = entity_mapper.map_entity(*entity);
+                *entity = entity_mapper.get_mapped(*entity);
             },
             Some(TaskType::Destruct(destruct_data)) => {
                 let entity = &mut destruct_data.target;
-                *entity = entity_mapper.map_entity(*entity);
+                *entity = entity_mapper.get_mapped(*entity);
             },
             None => {},
         }
@@ -167,7 +167,7 @@ impl Default for Task {
 
 pub fn propagate_finished_upwards(
     mut finished_event_reader: EventReader<TaskFinished>,
-    parents: Query<&Parent>,
+    child_of: Query<&ChildOf>,
     children: Query<&Children>,
     mut tasks: Query<&mut Task>,
     mut commands: Commands,
@@ -180,11 +180,11 @@ pub fn propagate_finished_upwards(
 
         let task_entity = finished_event.task_entity;
 
-        if let Some(parent) = parents.parent(task_entity) {
-            let all_parent_children = children.children(parent);
+        if let Some(parent) = child_of.related(task_entity) {
+            let mut all_parent_children = children.relationship_sources(parent);
 
-            let all_children_finished = all_parent_children.iter().all(|child| {
-                let task_data = tasks.get(*child).unwrap();
+            let all_children_finished = all_parent_children.all(|child| {
+                let task_data = tasks.get(child).unwrap();
                 task_data.status == Status::Finished
             });
 
@@ -240,7 +240,7 @@ pub fn get_available_task(
         }
         RunType::Sequence => {
             if let Some(children) = children {
-                for &child in children.iter() {
+                for child in children.iter() {
                     let (_entity, child_task_data, sub_children) = all_tasks.get(&child).unwrap();
 
                     if let Some(next_sub_task) =
@@ -264,7 +264,7 @@ pub fn get_available_task(
         }
         RunType::Parallel => {
             if let Some(children) = children {
-                for &child in children.iter() {
+                for child in children.iter() {
                     let (_entity, child_task_data, sub_children) = all_tasks.get(&child).unwrap();
                     let next_sub_task =
                         get_available_task(child, child_task_data, *sub_children, all_tasks);

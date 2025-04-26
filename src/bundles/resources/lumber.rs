@@ -5,12 +5,12 @@ use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
-#[require(Id(|| Id(ItemId::Lumber)),
-    Name(|| "Lumber"),
+#[require(Id = Id(ItemId::Lumber),
+    Name = Name::new("Lumber"),
     ResourceItem,
-    GltfData(|| GltfData {
+    GltfData = GltfData {
         asset_id: GltfAssetId::Lumber,
         scene_name: None
-    })
+    }
 )]
 pub struct Lumber;

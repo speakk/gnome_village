@@ -6,11 +6,8 @@ use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
 use crate::features::tasks::task;
 use crate::features::tasks::task::{Status, Task, TaskCancelled, TaskFinished};
-use bevy::hierarchy::Children;
-use bevy::prelude::{
-    Added, Changed, Commands, Entity, Or, ParamSet, Query, Trigger, With, Without,
-};
-use bevy::utils::HashMap;
+use bevy::prelude::*;
+use bevy_platform::collections::HashMap;
 
 pub fn jobs_changed(tasks_query: Query<Entity, Or<(Added<Task>, Changed<Task>)>>) -> bool {
     !tasks_query.is_empty()

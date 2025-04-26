@@ -28,12 +28,13 @@ use bevy::pbr::{DefaultOpaqueRendererMethod, PointLightShadowMap};
 use bevy::prelude::*;
 use bevy_easings::EasingsPlugin;
 use bevy_hanabi::HanabiPlugin;
+use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use bevy_kira_audio::AudioPlugin;
-use bevy_mod_async::AsyncTasksPlugin;
+//use bevy_kira_audio::AudioPlugin;
+//use bevy_mod_async::AsyncTasksPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
-use crate::features::audio::GameAudioPlugin;
+//use crate::features::audio::GameAudioPlugin;
 use crate::features::juice::JuicePlugin;
 use crate::features::particles::ParticlePlugin;
 use crate::features::world_interaction::WorldInteractionPlugin;
@@ -44,15 +45,15 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugins(BeetFlowPlugin::default())
         .add_plugins(EasingsPlugin::default())
-        .add_plugins(AsyncTasksPlugin)
-        .add_plugins(AudioPlugin)
+//        .add_plugins(AsyncTasksPlugin)
+        //.add_plugins(AudioPlugin)
         .add_plugins(HanabiPlugin)
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .insert_resource(PointLightShadowMap { size: 256 })
         .add_plugins(SavePlugin)
         .add_plugins(PreloadPlugin)
         .add_plugins(AssetsPlugin)
-        .add_plugins(GameAudioPlugin)
+        //.add_plugins(GameAudioPlugin)
         .add_plugins(BundlePlugin)
         .add_plugins(MapPlugin)
         .add_plugins(SunLightPlugin)
@@ -78,6 +79,7 @@ fn main() {
         .insert_resource(WorldSeed(555))
         .insert_resource(Time::<Fixed>::from_hz(60.0))
         .init_state::<AppState>()
+        .add_plugins(EguiPlugin { enable_multipass_for_primary_context: true, })
         .add_plugins(
             //#[cfg(debug_assertions)]
             WorldInspectorPlugin::default().run_if(input_toggle_active(false, KeyCode::F1)),

@@ -11,7 +11,7 @@ use bevy::prelude::*;
 
 #[action(go_to_action)]
 #[derive(Component, Reflect)]
-#[require(ContinueRun, Name(|| "GoToAction"))]
+#[require(ContinueRun, Name::new("GoToAction"))]
 pub struct GoToAction {
     pub(crate) target: IVec2,
 }
@@ -62,7 +62,7 @@ fn go_to_action(
                 return;
             }
 
-            if commands.get_entity(action_entity).is_none() {
+            if commands.get_entity(action_entity).is_err() {
                 return;
             }
 

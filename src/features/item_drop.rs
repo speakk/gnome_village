@@ -32,7 +32,7 @@ fn item_drop(
     mut random_source: ResMut<RandomSource>,
     spawners: Res<ItemSpawners>,
 ) {
-    let entity = trigger.entity();
+    let entity = trigger.target();
     let (world_position, item_drop) = query.get(entity).unwrap();
 
     for single_item_drop in item_drop.item_drops.iter() {

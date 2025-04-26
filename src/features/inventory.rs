@@ -3,7 +3,7 @@ use crate::features::misc_components::{InWorld, ItemAmount};
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+use bevy_platform::collections::HashMap;
 use std::cmp::Ordering;
 
 pub struct InventoryPlugin;
@@ -91,7 +91,7 @@ pub fn spawn_public_items(
         return;
     };
 
-    let Ok((inventory, world_position)) = inventories.get(trigger.entity()) else {
+    let Ok((inventory, world_position)) = inventories.get(trigger.target()) else {
         return;
     };
 
@@ -102,12 +102,12 @@ pub fn spawn_public_items(
     for _i in 0..item_amount.amount {
         let new_item = item_spawners.0.get(&item_amount.item_id).unwrap()(&mut commands);
         commands.entity(new_item).insert((
-            InInventory(trigger.entity()),
+            InInventory(trigger.target()),
             WorldPosition(world_position.0),
             InWorld,
         ));
 
-        commands.entity(trigger.entity()).add_child(new_item);
+        commands.entity(trigger.target()).add_child(new_item);
     }
 }
 
@@ -122,7 +122,7 @@ pub fn remove_public_items(
     };
 
     let valid_children = children
-        .iter_descendants(trigger.entity())
+        .iter_descendants(trigger.target())
         .filter(|child| {
             if let Ok(item_id) = item_ids.get(*child) {
                 if item_id.0 == item_amount.item_id {
@@ -144,7 +144,7 @@ pub fn update_inventory_amount(
     trigger: Trigger<InventoryChanged>,
     mut inventories: Query<&mut Inventory>,
 ) {
-    let mut inventory = inventories.get_mut(trigger.entity()).unwrap();
+    let mut inventory = inventories.get_mut(trigger.target()).unwrap();
     match trigger.0 {
         InventoryChangedType::Add(item_amount) => {
             inventory.add_item(item_amount.item_id, item_amount.amount);

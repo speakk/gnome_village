@@ -171,7 +171,7 @@ pub fn update_gltf_based_on_growth_stage(
     trigger: Trigger<PlantStageAdvanced>,
     mut query: Query<(&Plant, &mut GltfData)>,
 ) {
-    if let Ok((plant, mut gltf_data)) = query.get_mut(trigger.entity()) {
+    if let Ok((plant, mut gltf_data)) = query.get_mut(trigger.target()) {
         let current_scene_name = format!("stage_{}", plant.current_growth_stage);
         if gltf_data.scene_name != Some(current_scene_name.clone()) {
             gltf_data.scene_name = Some(current_scene_name.clone());

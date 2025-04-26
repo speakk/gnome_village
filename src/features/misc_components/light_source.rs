@@ -4,9 +4,9 @@ use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
 use bevy::color::Color;
 use bevy::pbr::PointLight;
-use bevy::prelude::{default, BuildChildren, Component, Reflect, Transform, Vec3, World};
-use bevy_hanabi::{ParticleEffect, ParticleEffectBundle};
-use moonshine_object::{Object, ObjectInstance};
+use bevy::prelude::*;
+use bevy_hanabi::prelude::*;
+use moonshine_object::Object;
 use moonshine_view::{BuildView, ViewCommands};
 
 #[derive(Component, Reflect)]
@@ -56,18 +56,15 @@ impl BuildView for LightSource {
                 .clone(),
         ));
 
-        view.with_child(
-            ParticleEffectBundle {
-                effect: ParticleEffect::new(
-                    particle_handles
-                        .0
-                        .get(&ParticleType::LightSparkle)
-                        .unwrap()
-                        .clone(),
-                ),
-                transform: Transform::from_xyz(0.0, -0.8, 0.0),
-                ..Default::default()
-            },
-        );
+        view.with_child((
+            ParticleEffect::new(
+                particle_handles
+                    .0
+                    .get(&ParticleType::LightSparkle)
+                    .unwrap()
+                    .clone(),
+            ),
+            Transform::from_xyz(0.0, -0.8, 0.0),
+        ));
     }
 }

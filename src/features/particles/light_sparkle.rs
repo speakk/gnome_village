@@ -71,8 +71,8 @@ pub(super) fn setup_light_sparkle(
         // Maximum number of particles alive at a time
         400,
         // Spawn at a rate of 5 particles per second
-        //SpawnerSettings::rate(5.0.into()),
-        Spawner::rate(40.0.into()),
+        SpawnerSettings::rate(40.0.into()),
+        //Spawner::rate(40.0.into()),
         // Move the expression module into the asset
         module,
     )
@@ -87,7 +87,7 @@ pub(super) fn setup_light_sparkle(
     // Render the particles with a color gradient over their
     // lifetime. This maps the gradient key 0 to the particle spawn
     // time, and the gradient key 1 to the particle death (10s).
-    .render(ColorOverLifetimeModifier { gradient });
+    .render(ColorOverLifetimeModifier { gradient, ..Default::default() });
 
     // Insert into the asset system
     let effect_handle = effects.add(effect);

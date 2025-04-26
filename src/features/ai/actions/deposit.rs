@@ -8,7 +8,7 @@ use bevy::prelude::*;
 
 #[action(deposit_action)]
 #[derive(Component, Reflect)]
-#[require(Name(|| "DepositAction"))]
+#[require(Name::new("DepositAction"))]
 pub struct DepositAction {
     pub deposit_target: DepositTarget,
     pub item_id: ItemId,

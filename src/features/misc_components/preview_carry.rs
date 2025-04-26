@@ -6,7 +6,7 @@ use crate::features::misc_components::Prototype;
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
 use bevy::prelude::*;
-use moonshine_object::{Object, ObjectInstance};
+use moonshine_object::{Object};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 
 pub struct PreviewCarryPlugin;
@@ -71,7 +71,7 @@ pub fn react_to_inventory_change(
     gltf_data_query: Query<&GltfData>,
     mut commands: Commands,
 ) {
-    let entity = trigger.entity();
+    let entity = trigger.target();
     let Ok((viewable, world_position)) = query.get(entity) else {
         return;
     };
@@ -95,7 +95,7 @@ pub fn react_to_inventory_change(
         InventoryChangedType::Remove(_) => {
             commands
                 .entity(viewable.view().entity())
-                .despawn_descendants();
+                .despawn_related::<Children>();
         }
     }
 }

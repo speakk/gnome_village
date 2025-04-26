@@ -3,8 +3,7 @@ use crate::features::tasks::jobs::build_task::react_to_blueprints;
 use crate::features::tasks::jobs::destruct_task::react_to_destruct_target;
 use crate::features::tasks::jobs::water_plants::react_to_lacking_growth_requirements;
 use crate::features::tasks::task::{propagate_finished_upwards, TaskCancelled, TaskFinished};
-use bevy::app::{App, Plugin, Update};
-use bevy::prelude::IntoSystemConfigs;
+use bevy::prelude::*;
 
 pub struct TasksPlugin;
 

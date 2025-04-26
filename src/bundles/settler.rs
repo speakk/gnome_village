@@ -11,23 +11,23 @@ use bevy::prelude::*;
 
 #[derive(Component, Reflect)]
 #[require(
-    Id(|| Id(ItemId::Settler)),
+    Id = Id(ItemId::Settler),
     Velocity,
-    Friction(|| Friction(0.1)),
-    GltfData(|| GltfData {
+    Friction = Friction(0.1),
+    GltfData = GltfData {
         asset_id: GltfAssetId::Settler,
         scene_name: None
-    }),
-    GltfAnimation(|| GltfAnimation {
+    },
+    GltfAnimation = GltfAnimation {
         animation_id: GltfAssetId::Settler,
         animation_indices: vec![0, 1, 2],
         current_animation_index: 0,
         should_play: true
-    }),
+    },
     InterpolatePosition,
     Inventory,
     PreviewCarry,
-    Name(|| "Settler"))]
+    Name = Name::new("Settler"))]
 #[reflect(Component)]
 pub struct Settler {
     carry_capacity: u32,

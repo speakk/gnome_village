@@ -5,10 +5,8 @@ use crate::features::inventory::InInventory;
 use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::{InterpolatePosition, WorldPosition};
 use crate::ReflectComponent;
-use bevy::app::App;
-use bevy::core::Name;
 use bevy::prelude::*;
-use moonshine_object::{Kind, Object, ObjectInstance};
+use moonshine_object::{Kind, Object};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use std::time::Duration;
 use crate::features::juice::{AddTransformJuice, TransformJuice};
@@ -156,7 +154,7 @@ fn update_scene(
 
         commands
             .entity(view_entity)
-            .despawn_descendants()
+            .despawn_related::<Children>()
             .insert(SceneRoot(scene));
     }
 }

@@ -29,7 +29,7 @@ fn setup_button_data(
     *button_data = ButtonData {
         image: Some(asset_server.load("textures/button_1.png")),
         slicer: Some(TextureSlicer {
-            border: BorderRect::square(32.0),
+            border: BorderRect::all(32.0),
             center_scale_mode: SliceScaleMode::Stretch,
             sides_scale_mode: SliceScaleMode::Stretch,
             max_corner_scale: 1.0,

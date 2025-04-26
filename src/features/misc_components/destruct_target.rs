@@ -7,7 +7,7 @@ use crate::ReflectComponent;
 use bevy::pbr::NotShadowReceiver;
 use bevy::prelude::*;
 use bevy::render::view::RenderLayers;
-use moonshine_object::{Object, ObjectInstance};
+use moonshine_object::{Object};
 use moonshine_view::prelude::*;
 use crate::features::map::map_model::MapData;
 

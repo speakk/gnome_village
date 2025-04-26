@@ -24,7 +24,7 @@ pub struct CameraPlugin;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-#[require(WorldPosition, Velocity, Acceleration, Friction(|| Friction(2.0)), AccumulatedInput, InterpolatePosition)]
+#[require(WorldPosition, Velocity, Acceleration, Friction = Friction(2.0), AccumulatedInput, InterpolatePosition)]
 pub struct WorldCamera;
 
 #[derive(InputContext, Reflect)]
@@ -52,7 +52,7 @@ fn binding(
     trigger: Trigger<Binding<CameraInputContext>>,
     mut in_game_input_context: Query<&mut Actions<CameraInputContext>>,
 ) {
-    let mut actions = in_game_input_context.get_mut(trigger.entity()).unwrap();
+    let mut actions = in_game_input_context.get_mut(trigger.target()).unwrap();
 
     actions.bind::<CameraPanAction>().to(Cardinal::wasd_keys());
     actions.bind::<CameraZoomAction>().to(MouseWheel { mod_keys: Default::default() });
@@ -109,7 +109,7 @@ impl BuildView for WorldCamera {
             //     rotation: Quat::from_rotation_x(std::f32::consts::FRAC_PI_2 / 1.5),
             // },
             Transform::from_xyz(0.0, 20.0, 20.0).looking_at(Vec3::ZERO, Vec3::Y),
-            RayCastPickable,
+            MeshPickingCamera,
         ))
         .insert(DepthPrepass)
         .insert(NormalPrepass)

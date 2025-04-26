@@ -8,6 +8,7 @@ use bevy::pbr::{AmbientLight, CascadeShadowConfigBuilder, DirectionalLight};
 use bevy::prelude::*;
 use bevy::window::WindowResized;
 use std::f32::consts::{PI, TAU};
+use core::time::Duration;
 
 pub struct SunLightPlugin;
 
@@ -46,11 +47,11 @@ impl Plugin for SunLightPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::InGame), setup_lights)
             .insert_resource(CycleTimer(Timer::new(
-                bevy::utils::Duration::from_millis(50),
+                Duration::from_millis(50),
                 TimerMode::Repeating,
             )))
             .insert_resource(AtmosphereTimer(Timer::new(
-                bevy::utils::Duration::from_millis(50),
+                Duration::from_millis(50),
                 TimerMode::Repeating,
             )))
             .insert_resource(CurrentTimeOfDay::default())
@@ -68,6 +69,7 @@ pub fn setup_lights(mut commands: Commands) {
     commands.insert_resource(AmbientLight {
         color: ORANGE_RED.into(),
         brightness: 10.0,
+        ..Default::default()
     });
 
     commands
@@ -173,7 +175,7 @@ fn rotate_planet(
     }
 
     if let Ok((mut sun_transform, mut sun_light, mut sun_visibility)) = sun_query.get_single_mut() {
-        if let Some((mut moon_transform, mut moon_light, mut moon_visibility)) =
+        if let Ok((mut moon_transform, mut moon_light, mut moon_visibility)) =
             moon_query.single_mut().into()
         {
             if (0.25..=0.75).contains(&t) {

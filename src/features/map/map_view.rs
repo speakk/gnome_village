@@ -5,12 +5,11 @@ use crate::features::map::water_material::{
 use crate::features::misc_components::simple_mesh::{SimpleMeshHandles, SimpleMeshType};
 use bevy::asset::{Assets, UntypedHandle};
 use bevy::color::Color;
-use bevy::hierarchy::{BuildChildren, ChildBuild};
 use bevy::math::{UVec2, Vec2};
 use bevy::pbr::{MeshMaterial3d, NotShadowCaster, StandardMaterial};
 use bevy::prelude::*;
-use bevy::utils::HashMap;
-use moonshine_object::{Object, ObjectInstance};
+use bevy_platform::collections::HashMap;
+use moonshine_object::{Object};
 use moonshine_view::{BuildView, ViewCommands};
 use noisy_bevy::simplex_noise_2d;
 

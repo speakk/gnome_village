@@ -13,7 +13,7 @@ pub struct Job;
 
 fn create_bring_resource_task_from_item_amount(
     target_inventory_entity: Entity,
-    child_builder: &mut ChildBuilder,
+    child_builder: &mut ChildSpawnerCommands,
     item_amount: &ItemAmount,
 ) {
     for _ in 0..item_amount.amount {

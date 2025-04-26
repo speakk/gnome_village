@@ -147,7 +147,7 @@ pub fn register_components(world: &mut World) {
 }
 
 fn binding(trigger: Trigger<Binding<OmniPresentInputContext>>, mut input_context: Query<&mut Actions<OmniPresentInputContext>>) {
-    let mut actions = input_context.get_mut(trigger.entity()).unwrap();
+    let mut actions = input_context.get_mut(trigger.target()).unwrap();
     
     actions.bind::<save_load_action::QuickSave>().to(KeyCode::F5);
     actions.bind::<save_load_action::QuickLoad>().to(KeyCode::F8);

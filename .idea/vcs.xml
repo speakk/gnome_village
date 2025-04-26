@@ -2,5 +2,13 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/moonshine_core" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/moonshine_core/crates/check" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/moonshine_core/crates/kind" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/moonshine_core/crates/object" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/moonshine_core/crates/save" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/moonshine_core/crates/tag" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/moonshine_core/crates/util" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/moonshine_view" vcs="Git" />
   </component>
 </project>

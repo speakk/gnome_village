@@ -38,7 +38,7 @@ pub fn create_destruct_tree(
 
                     root.spawn((FinishTaskAction {
                         task: working_on_task.0,
-                        tree_root: root.parent_entity(),
+                        tree_root: root.target_entity(),
                     },));
                 })
                 .id();
@@ -49,8 +49,8 @@ pub fn create_destruct_tree(
 
             commands.entity(working_on_task.0).observe(
                 move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
-                    if let Some(entity_commands) = commands.get_entity(tree_entity) {
-                        entity_commands.try_despawn_recursive();
+                    if let Ok(mut entity_commands) = commands.get_entity(tree_entity) {
+                        entity_commands.try_despawn();
                     }
                 },
             );

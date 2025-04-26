@@ -108,7 +108,7 @@ fn regenerate_preview_entity(
         gltf_asset_data = gltf_asset;
     }
 
-    let map_data = map_data_query.single();
+    let Ok(map_data) = map_data_query.single() else { return; };
 
     for coordinate in coordinates.0.iter() {
         let position = map_data.centered_coordinate_to_world_position(*coordinate);

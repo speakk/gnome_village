@@ -12,14 +12,14 @@ use bevy::prelude::*;
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 #[require(
-    Id(|| Id(ItemId::MapleTree)),
-    Name(|| "Maple Tree"),
-    GltfData(|| GltfData {
+    Id = Id(ItemId::MapleTree),
+    Name = Name::new("Maple Tree"),
+    GltfData = GltfData {
         asset_id: GltfAssetId::MapleTree,
         scene_name: None
-    }),
+    },
     Solid,
-    Plant(|| Plant {
+    Plant = Plant {
         growth_stages: 4,
         growth_requirements: vec![
             ItemAmount {
@@ -28,13 +28,13 @@ use bevy::prelude::*;
             }
         ],
         ..Default::default()
-    }),
-    Health(|| Health::new(1.0)),
-    ItemDrop(|| ItemDrop {
+    },
+    Health = Health::new(1.0),
+    ItemDrop = ItemDrop {
         item_drops: vec![
             SingleItemDrop { item_id: ItemId::Lumber, chance: 1.0 },
             SingleItemDrop { item_id: ItemId::Lumber, chance: 0.5 },
         ],
-    }),
+    },
 )]
 pub struct MapleTree;

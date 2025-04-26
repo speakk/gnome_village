@@ -53,7 +53,7 @@ fn setup(
 ) {
     let texture_handle = asset_server.load("daynight_cycle.png");
 
-    let window = windows.single();
+    let window = windows.single().unwrap();
     let resolution = &window.resolution;
     let new_position = Vec2::new(resolution.width() / 2.0 - RADIUS * 2.0, -resolution.height() / 2.0);
 

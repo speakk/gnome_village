@@ -35,7 +35,7 @@ pub fn create_build_tree(
 
                     root.spawn((FinishTaskAction {
                         task: working_on_task.0,
-                        tree_root: root.parent_entity(),
+                        tree_root: root.target_entity(),
                     },));
                 })
                 .id();
@@ -46,7 +46,7 @@ pub fn create_build_tree(
 
             commands.entity(working_on_task.0).observe(
                 move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
-                    commands.entity(tree_entity).try_despawn_recursive();
+                    commands.entity(tree_entity).try_despawn();
                 },
             );
         }

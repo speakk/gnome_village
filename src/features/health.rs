@@ -21,7 +21,7 @@ fn health_system(query: Query<(Entity, &Health), Changed<Health>>, mut commands:
 }
 
 fn death_observer(trigger: Trigger<HealthDepleted>, mut commands: Commands) {
-    commands.entity(trigger.entity()).despawn();
+    commands.entity(trigger.target()).despawn();
 }
 
 #[derive(Component)]

@@ -10,10 +10,10 @@ use bevy::prelude::*;
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
 #[require(
-    Id(|| Id(ItemId::WoodenTorch)),
+    Id(ItemId::WoodenTorch),
     Solid,
-    Name(|| "Wooden Torch"),
-    Buildable(|| Buildable {
+    Name = Name::new("Wooden Torch"),
+    Buildable = Buildable {
         item_requirements: vec![
             ItemAmount {
                 item_id: ItemId::Lumber,
@@ -21,10 +21,10 @@ use bevy::prelude::*;
             }
         ],
         ..Default::default()
-    }),
-    LightSource(|| LightSource { intensity: 50000.0, color: Color::srgb(1.0, 0.9, 0.6) }),
-    GltfData(|| GltfData {
+    },
+    LightSource = LightSource { intensity: 50000.0, color: Color::srgb(1.0, 0.9, 0.6) },
+    GltfData = GltfData {
         asset_id: GltfAssetId::WoodenTorch,
         scene_name: None
-    }))]
+    })]
 pub struct WoodenTorch;

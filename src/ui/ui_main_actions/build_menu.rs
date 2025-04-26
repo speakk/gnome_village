@@ -28,7 +28,7 @@ pub fn create_build_menu(
     if let Some(event) = event.read().next() {
         if event.0 == MainActionButtonType::Build {
             commands
-                .entity(query.single())
+                .entity(query.single().unwrap())
                 .with_children(|menu_container| {
                     let cloned_prototypes = prototypes.0.clone();
 
@@ -65,9 +65,9 @@ pub fn create_build_menu(
                                     )
                                     .id();
 
-                                menu_buttons.enqueue_command(move |world: &mut World| {
+                                menu_buttons.commands().queue(move |world: &mut World| {
                                     let mut commands = world.commands();
-                                    commands.run_system_with_input(
+                                    commands.run_system_with(
                                         button_widget_system,
                                         CreateButtonParams {
                                             label: name.parse().unwrap(),

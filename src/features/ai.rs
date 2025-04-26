@@ -40,7 +40,7 @@ pub struct WorkingOnTask(pub Entity);
 impl MapEntities for WorkingOnTask {
     fn map_entities<M: EntityMapper>(&mut self, entity_mapper: &mut M) {
         let entity = &mut self.0;
-        *entity = entity_mapper.map_entity(*entity);
+        *entity = entity_mapper.get_mapped(*entity);
     }
 }
 

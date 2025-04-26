@@ -6,7 +6,7 @@ use bevy::prelude::*;
 
 #[action(pick_up_action)]
 #[derive(Component, Reflect)]
-#[require(Name(|| "PickUpAction"))]
+#[require(Name::new("PickUpAction"))]
 pub struct PickUpAction {
     pub target_entity: Entity,
     pub amount: u32,

@@ -1,7 +1,7 @@
 use crate::features::states::AppState::{InGame, Preload};
 use bevy::app::App;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+use bevy_platform::collections::HashMap;
 use std::time::Duration;
 
 pub struct AssetsPlugin;

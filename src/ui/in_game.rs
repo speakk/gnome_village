@@ -53,7 +53,7 @@ fn main_action_buttons(mut commands: Commands, widget_systems: Res<WidgetSystems
                 ],
                 ..Default::default()
             },
-            PickingBehavior::IGNORE,
+            Pickable::IGNORE,
         ))
         .with_children(|root_node| {
             // Top container
@@ -61,7 +61,7 @@ fn main_action_buttons(mut commands: Commands, widget_systems: Res<WidgetSystems
                 width: Val::Percent(100.0),
                 height: Val::Auto,
                 ..Default::default()
-            }, PickingBehavior::IGNORE))
+            }, Pickable::IGNORE))
                 .with_children(|top_container| {
                     top_container.spawn((Node {
                         position_type: PositionType::Absolute,
@@ -104,9 +104,9 @@ fn main_action_buttons(mut commands: Commands, widget_systems: Res<WidgetSystems
                             )
                             .id();
 
-                        action_buttons_container.enqueue_command(move |world: &mut World| {
+                        action_buttons_container.commands().queue(move |world: &mut World| {
                             let mut commands = world.commands();
-                            commands.run_system_with_input(
+                            commands.run_system_with(
                                 button_widget_system,
                                 CreateButtonParams {
                                     label: button.clone().label.clone(),

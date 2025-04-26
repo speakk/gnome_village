@@ -7,7 +7,7 @@ use beet::prelude::*;
 use bevy::prelude::*;
 
 #[derive(Component, Reflect)]
-#[require(ContinueRun, Name(|| "EscapeFromSolidAction"))]
+#[require(ContinueRun, Name::new("EscapeFromSolidAction"))]
 pub struct EscapeFromSolidAction;
 
 #[allow(clippy::too_many_arguments)]
@@ -22,7 +22,7 @@ fn escape_from_solid_action(
         let target_agent = running.origin;
         let world_position = world_positions.get(target_agent).unwrap();
 
-        //let trigger_entity = &trigger.entity();
+        //let trigger_entity = &trigger.target();
 
         let free_neighbor_coordinate =
             pathing_grid.get_nearest_available_coordinate(world_position.0.as_ivec2());

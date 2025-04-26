@@ -1,7 +1,7 @@
 use crate::features::misc_components::InWorld;
 use bevy::math::Vec2;
 use bevy::prelude::*;
-use bevy::utils::{HashMap, HashSet};
+use bevy_platform::collections::{HashMap, HashSet};
 
 pub struct PositionPlugin;
 
@@ -44,7 +44,7 @@ fn handle_removed(
     query: Query<(&WorldPosition, &PreviousWorldPosition)>,
     mut coordinate_to_entity: ResMut<CoordinateToEntity>,
 ) {
-    let entity = trigger.entity();
+    let entity = trigger.target();
     let Ok((world_position, previous_world_position)) = query.get(entity) else {
         return;
     };

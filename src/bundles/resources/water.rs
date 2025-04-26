@@ -3,8 +3,8 @@ use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
-#[require(Id(|| Id(ItemId::Water)),
-    Name(|| "Water"),
+#[require(Id = Id(ItemId::Water),
+    Name::new("Water"),
     ResourceItem,
 )]
 pub struct Water;

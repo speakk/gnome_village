@@ -73,7 +73,7 @@ pub fn create_bring_resource_tree(
 
                     root.spawn((FinishTaskAction {
                         task: working_on_task.0,
-                        tree_root: root.parent_entity(),
+                        tree_root: root.target_entity(),
                     },));
                 })
                 .id();

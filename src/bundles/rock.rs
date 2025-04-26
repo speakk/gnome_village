@@ -29,12 +29,12 @@ pub fn setup_rock_materials(
 
 #[derive(Component, Default, Reflect)]
 #[require(
-    Id(|| Id(ItemId::Rock)),
+    Id = Id(ItemId::Rock),
     Solid,
     Save,
-    Health(|| Health::new(1.0)),
-    Name(|| "Rock"),
-    SimpleMesh(|| SimpleMesh(SimpleMeshType::Cuboid))
+    Health = Health::new(1.0),
+    Name = Name::new("Rock"),
+    SimpleMesh(SimpleMeshType::Cuboid)
 )]
 #[reflect(Component)]
 pub struct Rock;

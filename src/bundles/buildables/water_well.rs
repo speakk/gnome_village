@@ -10,10 +10,10 @@ use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect, Clone)]
 #[require(
-    Id(|| Id(ItemId::WaterWell)),
-    Name(|| "Water Well"),
+    Id = Id(ItemId::WaterWell),
+    Name = Name::new("Water Well"),
     Solid,
-    Buildable(|| Buildable {
+    Buildable = Buildable {
         item_requirements: vec![
             ItemAmount {
                 item_id: ItemId::Lumber,
@@ -21,14 +21,15 @@ use bevy::prelude::*;
             }
         ],
         ..Default::default()
-    }),
-    Inventory(|| Inventory {
+    },
+    Inventory = Inventory {
         items: HashMap::from([(ItemId::Water, 100)]),
         public_container: true,
-    }),
-    GltfData(|| GltfData {
+    },
+    GltfData = GltfData {
         asset_id: GltfAssetId::WaterWell,
         scene_name: None
-}))]
+    }
+)]
 #[reflect(Component)]
 pub struct WaterWell;

@@ -67,7 +67,7 @@ impl Plugin for MouseSelectionPlugin {
 }
 
 fn binding(trigger: Trigger<Binding<InGameInputContext>>, mut input_context: Query<&mut Actions<InGameInputContext>>) {
-    let mut actions = input_context.get_mut(trigger.entity()).unwrap();
+    let mut actions = input_context.get_mut(trigger.target()).unwrap();
 
     actions.bind::<world_interaction_action::PrimaryDragModifier>().to(
         ControlLeft,
@@ -104,7 +104,7 @@ fn setup(
             Visibility::Hidden,
             MeshMaterial3d(materials.add(Color::srgb(0.5, 0.0, 0.0))),
             Transform::from_xyz(-0.5, 0.0, -0.5),
-            RayCastPickable,
+            Pickable::default(),
         ))
         .observe(handle_ground_plane_click)
         .observe(handle_ground_plane_hover)

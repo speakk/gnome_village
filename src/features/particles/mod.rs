@@ -1,7 +1,7 @@
 pub mod light_sparkle;
 
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+use bevy_platform::collections::HashMap;
 use bevy_hanabi::EffectAsset;
 use crate::features::particles::light_sparkle::setup_light_sparkle;
 

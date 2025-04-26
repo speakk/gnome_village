@@ -19,7 +19,7 @@ fn binding(
     trigger: Trigger<Binding<InGameInputContext>>,
     mut in_game_input_context: Query<&mut Actions<InGameInputContext>>,
 ) {
-    let mut actions = in_game_input_context.get_mut(trigger.entity()).unwrap();
+    let mut actions = in_game_input_context.get_mut(trigger.target()).unwrap();
 
     actions
         .bind::<world_speed_action::TogglePause>()

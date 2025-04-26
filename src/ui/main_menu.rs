@@ -74,9 +74,9 @@ fn setup(
                 )
                 .id();
 
-            parent.enqueue_command(move |world: &mut World| {
+            parent.commands().queue(move |world: &mut World| {
                 let mut commands = world.commands();
-                commands.run_system_with_input(
+                commands.run_system_with(
                     button_system_id.clone(),
                     CreateButtonParams {
                         label: "New game".to_string(),
@@ -96,9 +96,9 @@ fn setup(
                 )
                 .id();
 
-            parent.enqueue_command(move |world: &mut World| {
+            parent.commands().queue(move |world: &mut World| {
                 let mut commands = world.commands();
-                commands.run_system_with_input(
+                commands.run_system_with(
                     button_system_id,
                     CreateButtonParams {
                         label: "Quit".to_string(),

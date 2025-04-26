@@ -57,7 +57,7 @@ fn react_to_main_action_menu_button_pressed(
         main_menu_selection_cleared.send(MainMenuSelectionCleared);
 
         {
-            let (entity, mut node) = query.single_mut();
+            let Ok((entity, mut node)) = query.single_mut() else { return; };
             
             // TODO: This is just eyeballed and will break if we change button width or margins,
             // to position the button menu correctly above the button.
@@ -76,7 +76,7 @@ fn react_to_main_action_menu_button_pressed(
                     duration: Duration::from_millis(150),
                 },
             ));
-            commands.entity(entity).despawn_descendants();
+            commands.entity(entity).despawn_related::<Children>();
         }
 
         if Some(event.0.main_action_type) == currently_selected_menu.0 {

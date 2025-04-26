@@ -6,7 +6,7 @@ use bevy::asset::Handle;
 use bevy::pbr::{MeshMaterial3d, NotShadowCaster, StandardMaterial};
 use bevy::prelude::{Added, Commands, Component, Mesh3d, Query, RemovedComponents, Res, Transform, With, Without, World};
 use moonshine_core::kind::Kind;
-use moonshine_object::{Object, ObjectInstance};
+use moonshine_object::{Object};
 use moonshine_view::{BuildView, ViewCommands, Viewable};
 use crate::features::inventory::InInventory;
 use crate::features::juice::{AddTransformJuice, TransformJuice};
@@ -97,7 +97,7 @@ pub fn on_remove_blueprint(
     mut commands: Commands,
 ) {
     removed.read().for_each(|base_entity| {
-        if commands.get_entity(base_entity).is_none() {
+        if commands.get_entity(base_entity).is_err() {
             return;
         }
         if let Ok(view) = viewable_query.get(base_entity) {

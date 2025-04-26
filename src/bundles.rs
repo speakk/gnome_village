@@ -1,6 +1,6 @@
 use crate::bundles::buildables::BuildablesPlugin;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+use bevy_platform::collections::HashMap;
 
 pub mod buildables;
 pub mod category_tags;

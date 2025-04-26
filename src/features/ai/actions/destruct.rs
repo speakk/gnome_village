@@ -4,7 +4,7 @@ use beet::prelude::*;
 use bevy::prelude::*;
 
 #[derive(Component, Reflect)]
-#[require(ContinueRun, Name(|| "DestructAction"))]
+#[require(ContinueRun, Name::new("DestructAction"))]
 pub struct DestructAction {
     pub(crate) target: Entity,
 }

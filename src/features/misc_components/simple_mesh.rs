@@ -1,6 +1,6 @@
 use bevy::asset::Assets;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+use bevy_platform::collections::HashMap;
 
 #[derive(Resource, Default, Deref, DerefMut)]
 pub struct SimpleMeshHandles(pub HashMap<SimpleMeshType, Handle<Mesh>>);

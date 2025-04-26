@@ -4,7 +4,7 @@ use bevy::prelude::*;
 
 #[action(play_animation_action)]
 #[derive(Component, Reflect)]
-#[require(Name(|| "PlayAnimationAction"))]
+#[require(Name::new("PlayAnimationAction"))]
 pub struct PlayAnimationAction {
     pub animation_index: usize,
 }

@@ -7,10 +7,10 @@ use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect, Clone)]
 #[require(
-    Id(|| Id(ItemId::WoodenWall)),
-    Name(|| "Wooden Wall"),
+    Id = Id(ItemId::WoodenWall),
+    Name::new("Wooden Wall"),
     Solid,
-    Buildable(|| Buildable {
+    Buildable = Buildable {
         item_requirements: vec![
             ItemAmount {
                 item_id: ItemId::Lumber,
@@ -18,8 +18,8 @@ use bevy::prelude::*;
             }
         ],
         ..Default::default()
-    }),
-    SimpleMesh(|| SimpleMesh(SimpleMeshType::Cuboid))
+    },
+    SimpleMesh(SimpleMeshType::Cuboid)
 )]
 #[reflect(Component)]
 pub struct WoodenWall;

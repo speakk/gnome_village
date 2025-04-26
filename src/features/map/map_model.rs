@@ -171,7 +171,7 @@ pub(super) fn generate_rocks(
     world_seed: Res<WorldSeed>,
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
 ) {
-    let map_data = map_query.single();
+    let Ok(map_data) = map_query.single() else { return };
     let min_bound = map_data.size.x.min(map_data.size.y) as f32;
 
     for x in 0..map_data.size.x {
@@ -202,7 +202,7 @@ pub(super) fn generate_trees(
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
     item_spawners: Res<ItemSpawners>,
 ) {
-    let map_data = map_query.single();
+    let Ok(map_data) = map_query.single() else { return };
     let min_bound = map_data.size.x.min(map_data.size.y) as f32;
 
     const TREE_TYPES: [ItemId; 4] = [ItemId::OakTree, ItemId::PineTree, ItemId::MapleTree, ItemId::BarrenTree];
@@ -249,7 +249,8 @@ pub fn generate_test_entities(
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
     item_spawners: Res<ItemSpawners>,
 ) {
-    let map_data = map_data_query.single();
+    let Ok(map_data) = map_data_query.single() else { return };
+
     let mut rng = rand::rng();
 
     let test_entities = vec![

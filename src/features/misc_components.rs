@@ -16,7 +16,7 @@ use crate::features::position::{InterpolatePosition, PreviousWorldPosition, Worl
 use crate::features::states::AppState;
 use bevy::app::RunFixedMainLoopSystem::AfterFixedMainLoop;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+use bevy_platform::collections::HashMap;
 use light_source::LightSource;
 use moonshine_core::prelude::Save;
 use moonshine_view::{RegisterView, Viewable};

@@ -3,10 +3,10 @@ use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
-#[require(Id(|| Id(ItemId::Nitrogen)), Name(|| "Nitrogen"), ResourceItem, )]
+#[require(Id(ItemId::Nitrogen), Name::new("Nitrogen"), ResourceItem)]
 pub struct Nitrogen;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
-#[require(Id(|| Id(ItemId::Potassium)), Name(|| "Potassium"), ResourceItem, )]
+#[require(Id(ItemId::Potassium), Name::new("Potassium"), ResourceItem)]
 pub struct Potassium;
