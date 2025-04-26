@@ -27,6 +27,7 @@ impl Plugin for MovementPlugin {
                 apply_acceleration,
                 apply_velocity,
                 reset_input,
+                reset_acceleration,
                 apply_friction,
             )
                 .chain()
@@ -61,6 +62,12 @@ fn apply_velocity(
 fn reset_input(mut query: Query<&mut AccumulatedInput>) {
     for mut input in &mut query {
         input.0 = Vec2::ZERO;
+    }
+}
+
+fn reset_acceleration(mut query: Query<&mut Acceleration>) {
+    for mut acceleration in &mut query {
+        acceleration.0 = Vec2::ZERO;
     }
 }
 

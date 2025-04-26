@@ -7,7 +7,7 @@ use crate::bundles::settler::Settler;
 use crate::bundles::soil::dirt::Dirt;
 use crate::bundles::{Id, ItemStack, ResourceItem};
 use crate::features::ai::WorkingOnTask;
-use crate::features::input::SaveLoadAction;
+use crate::features::input::{OmniPresentInputContext, save_load_action};
 use crate::features::inventory::Inventory;
 use crate::features::map::map_model::{MapData, ReservedCoordinatesHelper};
 use crate::features::misc_components::gltf_asset::GltfData;
@@ -22,9 +22,7 @@ use crate::features::misc_components::destruct_target::DestructTarget;
 use bevy::prelude::KeyCode::F8;
 use bevy::prelude::*;
 use directories::ProjectDirs;
-use leafwing_input_manager::action_state::ActionState;
-use leafwing_input_manager::input_map::InputMap;
-use leafwing_input_manager::InputManagerBundle;
+use bevy_enhanced_input::prelude::*;
 use moonshine_core::load::load;
 use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
@@ -112,14 +110,15 @@ impl Plugin for SavePlugin {
         .register_type::<WorldCamera>()
         .register_type::<Id>()
         .register_type::<PlanetOrigin>()
-        .add_systems(Startup, setup)
         .add_systems(
             PreUpdate,
             save_default().into(file_from_resource::<SaveRequest>()),
         )
         .add_systems(PreUpdate, load(file_from_resource::<LoadRequest>()))
         .add_systems(Startup, register_components)
-        .add_systems(Update, handle_save_input);
+        .add_observer(binding)
+        .add_observer(handle_quicksave)
+        .add_observer(handle_quickload);
     }
 }
 
@@ -147,23 +146,17 @@ pub fn register_components(world: &mut World) {
     world.register_component::<Tree>();
 }
 
-fn setup(mut commands: Commands) {
-    let input_map = InputMap::new([
-        (SaveLoadAction::QuickSave, F5),
-        (SaveLoadAction::QuickLoad, F8),
-    ]);
-
-    commands.spawn(InputManagerBundle::with_map(input_map));
+fn binding(trigger: Trigger<Binding<OmniPresentInputContext>>, mut input_context: Query<&mut Actions<OmniPresentInputContext>>) {
+    let mut actions = input_context.get_mut(trigger.entity()).unwrap();
+    
+    actions.bind::<save_load_action::QuickSave>().to(KeyCode::F5);
+    actions.bind::<save_load_action::QuickLoad>().to(KeyCode::F8);
 }
 
-fn handle_save_input(mut query: Query<&ActionState<SaveLoadAction>>, mut commands: Commands) {
-    for action_state in &mut query {
-        if action_state.just_pressed(&SaveLoadAction::QuickSave) {
-            commands.insert_resource(SaveRequest::new());
-        }
+fn handle_quicksave(_trigger: Trigger<Fired<save_load_action::QuickSave>>, mut commands: Commands) {
+    commands.insert_resource(SaveRequest::new());
+}
 
-        if action_state.just_pressed(&SaveLoadAction::QuickLoad) {
-            commands.insert_resource(LoadRequest::new());
-        }
-    }
+fn handle_quickload(_trigger: Trigger<Fired<save_load_action::QuickLoad>>, mut commands: Commands) {
+    commands.insert_resource(LoadRequest::new());
 }

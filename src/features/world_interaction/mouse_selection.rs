@@ -1,13 +1,12 @@
-use crate::features::input::WorldInteractionAction;
+use crate::features::input::{InGameInputContext, OmniPresentInputContext, save_load_action, world_interaction_action};
 use crate::features::map::map_model::MapData;
 use crate::features::states::AppState;
 use crate::features::user_actions::{CurrentUserActionState, UserActionState};
 use bevy::prelude::KeyCode::{ControlLeft, KeyA, KeyD, ShiftLeft};
 use bevy::prelude::*;
 use bresenham::Bresenham;
-use leafwing_input_manager::action_state::ActionState;
-use leafwing_input_manager::input_map::InputMap;
-use leafwing_input_manager::InputManagerBundle;
+use bevy_enhanced_input::prelude::*;
+use crate::features::camera::CameraInputContext;
 
 #[derive(Event, Debug)]
 pub struct CoordinatesSelectedEvent {
@@ -57,6 +56,7 @@ impl Plugin for MouseSelectionPlugin {
             .add_event::<CoordinatesSelectedEvent>()
             .add_event::<MapDragStartEvent>()
             .add_event::<MapDragEndEvent>()
+            .add_observer(binding)
             .add_systems(OnEnter(AppState::InGame), setup)
             .add_systems(
                 Update,
@@ -64,6 +64,18 @@ impl Plugin for MouseSelectionPlugin {
                     .run_if(in_state(AppState::InGame)),
             );
     }
+}
+
+fn binding(trigger: Trigger<Binding<InGameInputContext>>, mut input_context: Query<&mut Actions<InGameInputContext>>) {
+    let mut actions = input_context.get_mut(trigger.entity()).unwrap();
+
+    actions.bind::<world_interaction_action::PrimaryDragModifier>().to(
+        ControlLeft,
+    );
+
+    actions.bind::<world_interaction_action::SecondaryDragModifier>().to(
+        ShiftLeft,
+    );
 }
 
 fn setup(
@@ -75,15 +87,6 @@ fn setup(
     println!("Setting up mouse selection plugin");
     mesh_picking_settings.require_markers = true;
     mesh_picking_settings.ray_cast_visibility = RayCastVisibility::Any;
-
-    let drag_input_map = InputMap::new([
-        (WorldInteractionAction::PrimarySelect, KeyA),
-        (WorldInteractionAction::SecondarySelect, KeyD),
-        (WorldInteractionAction::PrimaryDragModifier, ControlLeft),
-        (WorldInteractionAction::SecondaryDragModifier, ShiftLeft),
-    ]);
-
-    commands.spawn(InputManagerBundle::with_map(drag_input_map));
 
     let ground_plane_mesh = Mesh3d(
         meshes.add(
@@ -163,30 +166,19 @@ fn handle_ground_plane_drag_start(
     drag: Trigger<Pointer<DragStart>>,
     mut map_drag_start_event_writer: EventWriter<MapDragStartEvent>,
     mut drag_info_resource: ResMut<DragInfo>,
-    interaction_action_query: Query<(&ActionState<WorldInteractionAction>,)>,
+    input_context: Single<&Actions<InGameInputContext>>,
 ) {
-    fn get_modifier_type(
-        action_states: Vec<&ActionState<WorldInteractionAction>>,
-    ) -> Option<DragModifier> {
-        for action_state in action_states {
-            if action_state.pressed(&WorldInteractionAction::PrimaryDragModifier) {
-                return Some(DragModifier::Primary);
-            } else if action_state.pressed(&WorldInteractionAction::SecondaryDragModifier) {
-                return Some(DragModifier::Secondary);
-            }
-        }
-
+    let actions = input_context.into_inner();
+    let modifier_type = if actions.action::<world_interaction_action::PrimaryDragModifier>().state() == ActionState::Fired {
+        Some(DragModifier::Primary)
+    } else if actions.action::<world_interaction_action::SecondaryDragModifier>().state() == ActionState::Fired {
+        Some(DragModifier::Secondary)
+    } else {
         None
-    }
+    };
 
     let location = drag.hit.position;
     if let Some(location) = location {
-        let modifier_type: Option<DragModifier> = get_modifier_type(
-            interaction_action_query
-                .iter()
-                .map(|(state,)| state)
-                .collect(),
-        );
         println!(
             "Drag started on location: {:?} with modifier: {:?}",
             location, modifier_type

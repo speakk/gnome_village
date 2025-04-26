@@ -1,82 +1,91 @@
-use crate::features::input::WorldSpeedAction;
-use bevy::app::{App, Startup, Update};
+use crate::features::input::{InGameInputContext, world_speed_action};
 use bevy::prelude::*;
-use leafwing_input_manager::action_state::ActionState;
-use leafwing_input_manager::input_map::InputMap;
-use leafwing_input_manager::prelude::ButtonlikeChord;
-use leafwing_input_manager::InputManagerBundle;
+use bevy_enhanced_input::prelude::*;
 
 pub struct WorldSpeedPlugin;
 
 impl Plugin for WorldSpeedPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup)
-            .add_systems(Update, handle_speed_change);
+        app.add_observer(binding)
+            .add_observer(toggle_pause_handler)
+            .add_observer(set_speed_realtime)
+            .add_observer(set_speed_fast)
+            .add_observer(set_speed_faster)
+            .add_observer(set_speed_fastest);
     }
 }
 
-fn setup(mut commands: Commands) {
-    let input_map = InputMap::new([
-        (
-            WorldSpeedAction::TogglePause,
-            ButtonlikeChord::new([KeyCode::Space]),
-        ),
-        (
-            WorldSpeedAction::RealTime,
-            ButtonlikeChord::new([KeyCode::AltLeft, KeyCode::Digit1]),
-        ),
-        (
-            WorldSpeedAction::Fast,
-            ButtonlikeChord::new([KeyCode::AltLeft, KeyCode::Digit2]),
-        ),
-        (
-            WorldSpeedAction::Faster,
-            ButtonlikeChord::new([KeyCode::AltLeft, KeyCode::Digit3]),
-        ),
-        (
-            WorldSpeedAction::Fastest,
-            ButtonlikeChord::new([KeyCode::AltLeft, KeyCode::Digit4]),
-        ),
-    ]);
-    commands.spawn(InputManagerBundle::with_map(input_map));
+fn binding(
+    trigger: Trigger<Binding<InGameInputContext>>,
+    mut in_game_input_context: Query<&mut Actions<InGameInputContext>>,
+) {
+    let mut actions = in_game_input_context.get_mut(trigger.entity()).unwrap();
+
+    actions
+        .bind::<world_speed_action::TogglePause>()
+        .to((KeyCode::Space,));
+
+    actions
+        .bind::<world_speed_action::RealTime>()
+        .to((KeyCode::Digit1.with_mod_keys(ModKeys::ALT),));
+
+    actions
+        .bind::<world_speed_action::Fast>()
+        .to((KeyCode::Digit2.with_mod_keys(ModKeys::ALT),));
+
+    actions
+        .bind::<world_speed_action::Faster>()
+        .to((KeyCode::Digit3.with_mod_keys(ModKeys::ALT),));
+
+    actions
+        .bind::<world_speed_action::Fastest>()
+        .to((KeyCode::Digit4.with_mod_keys(ModKeys::ALT),));
 }
 
-pub fn handle_speed_change(
-    query: Query<&ActionState<WorldSpeedAction>>,
+pub fn toggle_pause_handler(
+    _trigger: Trigger<Fired<world_speed_action::TogglePause>>,
     mut virtual_time: ResMut<Time<Virtual>>,
     mut paused: Local<bool>,
 ) {
-    let action_state = query.single();
-
-    if action_state.just_pressed(&WorldSpeedAction::TogglePause) {
-        *paused = !*paused;
-        // TODO: Maybe resume speed that existed previous
-        if *paused {
-            virtual_time.set_relative_speed(0.0);
-            println!("Paused, speed 0");
-        } else {
-            virtual_time.set_relative_speed(1.0);
-            println!("Resumed, speed 1");
-        }
-    }
-
-    if action_state.just_pressed(&WorldSpeedAction::RealTime) {
+    *paused = !*paused;
+    // TODO: Maybe resume speed that existed previous
+    if *paused {
+        virtual_time.set_relative_speed(0.0);
+        println!("Paused, speed 0");
+    } else {
         virtual_time.set_relative_speed(1.0);
-        println!("Speed changed to 1.0");
+        println!("Resumed, speed 1");
     }
+}
 
-    if action_state.just_pressed(&WorldSpeedAction::Fast) {
-        virtual_time.set_relative_speed(2.0);
-        println!("Speed changed to 2.0");
-    }
+pub fn set_speed_realtime(
+    _trigger: Trigger<Fired<world_speed_action::RealTime>>,
+    mut virtual_time: ResMut<Time<Virtual>>,
+) {
+    virtual_time.set_relative_speed(1.0);
+    println!("Speed changed to 1.0");
+}
 
-    if action_state.just_pressed(&WorldSpeedAction::Faster) {
-        virtual_time.set_relative_speed(3.5);
-        println!("Speed changed to 3.5");
-    }
+pub fn set_speed_fast(
+    _trigger: Trigger<Fired<world_speed_action::Fast>>,
+    mut virtual_time: ResMut<Time<Virtual>>,
+) {
+    virtual_time.set_relative_speed(2.0);
+    println!("Speed changed to 2.0");
+}
 
-    if action_state.just_pressed(&WorldSpeedAction::Fastest) {
-        virtual_time.set_relative_speed(6.0);
-        println!("Speed changed to 6.0");
-    }
+pub fn set_speed_faster(
+    _trigger: Trigger<Fired<world_speed_action::Faster>>,
+    mut virtual_time: ResMut<Time<Virtual>>,
+) {
+    virtual_time.set_relative_speed(3.5);
+    println!("Speed changed to 3.5");
+}
+
+pub fn set_speed_fastest(
+    _trigger: Trigger<Fired<world_speed_action::Fastest>>,
+    mut virtual_time: ResMut<Time<Virtual>>,
+) {
+    virtual_time.set_relative_speed(6.0);
+    println!("Speed changed to 6.0");
 }

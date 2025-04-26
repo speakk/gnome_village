@@ -41,13 +41,16 @@ bevy = { version = "0.15.3", default-features = false, features = [
     "tonemapping_luts",
     "webgl2",
     "x11",
-    "trace"
+    "trace",
+    # "std",
+    # "async_executor"
 ] }
 bevy_kira_audio = { version = "0.22.0" }
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
-bevy_atmosphere = "0.12.2"
 directories = "6.0.0"
-leafwing-input-manager = "0.16.0"
+bevy_atmosphere = "0.12.2"
+# leafwing-input-manager = "0.16.0"
+bevy_enhanced_input = "0.10.0"
 moonshine-core = "0.2.1"
 moonshine-object = "0.2.1"
 moonshine-view = "0.1.6"
