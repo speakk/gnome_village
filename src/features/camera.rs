@@ -13,7 +13,6 @@ use bevy::prelude::KeyCode::{KeyA, KeyD, KeyS, KeyW};
 use bevy::prelude::*;
 use bevy_enhanced_input::prelude::*;
 use bevy::render::camera::{CameraOutputMode, ScalingMode};
-use bevy_atmosphere::plugin::{AtmosphereCamera, AtmospherePlugin};
 use moonshine_core::save::Save;
 use moonshine_object::Object;
 use moonshine_view::{BuildView, RegisterView, ViewCommands};
@@ -38,7 +37,8 @@ pub struct AccumulatedInput(pub Vec2);
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(AtmospherePlugin)
+        app
+            //.add_plugins(AtmospherePlugin)
             .add_input_context::<CameraInputContext>()
             .add_viewable::<WorldCamera>()
             .add_systems(OnEnter(AppState::InGame), setup)
@@ -102,7 +102,7 @@ impl BuildView for WorldCamera {
             }),
             //ScreenSpaceAmbientOcclusion::default(),
             Msaa::Off,
-            AtmosphereCamera::default(),
+            //AtmosphereCamera::default(),
             // Skybox {
             //     image: sky_image_handle.clone(),
             //     brightness: 6000.0,

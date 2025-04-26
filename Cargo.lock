@@ -568,30 +568,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bevy_atmosphere"
-version = "0.12.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3d947b114d324c588557b87a12c4818b1844170392697965ca90b9b10bcf0b4e"
-dependencies = [
- "bevy",
- "bevy_atmosphere_macros",
- "cfg-if",
-]
-
-[[package]]
-name = "bevy_atmosphere_macros"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f133ec6899e99e56b984e53e58c348779c9d6273032cca79825c6f915306f8b"
-dependencies = [
- "bevy_macro_utils",
- "proc-macro-crate",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "bevy_color"
 version = "0.15.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4358,7 +4334,6 @@ dependencies = [
  "beet",
  "bevy",
  "bevy-inspector-egui",
- "bevy_atmosphere",
  "bevy_dylib",
  "bevy_easings",
  "bevy_enhanced_input",

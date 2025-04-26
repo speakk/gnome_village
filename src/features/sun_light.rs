@@ -7,8 +7,6 @@ use bevy::pbr::light_consts::lux::AMBIENT_DAYLIGHT;
 use bevy::pbr::{AmbientLight, CascadeShadowConfigBuilder, DirectionalLight};
 use bevy::prelude::*;
 use bevy::window::WindowResized;
-use bevy_atmosphere::model::AtmosphereModel;
-use bevy_atmosphere::prelude::{AtmosphereMut, Nishita};
 use std::f32::consts::{PI, TAU};
 
 pub struct SunLightPlugin;
@@ -56,10 +54,11 @@ impl Plugin for SunLightPlugin {
                 TimerMode::Repeating,
             )))
             .insert_resource(CurrentTimeOfDay::default())
-            .insert_resource(AtmosphereModel::default())
             .add_systems(
                 Update,
-                (daylight_cycle, rotate_planet, rotate_atmosphere)
+                (daylight_cycle, rotate_planet,
+                    //rotate_atmosphere
+            )
                     .run_if(in_state(AppState::InGame)),
             );
     }
@@ -195,18 +194,18 @@ fn rotate_planet(
         }
     }
 }
-
-fn rotate_atmosphere(
-    mut atmosphere: AtmosphereMut<Nishita>,
-    mut atmosphere_timer: ResMut<AtmosphereTimer>,
-    current_time_of_day: Res<CurrentTimeOfDay>,
-    time: Res<Time>,
-) {
-    atmosphere_timer.0.tick(time.delta());
-    if atmosphere_timer.0.finished() {
-        let t = current_time_of_day.time_of_day;
-        atmosphere.sun_position =
-            Quat::from_euler(EulerRot::YXZ, t * PI / 4.0, t * PI * 2.0 + PI, 0.0).xyz()
-                * Vec3::new(1.0, -1.0, 1.0);
-    }
-}
+// 
+// fn rotate_atmosphere(
+//     mut atmosphere: AtmosphereMut<Nishita>,
+//     mut atmosphere_timer: ResMut<AtmosphereTimer>,
+//     current_time_of_day: Res<CurrentTimeOfDay>,
+//     time: Res<Time>,
+// ) {
+//     atmosphere_timer.0.tick(time.delta());
+//     if atmosphere_timer.0.finished() {
+//         let t = current_time_of_day.time_of_day;
+//         atmosphere.sun_position =
+//             Quat::from_euler(EulerRot::YXZ, t * PI / 4.0, t * PI * 2.0 + PI, 0.0).xyz()
+//                 * Vec3::new(1.0, -1.0, 1.0);
+//     }
+// }

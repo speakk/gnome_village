@@ -48,7 +48,6 @@ bevy = { version = "0.15.3", default-features = false, features = [
 bevy_kira_audio = { version = "0.22.0" }
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
 directories = "6.0.0"
-bevy_atmosphere = "0.12.2"
 # leafwing-input-manager = "0.16.0"
 bevy_enhanced_input = "0.10.0"
 moonshine-core = "0.2.1"
