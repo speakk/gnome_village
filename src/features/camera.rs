@@ -5,18 +5,21 @@ use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
 use bevy::app::{App, Plugin, RunFixedMainLoop};
-use bevy::core_pipeline::prepass::{DeferredPrepass, DepthPrepass, NormalPrepass};
+use bevy::core_pipeline::prepass::{DeferredPrepass, DepthPrepass, MotionVectorPrepass, NormalPrepass};
 use bevy::ecs::prelude::*;
 use bevy::math::{Vec2, Vec3};
-use bevy::pbr::ClusterConfig;
+use bevy::pbr::{Atmosphere, ClusterConfig};
 use bevy::prelude::KeyCode::{KeyA, KeyD, KeyS, KeyW};
 use bevy::prelude::*;
 use bevy_enhanced_input::prelude::*;
-use bevy::render::camera::{CameraOutputMode, ScalingMode};
+use bevy::render::camera::{CameraOutputMode, Exposure, ScalingMode};
 use moonshine_core::save::Save;
 use moonshine_object::Object;
 use moonshine_view::{BuildView, RegisterView, ViewCommands};
 use std::ops::{Add, Sub};
+use bevy::core_pipeline::bloom::Bloom;
+use bevy::core_pipeline::fxaa::Fxaa;
+use bevy::core_pipeline::tonemapping::Tonemapping;
 use bevy::render::view::RenderLayers;
 use bevy_enhanced_input::input::Input::MouseWheel;
 
@@ -69,17 +72,17 @@ fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
         Save,
     ));
 
-    commands.spawn((
-        Camera2d,
-        Camera {
-            order: 1,
-            clear_color: ClearColorConfig::None,
-            ..Default::default()
-        },
-        Msaa::Off,
-        // This seems to fix 3d gizmos appearing as small mini versions in the middle of the screen
-        RenderLayers::layer(1)
-    ));
+    // commands.spawn((
+    //     Camera2d,
+    //     Camera {
+    //         order: 1,
+    //         clear_color: ClearColorConfig::None,
+    //         ..Default::default()
+    //     },
+    //     Msaa::Off,
+    //     // This seems to fix 3d gizmos appearing as small mini versions in the middle of the screen
+    //     RenderLayers::layer(1)
+    // ));
 }
 
 impl BuildView for WorldCamera {
@@ -88,7 +91,8 @@ impl BuildView for WorldCamera {
             Camera3d::default(),
             Camera {
                 order: 0,
-                clear_color: ClearColorConfig::None,
+                //clear_color: ClearColorConfig::None,
+                hdr: true,
                 ..Default::default()
             },
             Projection::from(OrthographicProjection {
@@ -110,9 +114,15 @@ impl BuildView for WorldCamera {
             // },
             Transform::from_xyz(0.0, 20.0, 20.0).looking_at(Vec3::ZERO, Vec3::Y),
             MeshPickingCamera,
+            Fxaa::default(),
+            Atmosphere::EARTH,
+            Exposure::SUNLIGHT,
+            Tonemapping::AcesFitted,
+            Bloom::NATURAL,
         ))
         .insert(DepthPrepass)
         .insert(NormalPrepass)
+        .insert(MotionVectorPrepass)
         .insert(DeferredPrepass)
         .insert(ClusterConfig::FixedZ {
             // 4096 clusters is the Bevy default

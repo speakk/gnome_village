@@ -9,6 +9,7 @@ use bevy::prelude::*;
 use bevy::window::WindowResized;
 use std::f32::consts::{PI, TAU};
 use core::time::Duration;
+use bevy::pbr::light_consts::lux;
 
 pub struct SunLightPlugin;
 
@@ -86,7 +87,7 @@ pub fn setup_lights(mut commands: Commands) {
                 Sun,
                 DirectionalLight {
                     color: Color::srgb(0.9, 0.9, 0.8),
-                    illuminance: 6000.0,
+                    illuminance: lux::RAW_SUNLIGHT,
                     shadows_enabled: true,
                     ..default()
                 },
@@ -104,7 +105,7 @@ pub fn setup_lights(mut commands: Commands) {
                 Moon,
                 DirectionalLight {
                     color: Color::srgb(0.4, 0.4, 1.0),
-                    illuminance: 4000.0,
+                    illuminance: lux::RAW_SUNLIGHT,
                     shadows_enabled: true,
                     ..default()
                 },
@@ -128,7 +129,7 @@ pub fn setup_lights(mut commands: Commands) {
     commands.spawn((
         DirectionalLight {
             color: Color::from(SKY_200),
-            illuminance: 900.0,
+            illuminance: lux::RAW_SUNLIGHT / 3.5,
             shadows_enabled: false,
             ..default()
         },
@@ -176,14 +177,14 @@ fn rotate_planet(
 
     if let Ok((mut sun_transform, mut sun_light, mut sun_visibility)) = sun_query.get_single_mut() {
         if let Ok((mut moon_transform, mut moon_light, mut moon_visibility)) =
-            moon_query.single_mut().into()
+            moon_query.single_mut()
         {
             if (0.25..=0.75).contains(&t) {
                 *sun_visibility = Visibility::Visible;
                 *moon_visibility = Visibility::Hidden;
 
                 sun_transform.look_at(Vec3::ZERO, Vec3::Y);
-                let illuminance = t.sin().max(0.0).powf(2.0) * AMBIENT_DAYLIGHT;
+                let illuminance = t.sin().max(0.0).powf(2.0) * lux::RAW_SUNLIGHT;
                 sun_light.illuminance = illuminance;
             } else {
                 *moon_visibility = Visibility::Visible;
