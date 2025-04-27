@@ -45,10 +45,9 @@ bevy = { version = "0.16.0", default-features = false, features = [
     "std",
     "async_executor"
 ] }
-# bevy_kira_audio = { git = "https://github.com/NiklasEi/bevy_kira_audio", branch = "bevy_main" }
+bevy_kira_audio = "0.23.0"
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
 directories = "6.0.0"
-# leafwing-input-manager = "0.16.0"
 bevy_enhanced_input = "0.11.0"
 moonshine-view = { path = "external/moonshine_view" }
 moonshine-kind = { path = "external/moonshine_core/crates/kind" }
