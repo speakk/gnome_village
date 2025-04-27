@@ -29,7 +29,7 @@ pub fn setup_rock_materials(
 
 #[derive(Component, Default, Reflect)]
 #[require(
-    Id = Id(ItemId::Rock),
+    Id(ItemId::Rock),
     Solid,
     Save,
     Health = Health::new(1.0),

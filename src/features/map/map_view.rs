@@ -42,7 +42,6 @@ pub(super) fn create_map_materials(
 
 impl BuildView for MapData {
     fn build(world: &World, object: Object<Self>, mut view: ViewCommands<Self>) {
-        println!("Building map view for object: {:?}", object);
 
         view.insert((Transform::default(), InheritedVisibility::default()));
 

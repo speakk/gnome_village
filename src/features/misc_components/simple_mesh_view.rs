@@ -17,6 +17,12 @@ impl Kind for SimpleMeshValid {
     type Filter = (Without<Prototype>, Without<InInventory>, With<WorldPosition>);
 }
 
+// Empty view needed to satisfy moonshine_view
+impl BuildView for SimpleMesh {
+    fn build(_world: &World, _object: Object<Self>, view: ViewCommands<Self>) {
+    }
+}
+
 impl BuildView<SimpleMesh> for SimpleMeshValid {
     fn build(world: &World, object: Object<SimpleMesh>, mut view: ViewCommands<SimpleMesh>) {
         if world.get::<Prototype>(object.entity()).is_some() {
