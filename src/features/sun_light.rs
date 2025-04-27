@@ -89,16 +89,17 @@ pub fn setup_lights(mut commands: Commands) {
                     color: Color::srgb(0.9, 0.9, 0.8),
                     illuminance: lux::RAW_SUNLIGHT,
                     shadows_enabled: true,
+                    affects_lightmapped_mesh_diffuse: true,
                     ..default()
                 },
                 Transform::from_xyz(0.0, 10.0, 0.0).looking_at(Vec3::ZERO, Vec3::Y),
-                CascadeShadowConfigBuilder {
-                    num_cascades: cascade_count,
-                    first_cascade_far_bound: 4.0,
-                    maximum_distance: maximum_shadow_distance,
-                    ..default()
-                }
-                .build(),
+                // CascadeShadowConfigBuilder {
+                //     num_cascades: cascade_count,
+                //     first_cascade_far_bound: 4.0,
+                //     maximum_distance: maximum_shadow_distance,
+                //     ..default()
+                // }
+                // .build(),
             ));
 
             child_builder.spawn((
@@ -125,16 +126,23 @@ pub fn setup_lights(mut commands: Commands) {
             ));
         });
 
-    // Kind of ambient light
-    commands.spawn((
-        DirectionalLight {
-            color: Color::from(SKY_200),
-            illuminance: lux::RAW_SUNLIGHT / 3.5,
-            shadows_enabled: false,
-            ..default()
-        },
-        Transform::from_xyz(0.0, 10.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
-    ));
+    // ambient light
+    commands.insert_resource(AmbientLight {
+        color: Color::from(SKY_200),
+        brightness: 20_000.0,
+        ..default()
+    });
+
+    // // Kind of ambient light
+    // commands.spawn((
+    //     DirectionalLight {
+    //         color: Color::from(SKY_200),
+    //         illuminance: lux::RAW_SUNLIGHT / 60.0,
+    //         shadows_enabled: false,
+    //         ..default()
+    //     },
+    //     Transform::from_xyz(0.0, 10.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
+    // ));
 }
 
 // We can edit the Atmosphere resource and it will be updated automatically

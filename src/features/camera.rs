@@ -22,6 +22,7 @@ use bevy::core_pipeline::fxaa::Fxaa;
 use bevy::core_pipeline::tonemapping::Tonemapping;
 use bevy::render::view::RenderLayers;
 use bevy_enhanced_input::input::Input::MouseWheel;
+use bevy_hanabi::UnaryOperator::Exp;
 
 pub struct CameraPlugin;
 
@@ -116,7 +117,9 @@ impl BuildView for WorldCamera {
             MeshPickingCamera,
             Fxaa::default(),
             Atmosphere::EARTH,
-            Exposure::SUNLIGHT,
+            Exposure {
+                ev100: 14.2,
+            },
             Tonemapping::AcesFitted,
             Bloom::NATURAL,
         ))
