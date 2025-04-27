@@ -184,8 +184,8 @@ fn rotate_planet(
                 *moon_visibility = Visibility::Hidden;
 
                 sun_transform.look_at(Vec3::ZERO, Vec3::Y);
-                let illuminance = t.sin().max(0.0).powf(2.0) * lux::RAW_SUNLIGHT;
-                sun_light.illuminance = illuminance;
+                //let illuminance = t.sin().max(0.0).powf(2.0) * lux::RAW_SUNLIGHT;
+                //sun_light.illuminance = illuminance;
             } else {
                 *moon_visibility = Visibility::Visible;
                 *sun_visibility = Visibility::Hidden;

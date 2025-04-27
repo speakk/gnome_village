@@ -27,6 +27,7 @@ impl Plugin for GltfAssetPlugin {
                 react_to_work_finished,
             ).run_if(in_state(InGame)),
         )
+        .add_viewable::<GltfData>()
         .add_view::<GltfData, GltfValid>();
     }
 }
@@ -53,6 +54,13 @@ struct GltfValid;
 
 impl Kind for GltfValid {
     type Filter = (Without<Prototype>, Without<InInventory>);
+}
+
+// Empty view to satisfy moonshine_view
+impl BuildView for GltfData {
+    fn build(_world: &World, _object: Object<Self>, view: ViewCommands<Self>) {
+        // pass
+    }
 }
 
 impl BuildView<GltfData> for GltfValid {
