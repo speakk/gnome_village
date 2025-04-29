@@ -69,7 +69,7 @@ pub fn create_build_menu(
                                               mut event_writer: EventWriter<
                                             BuildMenuBuildableSelected,
                                         >| {
-                                            event_writer.send(writer_item_id);
+                                            event_writer.write(writer_item_id);
                                         },
                                     );
                             }

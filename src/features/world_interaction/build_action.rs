@@ -165,7 +165,7 @@ fn send_build_intent(
         return;
     }
 
-    user_action_intent.send(UserActionIntent(UserActionType::Build {
+    user_action_intent.write(UserActionIntent(UserActionType::Build {
         coordinates: event.coordinates.clone(),
         bundle_type: current_building,
     }));

@@ -33,7 +33,7 @@ fn finish_task_action(
         task_entity: task,
     });
 
-    event_writer.send(TaskFinished {
+    event_writer.write(TaskFinished {
         result: TaskFinishedResult::Success,
         task_entity: task,
     });

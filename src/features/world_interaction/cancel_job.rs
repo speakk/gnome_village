@@ -17,11 +17,27 @@ impl Plugin for CancelJobPlugin {
         app.add_systems(
             Update,
             (
+                engage_cancelling_state,
                 draw_cancel_gizmo,
                 send_cancel_intent,
                 react_to_cancel_intent,
             ),
         );
+    }
+}
+
+fn engage_cancelling_state(mut current_user_action: ResMut<CurrentUserActionState>,
+                           drag_info: Res<DragInfo>,) {
+    let Some(map_drag_start_event) = drag_info.map_drag_start_event else {
+        return;
+    };
+
+    if !matches!(current_user_action.0, Some(UserActionState::PlacingBuilding(_))) {
+        return;
+    }
+    
+    if map_drag_start_event.selection_type == SelectionType::Secondary {
+        current_user_action.0 = Some(UserActionState::CancellingJobs(None));
     }
 }
 
@@ -58,7 +74,7 @@ fn send_cancel_intent(
         return;
     }
 
-    user_action_intent.send(UserActionIntent(UserActionType::CancelJobs {
+    user_action_intent.write(UserActionIntent(UserActionType::CancelJobs {
         coordinates: event.coordinates.clone(),
         id_filter: None,
     }));

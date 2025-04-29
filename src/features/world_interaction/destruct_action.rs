@@ -55,7 +55,7 @@ fn send_destruct_intent(
     };
 
     if let Some(UserActionState::Destructing(category_id_filter)) = &current_user_action.0 {
-        user_action_intent.send(UserActionIntent(UserActionType::Destruct {
+        user_action_intent.write(UserActionIntent(UserActionType::Destruct {
             coordinates: event.coordinates.clone(),
             category_id_filter: category_id_filter.clone(),
         }));

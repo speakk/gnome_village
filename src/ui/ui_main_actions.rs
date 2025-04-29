@@ -54,7 +54,7 @@ fn react_to_main_action_menu_button_pressed(
     mut commands: Commands,
 ) {
     for event in event_reader.read() {
-        main_menu_selection_cleared.send(MainMenuSelectionCleared);
+        main_menu_selection_cleared.write(MainMenuSelectionCleared);
 
         {
             let Ok((entity, mut node)) = query.single_mut() else { return; };
@@ -85,6 +85,6 @@ fn react_to_main_action_menu_button_pressed(
         }
 
         currently_selected_menu.0 = Some(event.0.main_action_type);
-        main_menu_selected.send(MainMenuSelected(event.0.main_action_type));
+        main_menu_selected.write(MainMenuSelected(event.0.main_action_type));
     }
 }

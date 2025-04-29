@@ -53,8 +53,7 @@ impl Plugin for MiscComponentsPlugin {
                     .in_set(AfterFixedMainLoop)
                     .run_if(in_state(AppState::InGame)),
             )
-            .add_viewable::<SimpleMesh>()
-            .add_view::<SimpleMesh, SimpleMeshValid>()
+            .add_viewable::<SimpleMeshValid>()
             .add_viewable::<LightSource>();
     }
 }

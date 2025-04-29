@@ -105,6 +105,10 @@ pub fn create_button(
                 ..default()
             },
             TextColor(THEME_1_800),
+            TextShadow {
+                color: Color::srgba(0.0, 0.0, 0.0, 0.4),
+                offset: Vec2::new(2.0, 2.0)
+            }
         ));
 }
 

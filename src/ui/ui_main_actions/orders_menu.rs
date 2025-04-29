@@ -87,7 +87,7 @@ pub fn create_orders_menu(
                                               mut event_writer: EventWriter<
                                             OrderMenuItemSelected,
                                         >| {
-                                            event_writer.send(writer_item_id.clone());
+                                            event_writer.write(writer_item_id.clone());
                                         },
                                     );
                             }

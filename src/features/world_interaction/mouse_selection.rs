@@ -1,12 +1,13 @@
-use crate::features::input::{InGameInputContext, OmniPresentInputContext, save_load_action, world_interaction_action};
+use crate::features::input::{
+    world_interaction_action, InGameInputContext,
+};
 use crate::features::map::map_model::MapData;
 use crate::features::states::AppState;
 use crate::features::user_actions::{CurrentUserActionState, UserActionState};
-use bevy::prelude::KeyCode::{ControlLeft, KeyA, KeyD, ShiftLeft};
+use bevy::prelude::KeyCode::{ControlLeft, ShiftLeft};
 use bevy::prelude::*;
-use bresenham::Bresenham;
 use bevy_enhanced_input::prelude::*;
-use crate::features::camera::CameraInputContext;
+use bresenham::Bresenham;
 
 #[derive(Event, Debug)]
 pub struct CoordinatesSelectedEvent {
@@ -66,16 +67,19 @@ impl Plugin for MouseSelectionPlugin {
     }
 }
 
-fn binding(trigger: Trigger<Binding<InGameInputContext>>, mut input_context: Query<&mut Actions<InGameInputContext>>) {
+fn binding(
+    trigger: Trigger<Binding<InGameInputContext>>,
+    mut input_context: Query<&mut Actions<InGameInputContext>>,
+) {
     let mut actions = input_context.get_mut(trigger.target()).unwrap();
 
-    actions.bind::<world_interaction_action::PrimaryDragModifier>().to(
-        ControlLeft,
-    );
+    actions
+        .bind::<world_interaction_action::PrimaryDragModifier>()
+        .to(ControlLeft);
 
-    actions.bind::<world_interaction_action::SecondaryDragModifier>().to(
-        ShiftLeft,
-    );
+    actions
+        .bind::<world_interaction_action::SecondaryDragModifier>()
+        .to(ShiftLeft);
 }
 
 fn setup(
@@ -146,8 +150,7 @@ fn handle_ground_plane_click(
 
     let location = click.hit.position;
     if let Some(location) = location {
-        println!("Clicked on location: {:?}", location);
-        coordinates_selected_event.send(CoordinatesSelectedEvent {
+        coordinates_selected_event.write(CoordinatesSelectedEvent {
             coordinates: vec![IVec2::new(
                 location.x.round() as i32,
                 location.z.round() as i32,
@@ -159,6 +162,7 @@ fn handle_ground_plane_click(
             },
             drag_modifier: None,
         });
+        println!("Clicked on location: {:?}", location);
     }
 }
 
@@ -169,9 +173,17 @@ fn handle_ground_plane_drag_start(
     input_context: Single<&Actions<InGameInputContext>>,
 ) {
     let actions = input_context.into_inner();
-    let modifier_type = if actions.action::<world_interaction_action::PrimaryDragModifier>().state() == ActionState::Fired {
+    let modifier_type = if actions
+        .action::<world_interaction_action::PrimaryDragModifier>()
+        .state()
+        == ActionState::Fired
+    {
         Some(DragModifier::Primary)
-    } else if actions.action::<world_interaction_action::SecondaryDragModifier>().state() == ActionState::Fired {
+    } else if actions
+        .action::<world_interaction_action::SecondaryDragModifier>()
+        .state()
+        == ActionState::Fired
+    {
         Some(DragModifier::Secondary)
     } else {
         None
@@ -194,7 +206,9 @@ fn handle_ground_plane_drag_start(
             },
         };
 
-        map_drag_start_event_writer.send(event);
+        map_drag_start_event_writer.write(event);
+
+        println!("Drag start event written: {:?}", event);
 
         drag_info_resource.is_dragging = true;
         drag_info_resource.map_drag_start_event = Some(event);
@@ -214,7 +228,7 @@ fn handle_ground_plane_drag_end(
     let drag_info_start_event = drag_info_resource
         .map_drag_start_event
         .expect("Drag start event not set when ending drag");
-    map_drag_end_event_writer.send(MapDragEndEvent {
+    map_drag_end_event_writer.write(MapDragEndEvent {
         coordinate: location,
         drag_modifier: drag_info_start_event.drag_modifier,
         selection_type: drag_info_start_event.selection_type,
@@ -222,7 +236,7 @@ fn handle_ground_plane_drag_end(
     drag_info_resource.is_dragging = false;
     drag_info_resource.map_drag_start_event = None;
 
-    coordinates_selected_event.send(CoordinatesSelectedEvent {
+    coordinates_selected_event.write(CoordinatesSelectedEvent {
         coordinates: selected_coordinates.0.clone(),
         selection_type: drag_info_start_event.selection_type,
         drag_modifier: drag_info_start_event.drag_modifier,
@@ -288,7 +302,14 @@ pub fn handle_mouse_dragged(
                 selected_coordinates.0 = line_select(event.coordinate, current_coordinate.0);
             }
             Some(DragModifier::Secondary) => {
-                let hollow = matches!(current_action_state.0, Some(UserActionState::PlacingBuilding(_)));
+                // TODO: Honestly this should always send all coordinates, or mix/max coordinates, and usage site should then what they need
+                let hollow = matches!(
+                    current_action_state.0,
+                    Some(UserActionState::PlacingBuilding(_))
+                ) || matches!(
+                    current_action_state.0,
+                    Some(UserActionState::CancellingJobs(_))
+                );
                 selected_coordinates.0 = rectangle_select(&current_coordinate, event, hollow);
             }
             None => {

@@ -3950,6 +3950,8 @@ dependencies = [
 [[package]]
 name = "moonshine-check"
 version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba183c53f1baf4a23db74fcfa9d4678ee4bd725f9549aa635525008133196fcd"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -3961,7 +3963,9 @@ dependencies = [
 
 [[package]]
 name = "moonshine-core"
-version = "0.2.2"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8fdbf807f0088757a7daba2d73a7ca45b531f79b3fdf77a74a9d716a1a5839e7"
 dependencies = [
  "bevy_app",
  "moonshine-check",
@@ -3974,7 +3978,9 @@ dependencies = [
 
 [[package]]
 name = "moonshine-kind"
-version = "0.2.2"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d9ba96e366e2bb9b5ae32eeb2cd0072e27e04e7afd97128432fefc0990cf36b0"
 dependencies = [
  "bevy_ecs",
  "bevy_reflect",
@@ -3984,7 +3990,9 @@ dependencies = [
 
 [[package]]
 name = "moonshine-object"
-version = "0.2.2"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6194ee32bfaaf595dc4c0e8a15c792519f6a682ee23e2f65df7bc7344b948b75"
 dependencies = [
  "bevy_ecs",
  "moonshine-kind",
@@ -3993,7 +4001,9 @@ dependencies = [
 
 [[package]]
 name = "moonshine-save"
-version = "0.4.0"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5ed0edce0bfc980b834e1c857da5cc8908fc086c2f80a8483b6263b57d375476"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -4009,6 +4019,8 @@ dependencies = [
 [[package]]
 name = "moonshine-tag"
 version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "acfc58aecdc67ead8976a91124e23b578bee7e42c592199fc6a6d606a34b6823"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -4022,7 +4034,9 @@ dependencies = [
 
 [[package]]
 name = "moonshine-util"
-version = "0.2.7"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cb4d321cb857efdafbc0e33a4f66fe904fb104b18dbf9c8ac3e155ffeb457056"
 dependencies = [
  "bevy_ecs",
  "disqualified",
@@ -4030,7 +4044,9 @@ dependencies = [
 
 [[package]]
 name = "moonshine-view"
-version = "0.1.7"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e0c669e4acb0ffaa2c2752e8f517fdcf8feee26e6b0843ae4d2e11cedb956570"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
