@@ -50,7 +50,6 @@ log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] 
 directories = "6.0.0"
 bevy_enhanced_input = "0.11.0"
 moonshine-view = { path = "external/moonshine_view" }
-moonshine-kind = { path = "external/moonshine_core/crates/kind" }
 moonshine-object = { path = "external/moonshine_core/crates/object" }
 moonshine-core = { path = "external/moonshine_core" }
 noisy_bevy = { git = "https://github.com/johanhelsing/noisy_bevy", branch = "bevy-0.16"}

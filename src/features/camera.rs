@@ -163,7 +163,7 @@ fn handle_zoom_input(
         if let Projection::Orthographic(ref mut ortho_projection) =
             *camera_projection.into_inner()
         {
-            ortho_projection.scale = ortho_projection.scale.add(value * zoom_amount).clamp(0.4, 3.0);
+            ortho_projection.scale = ortho_projection.scale.add(value * zoom_amount).clamp(0.4, 4.0);
         }
     }
 }

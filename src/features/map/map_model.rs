@@ -105,7 +105,7 @@ pub(super) fn generate_map_entity(
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
     item_spawners: Res<ItemSpawners>,
 ) {
-    let map_size = UVec2::new(170, 170);
+    let map_size = UVec2::new(150, 150);
     let mut map_data = MapData {
         data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
         size: map_size,

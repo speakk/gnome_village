@@ -5275,7 +5275,6 @@ dependencies = [
  "directories",
  "log",
  "moonshine-core",
- "moonshine-kind",
  "moonshine-object",
  "moonshine-view",
  "noisy_bevy",
