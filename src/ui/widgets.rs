@@ -84,6 +84,7 @@ pub fn create_button(
             ButtonColor(color_definition),
             ImageNode {
                 image: button_data.image.clone().unwrap(),
+                color: color_definition.normal,
                 image_mode: NodeImageMode::Sliced(button_data.slicer.clone().unwrap()),
                 ..default()
             },
