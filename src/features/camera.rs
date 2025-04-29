@@ -20,7 +20,7 @@ use std::ops::{Add, Sub};
 use bevy::core_pipeline::bloom::Bloom;
 use bevy::core_pipeline::fxaa::Fxaa;
 use bevy::core_pipeline::tonemapping::Tonemapping;
-use bevy::render::view::RenderLayers;
+use bevy::render::view::{Layer, RenderLayers};
 use bevy_enhanced_input::input::Input::MouseWheel;
 use bevy_hanabi::UnaryOperator::Exp;
 
@@ -65,6 +65,7 @@ fn binding(
 fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
     for (_, config, _) in gizmo_config.iter_mut() {
         config.depth_bias = -1.0;
+        config.render_layers = RenderLayers::layer(1);
     }
 
     commands.spawn((
@@ -73,17 +74,18 @@ fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
         Save,
     ));
 
-    // commands.spawn((
-    //     Camera2d,
-    //     Camera {
-    //         order: 1,
-    //         clear_color: ClearColorConfig::None,
-    //         ..Default::default()
-    //     },
-    //     Msaa::Off,
-    //     // This seems to fix 3d gizmos appearing as small mini versions in the middle of the screen
-    //     RenderLayers::layer(1)
-    // ));
+    commands.spawn((
+        Camera2d,
+        Camera {
+            hdr: true,
+            order: 1,
+            clear_color: ClearColorConfig::None,
+            ..Default::default()
+        },
+        Msaa::Off,
+        // This seems to fix 3d gizmos appearing as small mini versions in the middle of the screen
+        RenderLayers::layer(0)
+    ));
 }
 
 impl BuildView for WorldCamera {
@@ -105,6 +107,7 @@ impl BuildView for WorldCamera {
                 far: 200.0,
                 ..OrthographicProjection::default_3d()
             }),
+            RenderLayers::from_layers(&[0, 1]),
             //ScreenSpaceAmbientOcclusion::default(),
             Msaa::Off,
             //AtmosphereCamera::default(),
