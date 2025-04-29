@@ -31,7 +31,7 @@ use bevy_hanabi::HanabiPlugin;
 use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_kira_audio::AudioPlugin;
-//use bevy_mod_async::AsyncTasksPlugin;
+use bevy_mod_async::AsyncTasksPlugin;
 use features::path_finding::plugin::PathFindingPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
 use crate::features::audio::GameAudioPlugin;
@@ -45,7 +45,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugins(BeetFlowPlugin::default())
         .add_plugins(EasingsPlugin::default())
-//        .add_plugins(AsyncTasksPlugin)
+        .add_plugins(AsyncTasksPlugin)
         .add_plugins(AudioPlugin)
         .add_plugins(HanabiPlugin)
         .insert_resource(DefaultOpaqueRendererMethod::deferred())

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_easings::Ease;
-//use bevy_mod_async::prelude::TimingTaskExt;
-//use bevy_mod_async::SpawnCommandExt;
+use bevy_mod_async::prelude::TimingTaskExt;
+use bevy_mod_async::SpawnCommandExt;
 use std::time::Duration;
 
 pub struct JuicePlugin;
@@ -74,37 +74,36 @@ fn juice_new_transform(
         let scaled_delay = adjusted_maximum_length / transform_juice.batch_size as u32;
         let delay = scaled_delay * transform_juice.batch_index as u32;
 
-        // TODO: Migration 0.16
-        // commands.spawn_task(move |cx| async move {
-        //     cx.sleep(delay).await;
-        //
-        //     const TRANSFORM_DURATION: Duration = Duration::from_millis(500);
-        //
-        //     cx.with_world(move |world| {
-        //         let mut commands = world.commands();
-        //
-        //         if let Some(mut entity_commands) = commands.get_entity(entity) {
-        //             entity_commands.insert(
-        //                 Transform::from_xyz(translation.x, translation.y + 1.0, translation.z)
-        //                     .ease_to(
-        //                         Transform::from_xyz(translation.x, translation.y, translation.z),
-        //                         bevy_easings::EaseFunction::BounceOut,
-        //                         bevy_easings::EasingType::Once {
-        //                             duration: TRANSFORM_DURATION,
-        //                         },
-        //                     ),
-        //             );
-        //             world.flush();
-        //         }
-        //     })
-        //     .await;
-        //
-        //     //cx.sleep(duration).await;
-        //     cx.with_world(move |world| {
-        //         world.send_event(TransformJuiceFinished::from(transform_juice));
-        //         world.flush();
-        //     })
-        //     .await;
-        // });
+        commands.spawn_task(move |cx| async move {
+            cx.sleep(delay).await;
+
+            const TRANSFORM_DURATION: Duration = Duration::from_millis(500);
+
+            cx.with_world(move |world| {
+                let mut commands = world.commands();
+
+                if let Ok(mut entity_commands) = commands.get_entity(entity) {
+                    entity_commands.insert(
+                        Transform::from_xyz(translation.x, translation.y + 1.0, translation.z)
+                            .ease_to(
+                                Transform::from_xyz(translation.x, translation.y, translation.z),
+                                bevy_easings::EaseFunction::BounceOut,
+                                bevy_easings::EasingType::Once {
+                                    duration: TRANSFORM_DURATION,
+                                },
+                            ),
+                    );
+                    world.flush();
+                }
+            })
+            .await;
+
+            //cx.sleep(duration).await;
+            cx.with_world(move |world| {
+                world.send_event(TransformJuiceFinished::from(transform_juice));
+                world.flush();
+            })
+            .await;
+        });
     }
 }

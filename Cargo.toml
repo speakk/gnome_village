@@ -60,7 +60,7 @@ beet = { git = "https://github.com/mrchantey/beet", branch = "main" }
 bresenham = "0.1.1"
 wyrand = "0.3.2"
 bevy_easings = { git = "https://github.com/vleue/bevy_easings", branch = "main"}
-#bevy_mod_async = "0.9.0"
+bevy_mod_async = "0.10.0"
 bevy_hanabi = { git="https://github.com/djeedai/bevy_hanabi", branch = "main" }
 bevy_platform = "0.16.0"
 bevy_egui = "0.34.1"
