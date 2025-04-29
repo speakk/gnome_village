@@ -1,9 +1,10 @@
 use crate::features::states::AppState;
 use crate::features::states::AppState::MainMenu;
 use crate::ui::colours::{THEME_1_400, THEME_1_800};
-use crate::ui::widgets::{CreateButtonParams, WidgetSystems};
-use bevy::prelude::*;
+use crate::ui::widgets::CreateButton;
 use crate::ui::{widgets, FONT_BOLD};
+use bevy::ecs::spawn::SpawnWith;
+use bevy::prelude::*;
 
 pub struct MainMenuPlugin;
 
@@ -11,21 +12,10 @@ impl Plugin for MainMenuPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, widgets::button_colouring);
         app.add_systems(OnEnter(MainMenu), setup);
-        //app.init_resource::<ButtonImage>();
-        //app.a
     }
 }
 
-// #[derive(Resource, Default)]
-// struct ButtonImage(Option<Handle<Image>>);
-fn setup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    widget_systems: Res<WidgetSystems>, //mut button_image: ResMut<ButtonImage>,
-) {
-    let button_image: Handle<Image> = asset_server.load("textures/button_1.png");
-    //button_image.0 = Some(image);
-
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         Camera2d,
         Camera {
@@ -37,76 +27,54 @@ fn setup(
         Msaa::Off,
     ));
 
-    commands
-        .spawn((
-            Node {
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                display: Display::Flex,
-                flex_direction: FlexDirection::Column,
-                align_items: AlignItems::Center,
-                justify_content: JustifyContent::Center,
-                ..default()
-            },
-            StateScoped(MainMenu),
-        ))
-        .with_children(move |parent| {
+    let bold_font_handle = asset_server.load(FONT_BOLD);
+
+    commands.spawn((
+        Node {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            display: Display::Flex,
+            flex_direction: FlexDirection::Column,
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center,
+            ..default()
+        },
+        StateScoped(MainMenu),
+        Children::spawn(SpawnWith(move |parent: &mut ChildSpawner| {
             parent.spawn((
                 Text::new("Gnome Village".to_uppercase()),
                 TextFont {
-                    font: asset_server.load(FONT_BOLD),
+                    font: bold_font_handle,
                     font_size: 84.0,
                     ..default()
                 },
                 TextColor(THEME_1_800),
             ));
 
-            let button_system_id = widget_systems.button.clone();
-
-            let button_entity = parent
-                .spawn_empty()
+            parent
+                .spawn(CreateButton {
+                    label: "New game".to_string(),
+                    ..Default::default()
+                })
                 .observe(
                     move |mut trigger: Trigger<Pointer<Click>>,
                           mut next_state: ResMut<NextState<AppState>>| {
                         next_state.set(AppState::Preload);
                         trigger.propagate(false);
                     },
-                )
-                .id();
-
-            parent.commands().queue(move |world: &mut World| {
-                let mut commands = world.commands();
-                commands.run_system_with(
-                    button_system_id.clone(),
-                    CreateButtonParams {
-                        label: "New game".to_string(),
-                        button_entity,
-                        ..Default::default()
-                    },
                 );
-            });
 
-            let button_entity = parent
-                .spawn_empty()
+            parent
+                .spawn(CreateButton {
+                    label: "Quit".to_string(),
+                    ..Default::default()
+                })
                 .observe(
                     move |mut trigger: Trigger<Pointer<Click>>, mut exit: EventWriter<AppExit>| {
-                        exit.send(AppExit::Success);
+                        exit.write(AppExit::Success);
                         trigger.propagate(false);
                     },
-                )
-                .id();
-
-            parent.commands().queue(move |world: &mut World| {
-                let mut commands = world.commands();
-                commands.run_system_with(
-                    button_system_id,
-                    CreateButtonParams {
-                        label: "Quit".to_string(),
-                        button_entity,
-                        ..Default::default()
-                    },
                 );
-            });
-        });
+        })),
+    ));
 }
-
