@@ -4,7 +4,7 @@ use crate::features::misc_components::Prototype;
 use crate::features::position::{InterpolatePosition, WorldPosition};
 use bevy::asset::Handle;
 use bevy::pbr::{MeshMaterial3d, NotShadowCaster, StandardMaterial};
-use bevy::prelude::{Added, Commands, Component, Mesh3d, Query, RemovedComponents, Res, Transform, With, Without, World};
+use bevy::prelude::{Added, Commands, Component, ContainsEntity, Mesh3d, OnRemove, Query, RemovedComponents, Res, Transform, Trigger, With, Without, World};
 use moonshine_core::kind::Kind;
 use moonshine_object::{Object};
 use moonshine_view::{BuildView, ViewCommands, Viewable};
@@ -68,6 +68,11 @@ impl BuildView for SimpleMeshValid {
             view.insert(InterpolatePosition);
         }
     }
+}
+
+// TODO: Workaround for moonshine_view not despawning views
+pub fn on_simple_mesh_remove(trigger: Trigger<OnRemove, SimpleMesh>, views: Query<&Viewable<SimpleMeshValid>>, mut commands: Commands) {
+    commands.entity(views.get(trigger.target()).unwrap().view().entity()).despawn();
 }
 
 #[derive(Component, Default)]

@@ -9,6 +9,9 @@ use crate::features::world_interaction::mouse_selection::{
     CoordinatesSelectedEvent, DragInfo, SelectedCoordinates, SelectionType,
 };
 use bevy::prelude::*;
+use moonshine_view::Viewable;
+use crate::features::misc_components::gltf_asset::GltfData;
+use crate::features::misc_components::simple_mesh::SimpleMesh;
 
 pub struct CancelJobPlugin;
 
@@ -86,6 +89,8 @@ pub fn react_to_cancel_intent(
     blueprints: Query<&BluePrint>,
     mut commands: Commands,
     coordinate_to_entity: Res<CoordinateToEntity>,
+    // views: Query<&Viewable<SimpleMeshValid>>,
+    // views_gltf: Query<&Viewable<GltfData>>
 ) {
     for event in user_action_intent.read() {
         if let UserActionType::CancelJobs {
@@ -109,6 +114,13 @@ pub fn react_to_cancel_intent(
                         println!("Entity id: {:?}", entity_id);
 
                         if blueprints.contains(*entity) {
+                            // if let Ok(view) = views.get(*entity) {
+                            //     commands.entity(view.view().entity()).despawn();
+                            // }
+                            // 
+                            // if let Ok(view) = views_gltf.get(*entity) {
+                            //     commands.entity(view.view().entity()).despawn();
+                            // }
                             commands.entity(*entity).despawn();
                         }
                     }

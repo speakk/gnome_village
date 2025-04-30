@@ -10,6 +10,8 @@ use moonshine_object::{Kind, Object};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use std::time::Duration;
 use crate::features::juice::{AddTransformJuice, TransformJuice};
+use crate::features::misc_components::simple_mesh::SimpleMesh;
+use crate::features::misc_components::simple_mesh_view::SimpleMeshValid;
 use crate::features::states::AppState::InGame;
 
 pub struct GltfAssetPlugin;
@@ -50,7 +52,7 @@ pub struct GltfAnimation {
     pub should_play: bool,
 }
 
-struct GltfValid;
+pub struct GltfValid;
 
 impl Kind for GltfValid {
     type Filter = (Without<Prototype>, Without<InInventory>);
@@ -61,6 +63,12 @@ impl BuildView for GltfData {
     fn build(_world: &World, _object: Object<Self>, view: ViewCommands<Self>) {
         // pass
     }
+}
+
+
+// TODO: Workaround for moonshine_view not despawning views
+pub fn on_gltf_remove(trigger: Trigger<OnRemove, GltfData>, views: Query<&Viewable<GltfValid>>, mut commands: Commands) {
+    commands.entity(views.get(trigger.target()).unwrap().view().entity()).despawn();
 }
 
 impl BuildView<GltfData> for GltfValid {
