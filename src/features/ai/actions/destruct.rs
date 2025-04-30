@@ -19,7 +19,6 @@ pub fn destruct_action(
     mut commands: Commands,
 ) {
     for (tree_node_entity, action, running) in actions.iter() {
-        println!("Destructing");
         let target_agent = running.origin;
         commands.entity(target_agent).insert_if_new(IsDestructing);
         let mut health = healths.get_mut(action.target).unwrap();
@@ -29,7 +28,8 @@ pub fn destruct_action(
         if health.health <= 0.0 {
             println!("Health depleted");
             running.trigger_result(&mut commands, tree_node_entity, RunResult::Success);
-            commands.entity(target_agent).remove::<IsDestructing>();
+
+            commands.entity(target_agent).try_remove::<IsDestructing>();
         }
     }
 }

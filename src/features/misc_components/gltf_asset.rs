@@ -91,8 +91,6 @@ impl BuildView<GltfData> for GltfValid {
         if has_interpolate {
             view.insert(InterpolatePosition);
         }
-
-        println!("Building gltf asset view finished");
     }
 }
 

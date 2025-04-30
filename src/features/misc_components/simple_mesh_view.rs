@@ -80,7 +80,6 @@ pub fn on_add_blueprint(
     mut commands: Commands,
 ) {
     for view in query.iter() {
-        println!("blueprint added, making blueprint material");
         let mut material = materials_query.get_mut(view.view().entity()).unwrap();
         material.0 = blueprint_material.clone().unwrap();
         commands

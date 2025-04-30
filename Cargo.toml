@@ -43,7 +43,8 @@ bevy = { version = "0.16.0", default-features = false, features = [
     "x11",
     "trace",
     "std",
-    "async_executor"
+    "async_executor",
+    # "track_location" # Tmp only for debugging
 ] }
 bevy_kira_audio = "0.23.0"
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }

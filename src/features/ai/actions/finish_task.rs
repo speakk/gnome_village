@@ -39,5 +39,4 @@ fn finish_task_action(
     });
 
     trigger.trigger_result(&mut commands, RunResult::Success);
-    commands.entity(tree_root).despawn_recursive();
 }
