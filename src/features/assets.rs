@@ -16,6 +16,9 @@ const POTATO_PLANT_PATH: &str = "blender_models/plants/potato_plant.glb";
 const POTATO_PATH: &str = "blender_models/plants/potato_harvested.glb";
 const LUMBER_PATH: &str = "blender_models/wood.glb";
 const WATER_WELL_PATH: &str = "blender_models/well.glb";
+const GRASS_BLADE: &str = "blender_models/foliage/grass_blade.glb";
+const FLOWER_1: &str = "blender_models/foliage/flower_1.glb";
+const FLOWER_2: &str = "blender_models/foliage/flower_2.glb";
 
 #[derive(Debug, Reflect, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GltfAssetId {
@@ -29,6 +32,9 @@ pub enum GltfAssetId {
     WaterWell,
     PotatoPlant,
     Potato,
+    GrassBlade,
+    Flower1,
+    Flower2,
 }
 
 #[derive(Resource, Default)]
@@ -95,6 +101,18 @@ fn setup(
     gltf_asset_handles
         .handles
         .insert(GltfAssetId::Potato, asset_server.load(POTATO_PATH));
+
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::GrassBlade, asset_server.load(GRASS_BLADE));
+
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::Flower1, asset_server.load(FLOWER_1));
+
+    gltf_asset_handles
+        .handles
+        .insert(GltfAssetId::Flower2, asset_server.load(FLOWER_2));
 
     // Build the animation graph
     let (graph, node_indices) = AnimationGraph::from_clips([

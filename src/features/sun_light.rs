@@ -150,7 +150,7 @@ pub fn setup_lights(mut commands: Commands) {
 #[allow(clippy::type_complexity)]
 fn daylight_cycle(mut current_time_of_day: ResMut<CurrentTimeOfDay>, time: Res<Time>) {
     // At 60.0 one day takes a minute
-    let timer_scale_division = 60.0;
+    let timer_scale_division = 120.0;
     let total_time = current_time_of_day.total_time + time.delta_secs() / timer_scale_division;
 
     let time_of_day = total_time % 1.0;
@@ -205,18 +205,3 @@ fn rotate_planet(
         }
     }
 }
-// 
-// fn rotate_atmosphere(
-//     mut atmosphere: AtmosphereMut<Nishita>,
-//     mut atmosphere_timer: ResMut<AtmosphereTimer>,
-//     current_time_of_day: Res<CurrentTimeOfDay>,
-//     time: Res<Time>,
-// ) {
-//     atmosphere_timer.0.tick(time.delta());
-//     if atmosphere_timer.0.finished() {
-//         let t = current_time_of_day.time_of_day;
-//         atmosphere.sun_position =
-//             Quat::from_euler(EulerRot::YXZ, t * PI / 4.0, t * PI * 2.0 + PI, 0.0).xyz()
-//                 * Vec3::new(1.0, -1.0, 1.0);
-//     }
-// }

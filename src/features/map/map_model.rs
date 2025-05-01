@@ -1,15 +1,19 @@
+use std::f32::consts::PI;
 use crate::bundles::rock::Rock;
+use crate::bundles::soil::dirt::Dirt;
 use crate::bundles::{Id, ItemId, ItemSpawners};
+use crate::features::assets::{GltfAssetHandles, GltfAssetId};
 use crate::features::misc_components::simple_mesh::SimpleMeshHandles;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
+use crate::features::seeded_random::RandomSource;
+use bevy::gltf::GltfMesh;
 use bevy::math::{IVec2, UVec2, Vec2};
+use bevy::pbr::NotShadowCaster;
 use bevy::prelude::*;
 use moonshine_core::save::Save;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::Rng;
-use crate::bundles::soil::dirt::Dirt;
-use crate::features::seeded_random::RandomSource;
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
 pub struct MapSize(pub UVec2);
@@ -134,7 +138,12 @@ pub(super) fn generate_map_entity(
                 tile_type = TileType::Water;
                 reserved_coordinates.0.push(centered_coordinate);
             } else {
-                dirt_bundles.push((Dirt, Id(ItemId::Dirt),WorldPosition(centered_coordinate.as_vec2()), InWorld));
+                dirt_bundles.push((
+                    Dirt,
+                    Id(ItemId::Dirt),
+                    WorldPosition(centered_coordinate.as_vec2()),
+                    InWorld,
+                ));
             }
 
             map_data.set_tile_type(centered_coordinate, tile_type);
@@ -171,7 +180,9 @@ pub(super) fn generate_rocks(
     world_seed: Res<WorldSeed>,
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
 ) {
-    let Ok(map_data) = map_query.single() else { return };
+    let Ok(map_data) = map_query.single() else {
+        return;
+    };
     let min_bound = map_data.size.x.min(map_data.size.y) as f32;
 
     for x in 0..map_data.size.x {
@@ -202,20 +213,26 @@ pub(super) fn generate_trees(
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
     item_spawners: Res<ItemSpawners>,
 ) {
-    let Ok(map_data) = map_query.single() else { return };
-    let min_bound = map_data.size.x.min(map_data.size.y) as f32;
+    let Ok(map_data) = map_query.single() else {
+        return;
+    };
 
-    const TREE_TYPES: [ItemId; 4] = [ItemId::OakTree, ItemId::PineTree, ItemId::MapleTree, ItemId::BarrenTree];
+    const TREE_TYPES: [ItemId; 4] = [
+        ItemId::OakTree,
+        ItemId::PineTree,
+        ItemId::MapleTree,
+        ItemId::BarrenTree,
+    ];
 
-    //for x in 0..map_data.size.x {
     for x in (0..map_data.size.x).step_by(2) {
         for y in (0..map_data.size.y).step_by(2) {
-            let noise_value =
-                simplex_noise_2d_seeded(Vec2::new(x as f32, y as f32) * 0.017, world_seed.0 as f32 + 2.0);
+            let noise_value = simplex_noise_2d_seeded(
+                Vec2::new(x as f32, y as f32) * 0.017,
+                world_seed.0 as f32 + 2.0,
+            );
 
             let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
             let reserved = reserved_coordinates.0.contains(&centered_coordinate);
-
 
             let steepness = 2.2;
             let cutoff = 1.2;
@@ -249,7 +266,9 @@ pub fn generate_test_entities(
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
     item_spawners: Res<ItemSpawners>,
 ) {
-    let Ok(map_data) = map_data_query.single() else { return };
+    let Ok(map_data) = map_data_query.single() else {
+        return;
+    };
 
     let mut rng = rand::rng();
 
@@ -295,6 +314,86 @@ pub fn generate_test_entities(
                 entity_amount -= 1;
             }
             max_attempts -= 1;
+        }
+    }
+}
+
+pub fn generate_foliage(
+    mut commands: Commands,
+    map_data_query: Query<&MapData>,
+    gltf_handles: Res<GltfAssetHandles>,
+    gltf_assets: Res<Assets<Gltf>>,
+    gltf_meshes: Res<Assets<GltfMesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    reserved_coordinates: Res<ReservedCoordinatesHelper>,
+    world_seed: Res<WorldSeed>,
+    mut random_source: ResMut<RandomSource>,
+) {
+    let Ok(map_data) = map_data_query.single() else {
+        return;
+    };
+
+    let gltf_handle = gltf_handles.handles.get(&GltfAssetId::GrassBlade).unwrap();
+    let gltf_handle_flower_1 = gltf_handles.handles.get(&GltfAssetId::Flower1).unwrap();
+    let gltf_handle_flower_2 = gltf_handles.handles.get(&GltfAssetId::Flower2).unwrap();
+    
+    
+    let gltf_asset = gltf_assets.get(gltf_handle).unwrap();
+    let gltf_asset_flower_1 = gltf_assets.get(gltf_handle_flower_1).unwrap();
+    let gltf_asset_flower_2 = gltf_assets.get(gltf_handle_flower_2).unwrap();
+    let gltf_asset_flowers = [gltf_asset_flower_1, gltf_asset_flower_2];
+    
+    
+    let mesh_handle = gltf_asset.meshes[0].clone();
+    let mesh = gltf_meshes.get(&mesh_handle).unwrap();
+    let primitive = mesh.primitives[0].mesh.clone();
+
+    let grass_material = materials.add(StandardMaterial::from_color(Color::srgb(0.6, 0.8, 0.3)));
+
+    let max_foliage_amount_per_tile: usize = 80;
+    let mut rng = rand::rng();
+
+    for x in 0..map_data.size.x {
+        for y in 0..map_data.size.y {
+            for _ in 0..max_foliage_amount_per_tile {
+                let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
+                let reserved = reserved_coordinates.0.contains(&centered_coordinate);
+
+                if reserved {
+                    continue;
+                }
+                
+                let noise_value = simplex_noise_2d_seeded(
+                    Vec2::new(x as f32, y as f32) * 0.02,
+                    world_seed.0 as f32 + 5.0,
+                );
+
+                let steepness = 2.2;
+                let cutoff = 1.2;
+                let spawn_probability = 1.0 / (1.0 + (-steepness * (noise_value - cutoff)).exp());
+
+                if random_source.0.random::<f32>() < spawn_probability {
+                    let final_position = centered_coordinate.as_vec2()
+                        + Vec2::new(rng.random_range(-1.0..1.0), rng.random_range(-1.0..1.0));
+                    
+                    let mut transform = Transform::default();
+                    transform.rotate_y(rng.random_range(0.0..PI*2.0));
+                    transform.translation = Vec3::new(final_position.x, 0.0, final_position.y);
+                    transform.scale = Vec3::splat(rng.random_range(0.6..1.3));
+
+                    if rng.random::<f32>() < 0.01 {
+                        let flower_handle = gltf_asset_flowers.get(rng.random_range(0..2)).unwrap();
+                        commands.spawn((SceneRoot(flower_handle.scenes[0].clone()), transform));
+                    } else {
+                        commands.spawn((
+                            Mesh3d(primitive.clone()),
+                            MeshMaterial3d(grass_material.clone()),
+                            NotShadowCaster,
+                            transform,
+                        ));
+                    }
+                }
+            }
         }
     }
 }
