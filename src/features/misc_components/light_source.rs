@@ -19,7 +19,7 @@ pub struct LightSource {
 impl Default for LightSource {
     fn default() -> Self {
         Self {
-            intensity: 100000.0,
+            intensity: 400_000.0,
             color: Color::WHITE,
         }
     }
@@ -48,13 +48,13 @@ impl BuildView for LightSource {
             Transform::from_xyz(transform.x, 1.5, transform.y),
         ));
 
-        view.insert(ParticleEffect::new(
-            particle_handles
-                .0
-                .get(&ParticleType::LightSparkle)
-                .unwrap()
-                .clone(),
-        ));
+        // view.insert(ParticleEffect::new(
+        //     particle_handles
+        //         .0
+        //         .get(&ParticleType::LightSparkle)
+        //         .unwrap()
+        //         .clone(),
+        // ));
 
         view.with_child((
             ParticleEffect::new(

@@ -164,11 +164,13 @@ fn do_full_grid_reset(
     solid_query: Query<&WorldPosition, With<Solid>>,
 ) {
     pathing_grid.0.fill();
+    
+    let solid_tile_types = [TileType::Empty, TileType::Water];
 
     for x in 0..map_data.size.x {
         for y in 0..map_data.size.y {
             let tile_data = map_data.get_tile_type_non_centered(UVec2::new(x, y));
-            let solid = tile_data.is_none_or(|val| val != TileType::Dirt);
+            let solid = tile_data.is_none_or(|val| solid_tile_types.contains(&val));
 
             if solid {
                 pathing_grid.0.remove_vertex((x as usize, y as usize));

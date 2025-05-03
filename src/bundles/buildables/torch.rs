@@ -22,7 +22,7 @@ use bevy::prelude::*;
         ],
         ..Default::default()
     },
-    LightSource = LightSource { intensity: 50000.0, color: Color::srgb(1.0, 0.9, 0.6) },
+    LightSource = LightSource { intensity: 1_000_000.0, color: Color::srgb(1.0, 0.9, 0.6) },
     GltfData = GltfData {
         asset_id: GltfAssetId::WoodenTorch,
         scene_name: None
