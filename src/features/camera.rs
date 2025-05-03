@@ -20,7 +20,7 @@ use std::ops::{Add, Sub};
 use bevy::core_pipeline::bloom::Bloom;
 use bevy::core_pipeline::fxaa::Fxaa;
 use bevy::core_pipeline::tonemapping::Tonemapping;
-use bevy::render::view::{Layer, RenderLayers};
+use bevy::render::view::{Layer, NoIndirectDrawing, RenderLayers};
 use bevy_enhanced_input::input::Input::MouseWheel;
 use bevy_hanabi::UnaryOperator::Exp;
 
@@ -92,6 +92,7 @@ impl BuildView for WorldCamera {
     fn build(_world: &World, _object: Object<Self>, mut view: ViewCommands<Self>) {
         view.insert((
             Camera3d::default(),
+            //NoIndirectDrawing,
             Camera {
                 order: 0,
                 //clear_color: ClearColorConfig::None,

@@ -8,11 +8,13 @@ use crate::features::states::AppState;
 use bevy::app::{App, Plugin};
 use bevy::prelude::*;
 use moonshine_view::RegisterView;
+use crate::features::map::foliage_instancing::foliage_instancing_plugin;
 use crate::features::map::map_model::map_model_plugin;
 
 pub mod map_model;
 pub mod map_view;
 mod water_material;
+mod foliage_instancing;
 
 pub struct MapPlugin;
 
@@ -22,6 +24,7 @@ impl Plugin for MapPlugin {
             .insert_resource(MapMaterialHandles::default())
             .add_plugins(WaterMaterialPlugin)
             .add_systems(Startup, create_map_materials)
+            .add_plugins(foliage_instancing_plugin)
             .add_plugins(map_model_plugin);
         // app.add_systems(
         //     OnEnter(AppState::MapGeneration),

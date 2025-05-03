@@ -26,6 +26,10 @@ pub(super) fn create_map_materials(
     let material_handle1 = materials.add(Color::srgb(0.8, 0.7, 0.6));
     let material_handle2 = materials.add(Color::srgb(0.8, 0.6, 0.5));
     let dirt_material_handles = vec![material_handle1.untyped(), material_handle2.untyped()];
+    
+    let dirt_grassy_light = materials.add(Color::srgb(0.8, 0.76, 0.6));
+    let dirt_grassy_half = materials.add(Color::srgb(0.77, 0.79, 0.55));
+    let dirt_grassy_full = materials.add(Color::srgb(0.75, 0.87, 0.5));
 
     let water_material_handle = water_materials.add(WaterMaterial {
         //color_1: Color::oklch(75.33, 0.1, 221.29).to_linear(),
@@ -36,6 +40,9 @@ pub(super) fn create_map_materials(
     });
 
     map_material_handles.insert(TileType::Dirt, dirt_material_handles);
+    map_material_handles.insert(TileType::DirtGrassyLight, vec![dirt_grassy_light.untyped()]);
+    map_material_handles.insert(TileType::DirtGrassyHalf, vec![dirt_grassy_half.untyped()]);
+    map_material_handles.insert(TileType::DirtGrassyFull, vec![dirt_grassy_full.untyped()]);
 
     map_material_handles.insert(TileType::Water, vec![water_material_handle.untyped()]);
 }
@@ -110,18 +117,17 @@ impl BuildView for MapData {
                         ));
 
                         match tile_type {
-                            TileType::Dirt => {
-                                view_entity.insert(MeshMaterial3d(
-                                    material_handle.typed::<StandardMaterial>(),
-                                ));
-                            }
                             TileType::Water => {
                                 // TODO: Change this once using a custom material again
                                 view_entity.insert(MeshMaterial3d(
                                     material_handle.typed::<WaterMaterial>(),
                                 ));
                             }
-                            _ => (),
+                            _ => {
+                                view_entity.insert(MeshMaterial3d(
+                                    material_handle.typed::<StandardMaterial>(),
+                                ));
+                            }
                         }
                     }
                 }

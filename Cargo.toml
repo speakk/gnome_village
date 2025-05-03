@@ -65,6 +65,7 @@ bevy_mod_async = "0.10.0"
 bevy_hanabi = { git="https://github.com/djeedai/bevy_hanabi", branch = "main" }
 bevy_platform = "0.16.0"
 bevy_egui = "0.34.1"
+bytemuck = "1.21.0"
 
 [profile.dev.package."*"]
 opt-level = 3

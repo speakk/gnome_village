@@ -5305,6 +5305,7 @@ dependencies = [
  "bevy_mod_async",
  "bevy_platform",
  "bresenham",
+ "bytemuck",
  "directories",
  "log",
  "moonshine-core",

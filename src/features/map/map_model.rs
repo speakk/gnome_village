@@ -19,6 +19,7 @@ use noisy_bevy::simplex_noise_2d_seeded;
 use rand::prelude::ThreadRng;
 use rand::Rng;
 use std::f32::consts::PI;
+use bevy::render::view::NoFrustumCulling;
 
 pub(super) fn map_model_plugin(app: &mut App) {
     app.insert_resource(ReservedCoordinatesHelper::default())
@@ -45,6 +46,9 @@ pub enum TileType {
     Empty,
     Dirt,
     Water,
+    DirtGrassyLight,
+    DirtGrassyFull,
+    DirtGrassyHalf,
 }
 
 #[derive(Component, Reflect, Default, Clone)]
@@ -159,6 +163,23 @@ fn generate_ground(
             WorldPosition(current_coordinate.as_vec2()),
             InWorld,
         ));
+
+        let noise_value = simplex_noise_2d_seeded(
+            current_coordinate.as_vec2() * 0.03,
+            world_seed.0 as f32 + 0.1,
+        );
+
+        if noise_value > -0.6 {
+            tile_type = TileType::DirtGrassyLight;
+        }
+
+        if noise_value > 0.3 {
+            tile_type = TileType::DirtGrassyHalf;
+        }
+
+        if noise_value > 0.7 {
+            tile_type = TileType::DirtGrassyFull;
+        }
     }
 
     map_data.set_tile_type(current_coordinate, tile_type);
@@ -212,8 +233,29 @@ pub fn generate_world(world: &mut World) {
     world.spawn_batch(foliage_bundles);
     world.spawn_batch(flower_bundles);
 
+    //world.run_system_cached(create_foliage_mesh).unwrap();
+
     world.flush();
 }
+
+// fn create_foliage_mesh(mut commands: Commands, foliage_handles: Res<FoliageHandles>) {
+//     let handle = foliage_handles.grass_blade.clone().unwrap();
+//     // TODO: Probably stick this into View
+//     commands.spawn((
+//         Mesh3d(handle),
+//         crate::features::map::foliage_instancing::InstanceMaterialData(
+//             (1..=10)
+//                 .flat_map(|x| (1..=10).map(move |y| (x as f32 / 10.0, y as f32 / 10.0)))
+//                 .map(|(x, y)| crate::features::map::foliage_instancing::InstanceData {
+//                     position: Vec3::new(x * 10.0 - 5.0, y * 10.0 - 5.0, 0.0),
+//                     scale: 1.0,
+//                     color: LinearRgba::from(Color::hsla(x * 360., y, 0.5, 1.0)).to_f32_array(),
+//                 })
+//                 .collect(),
+//         ),
+//         NoFrustumCulling,
+//     ));
+// }
 
 fn remap_to_distance_from_center(
     min_bound: f32,
@@ -418,6 +460,7 @@ fn generate_foliage(
     foliage_handles: Res<FoliageHandles>,
     gltf_assets: Res<Assets<Gltf>>,
     world_seed: Res<WorldSeed>,
+    map_query: Query<&MapData>,
     mut random_source: ResMut<RandomSource>,
 ) -> FoliageBundleSum {
     if reserved_coordinates.0.contains(&current_coordinate) {
@@ -426,13 +469,15 @@ fn generate_foliage(
             flower_bundles: vec![],
         };
     }
-    
+
+    let map_data = map_query.single().expect("Map data not found");
+
     let gltf_asset_flower_1 = gltf_assets.get(&foliage_handles.flower_1.clone().unwrap()).unwrap();
     let gltf_asset_flower_2 = gltf_assets.get(&foliage_handles.flower_2.clone().unwrap()).unwrap();
     let gltf_asset_flowers = [gltf_asset_flower_1, gltf_asset_flower_2];
 
     // 80 looks decent but is too heavy especially for in Debug mode
-    let max_foliage_amount_per_tile: usize = 1;
+    let max_foliage_amount_per_tile: usize = 10;
     let mut rng = rand::rng();
 
     let mut foliage_bundles: Vec<FoliageBundle> = vec![];
@@ -441,15 +486,23 @@ fn generate_foliage(
     for _ in 0..max_foliage_amount_per_tile {
         let x = current_coordinate.x;
         let y = current_coordinate.y;
-
-        let noise_value = simplex_noise_2d_seeded(
-            Vec2::new(x as f32, y as f32) * 0.02,
-            world_seed.0 as f32 + 5.0,
-        );
+        //
+        // let noise_value = simplex_noise_2d_seeded(
+        //     Vec2::new(x as f32, y as f32) * 0.02,
+        //     world_seed.0 as f32 + 5.0,
+        // );
 
         let steepness = 2.2;
         let cutoff = 1.2;
-        let spawn_probability = 1.0 / (1.0 + (-steepness * (noise_value - cutoff)).exp());
+        let tile_type_multiplier = match map_data.get_tile_type(current_coordinate) {
+            Some(TileType::DirtGrassyFull) => 0.3,
+            Some(TileType::DirtGrassyHalf) => 0.15,
+            Some(TileType::DirtGrassyLight) => 0.06,
+            _ => 0.01
+        };
+
+        //let spawn_probability = 1.0 / (1.0 + (-steepness * (noise_value - cutoff)).exp()) * tile_type_multilier;
+        let spawn_probability = tile_type_multiplier;
 
         if random_source.0.random::<f32>() < spawn_probability {
             let final_position = current_coordinate.as_vec2()
