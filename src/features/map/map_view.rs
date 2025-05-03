@@ -81,7 +81,11 @@ impl BuildView for MapData {
                         let mesh_handle = mesh_handles.get(&mesh_type).unwrap();
                         let all_material_handles =
                             world.get_resource::<MapMaterialHandles>().unwrap();
-                        let material_handles = all_material_handles[&tile_type].clone();
+                        let material_handles = all_material_handles.get(&tile_type);
+                        let Some(material_handles) = material_handles else {
+                            continue;
+                        };
+                        
                         let value = simplex_noise_2d(Vec2::new(x as f32, y as f32) * 0.1);
                         let material_index = (value * material_handles.len() as f32) as usize;
                         let material_handle = material_handles[material_index].clone();

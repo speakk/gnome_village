@@ -21,7 +21,6 @@ pub fn react_to_lacking_growth_requirements(
     let entity = trigger.target();
 
     let (plant, world_position) = query.get(entity).unwrap();
-    println!("Got plant in need for growth requirements: {:?}", plant);
 
     let Some(entities_at_coordinate) = coordinate_to_entity.0.get(&world_position.as_coordinate())
     else {
