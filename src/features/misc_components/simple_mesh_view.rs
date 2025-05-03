@@ -70,11 +70,6 @@ impl BuildView for SimpleMeshValid {
     }
 }
 
-// TODO: Workaround for moonshine_view not despawning views
-pub fn on_simple_mesh_remove(trigger: Trigger<OnRemove, SimpleMesh>, views: Query<&Viewable<SimpleMeshValid>>, mut commands: Commands) {
-    commands.entity(views.get(trigger.target()).unwrap().view().entity()).despawn();
-}
-
 #[derive(Component, Default)]
 pub struct OriginalMaterial(Handle<StandardMaterial>);
 

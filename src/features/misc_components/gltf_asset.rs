@@ -65,12 +65,6 @@ impl BuildView for GltfData {
     }
 }
 
-
-// TODO: Workaround for moonshine_view not despawning views
-pub fn on_gltf_remove(trigger: Trigger<OnRemove, GltfData>, views: Query<&Viewable<GltfValid>>, mut commands: Commands) {
-    commands.entity(views.get(trigger.target()).unwrap().view().entity()).despawn();
-}
-
 impl BuildView<GltfData> for GltfValid {
     fn build(world: &World, object: Object<GltfData>, mut view: ViewCommands<GltfData>) {
         let gltf_data = world.get::<GltfData>(object.entity()).unwrap();

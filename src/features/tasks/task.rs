@@ -137,7 +137,7 @@ impl MapEntities for Task {
                     *entity = entity_mapper.get_mapped(*entity);
                 }
 
-                
+
                 if let DepositTarget::Inventory(inventory_entity) = &mut bring_resource_data.target {
                     *inventory_entity = entity_mapper.get_mapped(*inventory_entity);
                 }

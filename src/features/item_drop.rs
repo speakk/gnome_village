@@ -33,7 +33,9 @@ fn item_drop(
     spawners: Res<ItemSpawners>,
 ) {
     let entity = trigger.target();
-    let (world_position, item_drop) = query.get(entity).unwrap();
+    let Ok((world_position, item_drop)) = query.get(entity) else {
+        return;
+    };
 
     for single_item_drop in item_drop.item_drops.iter() {
         if random_source.0.random_range(0.0..1.0) < single_item_drop.chance {

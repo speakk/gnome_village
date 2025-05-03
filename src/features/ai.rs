@@ -30,19 +30,19 @@ impl Plugin for AiPlugin {
     }
 }
 
-#[derive(Component, Reflect)]
-pub struct TargetEntity(pub Entity);
-
-#[derive(Component, Reflect)]
+#[derive(Component, MapEntities, Reflect)]
 #[reflect(Component, MapEntities)]
-pub struct WorkingOnTask(pub Entity);
+pub struct WorkingOnTask(
+    #[entities]
+    pub Entity
+);
 
-impl MapEntities for WorkingOnTask {
-    fn map_entities<M: EntityMapper>(&mut self, entity_mapper: &mut M) {
-        let entity = &mut self.0;
-        *entity = entity_mapper.get_mapped(*entity);
-    }
-}
+// impl MapEntities for WorkingOnTask {
+//     fn map_entities<M: EntityMapper>(&mut self, entity_mapper: &mut M) {
+//         let entity = &mut self.0;
+//         *entity = entity_mapper.get_mapped(*entity);
+//     }
+// }
 
 #[derive(Component)]
 #[require(Unload)]

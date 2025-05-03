@@ -44,19 +44,19 @@ bevy = { version = "0.16.0", default-features = false, features = [
     "trace",
     "std",
     "async_executor",
-    # "track_location" # Tmp only for debugging
+    "track_location" # Tmp only for debugging
 ] }
 bevy_kira_audio = "0.23.0"
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
 directories = "6.0.0"
 bevy_enhanced_input = "0.11.0"
-moonshine-view = "0.1.8"
+moonshine-view = "0.1.9"
 moonshine-object = "0.2.4"
 moonshine-core = "0.3.1"
 noisy_bevy = { git = "https://github.com/johanhelsing/noisy_bevy", branch = "bevy-0.16"}
 rand = "0.9.0"
 bevy-inspector-egui = "0.31.0"
-pathfinding = "4.13.1"
+pathfinding = "4.14.0"
 beet = { git = "https://github.com/mrchantey/beet", branch = "main" }
 bresenham = "0.1.1"
 wyrand = "0.3.2"

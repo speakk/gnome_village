@@ -7,10 +7,10 @@ pub mod destruct_target;
 
 use crate::bundles::ItemId;
 use crate::features::camera::WorldCamera;
-use crate::features::misc_components::gltf_asset::{on_gltf_remove, GltfAssetPlugin, GltfData};
+use crate::features::misc_components::gltf_asset::{GltfAssetPlugin, GltfData};
 use crate::features::misc_components::preview_carry::{PreviewCarry, PreviewCarryPlugin};
 use crate::features::misc_components::simple_mesh::{SimpleMesh, SimpleMeshHandles};
-use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint, on_simple_mesh_remove, SimpleMeshValid};
+use crate::features::misc_components::simple_mesh_view::{on_add_blueprint, on_remove_blueprint, SimpleMeshValid};
 use crate::features::movement::Velocity;
 use crate::features::position::{InterpolatePosition, PreviousWorldPosition, WorldPosition};
 use crate::features::states::AppState;
@@ -54,8 +54,6 @@ impl Plugin for MiscComponentsPlugin {
                     .run_if(in_state(AppState::InGame)),
             )
             .add_viewable::<SimpleMeshValid>()
-            .add_observer(on_simple_mesh_remove)
-            .add_observer(on_gltf_remove)
             .add_viewable::<LightSource>();
     }
 }

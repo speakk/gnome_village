@@ -1,6 +1,5 @@
 use crate::bundles::settler::Settler;
 use crate::features::ai::actions::escape_from_solid::EscapeFromSolidAction;
-use crate::features::ai::TargetEntity;
 use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::path_finding::grid::PathingGridResource;
 use crate::features::position::WorldPosition;

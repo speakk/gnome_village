@@ -48,14 +48,6 @@ impl BuildView for LightSource {
             Transform::from_xyz(transform.x, 1.5, transform.y),
         ));
 
-        // view.insert(ParticleEffect::new(
-        //     particle_handles
-        //         .0
-        //         .get(&ParticleType::LightSparkle)
-        //         .unwrap()
-        //         .clone(),
-        // ));
-
         view.with_child((
             ParticleEffect::new(
                 particle_handles
