@@ -48,17 +48,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         },
         StateScoped(MainMenu),
         Children::spawn(SpawnWith(move |parent: &mut ChildSpawner| {
-            // parent.spawn((
-            //     Node {
-            //         position_type: PositionType::Absolute,
-            //         width: Val::Percent(100.0),
-            //         height: Val::Percent(100.0),
-            //         ..Default::default()
-            //     },
-            //     Pickable::IGNORE,
-            //     
-            //     ));
-            
             parent.spawn((
                 Text::new("Gnome Village".to_uppercase()),
                 TextFont {

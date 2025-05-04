@@ -47,7 +47,7 @@ bevy = { version = "0.16.0", default-features = false, features = [
     "jpeg",
     "track_location" # Tmp only for debugging
 ] }
-bevy_kira_audio = "0.23.0"
+bevy_kira_audio = {  version = "0.23.0", features = ["default", "mp3"] }
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
 directories = "6.0.0"
 bevy_enhanced_input = "0.11.0"

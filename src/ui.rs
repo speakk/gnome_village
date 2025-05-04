@@ -10,7 +10,7 @@ use crate::ui::in_game::new_in_game_plugin;
 use crate::ui::widgets::widget_plugin;
 
 pub mod ui_main_actions;
-mod colours;
+pub(crate) mod colours;
 mod day_cycle_indicator;
 mod main_menu;
 mod in_game;

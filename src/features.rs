@@ -21,3 +21,4 @@ pub mod world_interaction;
 pub mod juice;
 pub mod audio;
 pub mod particles;
+pub mod music;

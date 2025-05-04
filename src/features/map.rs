@@ -26,23 +26,10 @@ impl Plugin for MapPlugin {
             .add_systems(Startup, create_map_materials)
             .add_plugins(foliage_instancing_plugin)
             .add_plugins(map_model_plugin);
-        // app.add_systems(
-        //     OnEnter(AppState::MapGeneration),
-        //     (
-        //         create_map_materials,
-        //         generate_map_entity,
-        //         generate_rocks,
-        //         generate_trees,
-        //         generate_test_entities,
-        //         generate_foliage,
-        //         //generate_reserved_debug,
-        //         transition_to_in_game,
-        //     )
-        //         .chain(),
-        // );
     }
 }
 
 fn transition_to_in_game(mut next_state: ResMut<NextState<AppState>>) {
+    println!("Transitioning to in game");
     next_state.set(AppState::InGame);
 }

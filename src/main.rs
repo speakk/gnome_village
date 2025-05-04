@@ -35,6 +35,7 @@ use features::path_finding::plugin::PathFindingPlugin;
 use features::tasks::tasks_plugin::TasksPlugin;
 use crate::features::audio::GameAudioPlugin;
 use crate::features::juice::JuicePlugin;
+use crate::features::music::music_plugin;
 use crate::features::particles::ParticlePlugin;
 use crate::features::world_interaction::WorldInteractionPlugin;
 
@@ -52,6 +53,7 @@ fn main() {
         .add_plugins(SavePlugin)
         .add_plugins(AssetsPlugin)
         .add_plugins(GameAudioPlugin)
+        .add_plugins(music_plugin)
         .add_plugins(BundlePlugin)
         .add_plugins(MapPlugin)
         .add_plugins(SunLightPlugin)

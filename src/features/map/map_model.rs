@@ -8,27 +8,67 @@ use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::seeded_random::RandomSource;
 use crate::features::states::AppState;
+use crate::features::states::AppState::MainMenu;
+use crate::ui::colours::THEME_1_800;
+use crate::ui::FONT_BOLD;
 use bevy::ecs::system::{CachedSystemId, SystemId};
 use bevy::gltf::GltfMesh;
 use bevy::math::{IVec2, UVec2, Vec2};
 use bevy::pbr::NotShadowCaster;
 use bevy::prelude::*;
+use bevy::render::view::NoFrustumCulling;
 use moonshine_core::save::Save;
 use moonshine_view::RegisterView;
 use noisy_bevy::simplex_noise_2d_seeded;
 use rand::prelude::ThreadRng;
 use rand::Rng;
 use std::f32::consts::PI;
-use bevy::render::view::NoFrustumCulling;
 
 pub(super) fn map_model_plugin(app: &mut App) {
     app.insert_resource(ReservedCoordinatesHelper::default())
         .insert_resource(FoliageHandles::default())
-        .add_systems(
-            OnEnter(AppState::MapGeneration),
-            (generate_world, transition_to_in_game).chain(),
-        )
+        .insert_resource(GenerateWorldTimer::default())
+        .add_systems(OnEnter(AppState::MapGeneration), (create_loading_ui,))
+        .add_systems(Update, generate_world.run_if(in_state(AppState::MapGeneration)))
         .add_viewable::<MapData>();
+}
+
+pub fn create_loading_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
+    println!("Creating loading UI");
+    commands.spawn((
+        Camera2d,
+        Camera {
+            clear_color: ClearColorConfig::from(crate::ui::colours::THEME_1_200),
+            ..Default::default()
+        },
+        IsDefaultUiCamera,
+        StateScoped(AppState::MapGeneration),
+        Msaa::Off,
+    ));
+
+    let bold_font_handle = asset_server.load(FONT_BOLD);
+
+    commands.spawn((
+        Node {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            display: Display::Flex,
+            flex_direction: FlexDirection::Column,
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center,
+            ..default()
+        },
+        StateScoped(AppState::MapGeneration),
+        children![(
+            Text::new("Generating world!".to_uppercase()),
+            TextFont {
+                font: bold_font_handle,
+                font_size: 84.0,
+                ..default()
+            },
+            TextColor(THEME_1_800),
+        )],
+    ));
 }
 
 #[derive(Resource, Debug, Default, Deref, DerefMut)]
@@ -126,6 +166,112 @@ struct MapGenerationInput {
     current_coordinate: IVec2,
 }
 
+
+// TODO: Absolutely ridiculous, using this so that UI has a chance to actually show before world
+// generation kicks in.
+#[derive(Resource, Debug, Reflect)]
+struct GenerateWorldTimer(Timer);
+
+impl Default for GenerateWorldTimer {
+    fn default() -> Self {
+        Self(Timer::from_seconds(0.2, TimerMode::Once))
+    }
+}
+
+pub fn generate_world(world: &mut World) {
+    world.resource_scope(|world: &mut World, mut timer: Mut<GenerateWorldTimer>| {
+        let time = world.get_resource::<Time>().unwrap();
+        if timer.0.tick(time.delta()).just_finished() {
+            println!("Generating world!");
+            let map_size = UVec2::new(250, 250);
+            let map_data = MapData {
+                data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
+                size: map_size,
+            };
+
+            world.commands().spawn((map_data.clone(), Save));
+
+            let mut dirt_bundles: Vec<(Dirt, Id, WorldPosition, InWorld)> = vec![];
+            let mut foliage_bundles: Vec<FoliageBundle> = vec![];
+            let mut flower_bundles: Vec<FlowerBundle> = vec![];
+
+            for x in 0..map_size.x {
+                for y in 0..map_size.y {
+                    let current_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
+
+                    let dirt_bundle = world
+                        .run_system_cached_with(
+                            generate_ground,
+                            MapGenerationInput { current_coordinate },
+                        )
+                        .unwrap();
+                    if let Some(dirt_bundle) = dirt_bundle {
+                        dirt_bundles.push(dirt_bundle);
+                    }
+
+                    world
+                        .run_system_cached_with(
+                            generate_rocks,
+                            MapGenerationInput { current_coordinate },
+                        )
+                        .unwrap();
+                    world
+                        .run_system_cached_with(
+                            generate_trees,
+                            MapGenerationInput { current_coordinate },
+                        )
+                        .unwrap();
+
+                    let mut foliage_bundle_sum = world
+                        .run_system_cached_with(
+                            generate_foliage,
+                            MapGenerationInput { current_coordinate },
+                        )
+                        .unwrap();
+
+                    foliage_bundles.append(&mut foliage_bundle_sum.foliage_bundles);
+                    flower_bundles.append(&mut foliage_bundle_sum.flower_bundles);
+                }
+            }
+
+            world.run_system_cached(generate_test_entities).unwrap();
+
+            world.spawn_batch(dirt_bundles);
+            world.spawn_batch(foliage_bundles);
+            world.spawn_batch(flower_bundles);
+
+            //world.run_system_cached(create_foliage_mesh).unwrap();
+
+            world.flush();
+
+            let mut next_state = world.get_resource_mut::<NextState<AppState>>();
+            next_state.unwrap().set(AppState::InGame);
+            println!("Finished generating world!");
+        }
+    });
+
+
+}
+
+// fn create_foliage_mesh(mut commands: Commands, foliage_handles: Res<FoliageHandles>) {
+//     let handle = foliage_handles.grass_blade.clone().unwrap();
+//     // TODO: Probably stick this into View
+//     commands.spawn((
+//         Mesh3d(handle),
+//         crate::features::map::foliage_instancing::InstanceMaterialData(
+//             (1..=10)
+//                 .flat_map(|x| (1..=10).map(move |y| (x as f32 / 10.0, y as f32 / 10.0)))
+//                 .map(|(x, y)| crate::features::map::foliage_instancing::InstanceData {
+//                     position: Vec3::new(x * 10.0 - 5.0, y * 10.0 - 5.0, 0.0),
+//                     scale: 1.0,
+//                     color: LinearRgba::from(Color::hsla(x * 360., y, 0.5, 1.0)).to_f32_array(),
+//                 })
+//                 .collect(),
+//         ),
+//         NoFrustumCulling,
+//     ));
+// }
+
 fn generate_ground(
     In(MapGenerationInput { current_coordinate }): In<MapGenerationInput>,
     mut map_query: Query<&mut MapData>,
@@ -186,76 +332,6 @@ fn generate_ground(
 
     dirt_bundle
 }
-
-pub fn generate_world(world: &mut World) {
-    let map_size = UVec2::new(250, 250);
-    let map_data = MapData {
-        data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
-        size: map_size,
-    };
-
-    world.commands().spawn((map_data.clone(), Save));
-
-    let mut dirt_bundles: Vec<(Dirt, Id, WorldPosition, InWorld)> = vec![];
-    let mut foliage_bundles: Vec<FoliageBundle> = vec![];
-    let mut flower_bundles: Vec<FlowerBundle> = vec![];
-
-    for x in 0..map_size.x {
-        for y in 0..map_size.y {
-            let current_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
-
-            let dirt_bundle = world
-                .run_system_cached_with(generate_ground, MapGenerationInput { current_coordinate })
-                .unwrap();
-            if let Some(dirt_bundle) = dirt_bundle {
-                dirt_bundles.push(dirt_bundle);
-            }
-
-            world
-                .run_system_cached_with(generate_rocks, MapGenerationInput { current_coordinate })
-                .unwrap();
-            world
-                .run_system_cached_with(generate_trees, MapGenerationInput { current_coordinate })
-                .unwrap();
-
-            let mut foliage_bundle_sum = world
-                .run_system_cached_with(generate_foliage, MapGenerationInput { current_coordinate })
-                .unwrap();
-
-            foliage_bundles.append(&mut foliage_bundle_sum.foliage_bundles);
-            flower_bundles.append(&mut foliage_bundle_sum.flower_bundles);
-        }
-    }
-
-    world.run_system_cached(generate_test_entities).unwrap();
-
-    world.spawn_batch(dirt_bundles);
-    world.spawn_batch(foliage_bundles);
-    world.spawn_batch(flower_bundles);
-
-    //world.run_system_cached(create_foliage_mesh).unwrap();
-
-    world.flush();
-}
-
-// fn create_foliage_mesh(mut commands: Commands, foliage_handles: Res<FoliageHandles>) {
-//     let handle = foliage_handles.grass_blade.clone().unwrap();
-//     // TODO: Probably stick this into View
-//     commands.spawn((
-//         Mesh3d(handle),
-//         crate::features::map::foliage_instancing::InstanceMaterialData(
-//             (1..=10)
-//                 .flat_map(|x| (1..=10).map(move |y| (x as f32 / 10.0, y as f32 / 10.0)))
-//                 .map(|(x, y)| crate::features::map::foliage_instancing::InstanceData {
-//                     position: Vec3::new(x * 10.0 - 5.0, y * 10.0 - 5.0, 0.0),
-//                     scale: 1.0,
-//                     color: LinearRgba::from(Color::hsla(x * 360., y, 0.5, 1.0)).to_f32_array(),
-//                 })
-//                 .collect(),
-//         ),
-//         NoFrustumCulling,
-//     ));
-// }
 
 fn remap_to_distance_from_center(
     min_bound: f32,
@@ -446,7 +522,12 @@ pub fn setup_foliage_resources(
     }
 }
 
-type FoliageBundle = (Mesh3d, MeshMaterial3d<StandardMaterial>, NotShadowCaster, Transform);
+type FoliageBundle = (
+    Mesh3d,
+    MeshMaterial3d<StandardMaterial>,
+    NotShadowCaster,
+    Transform,
+);
 type FlowerBundle = (SceneRoot, Transform);
 
 struct FoliageBundleSum {
@@ -472,8 +553,12 @@ fn generate_foliage(
 
     let map_data = map_query.single().expect("Map data not found");
 
-    let gltf_asset_flower_1 = gltf_assets.get(&foliage_handles.flower_1.clone().unwrap()).unwrap();
-    let gltf_asset_flower_2 = gltf_assets.get(&foliage_handles.flower_2.clone().unwrap()).unwrap();
+    let gltf_asset_flower_1 = gltf_assets
+        .get(&foliage_handles.flower_1.clone().unwrap())
+        .unwrap();
+    let gltf_asset_flower_2 = gltf_assets
+        .get(&foliage_handles.flower_2.clone().unwrap())
+        .unwrap();
     let gltf_asset_flowers = [gltf_asset_flower_1, gltf_asset_flower_2];
 
     // 80 looks decent but is too heavy especially for in Debug mode
@@ -498,7 +583,7 @@ fn generate_foliage(
             Some(TileType::DirtGrassyFull) => 0.3,
             Some(TileType::DirtGrassyHalf) => 0.15,
             Some(TileType::DirtGrassyLight) => 0.06,
-            _ => 0.01
+            _ => 0.01,
         };
 
         //let spawn_probability = 1.0 / (1.0 + (-steepness * (noise_value - cutoff)).exp()) * tile_type_multilier;
