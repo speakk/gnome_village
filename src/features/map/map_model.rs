@@ -26,7 +26,7 @@ pub(super) fn map_model_plugin(app: &mut App) {
         .insert_resource(FoliageHandles::default())
         .add_systems(
             OnEnter(AppState::MapGeneration),
-            (setup_foliage_resources, generate_world, transition_to_in_game).chain(),
+            (generate_world, transition_to_in_game).chain(),
         )
         .add_viewable::<MapData>();
 }
@@ -188,7 +188,7 @@ fn generate_ground(
 }
 
 pub fn generate_world(world: &mut World) {
-    let map_size = UVec2::new(150, 150);
+    let map_size = UVec2::new(250, 250);
     let map_data = MapData {
         data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
         size: map_size,
@@ -412,14 +412,14 @@ pub fn generate_test_entities(
 }
 
 #[derive(Resource, Default)]
-struct FoliageHandles {
+pub struct FoliageHandles {
     grass_material: Option<Handle<StandardMaterial>>,
     grass_blade: Option<Handle<Mesh>>,
     flower_1: Option<Handle<Gltf>>,
     flower_2: Option<Handle<Gltf>>,
 }
 
-fn setup_foliage_resources(
+pub fn setup_foliage_resources(
     gltf_handles: Res<GltfAssetHandles>,
     gltf_assets: Res<Assets<Gltf>>,
     gltf_meshes: Res<Assets<GltfMesh>>,

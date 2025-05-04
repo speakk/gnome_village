@@ -4,6 +4,7 @@ use crate::ui::colours::{THEME_1_400, THEME_1_800};
 use crate::ui::widgets::CreateButton;
 use crate::ui::{widgets, FONT_BOLD};
 use bevy::ecs::spawn::SpawnWith;
+use bevy::picking::hover::PickingInteraction;
 use bevy::prelude::*;
 
 pub struct MainMenuPlugin;
@@ -28,7 +29,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
 
     let bold_font_handle = asset_server.load(FONT_BOLD);
-
+    let title_image = asset_server.load("title_screen.jpg");
+    
     commands.spawn((
         Node {
             width: Val::Percent(100.0),
@@ -39,8 +41,24 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             justify_content: JustifyContent::Center,
             ..default()
         },
+        ImageNode {
+            image: title_image,
+            image_mode: NodeImageMode::Stretch,
+            ..Default::default()
+        },
         StateScoped(MainMenu),
         Children::spawn(SpawnWith(move |parent: &mut ChildSpawner| {
+            // parent.spawn((
+            //     Node {
+            //         position_type: PositionType::Absolute,
+            //         width: Val::Percent(100.0),
+            //         height: Val::Percent(100.0),
+            //         ..Default::default()
+            //     },
+            //     Pickable::IGNORE,
+            //     
+            //     ));
+            
             parent.spawn((
                 Text::new("Gnome Village".to_uppercase()),
                 TextFont {
@@ -59,7 +77,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .observe(
                     move |mut trigger: Trigger<Pointer<Click>>,
                           mut next_state: ResMut<NextState<AppState>>| {
-                        next_state.set(AppState::Preload);
+                        next_state.set(AppState::LoadAssets);
                         trigger.propagate(false);
                     },
                 );

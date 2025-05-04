@@ -16,7 +16,7 @@ use noisy_bevy::simplex_noise_2d;
 #[derive(Resource, Default, Deref, DerefMut)]
 pub struct MapMaterialHandles(pub HashMap<TileType, Vec<UntypedHandle>>);
 
-pub(super) fn create_map_materials(
+pub fn create_map_materials(
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut map_material_handles: ResMut<MapMaterialHandles>,
     mut water_materials: ResMut<Assets<WaterMaterial>>,

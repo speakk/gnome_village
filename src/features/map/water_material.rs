@@ -19,7 +19,7 @@ pub(super) const NOISE_TEXTURE_2_PATH: &str = "textures/gradient_noise_2.png";
 
 // This struct defines the data that will be passed to your shader
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
-pub(super) struct WaterMaterial {
+pub struct WaterMaterial {
     #[uniform(0)]
     pub color_1: LinearRgba,
     #[texture(1)]

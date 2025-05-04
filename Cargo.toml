@@ -44,6 +44,7 @@ bevy = { version = "0.16.0", default-features = false, features = [
     "trace",
     "std",
     "async_executor",
+    "jpeg",
     "track_location" # Tmp only for debugging
 ] }
 bevy_kira_audio = "0.23.0"
@@ -66,6 +67,7 @@ bevy_hanabi = { git="https://github.com/djeedai/bevy_hanabi", branch = "main" }
 bevy_platform = "0.16.0"
 bevy_egui = "0.34.1"
 bytemuck = "1.21.0"
+bevy_asset_loader = { git="https://github.com/NiklasEi/bevy_asset_loader", rev = "refs/pull/254/head" }
 
 [profile.dev.package."*"]
 opt-level = 3

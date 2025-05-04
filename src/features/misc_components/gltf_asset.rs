@@ -1,6 +1,6 @@
 use crate::features::ai::actions::build::IsBuilding;
 use crate::features::ai::{PathFollow, WorkingOnTask};
-use crate::features::assets::{Animations, GltfAssetHandles, GltfAssetId, SettlerAnimationIndices};
+use crate::features::assets::{Animations, GltfAssetId, GltfAssetHandles, SettlerAnimationIndices};
 use crate::features::inventory::InInventory;
 use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::{InterpolatePosition, WorldPosition};

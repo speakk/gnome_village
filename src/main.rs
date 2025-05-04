@@ -18,7 +18,6 @@ use crate::features::plants::PlantsPlugin;
 use crate::features::position::PositionPlugin;
 use crate::features::save::SavePlugin;
 use crate::features::seeded_random::SeededRandomPlugin;
-use crate::features::states::preload::PreloadPlugin;
 use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
 use crate::features::user_actions::UserActionsPlugin;
@@ -51,7 +50,6 @@ fn main() {
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .insert_resource(PointLightShadowMap { size: 256 })
         .add_plugins(SavePlugin)
-        .add_plugins(PreloadPlugin)
         .add_plugins(AssetsPlugin)
         .add_plugins(GameAudioPlugin)
         .add_plugins(BundlePlugin)
