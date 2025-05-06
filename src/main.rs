@@ -53,7 +53,7 @@ fn main() {
         .add_plugins(SavePlugin)
         .add_plugins(AssetsPlugin)
         .add_plugins(GameAudioPlugin)
-        .add_plugins(music_plugin)
+        //.add_plugins(music_plugin)
         .add_plugins(BundlePlugin)
         .add_plugins(MapPlugin)
         .add_plugins(SunLightPlugin)

@@ -76,6 +76,13 @@ fn regenerate_preview_entity(
         return;
     }
 
+
+    if let Some(preview_entity_hierarchy) = preview_entity_hierarchy.0 {
+        commands
+            .entity(preview_entity_hierarchy)
+            .despawn();
+    }
+
     if current_building.0.is_none() {
         return;
     }
@@ -86,12 +93,6 @@ fn regenerate_preview_entity(
                 return;
             }
         }
-    }
-
-    if let Some(preview_entity_hierarchy) = preview_entity_hierarchy.0 {
-        commands
-            .entity(preview_entity_hierarchy)
-            .despawn_recursive();
     }
 
     let parent_entity = commands
