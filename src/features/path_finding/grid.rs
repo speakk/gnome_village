@@ -5,8 +5,8 @@ use crate::features::position::{PreviousWorldPosition, WorldPosition};
 use crate::ReflectComponent;
 use bevy::math::{UVec2, Vec2};
 use bevy::prelude::{
-    Added, Changed, Component, IVec2, Query, Reflect, RemovedComponents, ResMut, Resource, Single,
-    With, Without,
+    Added, Changed, Component, IVec2, OnRemove, Query, Reflect, RemovedComponents, ResMut,
+    Resource, Single, Trigger, With, Without,
 };
 use pathfinding::grid::Grid;
 
@@ -164,7 +164,7 @@ fn do_full_grid_reset(
     solid_query: Query<&WorldPosition, With<Solid>>,
 ) {
     pathing_grid.0.fill();
-    
+
     let solid_tile_types = [TileType::Empty, TileType::Water];
 
     for x in 0..map_data.size.x {
@@ -209,6 +209,22 @@ pub fn react_to_blueprint_removed(
     }
 }
 
+pub(super) fn react_to_solid_removed(
+    trigger: Trigger<OnRemove, Solid>,
+    mut pathing_grid: ResMut<PathingGridResource>,
+    map_data: Single<&MapData>,
+    world_position_query: Query<&WorldPosition>,
+) {
+    let world_position = world_position_query
+        .get(trigger.target())
+        .expect("World Position not found when removing Solid");
+    let top_left_coordinate = map_data.world_position_to_top_left_coordinate(world_position.0);
+    pathing_grid.0.add_vertex((
+        top_left_coordinate.x as usize,
+        top_left_coordinate.y as usize,
+    ));
+}
+
 #[allow(clippy::type_complexity)]
 pub fn update_grid_from_solid_component(
     mut pathing_grid: ResMut<PathingGridResource>,
@@ -222,8 +238,6 @@ pub fn update_grid_from_solid_component(
             Without<BluePrint>,
         ),
     >,
-    mut solid_removed_entities: RemovedComponents<Solid>,
-    world_position_query: Query<&WorldPosition>,
     map_data: Query<&MapData>,
 ) {
     let Ok(map_data) = map_data.get_single() else {
@@ -255,18 +269,6 @@ pub fn update_grid_from_solid_component(
             .0
             .remove_vertex((top_left_current.x as usize, top_left_current.y as usize));
         updated_something = true;
-    }
-
-    for entity in solid_removed_entities.read() {
-        if let Ok(world_position) = world_position_query.get(entity) {
-            let top_left_coordinate =
-                map_data.world_position_to_top_left_coordinate(world_position.0);
-            pathing_grid.0.add_vertex((
-                top_left_coordinate.x as usize,
-                top_left_coordinate.y as usize,
-            ));
-            updated_something = true;
-        }
     }
 
     if updated_something {

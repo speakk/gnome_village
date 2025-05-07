@@ -11,6 +11,8 @@ use bevy::prelude::*;
 use bevy_platform::collections::HashMap;
 use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::{MapEntities, Save};
+use std::cmp::max;
+use std::time::Duration;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum RunType {
@@ -30,8 +32,12 @@ pub enum Status {
 
 #[derive(Event)]
 pub struct TaskFinished {
-    pub result: TaskFinishedResult,
     pub task_entity: Entity,
+}
+
+#[derive(Event)]
+pub struct TaskFailed {
+    pub reason: String,
 }
 
 pub struct CancelTaskCommand {
@@ -39,9 +45,29 @@ pub struct CancelTaskCommand {
     pub reason: String,
 }
 
+pub(super) fn tick_cooldown(mut query: Query<&mut Task>, mut commands: Commands, time: Res<Time>) {
+    for mut task in query.iter_mut() {
+        if let Some(cooldown) = &mut task.cooldown {
+            if *cooldown > Duration::from_secs(0) {
+                *cooldown = cooldown
+                    .checked_sub(time.delta())
+                    .unwrap_or_else(|| Duration::from_secs(0));
+            } else {
+                task.cooldown = None;
+                task.status = Status::Ready;
+            }
+        }
+    }
+}
+
 impl Command for CancelTaskCommand {
     fn apply(self, world: &mut World) {
         let mut task_data = world.get_mut::<Task>(self.task_entity).unwrap();
+
+        if task_data.status == Status::Finished {
+            return;
+        }
+
         task_data.status = Status::Cancelled;
 
         {
@@ -50,6 +76,11 @@ impl Command for CancelTaskCommand {
                 reason: self.reason.clone(),
                 task_entity: self.task_entity,
             });
+
+            println!(
+                "Task: {} cancelled for reason: {}",
+                self.task_entity, self.reason
+            );
         }
         let mut system_state: SystemState<(Query<&Children>,)> = SystemState::new(world);
 
@@ -63,6 +94,11 @@ impl Command for CancelTaskCommand {
                 task_entity: child,
             });
 
+            println!(
+                "Task: {} cancelled for reason: {}",
+                self.task_entity, self.reason
+            );
+
             let mut task_data = world.get_mut::<Task>(child).unwrap();
             task_data.status = Status::Cancelled;
         }
@@ -75,12 +111,6 @@ impl Command for CancelTaskCommand {
 pub struct TaskCancelled {
     pub reason: String,
     pub task_entity: Entity,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
-pub enum TaskFinishedResult {
-    Success,
-    Failure,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
@@ -125,6 +155,8 @@ pub struct Task {
     pub run_type: RunType,
     pub status: Status,
     pub task_type: Option<TaskType>,
+    pub cooldown: Option<Duration>,
+    pub failed_tries: u64
 }
 
 // TODO: Wow this seems untenable, perhaps separate Concrete Runtime Data from Task
@@ -137,20 +169,20 @@ impl MapEntities for Task {
                     *entity = entity_mapper.get_mapped(*entity);
                 }
 
-
-                if let DepositTarget::Inventory(inventory_entity) = &mut bring_resource_data.target {
+                if let DepositTarget::Inventory(inventory_entity) = &mut bring_resource_data.target
+                {
                     *inventory_entity = entity_mapper.get_mapped(*inventory_entity);
                 }
-            },
+            }
             Some(TaskType::Build(build_data)) => {
                 let entity = &mut build_data.target;
                 *entity = entity_mapper.get_mapped(*entity);
-            },
+            }
             Some(TaskType::Destruct(destruct_data)) => {
                 let entity = &mut destruct_data.target;
                 *entity = entity_mapper.get_mapped(*entity);
-            },
-            None => {},
+            }
+            None => {}
         }
     }
 }
@@ -161,6 +193,8 @@ impl Default for Task {
             run_type: RunType::Sequence,
             status: Status::Ready,
             task_type: None,
+            cooldown: None,
+            failed_tries: 0
         }
     }
 }
@@ -174,9 +208,6 @@ pub fn propagate_finished_upwards(
 ) {
     for finished_event in finished_event_reader.read() {
         println!("Task finished triggered, checking if all children are finished");
-        if finished_event.result != TaskFinishedResult::Success {
-            continue;
-        }
 
         let task_entity = finished_event.task_entity;
 
@@ -193,8 +224,42 @@ pub fn propagate_finished_upwards(
                 let mut parent_task = tasks.get_mut(parent).unwrap();
                 parent_task.status = Status::Finished;
                 commands.entity(parent).trigger(TaskFinished {
-                    result: TaskFinishedResult::Success,
                     task_entity: parent,
+                });
+            }
+        }
+    }
+}
+
+pub fn propagate_failed_upwards(
+    trigger: Trigger<TaskFailed>,
+    child_of: Query<&ChildOf>,
+    children: Query<&Children>,
+    mut tasks: Query<&mut Task>,
+    mut commands: Commands,
+) {
+    println!("Task failed triggered, checking if all children are finished");
+
+    let task_entity = trigger.target();
+    let reason = trigger.reason.clone();
+
+    if let Some(parent) = child_of.related(task_entity) {
+        let mut all_parent_children = children.relationship_sources(parent);
+
+        let all_children_failed = all_parent_children.all(|child| {
+            if let Ok(child_task) = tasks.get(child) {
+                child_task.status == Status::Failed
+            } else {
+                true
+            }
+        });
+
+        if all_children_failed {
+            println!("All children finished, triggering parent finished");
+            if let Ok(mut parent_task) = tasks.get_mut(parent) {
+                parent_task.status = Status::Failed;
+                commands.entity(parent).trigger(TaskFailed {
+                    reason: format!("Child task failed: {}. Reason: {}", task_entity, reason),
                 });
             }
         }

@@ -13,6 +13,7 @@ use moonshine_core::prelude::MapEntities;
 use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::Unload;
 use std::fmt::Debug;
+use bevy::asset::uuid::Uuid;
 
 pub struct AiPlugin;
 
@@ -59,7 +60,7 @@ impl Default for PathFollow {
         PathFollow {
             path: Path {
                 steps: vec![],
-                related_task: None,
+                pathfinding_id: Uuid::new_v4(),
             },
             current_path_index: 0,
         }
@@ -70,7 +71,7 @@ impl Debug for PathFollow {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "PathFollow {{ path: {:?}, current_path_index: {} }}",
+            "PathFollow {{ path: {:?}, current_path_index: {:?} }}",
             self.path, self.current_path_index
         )
     }

@@ -1,39 +1,32 @@
-use crate::features::tasks::task::{Status, Task, TaskFinished };
+use crate::features::tasks::task::{Status, Task, TaskFailed, TaskFinished};
 use beet::prelude::*;
 use bevy::prelude::*;
 
-#[action(finish_task_action)]
+#[action(fail_task_action)]
 #[derive(Component, Reflect)]
-#[require(Name::new("FinishTaskAction"))]
-pub struct FinishTaskAction {
+#[require(Name::new("FailTaskAction"))]
+pub struct FailTaskAction {
     pub task: Entity,
     pub tree_root: Entity,
 }
 
-fn finish_task_action(
+fn fail_task_action(
     trigger: Trigger<OnRun>,
-    action: Query<&FinishTaskAction>,
+    action: Query<&FailTaskAction>,
     mut task_data: Query<&mut Task>,
     mut commands: Commands,
-    mut event_writer: EventWriter<TaskFinished>,
 ) {
     let agent = trigger.origin;
     let task = action.get(trigger.action).unwrap().task;
-    let tree_root = action.get(trigger.action).unwrap().tree_root;
     let mut task_data = task_data.get_mut(task).unwrap();
 
-    // TODO: THREE mechanisms here for signifying finished, oh dear lord
-    task_data.status = Status::Finished;
+    task_data.status = Status::Failed;
     println!(
-        "Task finished by agent: {:?}, triggering TaskFinished for task: {:?}",
+        "Task failed by agent: {:?}, triggering TaskFailed for task: {:?}",
         agent, task
     );
-    commands.entity(task).trigger(TaskFinished {
-        task_entity: task,
-    });
-
-    event_writer.write(TaskFinished {
-        task_entity: task,
+    commands.entity(task).trigger(TaskFailed {
+        reason: "Task failed, no reason implemented yet".to_string(),
     });
 
     trigger.trigger_result(&mut commands, RunResult::Success);

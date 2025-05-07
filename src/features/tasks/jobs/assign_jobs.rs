@@ -5,9 +5,14 @@ use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
 use crate::features::tasks::task;
-use crate::features::tasks::task::{Status, Task, TaskCancelled, TaskFinished};
+use crate::features::tasks::task::{Status, Task, TaskCancelled, TaskFailed, TaskFinished};
 use bevy::prelude::*;
 use bevy_platform::collections::HashMap;
+use std::time::Duration;
+
+// TODO: Restart timers if chunks (to be implemented) nearby change in some way
+const JOB_REATTEMPT_DELAY_SECONDS: f32 = 0.2;
+const JOB_REATTEMPT_DELAY_MAX: f32 = 5.0;
 
 pub fn jobs_changed(tasks_query: Query<Entity, Or<(Added<Task>, Changed<Task>)>>) -> bool {
     !tasks_query.is_empty()
@@ -90,9 +95,26 @@ pub fn assign_jobs(
                 move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
                     println!(
                         "Task {} cancelled, thus removing agent WorkingOnTask",
-                        task_entity
+                        &task_entity.clone()
                     );
                     commands.entity(best_agent).remove::<WorkingOnTask>();
+                },
+            );
+
+            commands.entity(task_entity).observe(
+                move |_trigger: Trigger<TaskFailed>,
+                      mut commands: Commands,
+                      mut task_data: Query<&mut Task>| {
+                    commands.entity(best_agent).remove::<WorkingOnTask>();
+                    let mut task_data = task_data.get_mut(task_entity).unwrap();
+                    task_data.status = Status::Failed;
+                    task_data.cooldown = Some(
+                        Duration::from_secs_f32(
+                            JOB_REATTEMPT_DELAY_SECONDS * (task_data.failed_tries + 1) as f32,
+                        )
+                        .min(Duration::from_secs_f32(JOB_REATTEMPT_DELAY_MAX)),
+                    );
+                    task_data.failed_tries += 1;
                 },
             );
         }

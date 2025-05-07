@@ -21,7 +21,7 @@ use crate::features::seeded_random::SeededRandomPlugin;
 use crate::features::states::AppState;
 use crate::features::sun_light::SunLightPlugin;
 use crate::features::user_actions::UserActionsPlugin;
-use beet::prelude::BeetFlowPlugin;
+use beet::prelude::{BeetDebugPlugin, BeetFlowPlugin};
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::pbr::{DefaultOpaqueRendererMethod, PointLightShadowMap};
 use bevy::prelude::*;
@@ -43,16 +43,16 @@ fn main() {
     App::new()
         .enable_state_scoped_entities::<AppState>()
         .add_plugins(DefaultPlugins)
-        .add_plugins(BeetFlowPlugin::default())
+        .add_plugins((BeetFlowPlugin::default(), BeetDebugPlugin::default()))
         .add_plugins(EasingsPlugin::default())
         .add_plugins(AsyncTasksPlugin)
-        .add_plugins(AudioPlugin)
         .add_plugins(HanabiPlugin)
         .insert_resource(DefaultOpaqueRendererMethod::deferred())
         .insert_resource(PointLightShadowMap { size: 256 })
         .add_plugins(SavePlugin)
         .add_plugins(AssetsPlugin)
-        .add_plugins(GameAudioPlugin)
+        //.add_plugins(AudioPlugin)
+        //.add_plugins(GameAudioPlugin)
         //.add_plugins(music_plugin)
         .add_plugins(BundlePlugin)
         .add_plugins(MapPlugin)

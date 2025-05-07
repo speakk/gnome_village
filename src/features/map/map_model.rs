@@ -222,15 +222,15 @@ pub fn generate_world(world: &mut World) {
                         )
                         .unwrap();
 
-                    let mut foliage_bundle_sum = world
-                        .run_system_cached_with(
-                            generate_foliage,
-                            MapGenerationInput { current_coordinate },
-                        )
-                        .unwrap();
-
-                    foliage_bundles.append(&mut foliage_bundle_sum.foliage_bundles);
-                    flower_bundles.append(&mut foliage_bundle_sum.flower_bundles);
+                    // let mut foliage_bundle_sum = world
+                    //     .run_system_cached_with(
+                    //         generate_foliage,
+                    //         MapGenerationInput { current_coordinate },
+                    //     )
+                    //     .unwrap();
+                    // 
+                    // foliage_bundles.append(&mut foliage_bundle_sum.foliage_bundles);
+                    // flower_bundles.append(&mut foliage_bundle_sum.flower_bundles);
                 }
             }
 
@@ -562,7 +562,7 @@ fn generate_foliage(
     let gltf_asset_flowers = [gltf_asset_flower_1, gltf_asset_flower_2];
 
     // 80 looks decent but is too heavy especially for in Debug mode
-    let max_foliage_amount_per_tile: usize = 10;
+    let max_foliage_amount_per_tile: usize = 1;
     let mut rng = rand::rng();
 
     let mut foliage_bundles: Vec<FoliageBundle> = vec![];

@@ -37,41 +37,36 @@ fn escape_from_solid_action(
             world_position.0.as_ivec2(),
             free_neighbor_coordinate.unwrap(),
         ];
-        let path_follow = PathFollow {
-            path: Path {
-                steps: path,
-                related_task: Some(action_entity),
-            },
-            ..Default::default()
-        };
+        // let path_follow = PathFollow {
+        //     path: Path {
+        //         steps: path,
+        //     },
+        //     ..Default::default()
+        // };
+        // 
+        // let running_clone = *running;
 
-        let running_clone = *running;
-
-        commands.entity(target_agent).observe(
-            move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {
-                if path_follow_trigger.related_task != Some(action_entity) {
-                    return;
-                }
-
-                match path_follow_trigger.result {
-                    PathFollowResult::Success => {
-                        running_clone.trigger_result(
-                            &mut commands,
-                            action_entity,
-                            RunResult::Success,
-                        );
-                        println!("Escape action finished, success!");
-                    }
-                    PathFollowResult::Failure => {
-                        running_clone.trigger_result(
-                            &mut commands,
-                            action_entity,
-                            RunResult::Failure,
-                        );
-                        println!("Escape action finished, failure!");
-                    }
-                }
-            },
-        );
+        // commands.entity(target_agent).observe(
+        //     move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {
+        //         match path_follow_trigger.result {
+        //             PathFollowResult::Success => {
+        //                 running_clone.trigger_result(
+        //                     &mut commands,
+        //                     action_entity,
+        //                     RunResult::Success,
+        //                 );
+        //                 println!("Escape action finished, success!");
+        //             }
+        //             PathFollowResult::Failure => {
+        //                 running_clone.trigger_result(
+        //                     &mut commands,
+        //                     action_entity,
+        //                     RunResult::Failure,
+        //                 );
+        //                 println!("Escape action finished, failure!");
+        //             }
+        //         }
+        //     },
+        // );
     }
 }

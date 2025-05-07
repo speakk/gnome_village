@@ -1,3 +1,4 @@
+use bevy::asset::uuid::Uuid;
 use crate::bundles::settler::Settler;
 use crate::features::ai::PathFollow;
 use crate::features::movement::Velocity;
@@ -7,15 +8,21 @@ use bevy::prelude::*;
 use bevy::tasks::futures_lite::future;
 use bevy::tasks::{AsyncComputeTaskPool, Task};
 use pathfinding::prelude::bfs;
+use crate::features::tasks::task::TaskFailed;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Path {
     pub steps: Vec<IVec2>,
-    pub related_task: Option<Entity>,
+    pub pathfinding_id: Uuid,
 }
 
 #[derive(Component)]
-pub struct PathfindingTask(Task<Option<Path>>);
+pub struct PathfindingTask(Task<PathfindingResult>);
+
+pub struct PathfindingResult {
+    pub path: Option<Path>,
+    pub pathfinding_id: Uuid,
+}
 
 pub fn spawn_pathfinding_task(
     commands: &mut Commands,
@@ -24,17 +31,21 @@ pub fn spawn_pathfinding_task(
     start: WorldPosition,
     end: WorldPosition,
     related_task: Option<Entity>,
-) {
+) -> Uuid {
     let thread_pool = AsyncComputeTaskPool::get();
     let grid = Box::new(grid.clone());
-
+    let pathfinding_id = Uuid::new_v4();
+    
     let task = thread_pool.spawn(async move {
         let start = grid.get_nearest_available_vertex(start.as_coordinate());
         let end = grid.get_nearest_available_vertex(end.as_coordinate());
 
         if start.is_none() || end.is_none() {
             println!("start or end not found, returning None from Pathfinding task");
-            return None;
+            return PathfindingResult {
+                path: None,
+                pathfinding_id,
+            }
         }
 
         let points = bfs(
@@ -54,31 +65,38 @@ pub fn spawn_pathfinding_task(
             end,
             points.is_some()
         );
-        //println!("grid: {:?}", grid);
-        points.map(|points| Path {
-            steps: points
-                .iter()
-                .map(|p| grid.convert_to_centered_coordinate(*p))
-                .collect::<Vec<_>>(),
-            related_task,
-        })
+        
+        points.map_or(PathfindingResult {
+            path: None,
+            pathfinding_id,
+        }, |points| PathfindingResult {
+            path: Some(Path {
+                steps: points
+                    .iter()
+                    .map(|p| grid.convert_to_centered_coordinate(*p))
+                    .collect::<Vec<_>>(),
+                pathfinding_id
+            }), pathfinding_id,
+        },)
     });
 
     println!("Pathfinding task spawned for agent: {:?}", target_entity);
     commands.entity(target_entity).insert(PathfindingTask(task));
+    
+    pathfinding_id
 }
 
 pub fn apply_pathfinding_result(
     mut commands: Commands,
     mut tasks: Query<(Entity, &mut PathfindingTask)>,
 ) {
-    for (task_entity, mut task) in &mut tasks {
+    for (task_agent, mut task) in &mut tasks {
         if let Some(result) = future::block_on(future::poll_once(&mut task.0)) {
-            commands.entity(task_entity).remove::<PathfindingTask>();
-
-            if let Some(path) = result {
+            commands.entity(task_agent).remove::<PathfindingTask>();
+            
+            if let Some(path) = result.path {
                 commands
-                    .entity(task_entity)
+                    .entity(task_agent)
                     .insert(PathFollow {
                         path,
                         ..Default::default()
@@ -87,12 +105,16 @@ pub fn apply_pathfinding_result(
                         move |_trigger: Trigger<OnRemove, PathFollow>,
                               mut velocity_query: Query<&mut Velocity>| {
                             let mut velocity = velocity_query
-                                .get_mut(task_entity)
+                                .get_mut(task_agent)
                                 .expect("No velocity for path follow entity");
 
                             velocity.0 = Vec2::ZERO;
                         },
                     );
+            } else {
+                commands.entity(task_agent).trigger(PathFindingFailed { 
+                    pathfinding_id: result.pathfinding_id
+                });
             }
         }
     }
@@ -106,7 +128,12 @@ pub enum PathFollowResult {
 #[derive(Event)]
 pub struct PathFollowFinished {
     pub result: PathFollowResult,
-    pub related_task: Option<Entity>,
+    pub pathfinding_id: Uuid,
+}
+
+#[derive(Event)]
+pub struct PathFindingFailed {
+    pub pathfinding_id: Uuid,
 }
 
 pub fn follow_path(
@@ -115,9 +142,11 @@ pub fn follow_path(
 ) {
     const AT_POINT_THRESHOLD: f32 = 1.0;
 
-    for (entity, mut path_follow, world_position, mut velocity) in query.iter_mut() {
+    for (agent_entity, mut path_follow, world_position, mut velocity) in query.iter_mut() {
+        let pathfinding_id = path_follow.path.pathfinding_id;
+        
         if path_follow.path.steps.len() == 1 {
-            follow_path_succeed(&mut commands, entity, path_follow, &mut velocity);
+            follow_path_succeed(&mut commands, agent_entity, path_follow, &pathfinding_id, &mut velocity);
             continue;
         }
 
@@ -133,7 +162,7 @@ pub fn follow_path(
             if current_index < path_follow.path.steps.len() - 2 {
                 path_follow.current_path_index += 1;
             } else {
-                follow_path_succeed(&mut commands, entity, path_follow, &mut velocity);
+                follow_path_succeed(&mut commands, agent_entity, path_follow, &pathfinding_id, &mut velocity);
             }
         }
     }
@@ -141,16 +170,17 @@ pub fn follow_path(
 
 fn follow_path_succeed(
     commands: &mut Commands,
-    entity: Entity,
+    agent: Entity,
     path_follow: Mut<PathFollow>,
+    pathfinding_id: &Uuid,
     velocity: &mut Mut<Velocity>,
 ) {
     velocity.0 = Vec2::ZERO;
     commands
-        .entity(entity)
+        .entity(agent)
         .trigger(PathFollowFinished {
             result: PathFollowResult::Success,
-            related_task: path_follow.path.related_task,
+            pathfinding_id: *pathfinding_id,
         })
         .remove::<PathFollow>();
 }

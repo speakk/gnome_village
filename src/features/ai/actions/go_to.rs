@@ -2,7 +2,8 @@ use crate::features::ai::PathFollow;
 use crate::features::map::map_model::MapData;
 use crate::features::path_finding::grid::PathingGridResource;
 use crate::features::path_finding::path_finding::{
-    spawn_pathfinding_task, PathFollowFinished, PathFollowResult, PathfindingTask,
+    spawn_pathfinding_task, PathFindingFailed, PathFollowFinished, PathFollowResult,
+    PathfindingTask,
 };
 use crate::features::position::WorldPosition;
 use beet::prelude::*;
@@ -35,7 +36,7 @@ fn go_to_action(
         target_coordinate.x as f32,
         target_coordinate.y as f32,
     ));
-    spawn_pathfinding_task(
+    let pathfinding_id = spawn_pathfinding_task(
         &mut commands,
         target_agent,
         &pathing_grid,
@@ -58,10 +59,10 @@ fn go_to_action(
 
     commands.entity(target_agent).observe(
         move |path_follow_trigger: Trigger<PathFollowFinished>, mut commands: Commands| {
-            if path_follow_trigger.related_task != Some(action_entity) {
+            if path_follow_trigger.pathfinding_id != pathfinding_id {
                 return;
             }
-
+            
             if commands.get_entity(action_entity).is_err() {
                 return;
             }
@@ -78,4 +79,16 @@ fn go_to_action(
             }
         },
     );
+
+    let trigger_clone = trigger.clone();
+    
+    commands
+        .entity(target_agent)
+        .observe(move |trigger: Trigger<PathFindingFailed>, mut commands: Commands| {
+            if trigger.pathfinding_id != pathfinding_id {
+                return;
+            }
+            trigger_clone.trigger_result(&mut commands, RunResult::Failure);
+            println!("GoTo action failed!");
+        });
 }
