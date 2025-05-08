@@ -29,7 +29,10 @@ pub(super) fn map_model_plugin(app: &mut App) {
         .insert_resource(FoliageHandles::default())
         .insert_resource(GenerateWorldTimer::default())
         .add_systems(OnEnter(AppState::MapGeneration), (create_loading_ui,))
-        .add_systems(Update, generate_world.run_if(in_state(AppState::MapGeneration)))
+        .add_systems(
+            Update,
+            generate_world.run_if(in_state(AppState::MapGeneration)),
+        )
         .add_viewable::<MapData>();
 }
 
@@ -164,8 +167,8 @@ impl MapData {
 
 struct MapGenerationInput {
     current_coordinate: IVec2,
+    map_size: UVec2,
 }
-
 
 // TODO: Absolutely ridiculous, using this so that UI has a chance to actually show before world
 // generation kicks in.
@@ -195,52 +198,62 @@ pub fn generate_world(world: &mut World) {
             let mut rock_bundles: Vec<RockBundle> = vec![];
             let mut foliage_bundles: Vec<FoliageBundle> = vec![];
             let mut flower_bundles: Vec<FlowerBundle> = vec![];
-            
+
             let mut reserved_coordinates: Vec<IVec2> = vec![];
 
             for x in 0..map_size.x {
                 for y in 0..map_size.y {
-                    let current_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
+                    let current_coordinate =
+                        map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
                     let generate_ground_result: GenerateGroundResult = world
                         .run_system_cached_with(
                             generate_ground,
-                            MapGenerationInput { current_coordinate },
+                            MapGenerationInput {
+                                current_coordinate,
+                                map_size,
+                            },
                         )
                         .unwrap();
-                    
+
                     if let Some(dirt_bundle) = generate_ground_result.dirt_bundle {
                         dirt_bundles.push(dirt_bundle);
                     }
-                    
+
                     let ground_reserved = generate_ground_result.coordinate_reserved;
 
                     if ground_reserved {
                         continue;
                     }
-                    
+
                     let generate_rock_result: GenerateRockResult = world
                         .run_system_cached_with(
                             generate_rocks,
-                            MapGenerationInput { current_coordinate },
+                            MapGenerationInput {
+                                current_coordinate,
+                                map_size,
+                            },
                         )
                         .unwrap();
 
                     if let Some(bundle) = generate_rock_result.rock_bundle {
                         rock_bundles.push(bundle);
                     }
-                    
+
                     if generate_rock_result.reserved {
                         continue;
                     }
-                    
+
                     world
                         .run_system_cached_with(
                             generate_trees,
-                            MapGenerationInput { current_coordinate },
+                            MapGenerationInput {
+                                current_coordinate,
+                                map_size,
+                            },
                         )
                         .unwrap();
-                    
+
                     reserved_coordinates.push(current_coordinate);
 
                     // let mut foliage_bundle_sum = world
@@ -249,13 +262,15 @@ pub fn generate_world(world: &mut World) {
                     //         MapGenerationInput { current_coordinate },
                     //     )
                     //     .unwrap();
-                    // 
+                    //
                     // foliage_bundles.append(&mut foliage_bundle_sum.foliage_bundles);
                     // flower_bundles.append(&mut foliage_bundle_sum.flower_bundles);
                 }
             }
 
-            world.run_system_cached_with(generate_test_entities, reserved_coordinates).unwrap();
+            world
+                .run_system_cached_with(generate_test_entities, reserved_coordinates)
+                .unwrap();
 
             world.spawn_batch(rock_bundles);
             world.spawn_batch(dirt_bundles);
@@ -271,8 +286,6 @@ pub fn generate_world(world: &mut World) {
             println!("Finished generating world!");
         }
     });
-
-
 }
 
 // fn create_foliage_mesh(mut commands: Commands, foliage_handles: Res<FoliageHandles>) {
@@ -298,19 +311,20 @@ type DirtBundle = (Dirt, Id, WorldPosition, InWorld);
 
 struct GenerateGroundResult {
     dirt_bundle: Option<DirtBundle>,
-    coordinate_reserved: bool
+    coordinate_reserved: bool,
 }
 
 fn generate_ground(
-    In(MapGenerationInput { current_coordinate }): In<MapGenerationInput>,
-    mut map_query: Query<&mut MapData>,
+    In(MapGenerationInput {
+        current_coordinate,
+        map_size,
+    }): In<MapGenerationInput>,
+    mut map_data: Query<&mut MapData>,
     world_seed: Res<WorldSeed>,
 ) -> GenerateGroundResult {
-    let mut map_data = map_query.single_mut().expect("Map data not found");
-
-    let map_size = map_data.size;
+    let mut map_data = map_data.single_mut().unwrap();
     let min_bound = map_size.x.min(map_size.y) as f32 - 50.0;
-    
+
     let mut tile_type = TileType::Dirt;
 
     const SHORELINE_NOISE_SCALE: f32 = 0.2;
@@ -324,8 +338,8 @@ fn generate_ground(
 
     let mut dirt_bundle: Option<(Dirt, Id, WorldPosition, InWorld)> = None;
 
-    let mut reserved = false; 
-    
+    let mut reserved = false;
+
     if (noise_value / 2.0 + 1.0) * mapped_value > SHORELINE_NOISE_THRESHOLD {
         tile_type = TileType::Water;
         reserved = true;
@@ -390,13 +404,10 @@ struct GenerateRockResult {
 }
 
 fn generate_rocks(
-    In(MapGenerationInput { current_coordinate }): In<MapGenerationInput>,
-    mut commands: Commands,
-    map_query: Query<&MapData>,
+    In(MapGenerationInput { current_coordinate, map_size }): In<MapGenerationInput>,
     world_seed: Res<WorldSeed>,
 ) -> GenerateRockResult {
-    let map_data = map_query.single().expect("Map data not found");
-    let min_bound = map_data.size.x.min(map_data.size.y) as f32;
+    let min_bound = map_size.x.min(map_size.y) as f32;
 
     let x = current_coordinate.x;
     let y = current_coordinate.y;
@@ -409,18 +420,18 @@ fn generate_rocks(
     if (noise_value / 2.0 + 1.0) + mapped_value < 0.65 {
         GenerateRockResult {
             rock_bundle: Some((Rock, InWorld, WorldPosition(current_coordinate.as_vec2()))),
-            reserved: true
+            reserved: true,
         }
     } else {
         GenerateRockResult {
             rock_bundle: None,
-            reserved: false
+            reserved: false,
         }
     }
 }
 
 fn generate_trees(
-    In(MapGenerationInput { current_coordinate }): In<MapGenerationInput>,
+    In(MapGenerationInput { current_coordinate, map_size: _map_size }): In<MapGenerationInput>,
     mut commands: Commands,
     world_seed: Res<WorldSeed>,
     mut random_source: ResMut<RandomSource>,
@@ -498,7 +509,7 @@ pub fn generate_test_entities(
             func: None,
         },
     ];
-    
+
     let mut reserved_coordinates = reserved_coordinates.clone();
 
     for test_entity in test_entities {
@@ -578,11 +589,10 @@ struct FoliageBundleSum {
 }
 
 fn generate_foliage(
-    In(MapGenerationInput { current_coordinate }): In<MapGenerationInput>,
+    In(MapGenerationInput { current_coordinate, map_size: _map_size }): In<MapGenerationInput>,
     reserved_coordinates: Res<ReservedCoordinatesHelper>,
     foliage_handles: Res<FoliageHandles>,
     gltf_assets: Res<Assets<Gltf>>,
-    world_seed: Res<WorldSeed>,
     map_query: Query<&MapData>,
     mut random_source: ResMut<RandomSource>,
 ) -> FoliageBundleSum {
