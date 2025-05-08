@@ -191,36 +191,57 @@ pub fn generate_world(world: &mut World) {
 
             world.commands().spawn((map_data.clone(), Save));
 
-            let mut dirt_bundles: Vec<(Dirt, Id, WorldPosition, InWorld)> = vec![];
+            let mut dirt_bundles: Vec<DirtBundle> = vec![];
+            let mut rock_bundles: Vec<RockBundle> = vec![];
             let mut foliage_bundles: Vec<FoliageBundle> = vec![];
             let mut flower_bundles: Vec<FlowerBundle> = vec![];
+            
+            let mut reserved_coordinates: Vec<IVec2> = vec![];
 
             for x in 0..map_size.x {
                 for y in 0..map_size.y {
                     let current_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
-                    let dirt_bundle = world
+                    let generate_ground_result: GenerateGroundResult = world
                         .run_system_cached_with(
                             generate_ground,
                             MapGenerationInput { current_coordinate },
                         )
                         .unwrap();
-                    if let Some(dirt_bundle) = dirt_bundle {
+                    
+                    if let Some(dirt_bundle) = generate_ground_result.dirt_bundle {
                         dirt_bundles.push(dirt_bundle);
                     }
+                    
+                    let ground_reserved = generate_ground_result.coordinate_reserved;
 
-                    world
+                    if ground_reserved {
+                        continue;
+                    }
+                    
+                    let generate_rock_result: GenerateRockResult = world
                         .run_system_cached_with(
                             generate_rocks,
                             MapGenerationInput { current_coordinate },
                         )
                         .unwrap();
+
+                    if let Some(bundle) = generate_rock_result.rock_bundle {
+                        rock_bundles.push(bundle);
+                    }
+                    
+                    if generate_rock_result.reserved {
+                        continue;
+                    }
+                    
                     world
                         .run_system_cached_with(
                             generate_trees,
                             MapGenerationInput { current_coordinate },
                         )
                         .unwrap();
+                    
+                    reserved_coordinates.push(current_coordinate);
 
                     // let mut foliage_bundle_sum = world
                     //     .run_system_cached_with(
@@ -234,8 +255,9 @@ pub fn generate_world(world: &mut World) {
                 }
             }
 
-            world.run_system_cached(generate_test_entities).unwrap();
+            world.run_system_cached_with(generate_test_entities, reserved_coordinates).unwrap();
 
+            world.spawn_batch(rock_bundles);
             world.spawn_batch(dirt_bundles);
             world.spawn_batch(foliage_bundles);
             world.spawn_batch(flower_bundles);
@@ -244,7 +266,7 @@ pub fn generate_world(world: &mut World) {
 
             world.flush();
 
-            let mut next_state = world.get_resource_mut::<NextState<AppState>>();
+            let next_state = world.get_resource_mut::<NextState<AppState>>();
             next_state.unwrap().set(AppState::InGame);
             println!("Finished generating world!");
         }
@@ -272,20 +294,23 @@ pub fn generate_world(world: &mut World) {
 //     ));
 // }
 
+type DirtBundle = (Dirt, Id, WorldPosition, InWorld);
+
+struct GenerateGroundResult {
+    dirt_bundle: Option<DirtBundle>,
+    coordinate_reserved: bool
+}
+
 fn generate_ground(
     In(MapGenerationInput { current_coordinate }): In<MapGenerationInput>,
     mut map_query: Query<&mut MapData>,
-    mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
     world_seed: Res<WorldSeed>,
-) -> Option<(Dirt, Id, WorldPosition, InWorld)> {
+) -> GenerateGroundResult {
     let mut map_data = map_query.single_mut().expect("Map data not found");
 
     let map_size = map_data.size;
-
     let min_bound = map_size.x.min(map_size.y) as f32 - 50.0;
-
-    //let mut dirt_bundles: Vec<(Dirt, Id, WorldPosition, InWorld)> = vec![];
-
+    
     let mut tile_type = TileType::Dirt;
 
     const SHORELINE_NOISE_SCALE: f32 = 0.2;
@@ -299,9 +324,11 @@ fn generate_ground(
 
     let mut dirt_bundle: Option<(Dirt, Id, WorldPosition, InWorld)> = None;
 
+    let mut reserved = false; 
+    
     if (noise_value / 2.0 + 1.0) * mapped_value > SHORELINE_NOISE_THRESHOLD {
         tile_type = TileType::Water;
-        reserved_coordinates.0.push(current_coordinate);
+        reserved = true;
     } else {
         dirt_bundle = Some((
             Dirt,
@@ -330,7 +357,10 @@ fn generate_ground(
 
     map_data.set_tile_type(current_coordinate, tile_type);
 
-    dirt_bundle
+    GenerateGroundResult {
+        dirt_bundle,
+        coordinate_reserved: reserved,
+    }
 }
 
 fn remap_to_distance_from_center(
@@ -352,13 +382,19 @@ fn remap_to_distance_from_center(
     }
 }
 
+type RockBundle = (Rock, InWorld, WorldPosition);
+
+struct GenerateRockResult {
+    reserved: bool,
+    rock_bundle: Option<RockBundle>,
+}
+
 fn generate_rocks(
     In(MapGenerationInput { current_coordinate }): In<MapGenerationInput>,
     mut commands: Commands,
     map_query: Query<&MapData>,
     world_seed: Res<WorldSeed>,
-    mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
-) {
+) -> GenerateRockResult {
     let map_data = map_query.single().expect("Map data not found");
     let min_bound = map_data.size.x.min(map_data.size.y) as f32;
 
@@ -370,12 +406,16 @@ fn generate_rocks(
 
     let mapped_value = remap_to_distance_from_center(min_bound, current_coordinate, 0.4, 0.45);
 
-    let reserved = reserved_coordinates.0.contains(&current_coordinate);
-
-    if (noise_value / 2.0 + 1.0) + mapped_value < 0.65 && !reserved {
-        commands.spawn((Rock, InWorld, WorldPosition(current_coordinate.as_vec2())));
-
-        reserved_coordinates.0.push(current_coordinate);
+    if (noise_value / 2.0 + 1.0) + mapped_value < 0.65 {
+        GenerateRockResult {
+            rock_bundle: Some((Rock, InWorld, WorldPosition(current_coordinate.as_vec2()))),
+            reserved: true
+        }
+    } else {
+        GenerateRockResult {
+            rock_bundle: None,
+            reserved: false
+        }
     }
 }
 
@@ -433,9 +473,9 @@ struct EntityGeneration {
 }
 
 pub fn generate_test_entities(
+    In(reserved_coordinates): In<Vec<IVec2>>,
     mut commands: Commands,
     map_query: Query<&MapData>,
-    mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
     item_spawners: Res<ItemSpawners>,
 ) {
     let map_data = map_query.single().expect("Map data not found");
@@ -458,6 +498,8 @@ pub fn generate_test_entities(
             func: None,
         },
     ];
+    
+    let mut reserved_coordinates = reserved_coordinates.clone();
 
     for test_entity in test_entities {
         let mut entity_amount = test_entity.amount;
@@ -467,7 +509,7 @@ pub fn generate_test_entities(
             let y = rng.random_range(0..map_data.size.y);
             let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
-            if !reserved_coordinates.0.contains(&centered_coordinate) {
+            if !reserved_coordinates.contains(&centered_coordinate) {
                 let item = item_spawners.get(&test_entity.entity_type).unwrap()(&mut commands);
                 commands.entity(item).insert((
                     WorldPosition(centered_coordinate.as_vec2()),
@@ -479,7 +521,7 @@ pub fn generate_test_entities(
                     func(&mut commands.entity(item));
                 }
 
-                reserved_coordinates.0.push(centered_coordinate);
+                reserved_coordinates.push(centered_coordinate);
                 entity_amount -= 1;
             }
             max_attempts -= 1;
