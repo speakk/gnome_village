@@ -217,41 +217,44 @@ pub fn generate_world(world: &mut World) {
                         dirt_bundles.push(dirt_bundle);
                     }
 
+                    let mut had_any_reserved = false;
+                    
                     let ground_reserved = generate_ground_result.coordinate_reserved;
+                    if !ground_reserved {
+                        let generate_rock_result: GenerateRockResult = world
+                            .run_system_cached_with(
+                                generate_rocks,
+                                MapGenerationInput {
+                                    current_coordinate,
+                                    map_size,
+                                },
+                            )
+                            .unwrap();
 
-                    if ground_reserved {
-                        continue;
+                        if let Some(bundle) = generate_rock_result.rock_bundle {
+                            rock_bundles.push(bundle);
+                        }
+
+                        if !generate_rock_result.reserved {
+                            world
+                                .run_system_cached_with(
+                                    generate_trees,
+                                    MapGenerationInput {
+                                        current_coordinate,
+                                        map_size,
+                                    },
+                                )
+                                .unwrap();
+                        } else {
+                            had_any_reserved = true;
+                        }
+                    } else {
+                        had_any_reserved = true;
                     }
-
-                    let generate_rock_result: GenerateRockResult = world
-                        .run_system_cached_with(
-                            generate_rocks,
-                            MapGenerationInput {
-                                current_coordinate,
-                                map_size,
-                            },
-                        )
-                        .unwrap();
-
-                    if let Some(bundle) = generate_rock_result.rock_bundle {
-                        rock_bundles.push(bundle);
+                    
+                    if had_any_reserved {
+                        reserved_coordinates.push(current_coordinate);
                     }
-
-                    if generate_rock_result.reserved {
-                        continue;
-                    }
-
-                    world
-                        .run_system_cached_with(
-                            generate_trees,
-                            MapGenerationInput {
-                                current_coordinate,
-                                map_size,
-                            },
-                        )
-                        .unwrap();
-
-                    reserved_coordinates.push(current_coordinate);
 
                     // let mut foliage_bundle_sum = world
                     //     .run_system_cached_with(
