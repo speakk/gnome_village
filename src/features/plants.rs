@@ -20,6 +20,7 @@ impl Plugin for PlantsPlugin {
                 Update,
                 update_growth_process.run_if(on_timer(Duration::from_millis(100))),
             )
+            .add_observer(randomize_growth_multiplier)
             .add_observer(update_gltf_based_on_growth_stage);
     }
 }
@@ -62,6 +63,11 @@ impl Default for Plant {
             random_growth_multiplier: rand::rng().random_range(0.6..1.2),
         }
     }
+}
+
+pub fn randomize_growth_multiplier(trigger: Trigger<OnAdd, Plant>, mut plant: Query<&mut Plant>) {
+    let mut plant = plant.get_mut(trigger.target()).unwrap();
+    plant.random_growth_multiplier = rand::rng().random_range(0.6..1.2);
 }
 
 pub fn initialize_plant(mut commands: Commands, query: Query<Entity, Added<Plant>>) {
