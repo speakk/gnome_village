@@ -1,4 +1,4 @@
-use crate::bundles::spawners::setup_spawners_and_prototypes;
+use crate::bundles::prototypes::setup_prototypes;
 use crate::features::map::map_model::setup_foliage_resources;
 use crate::features::map::map_view::create_map_materials;
 use crate::features::states::AppState;
@@ -72,7 +72,7 @@ impl Plugin for AssetsPlugin {
                     setup,
                     create_map_materials,
                     setup_foliage_resources,
-                    setup_spawners_and_prototypes,
+                    setup_prototypes,
                     |mut next_state: ResMut<NextState<AppState>>| {
                         next_state.set(AppState::MapGeneration);
                     },

@@ -1,5 +1,5 @@
-use crate::bundles::{ItemId, ItemSpawners};
-use crate::features::misc_components::InWorld;
+use crate::bundles::{ItemId, Prototypes};
+use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::seeded_random::RandomSource;
 use bevy::prelude::*;
@@ -30,7 +30,7 @@ fn item_drop(
     query: Query<(&WorldPosition, &ItemDrop)>,
     mut commands: Commands,
     mut random_source: ResMut<RandomSource>,
-    spawners: Res<ItemSpawners>,
+    prototypes: Res<Prototypes>,
 ) {
     let entity = trigger.target();
     let Ok((world_position, item_drop)) = query.get(entity) else {
@@ -39,10 +39,11 @@ fn item_drop(
 
     for single_item_drop in item_drop.item_drops.iter() {
         if random_source.0.random_range(0.0..1.0) < single_item_drop.chance {
-            let new_entity = spawners.0.get(&single_item_drop.item_id).unwrap()(&mut commands);
             commands
-                .entity(new_entity)
-                .insert((WorldPosition(world_position.0), InWorld));
+                .entity(*prototypes.0.get(&single_item_drop.item_id).unwrap())
+                .clone_and_spawn()
+                .insert((WorldPosition(world_position.0), InWorld))
+                .remove::<Prototype>();
         }
     }
 }

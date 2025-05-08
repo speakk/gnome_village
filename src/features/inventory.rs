@@ -1,5 +1,5 @@
-use crate::bundles::{Id, ItemId, ItemSpawners};
-use crate::features::misc_components::{InWorld, ItemAmount};
+use crate::bundles::{Id, ItemId, Prototypes};
+use crate::features::misc_components::{InWorld, ItemAmount, Prototype};
 use crate::features::position::WorldPosition;
 use crate::ReflectComponent;
 use bevy::prelude::*;
@@ -85,7 +85,7 @@ pub fn spawn_public_items(
     trigger: Trigger<InventoryChanged>,
     inventories: Query<(&Inventory, &WorldPosition)>,
     mut commands: Commands,
-    item_spawners: Res<ItemSpawners>,
+    prototypes: Res<Prototypes>,
 ) {
     let InventoryChangedType::Add(item_amount) = trigger.0 else {
         return;
@@ -100,12 +100,17 @@ pub fn spawn_public_items(
     }
 
     for _i in 0..item_amount.amount {
-        let new_item = item_spawners.0.get(&item_amount.item_id).unwrap()(&mut commands);
-        commands.entity(new_item).insert((
-            InInventory(trigger.target()),
-            WorldPosition(world_position.0),
-            InWorld,
-        ));
+        let prototype_entity = *prototypes.0.get(&item_amount.item_id).unwrap();
+        let new_item = commands
+            .entity(prototype_entity)
+            .clone_and_spawn()
+            .insert((
+                InInventory(trigger.target()),
+                WorldPosition(world_position.0),
+                InWorld,
+            ))
+            .remove::<Prototype>()
+            .id();
 
         commands.entity(trigger.target()).add_child(new_item);
     }

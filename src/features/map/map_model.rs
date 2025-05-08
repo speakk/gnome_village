@@ -1,14 +1,11 @@
 use crate::bundles::rock::Rock;
 use crate::bundles::soil::dirt::Dirt;
-use crate::bundles::{Id, ItemId, ItemSpawners};
+use crate::bundles::{Id, ItemId, Prototypes};
 use crate::features::assets::{GltfAssetHandles, GltfAssetId};
-use crate::features::map::transition_to_in_game;
-use crate::features::misc_components::simple_mesh::SimpleMeshHandles;
-use crate::features::misc_components::InWorld;
+use crate::features::misc_components::{InWorld, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::seeded_random::RandomSource;
 use crate::features::states::AppState;
-use crate::features::states::AppState::MainMenu;
 use crate::ui::colours::THEME_1_800;
 use crate::ui::FONT_BOLD;
 use bevy::ecs::system::{CachedSystemId, SystemId};
@@ -404,7 +401,10 @@ struct GenerateRockResult {
 }
 
 fn generate_rocks(
-    In(MapGenerationInput { current_coordinate, map_size }): In<MapGenerationInput>,
+    In(MapGenerationInput {
+        current_coordinate,
+        map_size,
+    }): In<MapGenerationInput>,
     world_seed: Res<WorldSeed>,
 ) -> GenerateRockResult {
     let min_bound = map_size.x.min(map_size.y) as f32;
@@ -431,12 +431,15 @@ fn generate_rocks(
 }
 
 fn generate_trees(
-    In(MapGenerationInput { current_coordinate, map_size: _map_size }): In<MapGenerationInput>,
+    In(MapGenerationInput {
+        current_coordinate,
+        map_size: _map_size,
+    }): In<MapGenerationInput>,
     mut commands: Commands,
     world_seed: Res<WorldSeed>,
     mut random_source: ResMut<RandomSource>,
     mut reserved_coordinates: ResMut<ReservedCoordinatesHelper>,
-    item_spawners: Res<ItemSpawners>,
+    prototypes: Res<Prototypes>,
 ) {
     if reserved_coordinates.0.contains(&current_coordinate) {
         return;
@@ -467,11 +470,11 @@ fn generate_trees(
 
     if random_source.0.random::<f32>() < spawn_probability {
         let tree_type = TREE_TYPES[rand::rng().random_range(0..TREE_TYPES.len())];
-        let item = item_spawners.get(&tree_type).unwrap()(&mut commands);
-
         commands
-            .entity(item)
-            .insert((WorldPosition(current_coordinate.as_vec2()), Save, InWorld));
+            .entity(*prototypes.0.get(&tree_type).unwrap())
+            .clone_and_spawn()
+            .insert((WorldPosition(current_coordinate.as_vec2()), Save, InWorld))
+            .remove::<Prototype>();
 
         reserved_coordinates.0.push(current_coordinate);
     }
@@ -487,7 +490,7 @@ pub fn generate_test_entities(
     In(reserved_coordinates): In<Vec<IVec2>>,
     mut commands: Commands,
     map_query: Query<&MapData>,
-    item_spawners: Res<ItemSpawners>,
+    prototypes: Res<Prototypes>,
 ) {
     let map_data = map_query.single().expect("Map data not found");
     let mut rng = rand::rng();
@@ -521,12 +524,12 @@ pub fn generate_test_entities(
             let centered_coordinate = map_data.convert_to_centered_coordinate(UVec2::new(x, y));
 
             if !reserved_coordinates.contains(&centered_coordinate) {
-                let item = item_spawners.get(&test_entity.entity_type).unwrap()(&mut commands);
-                commands.entity(item).insert((
-                    WorldPosition(centered_coordinate.as_vec2()),
-                    Save,
-                    InWorld,
-                ));
+                let item = commands
+                    .entity(*prototypes.0.get(&test_entity.entity_type).unwrap())
+                    .clone_and_spawn()
+                    .insert((WorldPosition(centered_coordinate.as_vec2()), Save, InWorld))
+                    .remove::<Prototype>()
+                    .id();
 
                 if let Some(func) = test_entity.func {
                     func(&mut commands.entity(item));
@@ -589,7 +592,10 @@ struct FoliageBundleSum {
 }
 
 fn generate_foliage(
-    In(MapGenerationInput { current_coordinate, map_size: _map_size }): In<MapGenerationInput>,
+    In(MapGenerationInput {
+        current_coordinate,
+        map_size: _map_size,
+    }): In<MapGenerationInput>,
     reserved_coordinates: Res<ReservedCoordinatesHelper>,
     foliage_handles: Res<FoliageHandles>,
     gltf_assets: Res<Assets<Gltf>>,

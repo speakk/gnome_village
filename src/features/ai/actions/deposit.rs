@@ -1,6 +1,6 @@
-use crate::bundles::{ItemId, ItemSpawners};
+use crate::bundles::{ItemId, Prototypes};
 use crate::features::inventory::{InventoryChanged, InventoryChangedType};
-use crate::features::misc_components::ItemAmount;
+use crate::features::misc_components::{ItemAmount, Prototype};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::DepositTarget;
 use beet::prelude::*;
@@ -19,7 +19,7 @@ fn deposit_action(
     trigger: Trigger<OnRun>,
     actions: Query<&DepositAction>,
     mut commands: Commands,
-    item_spawners: Res<ItemSpawners>,
+    prototypes: Res<Prototypes>,
 ) {
     println!("Picking up item, inside pick up action");
     let agent = trigger.origin;
@@ -47,10 +47,12 @@ fn deposit_action(
             );
         }
         DepositTarget::Coordinate(coordinate) => {
-            let new_item = item_spawners.0.get(&action.item_id).unwrap()(&mut commands);
             commands
-                .entity(new_item)
-                .insert(WorldPosition(coordinate.as_vec2()));
+                .entity(*prototypes.0.get(&action.item_id).unwrap())
+                .clone_and_spawn()
+                .insert(WorldPosition(coordinate.as_vec2()))
+                .remove::<Prototype>();
+
             println!(
                 "Deposited item to coordinate: {:?} {:?}",
                 action.item_id, amount

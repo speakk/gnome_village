@@ -1,5 +1,5 @@
 use crate::bundles::buildables::{BluePrint, BluePrintMaterial, Buildable};
-use crate::bundles::{ItemId, ItemSpawners, Prototypes};
+use crate::bundles::{ItemId, Prototypes};
 use crate::features::assets::GltfAssetHandles;
 use crate::features::map::map_model::MapData;
 use crate::features::misc_components::gltf_asset::GltfData;
@@ -174,7 +174,7 @@ fn send_build_intent(
 
 // TODO: Just validate in this and then emit BuildAction
 fn react_to_build_intent(
-    item_spawners: Res<ItemSpawners>,
+    prototypes: Res<Prototypes>,
     mut commands: Commands,
     map_data: Query<&MapData>,
     pathing_grid_resource: Res<PathingGridResource>,
@@ -216,21 +216,16 @@ fn react_to_build_intent(
 
             for (i, coordinate) in valid_coordinates.iter().enumerate() {
                 let world_position = map_data.centered_coordinate_to_world_position(**coordinate);
-                let concrete_entity = item_spawners.0.get(&item_id).unwrap()(&mut commands);
-                println!("Creating buildable at: {:?}", world_position);
-
-                commands
-                    .entity(concrete_entity)
+                commands.entity(*prototypes.0.get(&item_id).unwrap()).clone_and_spawn()
                     .insert(WorldPosition(world_position))
                     .insert(BluePrint)
                     .insert(AddTransformJuice {
                         batch_index: i,
                         batch_size,
                     })
-                    .insert(InWorld);
+                    .insert(InWorld)
+                    .remove::<Prototype>();
             }
-
-            break;
         }
     }
 }

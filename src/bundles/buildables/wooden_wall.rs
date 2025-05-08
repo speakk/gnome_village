@@ -5,7 +5,7 @@ use crate::features::misc_components::ItemAmount;
 use crate::features::path_finding::grid::Solid;
 use bevy::prelude::*;
 
-#[derive(Component, Default, Reflect, Clone)]
+#[derive(Component, Default, Reflect, Clone, Debug, Eq, Hash, PartialEq)]
 #[require(
     Id = Id(ItemId::WoodenWall),
     Name::new("Wooden Wall"),

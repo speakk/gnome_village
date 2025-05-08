@@ -7,34 +7,29 @@ use crate::bundles::resources::lumber::Lumber;
 use crate::bundles::resources::water::Water;
 use crate::bundles::settler::Settler;
 use crate::bundles::soil::dirt::Dirt;
-use crate::bundles::{ItemId, ItemSpawners, Prototypes};
+use crate::bundles::{ItemId, Prototypes};
 use crate::features::misc_components::Prototype;
 use bevy::prelude::{Commands, ResMut};
 use crate::bundles::plants::barren_tree::BarrenTree;
 use crate::bundles::plants::maple_tree::MapleTree;
 use crate::bundles::plants::pine_tree::PineTree;
 
-macro_rules! create_spawners_and_prototypes {
-    ( $commands:expr,$spawners:expr,$prototypes:expr,$( ($item_id:expr, $component:expr) ),*, ) => {
+macro_rules! create_prototypes {
+    ( $commands:expr,$prototypes:expr,$( ($item_id:expr, $component:expr) ),*, ) => {
         {
             $(
                 $prototypes.0.insert($item_id, $commands.spawn(($component, Prototype)).id());
-                $spawners.insert($item_id, |commands| {
-                    commands.spawn(($component,)).id()
-                });
             )*
         }
     };
 }
 
-pub fn setup_spawners_and_prototypes(
+pub fn setup_prototypes(
     mut prototypes: ResMut<Prototypes>,
-    mut spawners: ResMut<ItemSpawners>,
     mut commands: Commands,
 ) {
-    create_spawners_and_prototypes!(
+    create_prototypes!(
         commands,
-        spawners,
         prototypes,
         (ItemId::WoodenTorch, WoodenTorch),
         (ItemId::WoodenWall, WoodenWall),

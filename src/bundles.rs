@@ -1,6 +1,7 @@
 use crate::bundles::buildables::BuildablesPlugin;
 use bevy::prelude::*;
 use bevy_platform::collections::HashMap;
+use crate::bundles::buildables::wooden_wall::WoodenWall;
 
 pub mod buildables;
 pub mod category_tags;
@@ -9,14 +10,13 @@ pub mod resources;
 pub mod rock;
 pub mod settler;
 pub mod soil;
-pub mod spawners;
+pub mod prototypes;
 
 pub struct BundlePlugin;
 
 impl Plugin for BundlePlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(Prototypes(HashMap::new()))
-            .insert_resource(ItemSpawners(HashMap::new()))
             .insert_resource(ItemCategories(HashMap::new()))
             .add_systems(Startup, setup_item_categories)
             .add_systems(Update, react_to_emptied_stack)
@@ -44,6 +44,20 @@ pub enum ItemId {
     MapleTree = 15,
     BarrenTree = 16,
 }
+// 
+// #[derive(Clone, Reflect, Debug, PartialEq, Eq, Hash)]
+// pub enum ItemIds {
+//     WoodenWall(crate::bundles::buildables::wooden_wall::WoodenWall)
+// }
+// 
+// #[derive(Component, Reflect)]
+// pub struct Dropsies {
+//     pub drops: Vec<ItemIds>
+// }
+// 
+// #[derive(Component, Reflect)]
+// #[require(Dropsies = Dropsies { drops: vec![ItemIds::WoodenWall(WoodenWall)] })]
+// pub struct OakkiTree;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum ItemCategory {
@@ -98,6 +112,9 @@ pub fn react_to_emptied_stack(
     query: Query<(Entity, &ItemStack), Changed<ItemStack>>,
     mut commands: Commands,
 ) {
+    // let ItemIds::WoodenWall(wooden_wall) = ItemIds::WoodenWall(WoodenWall);
+    // commands.spawn(wooden_wall.clone());
+    // 
     for (entity, item_stack) in query.iter() {
         if item_stack.0 == 0 {
             commands.entity(entity).despawn();
@@ -109,37 +126,7 @@ pub fn react_to_emptied_stack(
 #[reflect(Component)]
 pub struct Id(pub(crate) ItemId);
 
-#[derive(Resource, Deref, DerefMut)]
-pub struct ItemSpawners(pub(crate) HashMap<ItemId, fn(&mut Commands) -> Entity>);
-
 // Entities which have metadata that is required before an entity
 // is actually created in-game can be added here (for example anything that shows up in menus)
 #[derive(Resource)]
 pub struct Prototypes(pub(crate) HashMap<ItemId, Entity>);
-
-/*
-trait MyTraitExt {
-  fn spawn_my_thing(&mut self) -> &mut EntityCommands;
-}
-
-impl MyTraitExt for Commands {
-  fn spawn_my_thing(&mut self) -> &mut EntityCommands {
-    self.spawn(..)
-  }
-}
- */
-
-// pub trait ItemCreator {
-//     fn create_item(&mut self, bundle_type: &ItemId) -> Entity;
-// }
-//
-// impl<'w, 's> ItemCreator for Commands<'w, 's> {
-//     fn create_item(&mut self, bundle_type: &ItemId) -> Entity {
-//         match bundle_type {
-//             ItemId::WoodenWall => self.spawn((WoodenWall,)).id(),
-//             ItemId::Rock => self.spawn((Rock,)).id(),
-//             ItemId::Settler => self.spawn((Settler,)).id(),
-//             ItemId::WoodenTorch => self.spawn((WoodenTorch,)).id(),
-//         }
-//     }
-// }
