@@ -174,17 +174,17 @@ fn do_full_grid_reset(
 
             if solid {
                 pathing_grid.0.remove_vertex((x as usize, y as usize));
-            } else {
-                for world_position in solid_query.iter() {
-                    let top_left_coordinate =
-                        map_data.world_position_to_top_left_coordinate(world_position.0);
-                    pathing_grid.0.remove_vertex((
-                        top_left_coordinate.x as usize,
-                        top_left_coordinate.y as usize,
-                    ));
-                }
             }
         }
+    }
+
+    for world_position in solid_query.iter() {
+        let top_left_coordinate =
+            map_data.world_position_to_top_left_coordinate(world_position.0);
+        pathing_grid.0.remove_vertex((
+            top_left_coordinate.x as usize,
+            top_left_coordinate.y as usize,
+        ));
     }
 
     //println!("{:?}", pathing_grid.0);

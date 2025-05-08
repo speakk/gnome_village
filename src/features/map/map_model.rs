@@ -183,7 +183,7 @@ pub fn generate_world(world: &mut World) {
         let time = world.get_resource::<Time>().unwrap();
         if timer.0.tick(time.delta()).just_finished() {
             println!("Generating world!");
-            let map_size = UVec2::new(250, 250);
+            let map_size = UVec2::new(300, 300);
             let map_data = MapData {
                 data: vec![TileType::Empty; (map_size.x * map_size.y) as usize],
                 size: map_size,
