@@ -1,34 +1,40 @@
 use crate::features::input::{CameraPanAction, CameraZoomAction, InGameInputContext};
-use crate::features::movement::{Acceleration, Friction, Velocity};
+use crate::features::movement::InverseMass;
+use crate::features::movement::{Force, Friction, Velocity};
 use crate::features::position::InterpolatePosition;
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
 use bevy::app::RunFixedMainLoopSystem::BeforeFixedMainLoop;
 use bevy::app::{App, Plugin, RunFixedMainLoop};
-use bevy::core_pipeline::prepass::{DeferredPrepass, DepthPrepass, MotionVectorPrepass, NormalPrepass};
+use bevy::core_pipeline::bloom::Bloom;
+use bevy::core_pipeline::fxaa::Fxaa;
+use bevy::core_pipeline::prepass::{
+    DeferredPrepass, DepthPrepass, MotionVectorPrepass, NormalPrepass,
+};
+use bevy::core_pipeline::tonemapping::Tonemapping;
 use bevy::ecs::prelude::*;
 use bevy::math::{Vec2, Vec3};
 use bevy::pbr::{Atmosphere, ClusterConfig};
 use bevy::prelude::KeyCode::{KeyA, KeyD, KeyS, KeyW};
 use bevy::prelude::*;
-use bevy_enhanced_input::prelude::*;
 use bevy::render::camera::{CameraOutputMode, Exposure, ScalingMode};
+use bevy::render::render_resource::ShaderType;
+use bevy::render::view::{Layer, NoIndirectDrawing, RenderLayers};
+use bevy_enhanced_input::input::Input::MouseWheel;
+use bevy_enhanced_input::prelude::*;
+use bevy_hanabi::UnaryOperator::Exp;
 use moonshine_core::save::Save;
 use moonshine_object::Object;
 use moonshine_view::{BuildView, RegisterView, ViewCommands};
 use std::ops::{Add, Sub};
-use bevy::core_pipeline::bloom::Bloom;
-use bevy::core_pipeline::fxaa::Fxaa;
-use bevy::core_pipeline::tonemapping::Tonemapping;
-use bevy::render::view::{Layer, NoIndirectDrawing, RenderLayers};
-use bevy_enhanced_input::input::Input::MouseWheel;
-use bevy_hanabi::UnaryOperator::Exp;
 
 pub struct CameraPlugin;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-#[require(WorldPosition, Velocity, Acceleration, Friction = Friction(2.0), AccumulatedInput, InterpolatePosition)]
+#[require(WorldPosition, Velocity, Force, Friction = Friction(0.045),
+    InverseMass = InverseMass::new(2.0), AccumulatedInput, InterpolatePosition)
+]
 pub struct WorldCamera;
 
 #[derive(InputContext, Reflect)]
@@ -59,7 +65,9 @@ fn binding(
     let mut actions = in_game_input_context.get_mut(trigger.target()).unwrap();
 
     actions.bind::<CameraPanAction>().to(Cardinal::wasd_keys());
-    actions.bind::<CameraZoomAction>().to(MouseWheel { mod_keys: Default::default() });
+    actions.bind::<CameraZoomAction>().to(MouseWheel {
+        mod_keys: Default::default(),
+    });
 }
 
 fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
@@ -68,11 +76,7 @@ fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
         config.render_layers = RenderLayers::layer(1);
     }
 
-    commands.spawn((
-        WorldCamera,
-        Actions::<CameraInputContext>::default(),
-        Save,
-    ));
+    commands.spawn((WorldCamera, Actions::<CameraInputContext>::default(), Save));
 
     commands.spawn((
         Camera2d,
@@ -84,7 +88,7 @@ fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
         },
         Msaa::Off,
         // This seems to fix 3d gizmos appearing as small mini versions in the middle of the screen
-        RenderLayers::layer(0)
+        RenderLayers::layer(0),
     ));
 }
 
@@ -121,9 +125,7 @@ impl BuildView for WorldCamera {
             MeshPickingCamera,
             Fxaa::default(),
             Atmosphere::EARTH,
-            Exposure {
-                ev100: 14.2,
-            },
+            Exposure { ev100: 14.2 },
             Tonemapping::AcesFitted,
             Bloom::NATURAL,
         ))
@@ -146,13 +148,24 @@ impl BuildView for WorldCamera {
 
 fn handle_pan_input(
     trigger: Trigger<Fired<CameraPanAction>>,
-    mut query: Query<&mut Acceleration, With<WorldCamera>>,
+    actual_camera: Query<&Projection, With<Camera3d>>,
+    mut query: Query<&mut Force, With<WorldCamera>>,
 ) {
-    let accel_speed = 673.0;
-    for mut acceleration in &mut query {
-        let mut value = trigger.value;
-        value.y *= -1.0;
-        *acceleration = Acceleration(value.normalize_or_zero() * accel_speed);
+    let force_multiplier = 673.0;
+    if let Ok(Projection::Orthographic(ortho_projection)) = actual_camera.single() {
+        {
+            //ortho_projection.scale
+
+            let scale_multiplier = (ortho_projection.scale + 1.0) / 1.0;
+            println!("scale_multiplier: {}", scale_multiplier);
+
+            for mut force in &mut query {
+                let mut value = trigger.value;
+                println!("value: {:?}", value);
+                value.y *= -1.0;
+                force.0 = value.normalize_or_zero() * force_multiplier * scale_multiplier;
+            }
+        }
     }
 }
 
@@ -164,10 +177,12 @@ fn handle_zoom_input(
     if let Ok(camera_projection) = actual_camera.get_single_mut() {
         let value = trigger.value.y;
 
-        if let Projection::Orthographic(ref mut ortho_projection) =
-            *camera_projection.into_inner()
+        if let Projection::Orthographic(ref mut ortho_projection) = *camera_projection.into_inner()
         {
-            ortho_projection.scale = ortho_projection.scale.add(value * zoom_amount).clamp(0.4, 4.0);
+            ortho_projection.scale = ortho_projection
+                .scale
+                .add(value * zoom_amount)
+                .clamp(0.4, 4.0);
         }
     }
 }

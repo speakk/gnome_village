@@ -1,3 +1,5 @@
+use crate::features::movement::Force;
+use crate::features::movement::InverseMass;
 use crate::features::position::InterpolatePosition;
 use crate::bundles::{Id, ItemId};
 use crate::features::assets::GltfAssetId;
@@ -13,7 +15,9 @@ use bevy::prelude::*;
 #[require(
     Id = Id(ItemId::Settler),
     Velocity,
-    Friction = Friction(0.1),
+    InverseMass = InverseMass::new(1.0),
+    Friction = Friction(0.04),
+    Force,
     GltfData = GltfData {
         asset_id: GltfAssetId::Settler,
         scene_name: None

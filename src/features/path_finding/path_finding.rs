@@ -1,7 +1,7 @@
 use bevy::asset::uuid::Uuid;
 use crate::bundles::settler::Settler;
 use crate::features::ai::PathFollow;
-use crate::features::movement::Velocity;
+use crate::features::movement::{Force, Velocity};
 use crate::features::path_finding::grid::PathingGridResource;
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
@@ -137,16 +137,16 @@ pub struct PathFindingFailed {
 }
 
 pub fn follow_path(
-    mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut Velocity)>,
+    mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut Force)>,
     mut commands: Commands,
 ) {
     const AT_POINT_THRESHOLD: f32 = 1.0;
 
-    for (agent_entity, mut path_follow, world_position, mut velocity) in query.iter_mut() {
+    for (agent_entity, mut path_follow, world_position, mut force) in query.iter_mut() {
         let pathfinding_id = path_follow.path.pathfinding_id;
         
         if path_follow.path.steps.len() == 1 {
-            follow_path_succeed(&mut commands, agent_entity, path_follow, &pathfinding_id, &mut velocity);
+            follow_path_succeed(&mut commands, agent_entity, path_follow, &pathfinding_id);
             continue;
         }
 
@@ -154,15 +154,15 @@ pub fn follow_path(
         let next_point = path_follow.path.steps[current_index + 1];
 
         let direction = (next_point.as_vec2() - world_position.0).normalize_or_zero();
-        let speed = 3.0;
+        let speed = 50.0;
         let final_vector = Vec2::new(direction.x, direction.y) * speed;
-        velocity.0 = final_vector;
+        force.0 += final_vector;
 
         if world_position.0.distance(next_point.as_vec2()) <= AT_POINT_THRESHOLD {
             if current_index < path_follow.path.steps.len() - 2 {
                 path_follow.current_path_index += 1;
             } else {
-                follow_path_succeed(&mut commands, agent_entity, path_follow, &pathfinding_id, &mut velocity);
+                follow_path_succeed(&mut commands, agent_entity, path_follow, &pathfinding_id);
             }
         }
     }
@@ -173,9 +173,7 @@ fn follow_path_succeed(
     agent: Entity,
     path_follow: Mut<PathFollow>,
     pathfinding_id: &Uuid,
-    velocity: &mut Mut<Velocity>,
 ) {
-    velocity.0 = Vec2::ZERO;
     commands
         .entity(agent)
         .trigger(PathFollowFinished {
