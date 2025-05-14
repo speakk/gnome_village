@@ -1,6 +1,6 @@
+use crate::features::movement::AccumulatedInput;
 use crate::features::input::{CameraPanAction, CameraZoomAction, InGameInputContext};
-use crate::features::movement::InverseMass;
-use crate::features::movement::{Force, Friction, Velocity};
+use crate::features::movement::{Velocity};
 use crate::features::position::InterpolatePosition;
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
@@ -32,18 +32,14 @@ pub struct CameraPlugin;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-#[require(WorldPosition, Velocity, Force, Friction = Friction(0.045),
-    InverseMass = InverseMass::new(2.0), AccumulatedInput, InterpolatePosition)
+#[require(WorldPosition, Velocity,
+    AccumulatedInput, InterpolatePosition)
 ]
 pub struct WorldCamera;
 
 #[derive(InputContext, Reflect)]
 pub struct CameraInputContext;
 
-/// A vector representing the player's input, accumulated over all frames that ran
-/// since the last time the physics simulation was advanced.
-#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
-pub struct AccumulatedInput(pub Vec2);
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
@@ -149,9 +145,9 @@ impl BuildView for WorldCamera {
 fn handle_pan_input(
     trigger: Trigger<Fired<CameraPanAction>>,
     actual_camera: Query<&Projection, With<Camera3d>>,
-    mut query: Query<&mut Force, With<WorldCamera>>,
+    mut query: Query<&mut AccumulatedInput, With<WorldCamera>>,
 ) {
-    let force_multiplier = 673.0;
+    let force_multiplier = 20.0;
     if let Ok(Projection::Orthographic(ortho_projection)) = actual_camera.single() {
         {
             //ortho_projection.scale
@@ -159,11 +155,11 @@ fn handle_pan_input(
             let scale_multiplier = (ortho_projection.scale + 1.0) / 1.0;
             println!("scale_multiplier: {}", scale_multiplier);
 
-            for mut force in &mut query {
+            for mut input in &mut query {
                 let mut value = trigger.value;
                 println!("value: {:?}", value);
                 value.y *= -1.0;
-                force.0 = value.normalize_or_zero() * force_multiplier * scale_multiplier;
+                input.0 = value.normalize_or_zero() * force_multiplier * scale_multiplier;
             }
         }
     }

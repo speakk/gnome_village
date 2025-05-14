@@ -1,7 +1,7 @@
 use bevy::asset::uuid::Uuid;
 use crate::bundles::settler::Settler;
 use crate::features::ai::PathFollow;
-use crate::features::movement::{Force, Velocity};
+use crate::features::movement::{AccumulatedInput};
 use crate::features::path_finding::grid::PathingGridResource;
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
@@ -100,17 +100,7 @@ pub fn apply_pathfinding_result(
                     .insert(PathFollow {
                         path,
                         ..Default::default()
-                    })
-                    .observe(
-                        move |_trigger: Trigger<OnRemove, PathFollow>,
-                              mut velocity_query: Query<&mut Velocity>| {
-                            let mut velocity = velocity_query
-                                .get_mut(task_agent)
-                                .expect("No velocity for path follow entity");
-
-                            velocity.0 = Vec2::ZERO;
-                        },
-                    );
+                    });
             } else {
                 commands.entity(task_agent).trigger(PathFindingFailed { 
                     pathfinding_id: result.pathfinding_id
@@ -137,12 +127,12 @@ pub struct PathFindingFailed {
 }
 
 pub fn follow_path(
-    mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut Force)>,
+    mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut AccumulatedInput)>,
     mut commands: Commands,
 ) {
     const AT_POINT_THRESHOLD: f32 = 1.0;
 
-    for (agent_entity, mut path_follow, world_position, mut force) in query.iter_mut() {
+    for (agent_entity, mut path_follow, world_position, mut input) in query.iter_mut() {
         let pathfinding_id = path_follow.path.pathfinding_id;
         
         if path_follow.path.steps.len() == 1 {
@@ -154,9 +144,9 @@ pub fn follow_path(
         let next_point = path_follow.path.steps[current_index + 1];
 
         let direction = (next_point.as_vec2() - world_position.0).normalize_or_zero();
-        let speed = 50.0;
+        let speed = 10.0;
         let final_vector = Vec2::new(direction.x, direction.y) * speed;
-        force.0 += final_vector;
+        input.0 = final_vector;
 
         if world_position.0.distance(next_point.as_vec2()) <= AT_POINT_THRESHOLD {
             if current_index < path_follow.path.steps.len() - 2 {

@@ -1,5 +1,4 @@
-use crate::features::movement::Force;
-use crate::features::movement::InverseMass;
+use crate::features::movement::AccumulatedInput;
 use crate::features::position::InterpolatePosition;
 use crate::bundles::{Id, ItemId};
 use crate::features::assets::GltfAssetId;
@@ -7,7 +6,6 @@ use crate::features::inventory::Inventory;
 use crate::features::misc_components::gltf_asset::GltfAnimation;
 use crate::features::misc_components::gltf_asset::GltfData;
 use crate::features::misc_components::preview_carry::PreviewCarry;
-use crate::features::movement::Friction;
 use crate::features::movement::Velocity;
 use bevy::prelude::*;
 
@@ -15,9 +13,7 @@ use bevy::prelude::*;
 #[require(
     Id = Id(ItemId::Settler),
     Velocity,
-    InverseMass = InverseMass::new(1.0),
-    Friction = Friction(0.04),
-    Force,
+    AccumulatedInput,
     GltfData = GltfData {
         asset_id: GltfAssetId::Settler,
         scene_name: None

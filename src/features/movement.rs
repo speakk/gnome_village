@@ -9,25 +9,29 @@ pub struct MovementPlugin;
 #[derive(Component, Default, Debug)]
 pub struct Velocity(pub Vec2);
 
-#[derive(Component, Default, Debug)]
-pub struct Force(pub Vec2);
+/// A vector representing the player's input, accumulated over all frames that ran
+/// since the last time the physics simulation was advanced.
+#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+pub struct AccumulatedInput(pub Vec2);
 
-#[derive(Component, Default, Debug)]
-pub struct InverseMass(f32);
-
-impl InverseMass {
-    pub fn new(mass: f32) -> Self {
-        Self(1.0 / mass)
-    }
-}
-//
+// #[derive(Component, Default, Debug)]
+// pub struct Force(pub Vec2);
+// 
+// #[derive(Component, Default, Debug)]
+// pub struct IgnoreVirtualTime;
+// 
+// #[derive(Component, Default, Debug)]
+// pub struct InverseMass(f32);
+// 
+// impl InverseMass {
+//     pub fn new(mass: f32) -> Self {
+//         Self(1.0 / mass)
+//     }
+// }
+// 
+// /// Range between 0.0 to 0.3 is sensible
 // #[derive(Component, Default)]
-// #[derive(Debug)]
-// pub struct Acceleration(pub Vec2);
-
-/// Range between 0.0 to 0.3 is sensible
-#[derive(Component, Default)]
-pub struct Friction(pub f32);
+// pub struct Friction(pub f32);
 
 impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
@@ -37,20 +41,13 @@ impl Plugin for MovementPlugin {
         );
         // app.add_systems(
         //     FixedUpdate,
-        //     (
-        //         apply_acceleration,
-        //         apply_velocity,
-        //         reset_input,
-        //         reset_acceleration,
-        //         apply_friction,
-        //         clear_force
-        //     )
+        //     (integrate_acceleration, integrate_velocity, clear_force)
         //         .chain()
         //         .run_if(in_state(AppState::InGame)),
         // );
         app.add_systems(
             FixedUpdate,
-            (integrate_acceleration, integrate_velocity, clear_force)
+            ( add_input_to_velocity, apply_velocity, clear_velocity, clear_input)
                 .chain()
                 .run_if(in_state(AppState::InGame)),
         );
@@ -63,34 +60,71 @@ fn set_previous_world_position(mut query: Query<(&WorldPosition, &mut PreviousWo
     }
 }
 
-fn clear_force(mut query: Query<&mut Force>) {
-    for mut force in &mut query {
-        force.0 = Vec2::ZERO;
+fn clear_velocity(mut query: Query<&mut Velocity>) {
+    for mut velocity in &mut query {
+        velocity.0 = Vec2::ZERO;
     }
 }
 
-fn integrate_acceleration(
-    mut query: Query<(&mut Velocity, &Force, &InverseMass)>,
-    time: Res<Time<Fixed>>,
-) {
-    for (mut velocity, force, inverse_mass) in &mut query {
-        let acceleration = force.0 * inverse_mass.0;
-        velocity.0 += acceleration * time.delta_secs();
+
+fn clear_input(mut query: Query<&mut AccumulatedInput>) {
+    for mut input in &mut query {
+        input.0 = Vec2::ZERO;
     }
 }
 
-fn integrate_velocity(
-    mut query: Query<(&mut WorldPosition, &mut Velocity, &Friction)>,
+fn add_input_to_velocity(
+    mut query: Query<(&AccumulatedInput, &mut Velocity)>,
     time: Res<Time<Fixed>>,
-    virtual_time: Res<Time<Virtual>>,
 ) {
-    let clamping_factor = 1.0 - 0.95;
-    for (mut world_position, mut velocity, friction) in &mut query {
-        world_position.0 += velocity.0 * time.delta_secs();
-        // TODO: This virtual time division is my HUNCH because otherwise virtual time speed had no effect
-        velocity.0 *= powf(clamping_factor - friction.0, time.delta_secs() / virtual_time.relative_speed());
+    for (input, mut velocity) in &mut query {
+        velocity.0 = input.0;
     }
 }
+
+
+// fn integrate_acceleration(
+//     mut query: Query<(&mut Velocity, &Force, &InverseMass, Option<&IgnoreVirtualTime>)>,
+//     time: Res<Time<Fixed>>,
+//     virtual_time: Res<Time<Virtual>>,
+// ) {
+//     for (mut velocity, force, inverse_mass, ignore_virtual_time) in &mut query {
+//         let acceleration = force.0 * inverse_mass.0;
+// 
+//         let division = if ignore_virtual_time.is_some() {
+//             virtual_time.relative_speed()
+//         } else {
+//             1.0
+//         };
+// 
+//         velocity.0 += acceleration * time.delta_secs();
+//     }
+// }
+//
+// fn integrate_velocity(
+//     mut query: Query<(
+//         &mut WorldPosition,
+//         &mut Velocity,
+//         &Friction,
+//         Option<&IgnoreVirtualTime>,
+//     )>,
+//     time: Res<Time<Fixed>>,
+//     virtual_time: Res<Time<Virtual>>,
+// ) {
+//     let clamping_factor = 1.0 - 0.95;
+//     for (mut world_position, mut velocity, friction, ignore_virtual_time) in &mut query {
+//         // TODO: This virtual time division is my HUNCH because otherwise virtual time speed had no effect
+//
+//         let division = if ignore_virtual_time.is_some() {
+//             virtual_time.relative_speed()
+//         } else {
+//             1.0
+//         };
+//
+//         world_position.0 += velocity.0 * time.delta_secs() / division;
+//         velocity.0 *= powf(clamping_factor - friction.0, time.delta_secs() / division);
+//     }
+// }
 
 // fn apply_acceleration(mut query: Query<(&mut Velocity, &Acceleration), With<WorldCamera>>, time: Res<Time<Fixed>>) {
 //     for (mut velocity, acceleration) in &mut query {
@@ -99,15 +133,15 @@ fn integrate_velocity(
 //     }
 // }
 //
-// fn apply_velocity(
-//     mut query: Query<(&mut WorldPosition, &Velocity)>,
-//     time: Res<Time<Fixed>>,
-// ) {
-//     for (mut world_position, velocity) in &mut query {
-//         world_position.x += velocity.0.x * time.delta_secs();
-//         world_position.y += velocity.0.y * time.delta_secs();
-//     }
-// }
+fn apply_velocity(
+    mut query: Query<(&mut WorldPosition, &Velocity)>,
+    time: Res<Time<Fixed>>,
+) {
+    for (mut world_position, velocity) in &mut query {
+        world_position.x += velocity.0.x * time.delta_secs();
+        world_position.y += velocity.0.y * time.delta_secs();
+    }
+}
 //
 // fn reset_input(mut query: Query<&mut AccumulatedInput>) {
 //     for mut input in &mut query {
