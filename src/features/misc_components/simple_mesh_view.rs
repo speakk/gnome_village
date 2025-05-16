@@ -35,7 +35,7 @@ impl BuildView for SimpleMeshValid {
         let material_handle = material_handles.wood.clone().unwrap();
 
         let has_blueprint = world.get::<BluePrint>(object.entity()).is_some();
-        let has_interpolate = world.get::<InterpolatePosition>(object.entity()).is_some();
+        let interpolate_position = world.get::<InterpolatePosition>(object.entity());
 
         let final_material_handle = if has_blueprint {
             //println!("Had blueprint, immediately making blueprint material");
@@ -63,9 +63,9 @@ impl BuildView for SimpleMeshValid {
         if let Some(add_transform_juice) = add_transform_juice {
             view.insert(TransformJuice::from(*add_transform_juice));
         }
-        
-        if has_interpolate {
-            view.insert(InterpolatePosition);
+
+        if let Some(interpolate_position) = interpolate_position {
+            view.insert(*interpolate_position);
         }
     }
 }

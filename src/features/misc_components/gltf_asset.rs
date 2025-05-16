@@ -72,7 +72,7 @@ impl BuildView<GltfData> for GltfValid {
         let gltf_asset_handles = world.get_resource::<GltfAssetHandles>().unwrap();
         let add_transform_juice = world.get::<AddTransformJuice>(object.entity());
 
-        let has_interpolate = world.get::<InterpolatePosition>(object.entity()).is_some();
+        let interpolate_position = world.get::<InterpolatePosition>(object.entity());
         
         let scene = match get_scene_from_gltf_data(gltf_asset_handles, gltf_assets, &gltf_data) {
             Some(value) => value,
@@ -90,8 +90,8 @@ impl BuildView<GltfData> for GltfValid {
             view.insert(TransformJuice::from(*add_transform_juice));
         }
         
-        if has_interpolate {
-            view.insert(InterpolatePosition);
+        if let Some(interpolate_position) = interpolate_position {
+            view.insert(interpolate_position.clone());
         }
     }
 }

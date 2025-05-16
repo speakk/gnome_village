@@ -1,7 +1,7 @@
 use bevy::asset::uuid::Uuid;
 use crate::bundles::settler::Settler;
 use crate::features::ai::PathFollow;
-use crate::features::movement::{AccumulatedInput};
+use crate::features::movement::{MovementIntent};
 use crate::features::path_finding::grid::PathingGridResource;
 use crate::features::position::WorldPosition;
 use bevy::prelude::*;
@@ -127,7 +127,7 @@ pub struct PathFindingFailed {
 }
 
 pub fn follow_path(
-    mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut AccumulatedInput)>,
+    mut query: Query<(Entity, &mut PathFollow, &WorldPosition, &mut MovementIntent)>,
     mut commands: Commands,
 ) {
     const AT_POINT_THRESHOLD: f32 = 1.0;
@@ -144,7 +144,7 @@ pub fn follow_path(
         let next_point = path_follow.path.steps[current_index + 1];
 
         let direction = (next_point.as_vec2() - world_position.0).normalize_or_zero();
-        let speed = 10.0;
+        let speed = 4.2;
         let final_vector = Vec2::new(direction.x, direction.y) * speed;
         input.0 = final_vector;
 

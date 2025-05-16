@@ -1,6 +1,5 @@
-use crate::features::movement::AccumulatedInput;
+use crate::features::movement::MovementIntent;
 use crate::features::input::{CameraPanAction, CameraZoomAction, InGameInputContext};
-use crate::features::movement::{Velocity};
 use crate::features::position::InterpolatePosition;
 use crate::features::position::WorldPosition;
 use crate::features::states::AppState;
@@ -32,8 +31,8 @@ pub struct CameraPlugin;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-#[require(WorldPosition, Velocity,
-    AccumulatedInput, InterpolatePosition)
+#[require(WorldPosition,
+    MovementIntent, InterpolatePosition = InterpolatePosition(Some(5.0)))
 ]
 pub struct WorldCamera;
 
@@ -145,7 +144,7 @@ impl BuildView for WorldCamera {
 fn handle_pan_input(
     trigger: Trigger<Fired<CameraPanAction>>,
     actual_camera: Query<&Projection, With<Camera3d>>,
-    mut query: Query<&mut AccumulatedInput, With<WorldCamera>>,
+    mut query: Query<&mut MovementIntent, With<WorldCamera>>,
 ) {
     let force_multiplier = 20.0;
     if let Ok(Projection::Orthographic(ortho_projection)) = actual_camera.single() {

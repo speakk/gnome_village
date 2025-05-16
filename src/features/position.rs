@@ -64,10 +64,11 @@ fn handle_removed(
     }
 }
 
+pub type LerpSpeed = f32;
 
 #[derive(Debug, Component, Clone, Copy, Default, Reflect)]
 #[reflect(Component)]
-pub struct InterpolatePosition;
+pub struct InterpolatePosition(pub Option<LerpSpeed>);
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
 #[reflect(Component)]
