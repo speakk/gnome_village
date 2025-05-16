@@ -7,7 +7,7 @@ use crate::bundles::settler::Settler;
 use crate::bundles::soil::dirt::Dirt;
 use crate::bundles::{Id, ItemStack, ResourceItem};
 use crate::features::ai::WorkingOnTask;
-use crate::features::input::{OmniPresentInputContext, save_load_action};
+use crate::features::input::{save_load_action, OmniPresentInputContext};
 use crate::features::inventory::Inventory;
 use crate::features::map::map_model::{MapData, ReservedCoordinatesHelper};
 use crate::features::misc_components::gltf_asset::GltfData;
@@ -18,8 +18,6 @@ use crate::features::plants::{GrowthProvider, Plant};
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
 use crate::features::tasks::task::Task;
-use crate::features::misc_components::destruct_target::DestructTarget;
-use bevy::prelude::KeyCode::F8;
 use bevy::prelude::*;
 use directories::ProjectDirs;
 use bevy_enhanced_input::prelude::*;
@@ -27,9 +25,11 @@ use moonshine_core::load::load;
 use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
-use KeyCode::F5;
 use crate::features::camera::WorldCamera;
 use crate::features::sun_light::PlanetOrigin;
+use crate::features::tasks::jobs::build_task::BuildTask;
+use crate::features::tasks::jobs::destruct_task::DestructTask;
+use crate::features::tasks::sub_tasks::bring_resource_task::BringResourceTask;
 
 pub struct SavePlugin;
 
@@ -93,6 +93,9 @@ impl Plugin for SavePlugin {
         .register_type::<GltfData>()
         .register_type::<SimpleMesh>()
         .register_type::<Task>()
+        .register_type::<BuildTask>()
+        .register_type::<DestructTask>()
+        .register_type::<BringResourceTask>()
         .register_type::<Job>()
         .register_type::<PreviewCarry>()
         .register_type::<ReservedCoordinatesHelper>()

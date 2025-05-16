@@ -9,25 +9,26 @@ use crate::features::inventory::Inventory;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::task::{
-    BringResourceData, BringResourceRuntimeData, DepositTarget, Task, TaskCancelled, TaskType,
+    DepositTarget, TaskCancelled, TaskType,
 };
 use beet::prelude::*;
 use bevy::prelude::*;
+use crate::features::tasks::sub_tasks::bring_resource_task::{BringResourceRuntimeData, BringResourceTask};
 
 pub fn create_bring_resource_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
     item_resources: Query<&WorldPosition, (With<ResourceItem>, With<InWorld>)>,
     inventories: Query<&WorldPosition, (With<Inventory>, With<InWorld>)>,
-    tasks: Query<&Task>,
+    tasks: Query<&BringResourceTask>,
     mut commands: Commands,
 ) {
     for (working_on_task, worker_entity) in work_started_query.iter() {
-        let task = tasks.get(working_on_task.0).unwrap();
+        let task = tasks.get(working_on_task.0);
         println!("Found WorkingOnTask");
 
-        if let Some(TaskType::BringResource(bring_resource_data)) = &task.task_type {
+        if let Ok(task) = task {
             println!("Had BringResource task, creating tree");
-            let target_coordinate = match bring_resource_data.target {
+            let target_coordinate = match task.target {
                 DepositTarget::Coordinate(coordinate) => coordinate,
                 DepositTarget::Inventory(inventory_entity) => {
                     let id = inventory_entity.to_bits();
@@ -35,10 +36,7 @@ pub fn create_bring_resource_tree(
                 }
             };
 
-            let resource_target = bring_resource_data
-                .run_time_data
-                .unwrap()
-                .concrete_resource_entity;
+            let resource_target = task.run_time_data.unwrap().concrete_resource_entity;
             let resource_position = item_resources.get(resource_target);
 
             // TODO: Make mechanism to clean up in case Settler gets despawned
@@ -57,7 +55,7 @@ pub fn create_bring_resource_tree(
 
                         root.spawn((PickUpAction {
                             target_entity: resource_target,
-                            amount: bring_resource_data.item_requirement.amount,
+                            amount: task.item_requirement.amount,
                         },));
                     }
 
@@ -66,9 +64,9 @@ pub fn create_bring_resource_tree(
                     },));
 
                     root.spawn((DepositAction {
-                        deposit_target: bring_resource_data.target,
-                        amount: bring_resource_data.item_requirement.amount,
-                        item_id: bring_resource_data.item_requirement.item_id,
+                        deposit_target: task.target,
+                        amount: task.item_requirement.amount,
+                        item_id: task.item_requirement.item_id,
                     },));
 
                     root.spawn((FinishTaskAction {
@@ -92,70 +90,71 @@ pub fn create_bring_resource_tree(
     }
 }
 
-pub fn score_bring_resource(
-    resources_query: &mut Query<
-        (Entity, &WorldPosition, &Id, &mut Reservations),
-        (With<ResourceItem>, With<InWorld>),
-    >,
-    agents: &Vec<(Entity, &WorldPosition)>,
-    bring_resource_data: &mut BringResourceData,
-    others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
-) -> Option<Entity> {
-    println!("Scoring bring resource");
-    let mut best_resource_entity: Option<Entity> = None;
-    let mut best_agent: Option<Entity> = None;
-    let mut best_score = -9999.0;
+impl TaskType for BringResourceTask {
+    fn score(
+        &mut self,
+        resources_query: &mut Query<
+            (Entity, &WorldPosition, &Id, &mut Reservations),
+            (With<ResourceItem>, With<InWorld>),
+        >,
+        agents: &Vec<(Entity, &WorldPosition)>,
+        others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
+    ) -> Option<Entity> {
+        let mut best_resource_entity: Option<Entity> = None;
+        let mut best_agent: Option<Entity> = None;
+        let mut best_score = -9999.0;
 
-    let target = match bring_resource_data.target {
-        DepositTarget::Coordinate(coordinate) => coordinate,
-        DepositTarget::Inventory(inventory_entity) => others_query
-            .get(inventory_entity)
-            .unwrap()
-            .1
-            .as_coordinate(),
-    };
+        let target = match self.target {
+            DepositTarget::Coordinate(coordinate) => coordinate,
+            DepositTarget::Inventory(inventory_entity) => others_query
+                .get(inventory_entity)
+                .unwrap()
+                .1
+                .as_coordinate(),
+        };
 
-    let valid_resources = resources_query
-        .iter()
-        .filter(|(_, _, id, reservations)| {
-            let reserved_amount = reservations.0.iter().map(|r| r.amount).sum::<u32>();
-            id.0 == bring_resource_data.item_requirement.item_id
-                && reserved_amount < bring_resource_data.item_requirement.amount
-        })
-        .collect::<Vec<_>>();
+        let valid_resources = resources_query
+            .iter()
+            .filter(|(_, _, id, reservations)| {
+                let reserved_amount = reservations.0.iter().map(|r| r.amount).sum::<u32>();
+                id.0 == self.item_requirement.item_id
+                    && reserved_amount < self.item_requirement.amount
+            })
+            .collect::<Vec<_>>();
 
-    for (resource_entity, resource_position, _id, _reservations) in valid_resources.iter() {
-        for (agent_entity, agent_position) in agents.iter() {
-            let agent_to_resource_distance = resource_position.0.distance(agent_position.0);
-            let resource_to_goal_distance = target.as_vec2().distance(resource_position.0);
-            let score = -agent_to_resource_distance - resource_to_goal_distance; // Smaller distance is better
-            if score > best_score {
-                best_resource_entity = Some(*resource_entity);
-                best_agent = Some(*agent_entity);
-                best_score = score;
+        for (resource_entity, resource_position, _id, _reservations) in valid_resources.iter() {
+            for (agent_entity, agent_position) in agents.iter() {
+                let agent_to_resource_distance = resource_position.0.distance(agent_position.0);
+                let resource_to_goal_distance = target.as_vec2().distance(resource_position.0);
+                let score = -agent_to_resource_distance - resource_to_goal_distance; // Smaller distance is better
+                if score > best_score {
+                    best_resource_entity = Some(*resource_entity);
+                    best_agent = Some(*agent_entity);
+                    best_score = score;
+                }
             }
         }
-    }
 
-    println!("Best resource entity result: {:?}", best_resource_entity);
+        println!("Best resource entity result: {:?}", best_resource_entity);
 
-    if let Some(resource_entity) = best_resource_entity {
-        bring_resource_data.run_time_data = Some(BringResourceRuntimeData {
-            concrete_resource_entity: resource_entity,
-        });
-
-        resources_query
-            .get_mut(resource_entity)
-            .unwrap()
-            .3
-             .0
-            .push(Reservation {
-                reserved_by: best_agent.unwrap(),
-                amount: bring_resource_data.item_requirement.amount,
+        if let Some(resource_entity) = best_resource_entity {
+            self.run_time_data = Some(BringResourceRuntimeData {
+                concrete_resource_entity: resource_entity,
             });
 
-        return best_agent;
-    }
+            resources_query
+                .get_mut(resource_entity)
+                .unwrap()
+                .3
+                .0
+                .push(Reservation {
+                    reserved_by: best_agent.unwrap(),
+                    amount: self.item_requirement.amount,
+                });
 
-    None
+            return best_agent;
+        }
+
+        None
+    }
 }

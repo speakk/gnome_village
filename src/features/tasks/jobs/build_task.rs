@@ -1,14 +1,14 @@
+use moonshine_core::prelude::ReflectMapEntities;
 use crate::bundles::buildables::{BluePrint, Buildable};
 use crate::bundles::settler::Settler;
-use crate::bundles::ResourceItem;
+use crate::bundles::{Id, Reservations, ResourceItem};
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::{create_bring_resource_task_from_item_amount, Job};
-use crate::features::tasks::task::{
-    BuildData, CancelTaskCommand, RunType, Task, TaskType,
-};
+use crate::features::tasks::task::{CancelTaskCommand, RunType, Task, TaskType};
 use bevy::prelude::*;
 use std::ops::Mul;
+use bevy::ecs::entity::MapEntities;
 
 pub fn react_to_blueprints(
     mut commands: Commands,
@@ -16,22 +16,20 @@ pub fn react_to_blueprints(
         (Entity, &BluePrint, &Buildable),
         (Added<BluePrint>, With<InWorld>),
     >,
-    tasks: Query<&Task>,
+    tasks: Query<&BuildTask>,
 ) {
     for (entity, blueprint, buildable) in new_blueprints_query.iter() {
         let task_exists = tasks.iter().any(|task| {
-           if let Some(TaskType::Build(build_data)) = &task.task_type {
-               if build_data.target == entity {
-                   return true;
-               }
-           }
+            if task.target == entity {
+                return true;
+            }
             false
         });
-        
+
         if task_exists {
             continue;
         }
-        
+
         println!("Got blueprint: {:?}", blueprint);
         let task_entity = commands
             .spawn((
@@ -65,11 +63,7 @@ pub fn react_to_blueprints(
 
                 parent_task.spawn((
                     Name::new("BuildTask".to_string()),
-                    Task {
-                        run_type: RunType::Leaf,
-                        task_type: Some(TaskType::Build(BuildData { target: entity })),
-                        ..Default::default()
-                    },
+                    BuildTask { target: entity },
                 ));
             })
             .id();
@@ -85,23 +79,40 @@ pub fn react_to_blueprints(
     }
 }
 
-pub fn score_build(
-    build_data: &BuildData,
-    agents: &[(Entity, &WorldPosition)],
-    others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
-) -> Option<Entity> {
-    let target_position = others_query.get(build_data.target).unwrap().1;
+impl TaskType for BuildTask {
+    fn score(
+        &mut self,
+        resources_query: &mut Query<
+            (Entity, &WorldPosition, &Id, &mut Reservations),
+            (With<ResourceItem>, With<InWorld>),
+        >,
+        agents: &[(Entity, &WorldPosition)],
+        others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
+    ) -> Option<Entity> {
+        let target_position = others_query.get(self.target).unwrap().1;
 
-    let mut best_score = -999999.0;
-    let mut best_agent: Option<Entity> = None;
+        let mut best_score = -999999.0;
+        let mut best_agent: Option<Entity> = None;
 
-    for (agent, world_position) in agents.iter() {
-        let score = target_position.0.distance(world_position.0).mul(-1.0);
-        if score > best_score {
-            best_score = score;
-            best_agent = Some(*agent);
+        for (agent, world_position) in agents.iter() {
+            let score = target_position.0.distance(world_position.0).mul(-1.0);
+            if score > best_score {
+                best_score = score;
+                best_agent = Some(*agent);
+            }
         }
-    }
 
-    best_agent
+        best_agent
+    }
+}
+
+#[derive(Component, Debug, Clone, PartialEq, Eq, Hash, Reflect, MapEntities)]
+#[require(Task = Task {
+    run_type: RunType::Leaf,
+    ..Default::default()
+})]
+#[reflect(Component, MapEntities)]
+pub struct BuildTask {
+    #[entities]
+    pub target: Entity,
 }

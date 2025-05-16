@@ -5,10 +5,16 @@ use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
 use crate::features::tasks::task;
-use crate::features::tasks::task::{Status, Task, TaskCancelled, TaskFailed, TaskFinished};
+use crate::features::tasks::task::{
+    Status, Task, TaskCancelled, TaskFailed,
+    TaskFinished, TaskType,
+};
 use bevy::prelude::*;
 use bevy_platform::collections::HashMap;
 use std::time::Duration;
+use crate::features::tasks::jobs::build_task::BuildTask;
+use crate::features::tasks::jobs::destruct_task::DestructTask;
+use crate::features::tasks::sub_tasks::bring_resource_task::BringResourceTask;
 
 // TODO: Restart timers if chunks (to be implemented) nearby change in some way
 const JOB_REATTEMPT_DELAY_SECONDS: f32 = 0.2;
@@ -34,6 +40,11 @@ pub fn assign_jobs(
         (With<ResourceItem>, With<InWorld>),
     >,
     others_query: Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
+    mut task_types: Query<(
+        Option<&mut BringResourceTask>,
+        Option<&mut DestructTask>,
+        Option<&mut BuildTask>,
+    )>,
 ) {
     let mut ready_tasks: Vec<Entity> = vec![];
     {
@@ -65,8 +76,20 @@ pub fn assign_jobs(
 
         //let set0 = set.p0();
         let mut task = mut_set.get_mut(task_entity).unwrap().1;
-        let best_agent =
-            task.find_best_agent(&mut resources_query, &others_query, &available_settlers);
+        let (bring_resource_task, destruct_task, build_task) =
+            task_types.get_mut(task_entity).unwrap();
+        let mut best_agent = None;
+
+        if let Some(mut bring_resource_task) = bring_resource_task {
+            best_agent =
+                bring_resource_task.score(&mut resources_query, &available_settlers, &others_query);
+        } else if let Some(mut destruct_task) = destruct_task {
+            best_agent =
+                destruct_task.score(&mut resources_query, &available_settlers, &others_query);
+        } else if let Some(mut build_task) = build_task {
+            best_agent = build_task.score(&mut resources_query, &available_settlers, &others_query);
+        }
+
         if let Some(best_agent) = best_agent {
             println!("Found best agent: {}", best_agent);
             // Delete best_agent from available_settlers

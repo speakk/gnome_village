@@ -3,25 +3,25 @@ use crate::features::ai::actions::finish_task::FinishTaskAction;
 use crate::features::ai::actions::go_to::GoToAction;
 use crate::features::ai::{BehaviourTree, WorkingOnTask};
 use crate::features::position::WorldPosition;
-use crate::features::tasks::task::{Task, TaskCancelled, TaskType};
+use crate::features::tasks::task::TaskCancelled;
 use beet::prelude::{Fallback, LogOnRun, OnRunAction, Sequence};
 use bevy::prelude::*;
 use crate::features::ai::actions::fail_task::FailTaskAction;
+use crate::features::tasks::jobs::destruct_task::DestructTask;
 
 pub fn create_destruct_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
     world_positions: Query<&WorldPosition>,
-    tasks: Query<&Task>,
+    tasks: Query<&DestructTask>,
     mut commands: Commands,
 ) {
     for (working_on_task, worker_entity) in work_started_query.iter() {
-        let task = tasks.get(working_on_task.0).unwrap();
-        let task_entity = working_on_task.0;
+        let task = tasks.get(working_on_task.0);
 
-        if let Some(TaskType::Destruct(destruct_data)) = &task.task_type {
+        if let Ok(task) = task {
             println!("Had destruct task, creating tree");
             let target_coordinate = world_positions
-                .get(destruct_data.target)
+                .get(task.target)
                 .unwrap()
                 .0
                 .as_ivec2();
@@ -37,7 +37,7 @@ pub fn create_destruct_tree(
                             target: target_coordinate,
                         },
                         DestructAction {
-                            target: destruct_data.target,
+                            target: task.target,
                         },
                         FinishTaskAction {
                             task: working_on_task.0,

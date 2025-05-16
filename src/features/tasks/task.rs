@@ -1,10 +1,7 @@
 use crate::bundles::settler::Settler;
 use crate::bundles::{Id, Reservations, ResourceItem};
-use crate::features::ai::trees::bring_resource::score_bring_resource;
 use crate::features::misc_components::{InWorld, ItemAmount};
 use crate::features::position::WorldPosition;
-use crate::features::tasks::jobs::build_task::score_build;
-use crate::features::tasks::jobs::destruct_task::score_destruct;
 use bevy::ecs::system::SystemState;
 use bevy::prelude::Component;
 use bevy::prelude::*;
@@ -114,77 +111,20 @@ pub struct TaskCancelled {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
+#[reflect(MapEntities)]
 pub enum DepositTarget {
     Coordinate(IVec2),
     Inventory(Entity),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
-pub struct BringResourceRuntimeData {
-    pub(crate) concrete_resource_entity: Entity,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
-pub struct BringResourceData {
-    pub item_requirement: ItemAmount,
-    pub target: DepositTarget,
-    pub run_time_data: Option<BringResourceRuntimeData>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
-pub struct BuildData {
-    pub target: Entity,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
-pub struct DestructData {
-    pub target: Entity,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Reflect)]
-pub enum TaskType {
-    Build(BuildData),
-    BringResource(BringResourceData),
-    Destruct(DestructData),
-}
-
 #[derive(Component, Debug, Clone, Reflect)]
 #[require(Save)]
-#[reflect(Component, MapEntities)]
+#[reflect(Component)]
 pub struct Task {
     pub run_type: RunType,
     pub status: Status,
-    pub task_type: Option<TaskType>,
     pub cooldown: Option<Duration>,
-    pub failed_tries: u64
-}
-
-// TODO: Wow this seems untenable, perhaps separate Concrete Runtime Data from Task
-impl MapEntities for Task {
-    fn map_entities<M: EntityMapper>(&mut self, entity_mapper: &mut M) {
-        match &mut self.task_type {
-            Some(TaskType::BringResource(bring_resource_data)) => {
-                if let Some(run_time_data) = &mut bring_resource_data.run_time_data {
-                    let entity = &mut run_time_data.concrete_resource_entity;
-                    *entity = entity_mapper.get_mapped(*entity);
-                }
-
-                if let DepositTarget::Inventory(inventory_entity) = &mut bring_resource_data.target
-                {
-                    *inventory_entity = entity_mapper.get_mapped(*inventory_entity);
-                }
-            }
-            Some(TaskType::Build(build_data)) => {
-                let entity = &mut build_data.target;
-                *entity = entity_mapper.get_mapped(*entity);
-            }
-            Some(TaskType::Destruct(destruct_data)) => {
-                let entity = &mut destruct_data.target;
-                *entity = entity_mapper.get_mapped(*entity);
-            }
-            None => {}
-        }
-    }
+    pub failed_tries: u64,
 }
 
 impl Default for Task {
@@ -192,9 +132,8 @@ impl Default for Task {
         Self {
             run_type: RunType::Sequence,
             status: Status::Ready,
-            task_type: None,
             cooldown: None,
-            failed_tries: 0
+            failed_tries: 0,
         }
     }
 }
@@ -266,29 +205,6 @@ pub fn propagate_failed_upwards(
     }
 }
 
-impl Task {
-    pub fn find_best_agent(
-        &mut self,
-        resources_query: &mut Query<
-            (Entity, &WorldPosition, &Id, &mut Reservations),
-            (With<ResourceItem>, With<InWorld>),
-        >,
-        others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
-        agents: &Vec<(Entity, &WorldPosition)>,
-    ) -> Option<Entity> {
-        match &mut self.task_type {
-            Some(TaskType::BringResource(bring_resource_data)) => {
-                score_bring_resource(resources_query, agents, bring_resource_data, others_query)
-            }
-            Some(TaskType::Build(build_data)) => score_build(build_data, agents, others_query),
-            Some(TaskType::Destruct(destruct_data)) => {
-                score_destruct(destruct_data, agents, others_query)
-            }
-            None => None,
-        }
-    }
-}
-
 pub fn get_available_task(
     task_entity: Entity,
     task_data: &Task,
@@ -345,4 +261,16 @@ pub fn get_available_task(
             None
         }
     }
+}
+
+pub trait TaskType {
+    fn score(
+        &mut self,
+        resources_query: &mut Query<
+            (Entity, &WorldPosition, &Id, &mut Reservations),
+            (With<ResourceItem>, With<InWorld>),
+        >,
+        agents: &[(Entity, &WorldPosition)],
+        others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
+    ) -> Option<Entity>;
 }

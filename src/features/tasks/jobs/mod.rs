@@ -4,8 +4,9 @@ pub mod destruct_task;
 pub mod water_plants;
 
 use crate::features::misc_components::ItemAmount;
-use crate::features::tasks::task::{BringResourceData, DepositTarget, RunType, Task, TaskType};
+use crate::features::tasks::task::{DepositTarget, RunType, Task};
 use bevy::prelude::*;
+use crate::features::tasks::sub_tasks::bring_resource_task::BringResourceTask;
 
 #[derive(Component, Debug, Clone, Reflect)]
 #[reflect(Component)]
@@ -18,19 +19,15 @@ fn create_bring_resource_task_from_item_amount(
 ) {
     for _ in 0..item_amount.amount {
         child_builder.spawn((
-            Task {
-                run_type: RunType::Leaf,
-                task_type: Some(TaskType::BringResource(BringResourceData {
-                    item_requirement: ItemAmount {
-                        item_id: item_amount.item_id,
-                        amount: 1,
-                    },
-                    target: DepositTarget::Inventory(target_inventory_entity),
-                    run_time_data: None,
-                })),
-                ..default()
-            },
             Name::new("BringResource".to_string()),
+            BringResourceTask {
+                item_requirement: ItemAmount {
+                    item_id: item_amount.item_id,
+                    amount: 1,
+                },
+                target: DepositTarget::Inventory(target_inventory_entity),
+                run_time_data: None,
+            }
         ));
     }
 }
