@@ -1,4 +1,5 @@
 use bevy::asset::uuid::Uuid;
+use bevy::color::palettes::basic::GREEN;
 use crate::bundles::settler::Settler;
 use crate::features::ai::PathFollow;
 use crate::features::movement::{MovementIntent};
@@ -171,6 +172,23 @@ fn follow_path_succeed(
             pathfinding_id: *pathfinding_id,
         })
         .remove::<PathFollow>();
+}
+
+pub fn draw_paths_debug(
+    query: Query<(&PathFollow)>,
+    mut gizmos: Gizmos
+) {
+    for path_follow in query {
+        for coordinates in path_follow.path.steps.windows(2) {
+            let start = coordinates[0];
+            let end = coordinates[1];
+            gizmos.line(
+                Vec3::new(start.x as f32, 0.1, start.y as f32),
+                Vec3::new(end.x as f32, 0.1, end.y as f32),
+                GREEN,
+            );
+        }
+    }
 }
 
 #[allow(unused, reason = "For testing")]

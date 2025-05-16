@@ -11,8 +11,9 @@ pub struct MovementIntent(pub Vec2);
 // TODO: Transform interpolation should happen after apply_movement, but before clear_input.
 impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, apply_movement.run_if(in_state(AppState::InGame)));
-        app.add_systems(PostUpdate, clear_input.run_if(in_state(AppState::InGame)));
+        // app.add_systems(Update, apply_movement.run_if(in_state(AppState::InGame)));
+        // app.add_systems(PostUpdate, clear_input.run_if(in_state(AppState::InGame)));
+        app.add_systems(PostUpdate, (apply_movement, clear_input).chain().run_if(in_state(AppState::InGame)));
     }
 }
 

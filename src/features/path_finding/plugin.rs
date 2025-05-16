@@ -4,6 +4,7 @@ use crate::features::states::AppState;
 use bevy::app::{App, Plugin, Update};
 use bevy::prelude::*;
 use pathfinding::grid::Grid;
+use crate::features::path_finding::path_finding::draw_paths_debug;
 
 pub struct PathFindingPlugin;
 
@@ -17,6 +18,7 @@ impl Plugin for PathFindingPlugin {
                     path_finding::apply_pathfinding_result,
                     path_finding::follow_path,
                     react_to_blueprint_removed,
+                    draw_paths_debug
                     //test_add_pathfinding_task_to_settler.run_if(in_state(AppState::InGame)),
                 )
                     .run_if(in_state(AppState::InGame)),
