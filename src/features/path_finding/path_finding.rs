@@ -8,7 +8,7 @@ use crate::features::position::WorldPosition;
 use bevy::prelude::*;
 use bevy::tasks::futures_lite::future;
 use bevy::tasks::{AsyncComputeTaskPool, Task};
-use pathfinding::prelude::bfs;
+use pathfinding::prelude::{bfs, dijkstra};
 use crate::features::tasks::task::TaskFailed;
 
 #[derive(Debug, Clone)]
@@ -41,23 +41,37 @@ pub fn spawn_pathfinding_task(
         let start = grid.get_nearest_available_vertex(start.as_coordinate());
         let end = grid.get_nearest_available_vertex(end.as_coordinate());
 
-        if start.is_none() || end.is_none() {
-            println!("start or end not found, returning None from Pathfinding task");
+        let Some(start) = start else {
             return PathfindingResult {
                 path: None,
                 pathfinding_id,
             }
-        }
+        };
+        
+        let Some(end) = end else {
+            return PathfindingResult {
+                path: None,
+                pathfinding_id,
+            }
+        };
+        
+        let start = (start.x as usize, start.y as usize);
+        let end = (end.x as usize, end.y as usize);
 
-        let points = bfs(
-            &start.unwrap(),
+        let points = dijkstra(
+            &start,
             |original_point| {
-                grid.neighbours(true, (original_point.x as usize, original_point.y as usize))
-                    .iter()
-                    .map(|p| UVec2::new(p.0 as u32, p.1 as u32))
+                grid.neighbours(true, *original_point)
+                    .into_iter()
+                    .map(|p| {
+                        let x_diff = (p.0 as i32 - original_point.0 as i32).abs();
+                        let y_diff = (p.1 as i32 - original_point.1 as i32).abs();
+                        let cost = x_diff + y_diff;
+                        (p, cost)
+                    })
                     .collect::<Vec<_>>()
             },
-            |p| *p == end.unwrap(),
+            |p| *p == end,
         );
 
         println!(
@@ -72,9 +86,9 @@ pub fn spawn_pathfinding_task(
             pathfinding_id,
         }, |points| PathfindingResult {
             path: Some(Path {
-                steps: points
+                steps: points.0
                     .iter()
-                    .map(|p| grid.convert_to_centered_coordinate(*p))
+                    .map(|p| grid.convert_to_centered_coordinate(UVec2::new(p.0 as u32, p.1 as u32)))
                     .collect::<Vec<_>>(),
                 pathfinding_id
             }), pathfinding_id,
