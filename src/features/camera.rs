@@ -47,6 +47,7 @@ impl Plugin for CameraPlugin {
             .add_input_context::<CameraInputContext>()
             .add_viewable::<WorldCamera>()
             .add_systems(OnEnter(AppState::InGame), setup)
+            .add_systems(Update, attach_camera_input_context)
             .add_observer(binding)
             .add_observer(handle_pan_input)
             .add_observer(handle_zoom_input);
@@ -65,13 +66,19 @@ fn binding(
     });
 }
 
+fn attach_camera_input_context(query: Query<Entity, Added<WorldCamera>>, mut commands: Commands) {
+    for entity in query.iter() {
+        commands.entity(entity).insert(Actions::<CameraInputContext>::default());
+    }
+}
+
 fn setup(mut commands: Commands, mut gizmo_config: ResMut<GizmoConfigStore>) {
     for (_, config, _) in gizmo_config.iter_mut() {
         config.depth_bias = -1.0;
         config.render_layers = RenderLayers::layer(1);
     }
 
-    commands.spawn((WorldCamera, Actions::<CameraInputContext>::default(), Save));
+    commands.spawn((WorldCamera, Save));
 
     commands.spawn((
         Camera2d,

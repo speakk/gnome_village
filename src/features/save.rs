@@ -115,36 +115,36 @@ impl Plugin for SavePlugin {
             save_default().into(file_from_resource::<SaveRequest>()),
         )
         .add_systems(PreUpdate, load(file_from_resource::<LoadRequest>()))
-        .add_systems(Startup, register_components)
+        //.add_systems(Startup, register_components)
         .add_observer(binding)
         .add_observer(handle_quicksave)
         .add_observer(handle_quickload);
     }
 }
-
-pub fn register_components(world: &mut World) {
-    world.register_component::<Settler>();
-    world.register_component::<Dirt>();
-    world.register_component::<Plant>();
-    world.register_component::<InWorld>();
-    world.register_component::<WorldPosition>();
-    world.register_component::<GltfData>();
-    world.register_component::<SimpleMesh>();
-    world.register_component::<Task>();
-    world.register_component::<Job>();
-    world.register_component::<PreviewCarry>();
-    world.register_component::<DestructTarget>();
-    world.register_component::<BluePrint>();
-    world.register_component::<WorkingOnTask>();
-    world.register_component::<ItemStack>();
-    world.register_component::<ResourceItem>();
-    world.register_component::<Inventory>();
-    world.register_component::<MapData>();
-    world.register_component::<Rock>();
-    world.register_component::<WoodenTorch>();
-    world.register_component::<WoodenWall>();
-    world.register_component::<Tree>();
-}
+// 
+// pub fn register_components(world: &mut World) {
+//     world.register_component::<Settler>();
+//     world.register_component::<Dirt>();
+//     world.register_component::<Plant>();
+//     world.register_component::<InWorld>();
+//     world.register_component::<WorldPosition>();
+//     world.register_component::<GltfData>();
+//     world.register_component::<SimpleMesh>();
+//     world.register_component::<Task>();
+//     world.register_component::<Job>();
+//     world.register_component::<PreviewCarry>();
+//     world.register_component::<DestructTarget>();
+//     world.register_component::<BluePrint>();
+//     world.register_component::<WorkingOnTask>();
+//     world.register_component::<ItemStack>();
+//     world.register_component::<ResourceItem>();
+//     world.register_component::<Inventory>();
+//     world.register_component::<MapData>();
+//     world.register_component::<Rock>();
+//     world.register_component::<WoodenTorch>();
+//     world.register_component::<WoodenWall>();
+//     world.register_component::<Tree>();
+// }
 
 fn binding(trigger: Trigger<Binding<OmniPresentInputContext>>, mut input_context: Query<&mut Actions<OmniPresentInputContext>>) {
     let mut actions = input_context.get_mut(trigger.target()).unwrap();
@@ -153,10 +153,10 @@ fn binding(trigger: Trigger<Binding<OmniPresentInputContext>>, mut input_context
     actions.bind::<save_load_action::QuickLoad>().to(KeyCode::F8);
 }
 
-fn handle_quicksave(_trigger: Trigger<Fired<save_load_action::QuickSave>>, mut commands: Commands) {
+fn handle_quicksave(_trigger: Trigger<Started<save_load_action::QuickSave>>, mut commands: Commands) {
     commands.insert_resource(SaveRequest::new());
 }
 
-fn handle_quickload(_trigger: Trigger<Fired<save_load_action::QuickLoad>>, mut commands: Commands) {
+fn handle_quickload(_trigger: Trigger<Started<save_load_action::QuickLoad>>, mut commands: Commands) {
     commands.insert_resource(LoadRequest::new());
 }
