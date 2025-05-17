@@ -5,10 +5,7 @@ use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::Job;
 use crate::features::tasks::task;
-use crate::features::tasks::task::{
-    Status, Task, TaskCancelled, TaskFailed,
-    TaskFinished, TaskType,
-};
+use crate::features::tasks::task::{ResourceFilter, ResourceQuery, Status, Task, TaskCancelled, TaskFailed, TaskFinished, TaskType};
 use bevy::prelude::*;
 use bevy_platform::collections::HashMap;
 use std::time::Duration;
@@ -35,9 +32,9 @@ pub fn assign_jobs(
         (Entity, &WorldPosition),
         (With<Settler>, Without<WorkingOnTask>, With<InWorld>),
     >,
-    mut resources_query: Query<
-        (Entity, &WorldPosition, &Id, &mut Reservations),
-        (With<ResourceItem>, With<InWorld>),
+    mut resources: Query<
+        ResourceQuery,
+        ResourceFilter
     >,
     others_query: Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
     mut task_types: Query<(
@@ -82,12 +79,12 @@ pub fn assign_jobs(
 
         if let Some(mut bring_resource_task) = bring_resource_task {
             best_agent =
-                bring_resource_task.score(&mut resources_query, &available_settlers, &others_query);
+                bring_resource_task.score(&mut resources, &available_settlers, &others_query);
         } else if let Some(mut destruct_task) = destruct_task {
             best_agent =
-                destruct_task.score(&mut resources_query, &available_settlers, &others_query);
+                destruct_task.score(&mut resources, &available_settlers, &others_query);
         } else if let Some(mut build_task) = build_task {
-            best_agent = build_task.score(&mut resources_query, &available_settlers, &others_query);
+            best_agent = build_task.score(&mut resources, &available_settlers, &others_query);
         }
 
         if let Some(best_agent) = best_agent {

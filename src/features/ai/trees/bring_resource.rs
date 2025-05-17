@@ -8,9 +8,7 @@ use crate::features::ai::{BehaviourTree, WorkingOnTask};
 use crate::features::inventory::Inventory;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
-use crate::features::tasks::task::{
-    DepositTarget, TaskCancelled, TaskType,
-};
+use crate::features::tasks::task::{DepositTarget, ResourceFilter, ResourceQuery, TaskCancelled, TaskType};
 use beet::prelude::*;
 use bevy::prelude::*;
 use crate::features::tasks::sub_tasks::bring_resource_task::{BringResourceRuntimeData, BringResourceTask};
@@ -93,11 +91,11 @@ pub fn create_bring_resource_tree(
 impl TaskType for BringResourceTask {
     fn score(
         &mut self,
-        resources_query: &mut Query<
-            (Entity, &WorldPosition, &Id, &mut Reservations),
-            (With<ResourceItem>, With<InWorld>),
+        mut resources: &mut Query<
+            ResourceQuery,
+            ResourceFilter
         >,
-        agents: &Vec<(Entity, &WorldPosition)>,
+        agents: &[(Entity, &WorldPosition)],
         others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
     ) -> Option<Entity> {
         let mut best_resource_entity: Option<Entity> = None;
@@ -113,22 +111,22 @@ impl TaskType for BringResourceTask {
                 .as_coordinate(),
         };
 
-        let valid_resources = resources_query
+        let valid_resources = resources
             .iter()
-            .filter(|(_, _, id, reservations)| {
-                let reserved_amount = reservations.0.iter().map(|r| r.amount).sum::<u32>();
-                id.0 == self.item_requirement.item_id
+            .filter(|(query_item)| {
+                let reserved_amount = query_item.reservations.0.iter().map(|r| r.amount).sum::<u32>();
+                query_item.id.0 == self.item_requirement.item_id
                     && reserved_amount < self.item_requirement.amount
             })
             .collect::<Vec<_>>();
 
-        for (resource_entity, resource_position, _id, _reservations) in valid_resources.iter() {
+        for query_item in valid_resources.iter() {
             for (agent_entity, agent_position) in agents.iter() {
-                let agent_to_resource_distance = resource_position.0.distance(agent_position.0);
-                let resource_to_goal_distance = target.as_vec2().distance(resource_position.0);
+                let agent_to_resource_distance = query_item.world_position.0.distance(agent_position.0);
+                let resource_to_goal_distance = target.as_vec2().distance(query_item.world_position.0);
                 let score = -agent_to_resource_distance - resource_to_goal_distance; // Smaller distance is better
                 if score > best_score {
-                    best_resource_entity = Some(*resource_entity);
+                    best_resource_entity = Some(query_item.entity);
                     best_agent = Some(*agent_entity);
                     best_score = score;
                 }
@@ -142,10 +140,10 @@ impl TaskType for BringResourceTask {
                 concrete_resource_entity: resource_entity,
             });
 
-            resources_query
+            resources
                 .get_mut(resource_entity)
                 .unwrap()
-                .3
+                .reservations
                 .0
                 .push(Reservation {
                     reserved_by: best_agent.unwrap(),

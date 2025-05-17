@@ -10,6 +10,7 @@ use moonshine_core::prelude::ReflectMapEntities;
 use moonshine_core::prelude::{MapEntities, Save};
 use std::cmp::max;
 use std::time::Duration;
+use bevy::ecs::query::{QueryData, QueryFilter};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum RunType {
@@ -263,12 +264,28 @@ pub fn get_available_task(
     }
 }
 
+
+#[derive(QueryData)]
+#[query_data(mutable, derive(Debug))]
+pub struct ResourceQuery {
+    pub entity: Entity,
+    pub world_position: &'static WorldPosition,
+    pub id: &'static Id,
+    pub reservations: &'static mut Reservations,
+}
+
+#[derive(QueryFilter)]
+pub struct ResourceFilter {
+    _a: With<ResourceItem>,
+    _b: With<InWorld>,
+}
+
 pub trait TaskType {
     fn score(
         &mut self,
-        resources_query: &mut Query<
-            (Entity, &WorldPosition, &Id, &mut Reservations),
-            (With<ResourceItem>, With<InWorld>),
+        resources: &mut Query<
+            ResourceQuery,
+            ResourceFilter
         >,
         agents: &[(Entity, &WorldPosition)],
         others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,

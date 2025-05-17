@@ -5,7 +5,7 @@ use crate::bundles::{Id, Reservations, ResourceItem};
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
 use crate::features::tasks::jobs::{create_bring_resource_task_from_item_amount, Job};
-use crate::features::tasks::task::{CancelTaskCommand, RunType, Task, TaskType};
+use crate::features::tasks::task::{CancelTaskCommand, ResourceFilter, ResourceQuery, RunType, Task, TaskType};
 use bevy::prelude::*;
 use std::ops::Mul;
 use bevy::ecs::entity::MapEntities;
@@ -82,9 +82,9 @@ pub fn react_to_blueprints(
 impl TaskType for BuildTask {
     fn score(
         &mut self,
-        resources_query: &mut Query<
-            (Entity, &WorldPosition, &Id, &mut Reservations),
-            (With<ResourceItem>, With<InWorld>),
+        mut resources_query: &mut Query<
+            ResourceQuery,
+            ResourceFilter
         >,
         agents: &[(Entity, &WorldPosition)],
         others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,

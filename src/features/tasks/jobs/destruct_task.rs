@@ -1,4 +1,4 @@
-use crate::features::tasks::task::Task;
+use crate::features::tasks::task::{ResourceFilter, ResourceQuery, Task};
 use moonshine_core::prelude::ReflectMapEntities;
 use crate::features::tasks::task::RunType;
 use crate::bundles::settler::Settler;
@@ -39,9 +39,9 @@ pub fn react_to_destruct_target(
 impl TaskType for DestructTask {
     fn score(
         &mut self,
-        resources_query: &mut Query<
-            (Entity, &WorldPosition, &Id, &mut Reservations),
-            (With<ResourceItem>, With<InWorld>),
+        mut resources_query: &mut Query<
+            ResourceQuery,
+            ResourceFilter
         >,
         agents: &[(Entity, &WorldPosition)],
         others_query: &Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
