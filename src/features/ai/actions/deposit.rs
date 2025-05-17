@@ -21,7 +21,6 @@ fn deposit_action(
     mut commands: Commands,
     prototypes: Res<Prototypes>,
 ) {
-    println!("Picking up item, inside pick up action");
     let agent = trigger.origin;
     let action = actions.get(trigger.action).unwrap();
     let amount = action.amount;

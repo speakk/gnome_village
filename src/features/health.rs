@@ -24,7 +24,8 @@ fn death_observer(trigger: Trigger<HealthDepleted>, mut commands: Commands) {
     commands.entity(trigger.target()).despawn();
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct Health {
     pub max_health: f32,
     pub health: f32,

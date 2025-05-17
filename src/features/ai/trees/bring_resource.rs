@@ -34,8 +34,8 @@ pub fn create_bring_resource_tree(
                 }
             };
 
-            let resource_target = task.run_time_data.unwrap().concrete_resource_entity;
-            let resource_position = item_resources.get(resource_target);
+            let resource_target = task.run_time_data.concrete_resource_entity;
+            //let resource_position = item_resources.get(resource_target);
 
             // TODO: Make mechanism to clean up in case Settler gets despawned
             let tree_entity = commands
@@ -46,7 +46,8 @@ pub fn create_bring_resource_tree(
                     // TODO: Right now using the existence of resource_position as an indicator
                     // that we already picked this resource up. (In case creating tree from save game)
                     // Rather check Inventory for the item
-                    if let Ok(resource_position) = resource_position {
+                    if let Some(resource_target) = resource_target {
+                        let resource_position = item_resources.get(resource_target).unwrap();
                         root.spawn((GoToAction {
                             target: resource_position.as_coordinate(),
                         },));
@@ -136,9 +137,9 @@ impl TaskType for BringResourceTask {
         println!("Best resource entity result: {:?}", best_resource_entity);
 
         if let Some(resource_entity) = best_resource_entity {
-            self.run_time_data = Some(BringResourceRuntimeData {
-                concrete_resource_entity: resource_entity,
-            });
+            self.run_time_data = BringResourceRuntimeData {
+                concrete_resource_entity: Some(resource_entity),
+            };
 
             resources
                 .get_mut(resource_entity)

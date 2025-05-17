@@ -43,23 +43,23 @@ fn binding(
 }
 
 pub fn toggle_pause_handler(
-    _trigger: Trigger<Fired<world_speed_action::TogglePause>>,
+    _trigger: Trigger<Started<world_speed_action::TogglePause>>,
     mut virtual_time: ResMut<Time<Virtual>>,
     mut paused: Local<bool>,
 ) {
     *paused = !*paused;
     // TODO: Maybe resume speed that existed previous
     if *paused {
-        virtual_time.set_relative_speed(0.0);
+        virtual_time.pause();
         println!("Paused, speed 0");
     } else {
-        virtual_time.set_relative_speed(1.0);
+        virtual_time.unpause();
         println!("Resumed, speed 1");
     }
 }
 
 pub fn set_speed_realtime(
-    _trigger: Trigger<Fired<world_speed_action::RealTime>>,
+    _trigger: Trigger<Started<world_speed_action::RealTime>>,
     mut virtual_time: ResMut<Time<Virtual>>,
 ) {
     virtual_time.set_relative_speed(1.0);
@@ -67,7 +67,7 @@ pub fn set_speed_realtime(
 }
 
 pub fn set_speed_fast(
-    _trigger: Trigger<Fired<world_speed_action::Fast>>,
+    _trigger: Trigger<Started<world_speed_action::Fast>>,
     mut virtual_time: ResMut<Time<Virtual>>,
 ) {
     virtual_time.set_relative_speed(2.0);
@@ -75,7 +75,7 @@ pub fn set_speed_fast(
 }
 
 pub fn set_speed_faster(
-    _trigger: Trigger<Fired<world_speed_action::Faster>>,
+    _trigger: Trigger<Started<world_speed_action::Faster>>,
     mut virtual_time: ResMut<Time<Virtual>>,
 ) {
     virtual_time.set_relative_speed(3.5);
@@ -83,7 +83,7 @@ pub fn set_speed_faster(
 }
 
 pub fn set_speed_fastest(
-    _trigger: Trigger<Fired<world_speed_action::Fastest>>,
+    _trigger: Trigger<Started<world_speed_action::Fastest>>,
     mut virtual_time: ResMut<Time<Virtual>>,
 ) {
     virtual_time.set_relative_speed(6.0);

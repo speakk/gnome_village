@@ -60,7 +60,11 @@ pub(super) fn tick_cooldown(mut query: Query<&mut Task>, mut commands: Commands,
 
 impl Command for CancelTaskCommand {
     fn apply(self, world: &mut World) {
-        let mut task_data = world.get_mut::<Task>(self.task_entity).unwrap();
+        let task_data = world.get_mut::<Task>(self.task_entity);
+        
+        let Some(mut task_data) = task_data else {
+            return;
+        };
 
         if task_data.status == Status::Finished {
             return;

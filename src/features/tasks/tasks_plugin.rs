@@ -4,6 +4,7 @@ use crate::features::tasks::jobs::destruct_task::react_to_destruct_target;
 use crate::features::tasks::jobs::water_plants::react_to_lacking_growth_requirements;
 use crate::features::tasks::task::{propagate_failed_upwards, propagate_finished_upwards, tick_cooldown, TaskCancelled, TaskFinished};
 use bevy::prelude::*;
+use crate::features::tasks::jobs::assign_jobs::handle_working_on_task_added;
 
 pub struct TasksPlugin;
 
@@ -13,6 +14,7 @@ impl Plugin for TasksPlugin {
             .add_event::<TaskCancelled>()
             .add_systems(Update, propagate_finished_upwards)
             .add_systems(FixedUpdate, tick_cooldown)
+            .add_observer(handle_working_on_task_added)
             .add_observer(react_to_lacking_growth_requirements)
             .add_observer(propagate_failed_upwards)
             .add_systems(Update, (react_to_blueprints, react_to_destruct_target))

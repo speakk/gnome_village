@@ -1,17 +1,19 @@
 use crate::bundles::settler::Settler;
-use crate::bundles::{Id, Reservations, ResourceItem};
+use crate::bundles::ResourceItem;
 use crate::features::ai::WorkingOnTask;
 use crate::features::misc_components::InWorld;
 use crate::features::position::WorldPosition;
+use crate::features::tasks::jobs::build_task::BuildTask;
+use crate::features::tasks::jobs::destruct_task::DestructTask;
 use crate::features::tasks::jobs::Job;
+use crate::features::tasks::sub_tasks::bring_resource_task::BringResourceTask;
 use crate::features::tasks::task;
-use crate::features::tasks::task::{ResourceFilter, ResourceQuery, Status, Task, TaskCancelled, TaskFailed, TaskFinished, TaskType};
+use crate::features::tasks::task::{
+    ResourceFilter, ResourceQuery, Status, Task, TaskCancelled, TaskFailed, TaskFinished, TaskType,
+};
 use bevy::prelude::*;
 use bevy_platform::collections::HashMap;
 use std::time::Duration;
-use crate::features::tasks::jobs::build_task::BuildTask;
-use crate::features::tasks::jobs::destruct_task::DestructTask;
-use crate::features::tasks::sub_tasks::bring_resource_task::BringResourceTask;
 
 // TODO: Restart timers if chunks (to be implemented) nearby change in some way
 const JOB_REATTEMPT_DELAY_SECONDS: f32 = 0.2;
@@ -32,10 +34,7 @@ pub fn assign_jobs(
         (Entity, &WorldPosition),
         (With<Settler>, Without<WorkingOnTask>, With<InWorld>),
     >,
-    mut resources: Query<
-        ResourceQuery,
-        ResourceFilter
-    >,
+    mut resources: Query<ResourceQuery, ResourceFilter>,
     others_query: Query<(Entity, &WorldPosition), (Without<ResourceItem>, Without<Settler>)>,
     mut task_types: Query<(
         Option<&mut BringResourceTask>,
@@ -81,8 +80,7 @@ pub fn assign_jobs(
             best_agent =
                 bring_resource_task.score(&mut resources, &available_settlers, &others_query);
         } else if let Some(mut destruct_task) = destruct_task {
-            best_agent =
-                destruct_task.score(&mut resources, &available_settlers, &others_query);
+            best_agent = destruct_task.score(&mut resources, &available_settlers, &others_query);
         } else if let Some(mut build_task) = build_task {
             best_agent = build_task.score(&mut resources, &available_settlers, &others_query);
         }
@@ -100,43 +98,55 @@ pub fn assign_jobs(
             commands
                 .entity(best_agent)
                 .insert(WorkingOnTask(task_entity));
-
-            commands.entity(task_entity).observe(
-                move |_trigger: Trigger<TaskFinished>, mut commands: Commands| {
-                    println!(
-                        "Task {} finished, thus removing agent WorkingOnTask",
-                        task_entity
-                    );
-                    commands.entity(best_agent).remove::<WorkingOnTask>();
-                },
-            );
-
-            commands.entity(task_entity).observe(
-                move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
-                    println!(
-                        "Task {} cancelled, thus removing agent WorkingOnTask",
-                        &task_entity.clone()
-                    );
-                    commands.entity(best_agent).remove::<WorkingOnTask>();
-                },
-            );
-
-            commands.entity(task_entity).observe(
-                move |_trigger: Trigger<TaskFailed>,
-                      mut commands: Commands,
-                      mut task_data: Query<&mut Task>| {
-                    commands.entity(best_agent).remove::<WorkingOnTask>();
-                    let mut task_data = task_data.get_mut(task_entity).unwrap();
-                    task_data.status = Status::Failed;
-                    task_data.cooldown = Some(
-                        Duration::from_secs_f32(
-                            JOB_REATTEMPT_DELAY_SECONDS * (task_data.failed_tries + 1) as f32,
-                        )
-                        .min(Duration::from_secs_f32(JOB_REATTEMPT_DELAY_MAX)),
-                    );
-                    task_data.failed_tries += 1;
-                },
-            );
         }
     }
 }
+
+pub fn handle_working_on_task_added(
+    trigger: Trigger<OnAdd, WorkingOnTask>,
+    working_on_task: Query<&WorkingOnTask>,
+    mut commands: Commands,
+) {
+    let agent = trigger.target();
+    let working_on_task = working_on_task.get(agent).unwrap();
+    let task_entity = working_on_task.0;
+
+    commands.entity(task_entity).observe(
+        move |_trigger: Trigger<TaskFinished>, mut commands: Commands| {
+            println!(
+                "Task {} finished, thus removing agent WorkingOnTask",
+                task_entity
+            );
+            commands.entity(agent).remove::<WorkingOnTask>();
+        },
+    );
+
+    commands.entity(task_entity).observe(
+        move |_trigger: Trigger<TaskCancelled>, mut commands: Commands| {
+            println!(
+                "Task {} cancelled, thus removing agent WorkingOnTask",
+                &task_entity.clone()
+            );
+            commands.entity(agent).remove::<WorkingOnTask>();
+        },
+    );
+
+    commands.entity(task_entity).observe(
+        move |_trigger: Trigger<TaskFailed>,
+              mut commands: Commands,
+              mut task_data: Query<&mut Task>| {
+            commands.entity(agent).remove::<WorkingOnTask>();
+            let mut task_data = task_data.get_mut(task_entity).unwrap();
+            task_data.status = Status::Failed;
+            task_data.cooldown = Some(
+                Duration::from_secs_f32(
+                    JOB_REATTEMPT_DELAY_SECONDS * (task_data.failed_tries + 1) as f32,
+                )
+                .min(Duration::from_secs_f32(JOB_REATTEMPT_DELAY_MAX)),
+            );
+            task_data.failed_tries += 1;
+        },
+    );
+}
+
+pub fn agent_handle_task_finished(trigger: Trigger<TaskFinished>) {}

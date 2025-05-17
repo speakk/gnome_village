@@ -6,7 +6,7 @@ pub mod water_plants;
 use crate::features::misc_components::ItemAmount;
 use crate::features::tasks::task::{DepositTarget, RunType, Task};
 use bevy::prelude::*;
-use crate::features::tasks::sub_tasks::bring_resource_task::BringResourceTask;
+use crate::features::tasks::sub_tasks::bring_resource_task::{BringResourceRuntimeData, BringResourceTask};
 
 #[derive(Component, Debug, Clone, Reflect)]
 #[reflect(Component)]
@@ -26,7 +26,9 @@ fn create_bring_resource_task_from_item_amount(
                     amount: 1,
                 },
                 target: DepositTarget::Inventory(target_inventory_entity),
-                run_time_data: None,
+                run_time_data: BringResourceRuntimeData {
+                    concrete_resource_entity: None
+                },
             }
         ));
     }

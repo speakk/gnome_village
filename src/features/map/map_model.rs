@@ -501,7 +501,7 @@ pub fn generate_test_entities(
     let test_entities = vec![
         EntityGeneration {
             entity_type: ItemId::Settler,
-            amount: 5,
+            amount: 1,
             func: None,
         },
         EntityGeneration {

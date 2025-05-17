@@ -26,6 +26,7 @@ use moonshine_core::prelude::{file_from_resource, save_default, GetFilePath};
 use std::fs;
 use std::path::{Path, PathBuf};
 use crate::features::camera::WorldCamera;
+use crate::features::health::Health;
 use crate::features::sun_light::PlanetOrigin;
 use crate::features::tasks::jobs::build_task::BuildTask;
 use crate::features::tasks::jobs::destruct_task::DestructTask;
@@ -97,6 +98,7 @@ impl Plugin for SavePlugin {
         .register_type::<DestructTask>()
         .register_type::<BringResourceTask>()
         .register_type::<Job>()
+        .register_type::<Health>()
         .register_type::<PreviewCarry>()
         .register_type::<ReservedCoordinatesHelper>()
         .register_type::<BluePrint>()
