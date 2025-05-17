@@ -16,7 +16,7 @@ use crate::features::tasks::sub_tasks::bring_resource_task::{BringResourceRuntim
 pub fn create_bring_resource_tree(
     work_started_query: Query<(&WorkingOnTask, Entity), Added<WorkingOnTask>>,
     item_resources: Query<&WorldPosition, (With<ResourceItem>, With<InWorld>)>,
-    inventories: Query<&WorldPosition, (With<Inventory>, With<InWorld>)>,
+    inventories: Query<(&WorldPosition, &Inventory), With<InWorld>>,
     tasks: Query<&BringResourceTask>,
     mut commands: Commands,
 ) {
@@ -30,12 +30,13 @@ pub fn create_bring_resource_tree(
                 DepositTarget::Coordinate(coordinate) => coordinate,
                 DepositTarget::Inventory(inventory_entity) => {
                     let id = inventory_entity.to_bits();
-                    inventories.get(inventory_entity).unwrap().as_coordinate()
+                    inventories.get(inventory_entity).unwrap().0.as_coordinate()
                 }
             };
 
+            let inventory = inventories.get(worker_entity).unwrap().1;
+            let has_item = inventory.has_amount(task.item_requirement.item_id, task.item_requirement.amount);
             let resource_target = task.run_time_data.concrete_resource_entity;
-            //let resource_position = item_resources.get(resource_target);
 
             // TODO: Make mechanism to clean up in case Settler gets despawned
             let tree_entity = commands
@@ -43,19 +44,18 @@ pub fn create_bring_resource_tree(
                 .with_children(|root| {
                     println!("Creating tree, spawning goto");
 
-                    // TODO: Right now using the existence of resource_position as an indicator
-                    // that we already picked this resource up. (In case creating tree from save game)
-                    // Rather check Inventory for the item
-                    if let Some(resource_target) = resource_target {
-                        let resource_position = item_resources.get(resource_target).unwrap();
-                        root.spawn((GoToAction {
-                            target: resource_position.as_coordinate(),
-                        },));
+                    if !has_item {
+                        if let Some(resource_target) = resource_target {
+                            let resource_position = item_resources.get(resource_target).unwrap();
+                            root.spawn((GoToAction {
+                                target: resource_position.as_coordinate(),
+                            },));
 
-                        root.spawn((PickUpAction {
-                            target_entity: resource_target,
-                            amount: task.item_requirement.amount,
-                        },));
+                            root.spawn((PickUpAction {
+                                target_entity: resource_target,
+                                amount: task.item_requirement.amount,
+                            },));
+                        }
                     }
 
                     root.spawn((GoToAction {
